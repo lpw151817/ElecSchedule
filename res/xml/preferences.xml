@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory
+        android:key="pref_key_storage_settings"
+        android:title="存储情况" >
+        <Preference
+            android:key="pref_sdcard_volume"
+            android:summary="SD卡总容量:20000MB"
+            android:title="当前SD卡可用容量:15000MB" />
+
+        <Preference
+            android:key="pref_key_delete_attach"
+            android:summary="附件目录占用：200MB"
+            android:title="清理程序附件存储目录" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="pref_key_config_settings"
+        android:title="服务器配置" >
+        <EditTextPreference
+            android:defaultValue="192.168.1.100:15000"
+            android:dialogTitle="请输入新的应用服务器地址"
+            android:key="pref_key_app_server"
+            android:summary="192.168.1.100:15000"
+            android:title="应用服务器IP地址" />
+        <EditTextPreference
+            android:defaultValue="192.168.1.100:15005"
+            android:dialogTitle="请输入新的文件服务器地址"
+            android:key="pref_key_file_server"
+            android:summary="192.168.1.100:15005"
+            android:title="文件服务器IP地址" />
+        <EditTextPreference
+            android:defaultValue="10.10.10.221"
+            android:dialogTitle="请输入新的MQTT服务器地址"
+            android:key="pref_key_mqtt_server"
+            android:summary="10.10.10.221"
+            android:title="MQTT服务器地址" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

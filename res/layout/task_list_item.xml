@@ -1,0 +1,98 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="0dp"
+    android:background="@drawable/mm_listitem"
+    android:clickable="true"
+    android:onClick="show_task_detail" >
+
+    <!-- 用户头像 -->
+
+    <ImageView
+        android:id="@+id/itemlist_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="3dp"
+        android:background="@drawable/ic_task_avatar" />
+    <!-- 用户名 -->
+
+    <TextView
+        android:id="@+id/itemlist_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_margin="3dp"
+        android:layout_toRightOf="@+id/itemlist_image"
+        android:text="我叫NERCMS"
+        android:textColor="@android:color/holo_blue_light"
+        android:textSize="17sp" />
+
+    <!-- 任务详细内容 -->
+
+    <TextView
+        android:id="@+id/itemlist_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/itemlist_title"
+        android:layout_marginBottom="3dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="3dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:layout_toRightOf="@+id/itemlist_image"
+        android:text="请A同学与B同学，在周五上午10点提交周报。"
+        android:textColor="@android:color/black"
+        android:textSize="15sp" />
+    <!-- 任务详细内容     任务参与者 -->
+
+    <TextView
+        android:id="@+id/itemlist_participator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/itemlist_content"
+        android:layout_margin="3dp"
+        android:layout_toRightOf="@+id/itemlist_image"
+        android:text="Boss,A同学"
+        android:textColor="@android:color/secondary_text_dark"
+        android:textSize="12sp" />
+    <!-- 任务详细内容     任务截止时间 -->
+
+    <TextView
+        android:id="@+id/itemlist_deadline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/itemlist_content"
+        android:layout_margin="3dp"
+        android:layout_toRightOf="@+id/itemlist_participator"
+        android:text="2014-10-10 10:00"
+        android:textColor="@android:color/secondary_text_dark"
+        android:textSize="12sp" />
+    <!-- 任务详细内容     回复条数 -->
+    <!--
+          <TextView
+	        android:id="@+id/itemlist_reply"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/itemlist_content"
+	        android:layout_margin="3dp"
+	        android:layout_toRightOf="@+id/itemlist_deadline"
+	        android:text="回复[5]）" 
+	        android:textSize="12sp"
+	        android:textColor="@android:color/secondary_text_dark"
+	        />
+    -->
+
+    <ImageView
+        android:id="@+id/itemlist_new_tips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="5dp"
+        android:layout_below="@+id/itemlist_title"
+        android:layout_centerVertical="true"
+        android:src="@drawable/new_tips_bg_small" />
+
+</RelativeLayout>

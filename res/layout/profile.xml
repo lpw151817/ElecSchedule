@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#eee"
+    android:orientation="vertical" >
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scrollbarStyle="outsideOverlay" >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical" >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginTop="0dp" >
+
+                <TextView
+                    android:id="@+id/my_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="90dp"
+                    android:padding="15dp"
+                    android:text="  "
+                    android:textColor="#000"
+                    android:textSize="25sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/contact_head_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="8dp"
+                    android:padding="2dp"
+                    android:scaleType="matrix"
+                    android:src="@drawable/default_user_avatar" />
+            </RelativeLayout>
+           
+            <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="55dp"
+                    android:background="@drawable/preference_first_item"
+                    android:clickable="true"
+                    android:gravity="center_vertical" >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:padding="8dp"
+                        android:text=" I  D ："
+                        android:textColor="#333"
+                        android:textSize="17sp" />
+                    <TextView
+                        android:id="@+id/my_id"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="80dp"
+                        android:padding="8dp"
+                        android:text="  "
+                        android:textColor="#000"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+                
+                
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="55dp"
+                    android:background="@drawable/preference_item"
+                    android:clickable="true"
+                    android:gravity="center_vertical" >
+                    
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:padding="8dp"
+                        android:text="部  门："
+                        android:textColor="#333"
+                        android:textSize="17sp" />
+
+                    <TextView
+                        android:id="@+id/my_org"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="80dp"
+                        android:padding="8dp"
+                        android:text="  "
+                        android:textColor="#000"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="55dp"
+                    android:background="@drawable/preference_item"
+                    android:clickable="true"
+                    android:gravity="center_vertical" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:padding="8dp"
+                        android:text="职  务："
+                        android:textColor="#333"
+                        android:textSize="17sp" />
+
+                    <TextView
+                        android:id="@+id/my_position"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="80dp"
+                        android:padding="8dp"
+                        android:text="  "
+                        android:textColor="#000"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="55dp"
+                    android:background="@drawable/preference_item"
+                    android:clickable="true"
+                    android:gravity="center_vertical" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:padding="8dp"
+                        android:text="职  衔："
+                        android:textColor="#333"
+                        android:textSize="17sp" />
+
+                    <TextView
+                        android:id="@+id/my_rank"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="80dp"
+                        android:padding="8dp"
+                        android:text="  "
+                        android:textColor="#000"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="55dp"
+                    android:background="@drawable/preference_item"
+                    android:clickable="true"
+                    android:gravity="center_vertical" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:padding="8dp"
+                        android:text="手  机："
+                        android:textColor="#333"
+                        android:textSize="17sp" />
+
+                    <TextView
+                        android:id="@+id/my_phone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="80dp"
+                        android:padding="8dp"
+                        android:text=" 未绑定 "
+                        android:textColor="#000"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="55dp"
+                    android:background="@drawable/preference_item"
+                    android:clickable="true"
+                    android:gravity="center_vertical" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:padding="8dp"
+                        android:text="邮  箱："
+                        android:textColor="#333"
+                        android:textSize="17sp" />
+
+                    <TextView
+                        android:id="@+id/my_mail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="80dp"
+                        android:padding="8dp"
+                        android:text="未绑定 "
+                        android:textColor="#000"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="55dp"
+                    android:background="@drawable/preference_last_item"
+                    android:clickable="true"
+                    android:gravity="center_vertical" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:padding="8dp"
+                        android:text="地  址："
+                        android:textColor="#333"
+                        android:textSize="17sp" />
+
+                    <TextView
+                        android:id="@+id/my_address"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="80dp"
+                        android:padding="8dp"
+                        android:text="未绑定 "
+                        android:textColor="#000"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+            </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

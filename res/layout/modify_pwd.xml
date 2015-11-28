@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical" 
+    android:gravity="center_horizontal">
+  <TextView 
+        android:id="@+id/my_pwd "
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content" 
+        android:text="原  密  码" />
+   <EditText
+        android:id="@+id/edit_old_pwd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/my_pwd "
+        android:ems="10" >
+    </EditText>
+    <EditText
+        android:id="@+id/edit_new_pwd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/modify_my_new_pwd"
+        />
+
+    <TextView
+        android:id="@+id/modify_my_new_pwd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/edit_old_pwd"
+        android:text="新  密  码" />
+ 
+</RelativeLayout>

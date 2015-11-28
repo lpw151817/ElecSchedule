@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<!-- 注意： 将复选框设置为不可点击，不可在触摸时点击，不可获得焦点 --> 
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/relativeLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+   <TextView
+            android:id="@+id/childtext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:textSize="15sp"
+            android:layout_centerVertical="true"
+            />
+
+        <CheckBox
+            android:id="@+id/childcheck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+             android:layout_centerVertical="true"/>
+        
+</RelativeLayout>

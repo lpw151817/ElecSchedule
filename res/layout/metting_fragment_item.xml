@@ -1,0 +1,54 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:paddingLeft="2dp"
+    android:paddingRight="2dp"
+    android:paddingTop="2dp"
+    android:background="@drawable/mm_listitem"
+    android:clickable="true" >
+
+    <ImageView
+        android:id="@+id/meeting_item_head"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:paddingLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/meeting_clock" />
+
+    <TextView
+        android:id="@+id/meeting_item_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/meeting_item_head"
+        android:padding="7dp"
+        android:layout_marginLeft="5dp"
+        android:text="2014-1-12 10:00:00"
+        android:textColor="@color/gray"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/meeting_item_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/meeting_item_time"
+        android:padding="7dp"
+        android:layout_marginLeft="5dp"
+        android:text="已预约"
+        android:textColor="#000"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/meeting_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/meeting_item_time"
+        android:layout_toRightOf="@+id/meeting_item_head"
+        android:layout_marginLeft="5dp"
+        android:padding="7dp"
+        android:text="网络组每周例会"
+        android:textSize="15sp"
+        android:textColor="@color/black" />
+
+</RelativeLayout>

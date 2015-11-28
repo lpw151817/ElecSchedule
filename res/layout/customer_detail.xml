@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+  	android:layout_height="fill_parent"
+    android:background="#eee"
+    android:orientation="vertical" >
+    <ScrollView
+    	android:layout_width="fill_parent"
+    	android:layout_height="fill_parent"
+    	android:scrollbarStyle="outsideOverlay"  >
+			
+		<LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="0dp" > 
+        			
+            <TextView
+                    android:id="@+id/customer_name"
+        			android:layout_width="wrap_content" 
+        			android:layout_height="wrap_content"
+        			android:layout_alignParentTop="true"
+        			android:layout_alignParentLeft="true"
+        			android:layout_marginLeft="90dp"
+        			android:padding="15dp" 
+        			android:text="  "
+        			android:textSize="20sp"	
+					android:textColor="#000" />
+
+            <ImageView
+                android:id="@+id/customer_head_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="8dp"
+                android:padding="2dp"
+                android:scaleType="matrix"
+                android:src="@drawable/default_user_avatar" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="1dp" >
+			
+         	<RelativeLayout      				    
+            	android:layout_width="fill_parent"
+            	android:layout_height="55dp"            	
+            	android:gravity="center_vertical"
+            	android:clickable="true"
+            	android:background="@drawable/preference_first_item" >
+            	
+      		  <TextView
+        			android:layout_width="wrap_content" 
+        			android:layout_height="wrap_content"
+        			android:layout_centerVertical="true"
+        			android:padding="8dp" 
+        			android:text="所在单位："
+        			android:textSize="17sp"		
+					android:textColor="#333" /> 
+				<TextView
+				    android:id="@+id/customer_unit"
+        			android:layout_width="wrap_content" 
+        			android:layout_height="wrap_content"
+        			android:layout_centerVertical="true"
+        			android:layout_alignParentLeft="true"
+        			android:layout_marginLeft="80dp"
+        			android:padding="8dp" 
+        			android:text=" 未绑定   "
+        			android:textSize="15sp"		
+					android:textColor="#000" /> 					
+   		  	</RelativeLayout>
+   		  	<RelativeLayout
+            		android:layout_width="fill_parent"
+            		android:layout_height="55dp"
+            		android:gravity="center_vertical"
+            		android:clickable="true"
+            		android:background="@drawable/preference_item" >
+            	<TextView
+        			android:layout_width="wrap_content" 
+        			android:layout_height="wrap_content"
+        			android:layout_centerVertical="true"
+        			android:padding="8dp" 
+        			android:text="部 门："
+        			android:textSize="17sp"		
+					android:textColor="#333" /> 
+				<TextView
+				    android:id="@+id/customer_description"
+        			android:layout_width="wrap_content" 
+        			android:layout_height="wrap_content"
+        			android:layout_centerVertical="true"
+        			android:layout_alignParentLeft="true"
+        			android:layout_marginLeft="80dp"
+        			android:padding="8dp" 
+        			android:text=" 未绑定   "
+        			android:textSize="15sp"		
+					android:textColor="#000" /> 			
+      		</RelativeLayout>
+   		  	
+   		  	<RelativeLayout
+            		android:layout_width="fill_parent"
+            		android:layout_height="55dp"
+            		android:gravity="center_vertical"
+            		android:clickable="true"
+            		android:background="@drawable/preference_item" >
+            	<TextView
+        			android:layout_width="wrap_content" 
+        			android:layout_height="wrap_content"
+        			android:layout_centerVertical="true"
+        			android:padding="8dp" 
+        			android:text="手  机："
+        			android:textSize="17sp"		
+					android:textColor="#333" /> 
+				<TextView
+				    android:id="@+id/customer_phone"
+        			android:layout_width="wrap_content" 
+        			android:layout_height="wrap_content"
+        			android:layout_centerVertical="true"
+        			android:layout_alignParentLeft="true"
+        			android:layout_marginLeft="80dp"
+        			android:padding="8dp" 
+        			android:text="  "
+        			android:textSize="15sp"		
+					android:textColor="#000" /> 			
+      		</RelativeLayout>
+   		  	
+      		<RelativeLayout
+            		android:layout_width="fill_parent"
+            		android:layout_height="55dp"
+            		android:gravity="center_vertical"
+            		android:clickable="true"
+            		android:background="@drawable/preference_item" >
+            	<TextView
+        			android:layout_width="wrap_content" 
+        			android:layout_height="wrap_content"
+        			android:layout_centerVertical="true"
+        			android:padding="8dp" 
+        			android:text="邮  箱："
+        			android:textSize="17sp"		
+					android:textColor="#333" /> 
+				<TextView
+				    android:id="@+id/customer_mail"
+        			android:layout_width="wrap_content" 
+        			android:layout_height="wrap_content"
+        			android:layout_centerVertical="true"
+        			android:layout_alignParentLeft="true"
+        			android:layout_marginLeft="80dp"
+        			android:padding="8dp" 
+        			android:text=" 未绑定   "
+        			android:textSize="15sp"		
+					android:textColor="#000" /> 			
+      		</RelativeLayout>
+      		
+      		<RelativeLayout
+            		android:layout_width="fill_parent"
+            		android:layout_height="55dp"
+            		android:gravity="center_vertical"
+            		android:clickable="true"
+            		android:background="@drawable/preference_last_item" >
+            	<TextView
+        			android:layout_width="wrap_content" 
+        			android:layout_height="wrap_content"
+        			android:layout_centerVertical="true"
+        			android:padding="8dp" 
+        			android:text="地  址："
+        			android:textSize="17sp"		
+					android:textColor="#333" /> 
+				<TextView
+				    android:id="@+id/customer_address"
+        			android:layout_width="wrap_content" 
+        			android:layout_height="wrap_content"
+        			android:layout_centerVertical="true"
+        			android:layout_alignParentLeft="true"
+        			android:layout_marginLeft="80dp"
+        			android:padding="8dp" 
+        			android:text=" 未绑定   "
+        			android:textSize="15sp"		
+					android:textColor="#000" /> 			
+      		</RelativeLayout>
+        </LinearLayout>
+        
+        <Button
+            android:id="@+id/customer_btn_chat"
+           android:layout_width="fill_parent"
+           android:layout_height="55dp"
+           android:layout_marginLeft="10dp"
+           android:layout_marginRight="10dp"
+           android:layout_marginTop="10dp"      
+            android:background="@drawable/btn_style_green"            
+            android:text="发  消  息"
+            android:textColor="#fff"
+            android:textSize="18sp"
+            android:clickable="true"
+             />
+        <Button  
+            android:id="@+id/customer_btn_phone"          
+             android:layout_width="fill_parent"
+           android:layout_height="55dp"
+           android:layout_marginLeft="10dp"
+           android:layout_marginRight="10dp"
+           android:layout_marginTop="10dp"         
+            android:background="@drawable/btn_style_green"            
+            android:text="打  电  话"
+            android:textColor="#fff"
+            android:textSize="18sp"
+            android:clickable="true"
+             />
+	</LinearLayout>
+  </ScrollView>
+</LinearLayout>

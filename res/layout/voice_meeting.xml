@@ -1,0 +1,200 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/voice_call_bg"
+    tools:context=".VoiceCall" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/voice_meeting_operation_ll"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="20dp" >
+
+        <TextView
+            android:id="@+id/voice_meeting_title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
+            android:text="会议主题blablabla"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/voice_meeting_status_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/voice_meeting_title_tv"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="15dp"
+            android:gravity="center_horizontal"
+            android:text="正在呼叫..."
+            android:textColor="@color/white" />
+
+        <Chronometer
+            android:id="@+id/voice_meeting_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/voice_meeting_title_tv"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="15dp"
+            android:format="%s"
+            android:textColor="@color/white"
+            android:visibility="gone" />
+
+        <!-- 所有会议人员人布局 -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/voice_meeting_title_tv"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="35dp"
+            android:gravity="center_vertical"
+            android:orientation="vertical" >
+
+            <!-- 单个发言人，多个在代码中添加 -->
+
+            <LinearLayout
+                android:id="@+id/voice_meeting_speaker_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal" >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="gone" >
+
+                    <ImageView
+                        android:id="@+id/voice_meeting_speaker_avatar_a"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/default_user_avatar" />
+
+                    <TextView
+                        android:id="@+id/voice_meeting_speaker_name_a"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="5dp"
+                        android:text="测试员一" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                android:background="@color/gray" />
+
+            <!-- 单个参与者，多个在代码中添加 -->
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scrollbars="vertical" >
+
+                <LinearLayout
+                    android:id="@+id/voice_meeting_total_listener_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical" >
+
+                    <LinearLayout
+                        android:id="@+id/voice_meeting_listener_ll"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="20dp"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal"
+                        android:visibility="gone" >
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:visibility="gone" >
+
+                            <ImageView
+                                android:id="@+id/voice_meeting_listener_avatar_a"
+                                android:layout_width="45dp"
+                                android:layout_height="45dp"
+                                android:layout_marginTop="5dp"
+                                android:background="@drawable/default_user_avatar" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="5dp"
+                                android:layout_marginTop="5dp"
+                                android:text="测试员二" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/voice_meeting_operation_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:orientation="horizontal" >
+
+        <RelativeLayout
+            android:id="@+id/voice_meeting_answer_rl"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/voice_call_green_btn_bg" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@drawable/voice_call_btn_icon_answer" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/voice_meeting_hangup_rl"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/voice_call_red_btn_bg" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@drawable/voice_call_btn_icon_hangup" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>

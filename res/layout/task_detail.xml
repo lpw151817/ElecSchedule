@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#eee"
+    android:orientation="vertical" >
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1"
+        android:fillViewport="true" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="440dp"
+            android:background="#eee"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10.0px"
+                android:layout_marginRight="10.0px"
+                android:layout_marginTop="1.0px"
+                android:background="@drawable/mm_listitem"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="5dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" 主    题   :"
+                    android:textColor="@android:color/black"
+                    android:textSize="17.0dip" />
+
+                <EditText
+                    android:id="@+id/td_title"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dip"
+                    android:layout_weight="1"
+                    android:background="@drawable/edit_text"
+                    android:editable="false"
+                    android:hint="周日提交新版本"
+                    android:singleLine="true" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10.0px"
+                android:layout_marginRight="10.0px"
+                android:layout_marginTop="1.0px"
+                android:background="@drawable/mm_listitem"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="5dip" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="发  起  人:"
+                    android:textColor="@android:color/black"
+                    android:textSize="17.0dip" />
+
+                <EditText
+                    android:id="@+id/td_starter"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dip"
+                    android:layout_weight="1"
+                    android:background="@drawable/edit_text"
+                    android:editable="false"
+                    android:hint="项目经理"
+                    android:singleLine="true" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10.0px"
+                android:layout_marginRight="10.0px"
+                android:layout_marginTop="1.0px"
+                android:background="@drawable/mm_listitem_grey_normal"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="5dip" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="责  任  人:"
+                    android:textColor="@android:color/black"
+                    android:textSize="17.0dip" />
+
+                <EditText
+                    android:id="@+id/personOnDuty"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dip"
+                    android:layout_weight="1"
+                    android:background="@drawable/edit_text"
+                    android:editable="false"
+                    android:hint="职员A，职员B"
+                    android:singleLine="true" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10.0px"
+                android:layout_marginRight="10.0px"
+                android:layout_marginTop="1.0px"
+                android:background="@drawable/mm_listitem_grey_normal"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="5dip" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="抄 送 人:"
+                    android:textColor="@android:color/black"
+                    android:textSize="17.0dip" />
+
+                <EditText
+                    android:id="@+id/td_participator"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dip"
+                    android:layout_weight="1"
+                    android:background="@drawable/edit_text"
+                    android:editable="false"
+                    android:hint="职员A，职员B"
+                    android:singleLine="true" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10.0px"
+                android:layout_marginRight="10.0px"
+                android:layout_marginTop="1.0px"
+                android:background="@drawable/mm_listitem_grey_normal"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="5dip"
+                android:visibility="gone" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="抄  送  人:"
+                    android:textColor="@android:color/black"
+                    android:textSize="17.0dip" />
+
+                <EditText
+                    android:id="@+id/td_participator_cc"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dip"
+                    android:layout_weight="1"
+                    android:background="@drawable/edit_text"
+                    android:editable="false"
+                    android:hint="组长"
+                    android:singleLine="true" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10.0px"
+                android:layout_marginRight="10.0px"
+                android:layout_marginTop="1.0px"
+                android:background="@drawable/mm_listitem_grey_normal"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="5dip" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="截止时间:"
+                    android:textColor="@android:color/black"
+                    android:textSize="17.0dip" />
+
+                <EditText
+                    android:id="@+id/td_deadline"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/edit_text"
+                    android:editable="false"
+                    android:hint="2014-05-01"
+                    android:singleLine="true" />
+
+                <ImageButton
+                    android:id="@+id/td_btn_deadline"
+                    android:layout_width="40dip"
+                    android:layout_height="40dip"
+                    android:layout_marginLeft="5dip"
+                    android:clickable="true"
+                    android:cropToPadding="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/mm_title_btn_calendar" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10.0px"
+                android:layout_marginRight="10.0px"
+                android:layout_marginTop="1.0px"
+                android:background="@drawable/mm_listitem"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="5dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="任务内容:"
+                    android:textColor="@android:color/black"
+                    android:textSize="17.0dip" />
+
+                <EditText
+                    android:id="@+id/td_content"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dip"
+                    android:layout_weight="1"
+                    android:background="@drawable/edit_text"
+                    android:editable="false"
+                    android:hint="周日提交新版本，主要包括模块一，模块二，模块三"
+                    android:inputType="textMultiLine"
+                    android:singleLine="true" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10.0px"
+                android:layout_marginRight="10.0px"
+                android:layout_marginTop="1.0px"
+                android:background="@drawable/mm_listitem"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="5dp" >
+
+                <TextView
+                    android:id="@+id/td_tv_attachment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" 附    件  :"
+                    android:textColor="@android:color/black"
+                    android:textSize="17.0dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/td_showAttathLayout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10.0px"
+                android:layout_marginRight="10.0px"
+                android:layout_marginTop="1.0px"
+                android:background="@drawable/mm_listitem"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="5dp" >
+
+                <nercms.schedule.layout.FixedGridLayout
+                    android:id="@+id/td_attachContainer"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

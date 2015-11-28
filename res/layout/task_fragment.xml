@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical"
+    android:paddingLeft="2dp"
+    android:paddingRight="2dp"
+    android:paddingTop="15dp" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="212dp" >
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                android:id="@+id/task_total_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_task_start" />
+
+            <TextView
+                android:id="@+id/task_total_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_toRightOf="@+id/task_total_icon"
+                android:text="发起任务"
+                android:layout_centerVertical="true"
+                android:textColor="@android:color/holo_orange_dark"
+                android:textSize="25sp" />
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/task_total_line_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:src="@drawable/task_total_line" />
+
+        <TextView
+            android:id="@+id/task_start_delayed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/task_total_line_img"
+            android:layout_marginLeft="40dp"
+            android:clickable="true"
+            android:text="延迟"
+            android:textColor="@android:color/holo_blue_dark"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/task_start_doing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/task_start_delayed"
+            android:layout_alignBottom="@+id/task_start_delayed"
+            android:layout_centerHorizontal="true"
+            android:text="进行"
+            android:textColor="@android:color/holo_blue_dark"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/task_start_finished"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/task_start_doing"
+            android:layout_alignBottom="@+id/task_start_doing"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="50dp"
+            android:text="完成"
+            android:textColor="@android:color/holo_blue_dark"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/task_start_delayed_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/task_start_delayed"
+            android:layout_below="@+id/task_start_delayed"
+            android:text="3"
+            android:textColor="@android:color/holo_blue_bright"
+            android:textSize="30sp" />
+
+        <ImageView
+            android:id="@+id/task_start_delayed_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/task_start_delayed_number"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/task_start_delayed_number"
+            android:clickable="true"
+            android:src="@drawable/new_tips_bg_small" />
+
+        <TextView
+            android:id="@+id/task_start_doing_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/task_start_delayed_number"
+            android:layout_alignRight="@+id/task_start_doing"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="16"
+            android:textColor="@android:color/holo_blue_bright"
+            android:textSize="30sp" />
+        <ImageView
+            android:id="@+id/task_start_doing_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/task_start_doing_number"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/task_start_doing_number"
+            android:clickable="true"
+            android:src="@drawable/new_tips_bg_small" />
+
+        <TextView
+            android:id="@+id/task_start_finished_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/task_start_doing_number"
+            android:layout_alignRight="@+id/task_start_finished"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="25"
+            android:textColor="@android:color/holo_blue_bright"
+            android:textSize="30sp" />
+        <ImageView
+            android:id="@+id/task_start_finished_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/task_start_finished_number"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/task_start_finished_number"
+            android:clickable="true"
+            android:src="@drawable/new_tips_bg_small" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="212dp" >
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+"
+
+            <ImageView
+                android:id="@+id/task_total_icon1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="15dp"
+                android:src="@drawable/ic_task_receive" />
+
+            <TextView
+                android:id="@+id/task_total_receive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="16dp"
+                android:layout_toRightOf="@+id/task_total_icon1"
+                android:text="接收任务"
+                android:textColor="@android:color/holo_orange_dark"
+                android:textSize="25sp" />
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/task_total_line_img1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:src="@drawable/task_total_line" />
+
+        <TextView
+            android:id="@+id/task_rcv_delayed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/task_total_line_img1"
+            android:layout_marginLeft="40dp"
+            android:text="延迟"
+            android:textColor="@android:color/holo_blue_dark"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/task_rcv_doing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/task_rcv_delayed"
+            android:layout_alignBottom="@+id/task_rcv_delayed"
+            android:layout_centerHorizontal="true"
+            android:text="进行"
+            android:textColor="@android:color/holo_blue_dark"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/task_rcv_finished"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/task_rcv_doing"
+            android:layout_alignBottom="@+id/task_rcv_doing"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="50dp"
+            android:text="完成"
+            android:textColor="@android:color/holo_blue_dark"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/task_rcv_delayed_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/task_rcv_delayed"
+            android:layout_below="@+id/task_rcv_delayed"
+            android:text="21"
+            android:textColor="@android:color/holo_blue_bright"
+            android:textSize="30sp" />
+
+        <ImageView
+            android:id="@+id/task_rcv_delayed_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/task_rcv_delayed_number"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/task_rcv_delayed_number"
+            android:src="@drawable/new_tips_bg_small" />
+
+        <TextView
+            android:id="@+id/task_rcv_doing_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/task_rcv_delayed_number"
+            android:layout_alignRight="@+id/task_rcv_doing"
+            android:text="12"
+            android:textColor="@android:color/holo_blue_bright"
+            android:textSize="30sp" />
+        
+        <ImageView
+            android:id="@+id/task_rcv_doing_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/task_rcv_doing_number"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/task_rcv_doing_number"
+            android:src="@drawable/new_tips_bg_small" />
+
+        <TextView
+            android:id="@+id/task_rcv_finished_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/task_rcv_doing_number"
+            android:layout_alignRight="@+id/task_rcv_finished"
+            android:text="3"
+            android:textColor="@android:color/holo_blue_bright"
+            android:textSize="30sp" />
+        <ImageView
+            android:id="@+id/task_rcv_finished_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/task_rcv_finished_number"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/task_rcv_finished_number"
+            android:src="@drawable/new_tips_bg_small" />
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical"
+    android:paddingLeft="2dp"
+    android:paddingRight="2dp"
+    android:paddingTop="4dp" >
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_gravity="center"
+        android:gravity="center" >
+
+        <Button
+            android:id="@+id/btn_contacts_company"
+            android:layout_width="100dip"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_left_header_contacts"
+            android:text="企业" />
+
+        <Button
+            android:id="@+id/btn_contacts_personal"
+            android:layout_width="100dip"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_right_header_contacts"
+            android:text="个人" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/id_tree"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:divider="#aaa"
+        android:dividerHeight="1px" >
+    </ListView>
+
+</LinearLayout>
