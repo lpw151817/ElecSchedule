@@ -33,6 +33,7 @@
         <activity
             android:name=".activity.Login"
             android:theme="@style/Theme.Schedule" >
+            
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -58,6 +58,7 @@ public class BaseActivity extends SherlockActivity {
 	protected void showAlterDialog(String title, String content, Integer icon, String pB,
 			OnClickListener pbListener, String nB, OnClickListener nbListener) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		
 		builder.setTitle(title);
 		if (content != null)
 			builder.setMessage(content);

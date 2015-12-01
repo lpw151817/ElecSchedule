@@ -141,6 +141,8 @@ public class Login extends BaseActivity {
 		getSupportActionBar().setDisplayShowTitleEnabled(true);
 		getSupportActionBar().setDisplayShowHomeEnabled(true);
 		getSupportActionBar().setTitle("µÇÂ¼");
+		
+		getSupportActionBar().hide();
 	}
 
 	@Override
