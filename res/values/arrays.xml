@@ -1,7 +1,104 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
 
-    
+    <string-array name="zuoyexianchang_si_data">
+        <item>工作票</item>
+        <item>班前会录音及确认签字映证图片</item>
+        <item>作业现场材料、工器具分类摆放、现场围栏和标识牌设置</item>
+        <item>正确验电，与工作票所列相符的工作接地线编号及塔杆号</item>
+        <item>现场终结照片及班会后录音</item>
+        <item>工作验收现场照片</item>
+    </string-array>
+
+    <integer-array name="zuoyexianchang_si_radio">
+        <item>0</item>
+        <item>1</item>
+        <item>0</item>
+        <item>0</item>
+        <item>1</item>
+        <item>0</item>
+    </integer-array>
+    <integer-array name="zuoyexianchang_si_photo">
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+    </integer-array>
+    <integer-array name="zuoyexianchang_si_video">
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+    </integer-array>
+
+    <string-array name="caozuoxianchang_si_data">
+        <item>操作票（逐项操作并打钩）</item>
+        <item>现场围栏和标示牌设置规范</item>
+        <item>正确验电，与操作票所列相符的接地线及编号</item>
+        <item>遥视变电站具备视频</item>
+        <item>倒闸操作现场全程录音资料</item>
+    </string-array>
+
+    <integer-array name="caozuoxianchang_si_radio">
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>1</item>
+    </integer-array>
+    <integer-array name="caozuoxianchang_si_photo">
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>0</item>
+        <item>0</item>
+    </integer-array>
+    <integer-array name="caozuoxianchang_si_video">
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>1</item>
+        <item>0</item>
+    </integer-array>
+
+    <string-array name="guzhangjinji_si_data">
+        <item>工作票</item>
+        <item>班前会录音及确认签名映证图片</item>
+        <item>作业现场材料、工器具分类摆放、现场围栏和标示牌设置</item>
+        <item>正确验电，与工作票所列相符的工作接地线编号及塔杆号</item>
+        <item>现场终结照片及班会后录音</item>
+        <item>工作验收现场照片</item>
+    </string-array>
+
+    <integer-array name="guzhangjinji_si_radio">
+        <item>0</item>
+        <item>1</item>
+        <item>0</item>
+        <item>0</item>
+        <item>1</item>
+        <item>0</item>
+    </integer-array>
+    <integer-array name="guzhangjinji_si_photo">
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+    </integer-array>
+    <integer-array name="guzhangjinji_si_video">
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+    </integer-array>
+
     <string-array name="date">
         <item>阿妹</item>
         <item>阿郎</item>
