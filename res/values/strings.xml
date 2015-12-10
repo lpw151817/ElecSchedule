@@ -8,5 +8,6 @@
     <string name="title_activity_plan_add">每日计划录入</string>
     <string name="title_activity_new_task">新任务</string>
     <string name="title_activity_xian_chang_si">XianChangSi</string>
+    <string name="title_activity_xian_chang_add">XianChangAdd</string>
 
 </resources>
