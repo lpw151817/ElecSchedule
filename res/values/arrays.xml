@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
 
+    
     <string-array name="date">
         <item>阿妹</item>
         <item>阿郎</item>
@@ -46,7 +47,6 @@
         <item>Jack</item>
         <item>~夏先生</item>
     </string-array>
-    
     <string-array name="img_src_data">
         <item>http://www.touxiang.cn/uploads/20130608/08-023618_517.jpg</item>
         <item>http://www.touxiang.cn/uploads/20140216/16-075941_383-lp.jpg</item>
