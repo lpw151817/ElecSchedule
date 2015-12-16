@@ -143,8 +143,14 @@
             android:theme="@style/Theme.Schedule" >
         </activity>
         <activity
-            android:name="nercms.schedule.activity.XianChangAdd"
+            android:name=".activity.XianChangAdd"
             android:label="@string/title_activity_xian_chang_add"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.Schedule" >
+        </activity>
+        <activity
+            android:name="nercms.schedule.activity.MeiRiJiHua"
+            android:label="@string/title_activity_mei_ri_ji_hua"
             android:launchMode="singleTop"
             android:theme="@style/Theme.Schedule" >
             <intent-filter>
