@@ -23,6 +23,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.ExifInterface;
 import android.os.Environment;
 import android.os.StatFs;
 import android.telephony.TelephonyManager;
@@ -281,6 +282,10 @@ public class Utils {
 			}
 			// 重新读入图片
 			bitmap = BitmapFactory.decodeFile(originalUri, options);
+			
+			//旋转
+			int degree = readPictureDegree(originalUri);  
+			bitmap = rotateBitmap(bitmap,degree) ;
 			// 保存缩略图
 			saveBitmap(bitmap, thumbnailUri);
 
@@ -290,6 +295,130 @@ public class Utils {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	/**
+	 * @param path
+	 * @author chenqiang
+	 */
+	public static int readPictureDegree(String path) {    
+        int degree  = 0;    
+        try {    
+                ExifInterface exifInterface = new ExifInterface(path);    
+                int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);    
+                switch (orientation) {    
+                case ExifInterface.ORIENTATION_ROTATE_90:    
+                        degree = 90;    
+                        break;    
+                case ExifInterface.ORIENTATION_ROTATE_180:    
+                        degree = 180;    
+                        break;    
+                case ExifInterface.ORIENTATION_ROTATE_270:    
+                        degree = 270;    
+                        break;    
+                }    
+        } catch (IOException e) {    
+                e.printStackTrace();    
+        }    
+        return degree;    
+    } 
+	
+	
+	/**
+	 * @param bitmap
+	 * @param rotate
+	 * @author chenqiang
+	 */
+	public static Bitmap rotateBitmap(Bitmap bitmap, int rotate){  
+        if(bitmap == null)  
+            return null ;  
+          
+        int w = bitmap.getWidth();  
+        int h = bitmap.getHeight();  
+  
+        // Setting post rotate to 90  
+        Matrix mtx = new Matrix();  
+        mtx.postRotate(rotate);  
+        return Bitmap.createBitmap(bitmap, 0, 0, w, h, mtx, true);  
+    }
+	/**
+	 * @author chenqiang
+	 */
+	public static String getThumbnailDir() {
+		// 得到一个路径，内容是sdcard的附件缩略图路径
+		String path = Environment.getExternalStorageDirectory().getPath()
+				+ "/TestRecord/Thumbnail";
+		File filePath = new File(path);
+
+		if (!filePath.exists()) {
+			// 若不存在，创建目录
+			filePath.mkdirs();
+		}
+
+		return path + File.separator + getFileDate() + ".jpg";
+
+	}
+	
+	/**
+	 * @author chenqiang
+	 */
+	private static String getFileDate() {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy_MM_dd_HHmmss");
+		Date date = new Date(System.currentTimeMillis());
+		String file = format.format(date);
+		return file;
+	}
+	
+	/**
+	 * @author chenqiang
+	 */
+	// 删除文件夹
+		// param folderPath 文件夹完整绝对路径
+		public static void delFolder(String folderPath) {
+			try {
+				delAllFile(folderPath); // 删除完里面所有内容
+				String filePath = folderPath;
+				filePath = filePath.toString();
+				java.io.File myFilePath = new java.io.File(filePath);
+				myFilePath.delete(); // 删除空文件夹
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		/**
+		 * @author chenqiang
+		 */
+		// 删除指定文件夹下所有文件
+		// param path 文件夹完整绝对路径
+		public static boolean delAllFile(String path) {
+			boolean flag = false;
+			File file = new File(path);
+			if (!file.exists()) {
+				return flag;
+			}
+			if (!file.isDirectory()) {
+				return flag;
+			}
+			String[] tempList = file.list();
+			File temp = null;
+			for (int i = 0; i < tempList.length; i++) {
+				if (path.endsWith(File.separator)) {
+					temp = new File(path + tempList[i]);
+				} else {
+					temp = new File(path + File.separator + tempList[i]);
+				}
+				if (temp.isFile()) {
+					temp.delete();
+				}
+				if (temp.isDirectory()) {
+					delAllFile(path + "/" + tempList[i]);// 先删除文件夹里面的文件
+					delFolder(path + "/" + tempList[i]);// 再删除空文件夹
+					flag = true;
+				}
+			}
+			return flag;
+		}
 
 	/**
 	 * 保存bitmap

@@ -109,9 +109,26 @@
             </LinearLayout>
 
             <!-- 附件展示区域 -->
-            <View
+
+            <LinearLayout
+                android:id="@+id/showAttathLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10.0px"
+                android:layout_marginRight="10.0px"
+                android:layout_marginTop="1.0px"
+                android:background="@drawable/mm_listitem"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="5dp" >
+
+                <nercms.schedule.view.FixedGridLayout
+                    android:id="@+id/attachContainer"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal" />
+            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 

@@ -25,6 +25,7 @@
     <uses-permission android:name="android.permission.WRITE_CALL_LOG" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission  android:name="android.permission.RECORD_AUDIO"/>  
 
     <application
         android:name="android.wxapp.service.AppApplication"
@@ -134,7 +135,20 @@
             android:name=".activity.NewTask"
             android:label="@string/title_activity_new_task"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="nercms.schedule.view.PlayVideo" >
+        </activity>
+        <activity
+            android:theme="@style/Theme.Schedule"
+            android:name="nercms.schedule.activity.RecordActivity"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".activity.XianChangSi"
@@ -153,11 +167,6 @@
             android:label="@string/title_activity_mei_ri_ji_hua"
             android:launchMode="singleTop"
             android:theme="@style/Theme.Schedule" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 
