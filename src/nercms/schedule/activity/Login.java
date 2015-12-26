@@ -24,6 +24,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
+import android.text.TextUtils.EllipsizeCallback;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -95,8 +96,7 @@ public class Login extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);
 
-		
-		//this is test
+		// this is test
 		// // 用户测试使用，直接跳过本Activity
 		// startActivity(Main.class);
 		// return;
@@ -105,35 +105,50 @@ public class Login extends BaseActivity {
 		webRequestManager = new WebRequestManager(AppApplication.getInstance(), Login.this);
 
 		initActionBar();
- 
+
 		etUserName = (EditText) findViewById(R.id.login_user_edit);
 		etPassword = (EditText) findViewById(R.id.login_passwd_edit);
 		// etUserName.setText(un);
 		// etPassword.setText(pwd);
 
-		// 默认显示上次登录的用户ID
-		etUserName.setText(MySharedPreference.get(Login.this, MySharedPreference.USER_NAME, ""));
-
-		// 如果用户名为空，则聚焦用户名，否则聚焦密码
-		if (TextUtils.isEmpty(etUserName.getText().toString())) {
-			etUserName.requestFocus();
-		} else {
-			etPassword.requestFocus();
-		}
-
 		btnLogin = (Button) findViewById(R.id.login_login_btn);
 		btnLogin.setOnClickListener(new OnClickListener() {
 
 			@Override
-			public void onClick(View arg0) {
-				MyLog.i(TAG, "登录按钮点击");
-				login_mainschedule();
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				inputUserName = etUserName.getText().toString().trim();
+				inputPassword = etPassword.getText().toString().trim();
+				String imsi = Utils.getIMSI(Login.this);
+				new android.wxapp.service.elec.request.WebRequestManager(
+						AppApplication.getInstance(), Login.this).login(inputUserName,
+								inputPassword, imsi);
 			}
 		});
 
-		// 注册或者重新注册Handler
-		initHandler();
-		Log.v("Login", "OnResume,注册或者重新注册Handler");
+		// // 默认显示上次登录的用户ID
+		// etUserName.setText(MySharedPreference.get(Login.this,
+		// MySharedPreference.USER_NAME, ""));
+		//
+		// // 如果用户名为空，则聚焦用户名，否则聚焦密码
+		// if (TextUtils.isEmpty(etUserName.getText().toString())) {
+		// etUserName.requestFocus();
+		// } else {
+		// etPassword.requestFocus();
+		// }
+		//
+		// btnLogin.setOnClickListener(new OnClickListener() {
+		//
+		// @Override
+		// public void onClick(View arg0) {
+		// MyLog.i(TAG, "登录按钮点击");
+		// login_mainschedule();
+		// }
+		// });
+		//
+		// // 注册或者重新注册Handler
+		// initHandler();
+		// Log.v("Login", "OnResume,注册或者重新注册Handler");
 	}
 
 	private void initActionBar() {
@@ -141,7 +156,7 @@ public class Login extends BaseActivity {
 		getSupportActionBar().setDisplayShowTitleEnabled(true);
 		getSupportActionBar().setDisplayShowHomeEnabled(true);
 		getSupportActionBar().setTitle("登录");
-		
+
 		getSupportActionBar().hide();
 	}
 
@@ -442,6 +457,7 @@ public class Login extends BaseActivity {
 
 		inputUserName = etUserName.getText().toString().trim();
 		inputPassword = etPassword.getText().toString().trim();
+		String imsi = Utils.getIMSI(Login.this);
 
 		if (inputUserName == null || inputUserName.equals("") || inputPassword == null
 				|| inputPassword.equals("")) {
@@ -452,7 +468,6 @@ public class Login extends BaseActivity {
 			return;
 		}
 		// 请求服务器进行登录验证
-		String imsi = Utils.getIMSI(Login.this);
 		webRequestManager.loginVarification(inputUserName, inputPassword, imsi);
 	}
 
