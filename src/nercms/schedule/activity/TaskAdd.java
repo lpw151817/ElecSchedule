@@ -171,9 +171,6 @@ public class TaskAdd extends BaseActivity {
 	// 任务ID，在onCreate()中进行初始化
 	private String taskID;
 
-	// 附件上传、下载异步类
-	private HttpUploadTask uploadTask;
-
 	// 附件上传成功计数器
 	private int successCounter = 0;
 
