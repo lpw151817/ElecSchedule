@@ -110,6 +110,13 @@
 
             <!-- 附件展示区域 -->
 
+            <TextView
+                android:id="@+id/upload_status_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="40dip"
+                android:layout_marginLeft="20dp"
+                android:gravity="center_vertical" />
+
             <LinearLayout
                 android:id="@+id/showAttathLayout"
                 android:layout_width="match_parent"
@@ -128,7 +135,6 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal" />
             </LinearLayout>
-
         </LinearLayout>
     </ScrollView>
 

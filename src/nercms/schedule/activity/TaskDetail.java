@@ -161,6 +161,7 @@ public class TaskDetail extends BaseActivity {
 
 	// 时间选择控件，选中时间的全局变量
 	private String currentSelectTime;
+	
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

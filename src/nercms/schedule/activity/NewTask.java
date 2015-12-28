@@ -3,16 +3,21 @@ package nercms.schedule.activity;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import nercms.schedule.R;
+import nercms.schedule.utils.LocalConstant;
 import nercms.schedule.utils.Utils;
 import nercms.schedule.view.FixedGridLayout;
 import nercms.schedule.view.PlayVideo;
 import nercms.schedule.view.RecordButton;
 import nercms.schedule.view.RoundAngleImageView;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -25,10 +30,15 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -37,12 +47,20 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.wxapp.service.handler.MessageHandlerManager;
+import android.wxapp.service.jerry.model.normal.NormalServerResponse;
+import android.wxapp.service.request.Contants;
+import android.wxapp.service.util.Constant;
+import android.wxapp.service.util.HttpDownloadTask;
+import android.wxapp.service.util.HttpUploadTask;
 
 /**
  * @author chen
@@ -102,6 +120,22 @@ public class NewTask extends Activity {
 	// 显示大图对话框
 	private Dialog imageDialog;
 	
+	//发送按钮
+	private Button mSend;
+	
+	// 附件集
+	private ArrayList<NewTask.Media> mediaList = new ArrayList<NewTask.Media>();
+	
+	//上传进度
+	private TextView mProgress;
+	
+	private Handler handler;
+	
+	//上传的附件名称列表
+	private List<String> fileNameList;
+	
+	private int count;//上传附件的个数
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -136,8 +170,114 @@ public class NewTask extends Activity {
 
 		System.out.println("width:" + width);
 		System.out.println("height:" + height);
+		
+		mSend = (Button) findViewById(R.id.fasong);//点击发送按钮上传附件
+		mProgress = (TextView) findViewById(R.id.upload_status_textview);
+		mSend.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				attachmentUploadRequest();
+			}
+		});
+		
+		initHandler();
 
 	}
+	
+	
+	
+	/**
+	 * 附件上传
+	 */
+	private void attachmentUploadRequest() {
+		if (!isNetworkAvailable(NewTask.this)){
+			Toast.makeText(NewTask.this, "网络不可用", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		
+		fileNameList = new ArrayList<String>();
+		String fileName = null;//上传的文件名
+		
+		count = mediaIndex;
+		
+		NewTask.Media media;
+		for (int i = 0; i < mediaIndex; i++) {
+			media = mediaList.get(i);
+
+			String mediaPath = media.getMediaUrl();// 媒体文件的本地路径，用户附件上传时
+			String uploadUrl = LocalConstant.FILE_SERVER_ATTACH_URL;
+			
+			fileName = mediaPath.substring(mediaPath.lastIndexOf(File.separator)+1);
+			fileNameList.add(fileName);
+			
+			System.out.println("mediaPath : " + mediaPath);
+			// 开启上传
+			new HttpUploadTask(mProgress, this).execute(mediaPath, uploadUrl);
+		}
+//		
+//		System.out.println("filename :"+fileNameList.toString());
+//		
+		
+		
+		
+	}
+
+	// 2014-5-21 WeiHao
+		@SuppressLint("HandlerLeak")
+		private void initHandler() {
+			handler = new Handler() {
+
+				@Override
+				public void handleMessage(Message msg) {
+
+					switch (msg.what) {
+					case Constant.FILE_UPLOAD_SUCCESS:
+
+						count--;
+						Log.i("TAG", "count : " + count);
+						if (count == 0){
+							
+							Intent intent = new Intent(NewTask.this, ShowDownLoad.class);
+							intent.putExtra("name", (Serializable) fileNameList);
+							startActivity(intent);
+							finish();
+						}
+						
+						break;
+					case Constant.FILE_UPLOAD_FAIL:
+						break;
+					default:
+						break;
+					}
+				}
+
+			};
+
+			MessageHandlerManager.getInstance().register(handler, Constant.FILE_UPLOAD_FAIL, "NewTask");
+			MessageHandlerManager.getInstance().register(handler, Constant.FILE_UPLOAD_SUCCESS,
+					"NewTask");
+		}
+	
+	
+	 public static boolean isNetworkAvailable(Context context) {  
+	        ConnectivityManager connectivity = (ConnectivityManager) context  
+	                .getSystemService(Context.CONNECTIVITY_SERVICE);  
+	        if (connectivity == null) {  
+	        } else {  
+	            NetworkInfo[] info = connectivity.getAllNetworkInfo();  
+	            if (info != null) {  
+	                for (int i = 0; i < info.length; i++) {  
+	                    if (info[i].getState() == NetworkInfo.State.CONNECTED) {  
+	                        return true;  
+	                    }  
+	                }  
+	            }  
+	        }  
+	        return false;  
+	    }  
+
+
 
 	private View.OnClickListener click = new View.OnClickListener() {
 
@@ -146,6 +286,7 @@ public class NewTask extends Activity {
 			initAttachPickBtn();
 		}
 	};
+
 
 	/**
 	 * 附件上传按钮响应事件方法
@@ -260,7 +401,10 @@ public class NewTask extends Activity {
 				// 显示所录制视频
 				Uri uri = Uri.fromFile(file);
 				int mediaID = mediaIndex++;
-
+				
+				String videoName = videopath.substring(videopath.lastIndexOf(File.separator)+1);
+				System.out.println("videoName: "+videoName);
+				mediaList.add(new Media(Utils.MEDIA_TYPE_VIDEO, videoName, videopath));
 				// 存储文件的路径
 				index_originalPath_Map.put(mediaID, videopath);
 				loadMedia(imageContainer, mediaID, videoThumbnailBitmap, uri,
@@ -282,6 +426,10 @@ public class NewTask extends Activity {
 //					Utils.getBitMapFromRes(selectimagepath, selectThumbnailUri);
 
 					File file1 = new File(selectThumbnailUri);
+					
+					String selectImageName = selectimagepath.substring(selectimagepath.lastIndexOf(File.separator)+1);
+					System.out.println("selectImageName: "+selectImageName);
+					mediaList.add(new Media(Utils.MEDIA_TYPE_IMAGE, selectImageName, selectimagepath));
 
 					// 显示所录制视频
 					Uri uri1 = Uri.fromFile(file1);
@@ -313,6 +461,10 @@ public class NewTask extends Activity {
 				// Bitmap imageThumbnailBitmap =
 				// BitmapFactory.decodeFile(mImagePath);
 				File file2 = new File(thumbnailUri);
+				
+				String captureImageName = mImagePath.substring(mImagePath.lastIndexOf(File.separator)+1);
+				System.out.println("captureImageName: "+captureImageName);
+				mediaList.add(new Media(Utils.MEDIA_TYPE_IMAGE, captureImageName, mImagePath));
 
 				Uri uri2 = Uri.fromFile(file2);
 				int mediaID2 = mediaIndex++;
@@ -339,6 +491,10 @@ public class NewTask extends Activity {
 				
 				System.out.println("audiopath: "+ audiopath);
 				File file = new File(audiopath);
+				
+				String captureAudioName = audiopath.substring(audiopath.lastIndexOf(File.separator)+1);
+				System.out.println("captureAudioName: "+captureAudioName);
+				mediaList.add(new Media(Utils.MEDIA_TYPE_AUDIO, captureAudioName, audiopath));
 
 				Uri uri = Uri.fromFile(file);
 				int mediaID = mediaIndex++;
@@ -801,5 +957,44 @@ public class NewTask extends Activity {
 		Utils.delAllFile(fileFolder);
 		super.onBackPressed();
 	}
+
+	// 媒体类
+		private class Media {
+			private int mediaType;
+			private String mediaName;
+			private String mediaUrl;
+
+			public Media(int mediaType, String mediaName, String mediaUrl) {
+				super();
+				this.mediaType = mediaType;
+				this.mediaName = mediaName;
+				this.mediaUrl = mediaUrl;
+			}
+
+			public int getMediaType() {
+				return mediaType;
+			}
+
+			public void setMediaType(int mediaType) {
+				this.mediaType = mediaType;
+			}
+
+			public String getMediaName() {
+				return mediaName;
+			}
+
+			public void setMediaName(String mediaName) {
+				this.mediaName = mediaName;
+			}
+
+			public String getMediaUrl() {
+				return mediaUrl;
+			}
+
+			public void setMediaUrl(String mediaUrl) {
+				this.mediaUrl = mediaUrl;
+			}
+
+		}
 
 }
