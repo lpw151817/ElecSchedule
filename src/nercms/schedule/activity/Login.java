@@ -193,7 +193,8 @@ public class Login extends BaseActivity {
 
 				case Constants.LOGIN_UPDATE_SUCCESS:
 					dismissProgressDialog();
-					// TODO Ò³ÃæÌø×ª
+					Intent intent = new Intent(Login.this, Main.class);
+					Login.this.startActivity(intent);
 					break;
 
 				case Constants.LOGIN_UPDATE_SAVE_FAIL:

@@ -10,10 +10,16 @@ import java.util.Date;
 import java.util.List;
 
 import com.actionbarsherlock.view.MenuItem;
+import com.nercms.Push;
 
+import android.R.integer;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,14 +30,21 @@ import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.wxapp.service.AppApplication;
+import android.wxapp.service.elec.model.LoginResponse;
+import android.wxapp.service.elec.request.Constants;
 import android.wxapp.service.elec.request.WebRequestManager;
+import android.wxapp.service.jerry.model.normal.NormalServerResponse;
+import android.wxapp.service.util.MySharedPreference;
 import nercms.schedule.R;
 import nercms.schedule.dateSelect.NumericWheelAdapter;
 import nercms.schedule.dateSelect.OnWheelChangedListener;
 import nercms.schedule.dateSelect.WheelView;
+import nercms.schedule.utils.MyLog;
 import nercms.schedule.utils.Utils;
 
 public class PlanAdd extends BaseActivity implements OnClickListener {
+
+	private Handler handler;
 
 	RadioGroup tq_rg, lb_rg, tsxq_rg, ssdd_rg, tdlx_rg;
 	RadioButton tx_q, tq_yin, tq_yu, lb_jhgz, lb_lsgz, lb_gzqx, lb_qt, tsxq_t, tsxq_w, ssdd_s,
@@ -42,17 +55,60 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 	CheckBox sfxydb, sftd;
 
 	WebRequestManager webRequest;
+	int enterType;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_plan_add);
 
+		enterType = getIntent().getIntExtra("enterType", 1);
+
 		// 初始化ActionBar
 		initActionBar();
 		initView();
 
 		webRequest = new WebRequestManager(AppApplication.getInstance(), PlanAdd.this);
+
+		initHandler();
+	}
+
+	private void startActivity() {
+		Intent intent = new Intent(this, MeiRiJiHua.class);
+		intent.putExtra("enterType", enterType);
+		startActivity(intent);
+	}
+
+	private void initHandler() {
+		handler = new Handler() {
+
+			@Override
+			public void handleMessage(Message msg) {
+
+				switch (msg.what) {
+				case Constants.LOGIN_SUCCESS:
+
+					break;
+
+				default:
+					Log.e(PlanAdd.class.getName(), msg.what + "<<<<未处理");
+					break;
+				}
+
+			}
+		};
+		// 注册Handler
+		registHandler();
+	}
+
+	private void registHandler() {
+
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		// TODO unregistHandler
 	}
 
 	private void initView() {
@@ -117,13 +173,13 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 	 * @return
 	 */
 	private boolean checkMustInput() {
-		return TextUtils.isEmpty(xmmc.getText().toString())
-				&& TextUtils.isEmpty(zygznr.getText().toString())
-				&& TextUtils.isEmpty(gzfzr.getText().toString())
-				&& TextUtils.isEmpty(jhkssj.getText().toString())
-				&& TextUtils.isEmpty(jhjssj.getText().toString())
-				&& TextUtils.isEmpty(ssdw.getText().toString())
-				&& TextUtils.isEmpty(rs.getText().toString()) && (lb_gzqx.isChecked()
+		return !TextUtils.isEmpty(xmmc.getText().toString())
+				&& !TextUtils.isEmpty(zygznr.getText().toString())
+				&& !TextUtils.isEmpty(gzfzr.getText().toString())
+				&& !TextUtils.isEmpty(jhkssj.getText().toString())
+				&& !TextUtils.isEmpty(jhjssj.getText().toString())
+				&& !TextUtils.isEmpty(ssdw.getText().toString())
+				&& !TextUtils.isEmpty(rs.getText().toString()) && (lb_gzqx.isChecked()
 						|| lb_jhgz.isChecked() || lb_lsgz.isChecked() || lb_qt.isChecked());
 	}
 
@@ -208,7 +264,7 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 						ssdw.getText().toString(), rs.getText().toString(),
 						bz.getText().toString());
 			} else {
-				showAlterDialog("错误", "请确认必填项填写完整!");
+				showAlterDialog("错误", "请确认必填项填写完整!", R.drawable.login_error_icon, "确定", null);
 			}
 			break;
 		case R.id.gongzuofuzeren_bt:

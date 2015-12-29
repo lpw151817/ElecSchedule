@@ -10,5 +10,6 @@
     <string name="title_activity_xian_chang_si">XianChangSi</string>
     <string name="title_activity_xian_chang_add">XianChangAdd</string>
     <string name="title_activity_mei_ri_ji_hua">每日计划</string>
+    <string name="title_activity_xian_chang_upload">附件上传</string>
 
 </resources>

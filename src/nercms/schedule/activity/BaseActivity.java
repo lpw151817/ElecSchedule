@@ -6,6 +6,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 import android.wxapp.service.util.MySharedPreference;
@@ -14,6 +15,20 @@ import com.actionbarsherlock.app.SherlockActivity;
 
 public class BaseActivity extends SherlockActivity {
 	protected ProgressDialog mProgressDialog;
+
+	protected void iniActionBar(Boolean isUp, String title) {
+		if (isUp != null) {
+			if (isUp) {
+				getSupportActionBar().setDisplayShowCustomEnabled(false);
+				getSupportActionBar().setDisplayShowTitleEnabled(true);
+				getSupportActionBar().setDisplayShowHomeEnabled(true);
+				getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+			}
+		}
+		if (!TextUtils.isEmpty(title)) {
+			getSupportActionBar().setTitle(title);
+		}
+	}
 
 	protected String getUserId() {
 		return MySharedPreference.get(this, MySharedPreference.USER_ID, null);
@@ -58,7 +73,7 @@ public class BaseActivity extends SherlockActivity {
 	protected void showAlterDialog(String title, String content, Integer icon, String pB,
 			OnClickListener pbListener, String nB, OnClickListener nbListener) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		
+
 		builder.setTitle(title);
 		if (content != null)
 			builder.setMessage(content);

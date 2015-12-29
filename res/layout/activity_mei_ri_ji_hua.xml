@@ -12,8 +12,20 @@
         android:id="@+id/listView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/kaishirenwu_bt"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true" >
+
     </ListView>
+
+    <Button
+        android:id="@+id/kaishirenwu_bt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="5dp"
+        android:background="@drawable/btn_style_green"
+        android:text="开始任务"
+        android:textColor="#ffffff" />
 
 </RelativeLayout>

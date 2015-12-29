@@ -19,6 +19,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:src="@android:drawable/btn_default" />
+        android:src="@drawable/mm_submenu_normal" />
 
 </RelativeLayout>

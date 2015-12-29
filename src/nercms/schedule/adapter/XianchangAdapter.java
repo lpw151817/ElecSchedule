@@ -19,7 +19,6 @@ import android.wxapp.service.jerry.model.affair.QueryAffairListResponseAffairs;
 import android.wxapp.service.jerry.model.person.GetPersonInfoResponse;
 import nercms.schedule.R;
 import nercms.schedule.activity.TaskDetail;
-import nercms.schedule.adapter.TaskListViewAdapter.Holder;
 import nercms.schedule.utils.Utils;
 
 public class XianchangAdapter extends BaseAdapter {

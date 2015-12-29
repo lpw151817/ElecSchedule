@@ -84,9 +84,6 @@
                 android:background="@drawable/edit_text"
                 android:hint="请在此输入..."
                 android:singleLine="true" />
-
-            <TextView>
-            </TextView>
         </LinearLayout>
 
         <LinearLayout

@@ -24,6 +24,7 @@ public class XianChangSi extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_xian_chang_si);
 
+		type = getIntent().getIntExtra("enterType", 1);
 		initActionBar();
 
 		mListView = (ListView) findViewById(R.id.listView1);

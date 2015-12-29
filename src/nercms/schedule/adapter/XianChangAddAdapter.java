@@ -15,9 +15,31 @@ public class XianChangAddAdapter extends BaseAdapter {
 	String[] ss;
 	int[] hasContent;
 
-	public XianChangAddAdapter(Context c, int type, int[] hasContent) {
+	/**
+	 * 需要修改是否有内容的标志位
+	 * 
+	 * @param position
+	 *            修改第几项，从0开始
+	 * @param hasContent
+	 *            1表示有内容，0表示无内容
+	 */
+	public void setContent(int position, int hasContent) {
+		if (position > -1 && position < this.hasContent.length) {
+			this.hasContent[position] = hasContent;
+			this.notifyDataSetChanged();
+		}
+	}
+
+	/**
+	 * 
+	 * @param c
+	 * @param type
+	 *            1：作业现场，2：操作现场，3：故障紧急
+	 * @param hasContent
+	 *            标记每一项是否有内容，1：有，0：没有
+	 */
+	public XianChangAddAdapter(Context c, int type) {
 		this.mContext = c;
-		this.hasContent = hasContent;
 		if (type == 1) {
 			ss = c.getResources().getStringArray(R.array.zuoyexianchang_si_data);
 		} else if (type == 2) {
@@ -25,6 +47,10 @@ public class XianChangAddAdapter extends BaseAdapter {
 		} else if (type == 3) {
 			ss = c.getResources().getStringArray(R.array.guzhangjinji_si_data);
 		}
+		this.hasContent = new int[ss.length];
+		// 初始化
+		for (int i = 0; i < hasContent.length; i++)
+			this.hasContent[i] = 0;
 	}
 
 	@Override
