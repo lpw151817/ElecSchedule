@@ -13,6 +13,7 @@ import com.actionbarsherlock.view.MenuItem;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,6 +23,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.wxapp.service.AppApplication;
+import android.wxapp.service.elec.request.WebRequestManager;
 import nercms.schedule.R;
 import nercms.schedule.dateSelect.NumericWheelAdapter;
 import nercms.schedule.dateSelect.OnWheelChangedListener;
@@ -38,6 +41,8 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 	Button qrtj;
 	CheckBox sfxydb, sftd;
 
+	WebRequestManager webRequest;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -46,6 +51,8 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 		// 初始化ActionBar
 		initActionBar();
 		initView();
+
+		webRequest = new WebRequestManager(AppApplication.getInstance(), PlanAdd.this);
 	}
 
 	private void initView() {
@@ -104,6 +111,22 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 		qrtj.setOnClickListener(this);
 	}
 
+	/**
+	 * 检查必填项是否填完
+	 * 
+	 * @return
+	 */
+	private boolean checkMustInput() {
+		return TextUtils.isEmpty(xmmc.getText().toString())
+				&& TextUtils.isEmpty(zygznr.getText().toString())
+				&& TextUtils.isEmpty(gzfzr.getText().toString())
+				&& TextUtils.isEmpty(jhkssj.getText().toString())
+				&& TextUtils.isEmpty(jhjssj.getText().toString())
+				&& TextUtils.isEmpty(ssdw.getText().toString())
+				&& TextUtils.isEmpty(rs.getText().toString()) && (lb_gzqx.isChecked()
+						|| lb_jhgz.isChecked() || lb_lsgz.isChecked() || lb_qt.isChecked());
+	}
+
 	private void initActionBar() {
 		getSupportActionBar().setDisplayShowCustomEnabled(false);
 		getSupportActionBar().setDisplayShowTitleEnabled(true);
@@ -125,7 +148,68 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.tijiao:
-			// TODO 验证输入
+			if (checkMustInput()) {
+				String weather = null;
+				if (tq_yin.isChecked()) {
+					weather = "阴";
+				} else if (tq_yu.isChecked()) {
+					weather = "雨";
+				} else if (tx_q.isChecked()) {
+					weather = "晴";
+				}
+
+				String category = null;
+				if (lb_gzqx.isChecked()) {
+					category = "故障抢修";
+				} else if (lb_jhgz.isChecked()) {
+					category = "计划工作";
+				} else if (lb_lsgz.isChecked()) {
+					category = "临时工作";
+				} else if (lb_qt.isChecked()) {
+					category = "其他";
+				}
+
+				String special = null;
+				if (tsxq_t.isChecked()) {
+					special = "T";
+				} else if (tsxq_w.isChecked()) {
+					special = "无";
+				}
+
+				String domain = null;
+				if (ssdd_d.isChecked()) {
+					domain = "地";
+				} else if (ssdd_p.isChecked()) {
+					domain = "配";
+				} else if (ssdd_qt.isChecked()) {
+					domain = "其他";
+				} else if (ssdd_s.isChecked()) {
+					domain = "省";
+				} else if (ssdd_x.isChecked()) {
+					domain = "县";
+				}
+
+				String cut_type = null;
+				if (tdlx_jhtd.isChecked()) {
+					cut_type = "计划停电";
+				} else if (tdlx_lstd.isChecked()) {
+					cut_type = "临时停电";
+				} else if (tdlx_qt.isChecked()) {
+					cut_type = "其他";
+				}
+
+				// TODO 发送网络请求
+				webRequest.createPlanTask(PlanAdd.this, weather, xmmc.getText().toString(),
+						tdfw.getText().toString(), tdyxqy.getText().toString(),
+						zygznr.getText().toString(), gzfzr.getText().toString(),
+						jhkssj.getText().toString(), jhjssj.getText().toString(), category,
+						sfxydb.isChecked(), special, ysgdwld.getText().toString(),
+						sc.getText().toString(), domain, sftd.isChecked(), cut_type,
+						ssdw.getText().toString(), rs.getText().toString(),
+						bz.getText().toString());
+			} else {
+				showAlterDialog("错误", "请确认必填项填写完整!");
+			}
 			break;
 		case R.id.gongzuofuzeren_bt:
 
