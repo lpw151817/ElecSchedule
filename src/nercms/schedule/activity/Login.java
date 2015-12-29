@@ -1,30 +1,21 @@
 package nercms.schedule.activity;
 
 import java.io.File;
-import java.text.BreakIterator;
-
-import org.acra.collector.CrashReportData;
 
 import nercms.schedule.R;
-import nercms.schedule.service.UpdateService;
-import nercms.schedule.utils.LocalConstant;
 import nercms.schedule.utils.MyLog;
 import nercms.schedule.utils.Utils;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
-import android.text.TextUtils.EllipsizeCallback;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -35,43 +26,21 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.wxapp.service.AppApplication;
 import android.wxapp.service.dao.DAOFactory;
-import android.wxapp.service.dao.DatabaseHelper;
-import android.wxapp.service.dao.PersonDao;
 import android.wxapp.service.handler.MessageHandlerManager;
+import android.wxapp.service.elec.model.LoginResponse;
 import android.wxapp.service.jerry.model.normal.NormalServerResponse;
-import android.wxapp.service.jerry.model.person.GetOrgCodePersonResponse;
-import android.wxapp.service.jerry.model.person.GetOrgCodeResponse;
 import android.wxapp.service.jerry.model.person.GetPersonInfoResponse;
-import android.wxapp.service.jerry.model.person.LoginResponse;
-import android.wxapp.service.request.Contants;
-import android.wxapp.service.request.WebRequestManager;
-import android.wxapp.service.thread.SaveAffairThread;
-import android.wxapp.service.thread.SaveAffairUpdateThread;
-import android.wxapp.service.thread.SaveConferenceThread;
-import android.wxapp.service.thread.SaveMessageUpdateThread;
-import android.wxapp.service.thread.SaveOrgCodePersonThread;
-import android.wxapp.service.thread.SaveOrgCodeThread;
-import android.wxapp.service.util.Constant;
+import android.wxapp.service.elec.request.Constants;
+import android.wxapp.service.elec.request.WebRequestManager;
 import android.wxapp.service.util.MySharedPreference;
 
-import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.nercms.ICallBacks;
 import com.nercms.Push;
 
 /**
- * @author jiaocuina@gmail.com
- * @date 2014-03-02
- * @version V1.0
- * @description 输入用户名密码 登录系统
- *
- * @version V1.1
- * @author WEIHAO
- * @date 2014-6-25
- * @new 用户登录一系列的逻辑修正； 加载进度条显示，联系人下载保存完成后跳转
- * @version V1.3
- * @new 登录成功后，注册MQTT
+ * 
+ * @author J 2015-12-29
  */
 public class Login extends BaseActivity {
 
@@ -112,43 +81,29 @@ public class Login extends BaseActivity {
 		// etPassword.setText(pwd);
 
 		btnLogin = (Button) findViewById(R.id.login_login_btn);
+
+		// 默认显示上次登录的用户ID
+		etUserName.setText(MySharedPreference.get(Login.this, MySharedPreference.USER_NAME, ""));
+
+		// 如果用户名为空，则聚焦用户名，否则聚焦密码
+		if (TextUtils.isEmpty(etUserName.getText().toString())) {
+			etUserName.requestFocus();
+		} else {
+			etPassword.requestFocus();
+		}
+
 		btnLogin.setOnClickListener(new OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				inputUserName = etUserName.getText().toString().trim();
-				inputPassword = etPassword.getText().toString().trim();
-				String imsi = Utils.getIMSI(Login.this);
-				new android.wxapp.service.elec.request.WebRequestManager(
-						AppApplication.getInstance(), Login.this).login(inputUserName,
-								inputPassword, imsi);
+			public void onClick(View arg0) {
+				MyLog.i(TAG, "登录按钮点击");
+				login_mainschedule();
 			}
 		});
 
-		// // 默认显示上次登录的用户ID
-		// etUserName.setText(MySharedPreference.get(Login.this,
-		// MySharedPreference.USER_NAME, ""));
-		//
-		// // 如果用户名为空，则聚焦用户名，否则聚焦密码
-		// if (TextUtils.isEmpty(etUserName.getText().toString())) {
-		// etUserName.requestFocus();
-		// } else {
-		// etPassword.requestFocus();
-		// }
-		//
-		// btnLogin.setOnClickListener(new OnClickListener() {
-		//
-		// @Override
-		// public void onClick(View arg0) {
-		// MyLog.i(TAG, "登录按钮点击");
-		// login_mainschedule();
-		// }
-		// });
-		//
-		// // 注册或者重新注册Handler
-		// initHandler();
-		// Log.v("Login", "OnResume,注册或者重新注册Handler");
+		// 注册或者重新注册Handler
+		initHandler();
+		Log.v("Login", "OnResume,注册或者重新注册Handler");
 	}
 
 	private void initActionBar() {
@@ -194,7 +149,7 @@ public class Login extends BaseActivity {
 
 				switch (msg.what) {
 				// 登录成功
-				case Constant.LOGIN_REQUEST_SUCCESS:
+				case Constants.LOGIN_SUCCESS:
 
 					// 接收用户ID
 					String userID = ((LoginResponse) msg.obj).getUid();
@@ -216,30 +171,14 @@ public class Login extends BaseActivity {
 					// }
 					// }).start();
 
-					// 写一个Timer定时请求服务器是否有更新数据
-					getOrgInfoUpdate();
-					getAffairUpdate();
-					getMessageUpdate();
-					// conference的更新操作
-					getConferenceUpdate();
-					// group的更新
-					getGroupUpdate();
-					// // TODO gps update
-					// getGpsUpdate();
-
-					// 获取个人信息数据
-					GetPersonInfoResponse mPersonInfo = DAOFactory.getInstance()
-							.getPersonDao(Login.this).getCustomer();
-					// 如果没有数据，则先进行网络请求
-					if (mPersonInfo == null) {
-						webRequestManager.GetPersonInfo(getUserId());
-					}
+					webRequestManager.loginUpdate(Login.this);
 
 					// 写日志
 					MyLog.i(TAG, "用户：" + userID + " 登陆成功");
 					break;
 				// 登录 失败
-				case Constant.LOGIN_REQUEST_FAIL:
+				case Constants.LOGIN_FAIL:
+				case Constants.LOGIN_UPDATE_FAIL:
 					MyLog.i(TAG, "登录失败");
 					dismissProgressDialog();
 					if (msg.obj != null) {
@@ -251,83 +190,16 @@ public class Login extends BaseActivity {
 								null);
 					}
 					break;
-				// 保存orgcode失败
-				case Constant.SAVE_ORG_CODE_FAIL:
-					MyLog.e(TAG, "保存orgcode失败");
-					break;
-				// 保存orgcode成功
-				case Constant.SAVE_ORG_CODE_SUCCESS:
-					MyLog.e(TAG, "保存orgcode成功");
-					isGetOrgCode = true;
-					startInMain();
-					break;
-				// 获取组织结点失败
-				case Constant.QUERY_ORG_NODE_REQUEST_FAIL:
-					MyLog.i(TAG, "获取结点失败");
+
+				case Constants.LOGIN_UPDATE_SUCCESS:
 					dismissProgressDialog();
-					showAlterDialog("获取结点失败",
-							Utils.getErrorMsg(((NormalServerResponse) msg.obj).getEc()),
-							R.drawable.login_error_icon);
+					// TODO 页面跳转
 					break;
-				// 存储orgperson成功
-				case Constant.SAVE_ORG_PERSON_SUCCESS:
-					MyLog.e(TAG, "保存orgperson成功");
-					isGetOrgPerson = true;
-					startInMain();
-					break;
-				// 存储orgperson失败
-				case Constant.SAVE_ORG_PERSON_FAIL:
-					MyLog.e(TAG, "保存orgperson失败");
-					break;
-				// 获取orgperson失败
-				case Constant.QUERY_ORG_PERSON_REQUEST_FAIL:
-					showAlterDialog("获取orgperson失败",
-							Utils.getErrorMsg(((NormalServerResponse) msg.obj).getEc()),
-							R.drawable.login_error_icon);
-					break;
-				// 保存联系人完成
-				case Constant.SAVE_ALL_PERSON_SUCCESS:
-					// 5.跳转到主界面
-					startInMain();
-					break;
-				// 保存事务成功
-				case Constant.SAVE_TASK_SUCCESS:
-					isGetAffair = true;
-					startInMain();
-					break;
-				// 保存消息成功
-				case Constant.SAVE_MESSAGE_SUCCESS:
-					isGetMessage = true;
-					startInMain();
-					break;
-				case Constant.UPDATE_MESSAGE_REQUEST_FAIL:
+
+				case Constants.LOGIN_UPDATE_SAVE_FAIL:
 					dismissProgressDialog();
-					Toast.makeText(Login.this, "Message Update Failed", Toast.LENGTH_LONG).show();
+					showAlterDialog("登录失败", "存储失败", R.drawable.login_error_icon, "确定", null);
 					break;
-				case Constant.CONFERENCE_SAVE_SUCCESS:
-					isGetConference = true;
-					startInMain();
-					break;
-				case Constant.CONFERENCE_SAVE_FAIL:
-					dismissProgressDialog();
-					Toast.makeText(Login.this, "Conference Update Failed", Toast.LENGTH_LONG)
-							.show();
-					break;
-				case Constant.GROUP_SAVE_SECCESS:
-					isGetGroup = true;
-					startInMain();
-					break;
-				case Constant.GROUP_SAVE_FAIL:
-					dismissProgressDialog();
-					Toast.makeText(Login.this, "Group Update Failed", Toast.LENGTH_LONG).show();
-					break;
-				case Constant.SAVE_GPS_SECCESS:
-					isGetGps = true;
-					startInMain();
-					break;
-				case Constant.SAVE_GPS_FAIL:
-					dismissProgressDialog();
-					Toast.makeText(Login.this, "GPS Update Failed", Toast.LENGTH_LONG).show();
 				default:
 					Log.e("LoginActivity", msg.what + "<<<<未处理");
 					break;
@@ -337,99 +209,6 @@ public class Login extends BaseActivity {
 		};
 		// 注册Handler
 		registHandler();
-	}
-
-	// TODO 验证需要更改
-	private void startInMain() {
-		if (isGetAffair && isGetMessage && isGetOrgCode && isGetOrgPerson && isGetConference
-				&& isGetGroup && isGetGps) {
-			dismissProgressDialog();
-			startActivity(new Intent(Login.this, Main.class));
-			// 打开定时更新的service
-			// // TODO 总是返回所有数据，而不是根据时间来返回
-			// startService(new Intent(Login.this, UpdateService.class));
-			Login.this.finish();
-		}
-	}
-
-	boolean isGetOrgCode = false;
-	boolean isGetOrgPerson = false;
-	boolean isGetAffair = false;
-	boolean isGetMessage = false;
-	boolean isGetConference = false;
-	boolean isGetGroup = false;
-	// TODO
-	boolean isGetGps = true;
-
-	private void getGpsUpdate() {
-		if (MySharedPreference.get(this, MySharedPreference.LAST_UPDATE_GPS_TIMESTAMP,
-				null) == null) {
-			webRequestManager.getGpsUpdateRequest("1");
-		} else {
-			isGetGroup = true;
-			startInMain();
-		}
-	}
-
-	private void getGroupUpdate() {
-		if (MySharedPreference.get(this, MySharedPreference.LAST_UPDATE_GROUP_TIMESTAMP,
-				null) == null)
-			webRequestManager.getGroupUpdateRequest("1");
-		else {
-			isGetGroup = true;
-			startInMain();
-		}
-	}
-
-	// 获取组织相关信息并存入数据库
-	private void getOrgInfoUpdate() {
-		if (MySharedPreference.get(this, MySharedPreference.LAST_UPDATE_ORGCODE_TIMESTAMP,
-				null) == null)
-			webRequestManager.getOrgCodeUpdate();
-		else {
-
-			isGetOrgCode = true;
-			startInMain();
-		}
-		if (MySharedPreference.get(this, MySharedPreference.LAST_UPDATE_ORGPERSON_TIMESTAMP,
-				null) == null)
-			webRequestManager.getOrgPersonUpdate();
-		else {
-			isGetOrgPerson = true;
-			startInMain();
-		}
-	}
-
-	private void getAffairUpdate() {
-		if (MySharedPreference.get(this, MySharedPreference.LAST_UPDATE_TASK_TIMESTAMP,
-				null) == null) {
-			// 获取全部数据
-			webRequestManager.getAffairUpdate("1");
-		} else {
-			isGetAffair = true;
-			startInMain();
-		}
-	}
-
-	private void getMessageUpdate() {
-		if (MySharedPreference.get(this, MySharedPreference.LAST_UPDATE_MESSAGE_TIMESTAMP,
-				null) == null)
-			// 获取全部数据
-			webRequestManager.getMessageUpdate("1");
-		else {
-			isGetMessage = true;
-			startInMain();
-		}
-	}
-
-	private void getConferenceUpdate() {
-		if (MySharedPreference.get(this, MySharedPreference.LAST_UPDATE_CONFERENCE_TIMESTAMP,
-				null) == null) {
-			webRequestManager.updateConference("1");
-		} else {
-			isGetConference = true;
-			startInMain();
-		}
 	}
 
 	// 判断用户名与密码符合要求则登录成功
@@ -457,7 +236,6 @@ public class Login extends BaseActivity {
 
 		inputUserName = etUserName.getText().toString().trim();
 		inputPassword = etPassword.getText().toString().trim();
-		String imsi = Utils.getIMSI(Login.this);
 
 		if (inputUserName == null || inputUserName.equals("") || inputPassword == null
 				|| inputPassword.equals("")) {
@@ -467,13 +245,11 @@ public class Login extends BaseActivity {
 					.setTitle("登录错误").setMessage("帐号或者密码不能为空，\n请输入后再登录！").create().show();
 			return;
 		}
-		// 请求服务器进行登录验证
-		webRequestManager.loginVarification(inputUserName, inputPassword, imsi);
+		webRequestManager.login(inputUserName, inputPassword);
 	}
 
 	@Override
 	protected void onResume() {
-
 		super.onResume();
 	}
 
@@ -545,103 +321,19 @@ public class Login extends BaseActivity {
 
 	@Override
 	protected void onDestroy() {
-		// 注销Handler
-		MessageHandlerManager.getInstance().unregister(Constant.LOGIN_REQUEST_FAIL,
-				Contants.METHOD_PERSON_LOGIN);
-		MessageHandlerManager.getInstance().unregister(Constant.LOGIN_REQUEST_SUCCESS,
-				Contants.METHOD_PERSON_LOGIN);
-		MessageHandlerManager.getInstance().unregister(Constant.SAVE_ALL_PERSON_SUCCESS,
-				Contants.METHOD_PERSON_LOGIN);
-		MessageHandlerManager.getInstance().unregister(Constant.QUERY_ORG_NODE_REQUEST_SUCCESS,
-				Contants.METHOD_PERSON_GET_ORG_CODE);
-		MessageHandlerManager.getInstance().unregister(Constant.SAVE_ORG_CODE_SUCCESS,
-				SaveOrgCodeThread.TAG);
-		MessageHandlerManager.getInstance().unregister(Constant.SAVE_ORG_CODE_FAIL,
-				SaveOrgCodeThread.TAG);
-		MessageHandlerManager.getInstance().unregister(Constant.QUERY_ORG_NODE_REQUEST_FAIL,
-				Contants.METHOD_PERSON_GET_ORG_CODE);
-
-		MessageHandlerManager.getInstance().unregister(Constant.SAVE_ORG_PERSON_SUCCESS,
-				SaveOrgCodePersonThread.TAG);
-		MessageHandlerManager.getInstance().unregister(Constant.SAVE_ORG_PERSON_FAIL,
-				SaveOrgCodePersonThread.TAG);
-		MessageHandlerManager.getInstance().unregister(Constant.QUERY_ORG_PERSON_REQUEST_FAIL,
-				Contants.METHOD_PERSON_GET_ORG_PERSON);
-		MessageHandlerManager.getInstance().unregister(Constant.UPDATE_TASK_LIST_REQUEST_SUCCESS,
-				Contants.METHOD_AFFAIRS_UPDATE_LIST);
-		MessageHandlerManager.getInstance().unregister(Constant.SAVE_TASK_SUCCESS,
-				SaveAffairUpdateThread.TAG);
-		MessageHandlerManager.getInstance().unregister(Constant.SAVE_MESSAGE_SUCCESS,
-				SaveMessageUpdateThread.TAG);
-		MessageHandlerManager.getInstance().unregister(Constant.UPDATE_MESSAGE_REQUEST_FAIL,
-				Contants.METHOD_MESSAGE_UPDATE);
-		MessageHandlerManager.getInstance().unregister(Constant.CONFERENCE_SAVE_SUCCESS,
-				SaveConferenceThread.TAG);
-		MessageHandlerManager.getInstance().unregister(Constant.CONFERENCE_SAVE_FAIL,
-				SaveConferenceThread.TAG);
-		MessageHandlerManager.getInstance().unregister(Constant.GROUP_SAVE_SECCESS,
-				Contants.METHOD_GROUP_UPDATE);
-		MessageHandlerManager.getInstance().unregister(Constant.GROUP_SAVE_FAIL,
-				Contants.METHOD_GROUP_UPDATE);
-		MessageHandlerManager.getInstance().unregister(Constant.SAVE_GPS_SECCESS,
-				Contants.METHOD_GPS_UPDAET);
-		MessageHandlerManager.getInstance().unregister(Constant.SAVE_GPS_FAIL,
-				Contants.METHOD_GPS_UPDAET);
-		MessageHandlerManager.getInstance().unregister(Constant.QUERY_GPSS_REQUEST_FAIL,
-				Contants.METHOD_GPS_UPDAET);
 		Log.v("Login", "onDestroy,注册Handler");
 		super.onDestroy();
+		MessageHandlerManager.getInstance().unregister(Constants.LOGIN_SUCCESS,
+				LoginResponse.class.getName());
+		MessageHandlerManager.getInstance().unregister(Constants.LOGIN_FAIL,
+				LoginResponse.class.getName());
 	}
 
 	// 注册Handler
 	private void registHandler() {
-		// 登陆失败
-		MessageHandlerManager.getInstance().register(handler, Constant.LOGIN_REQUEST_FAIL,
-				Contants.METHOD_PERSON_LOGIN);
-		// 登陆成功
-		MessageHandlerManager.getInstance().register(handler, Constant.LOGIN_REQUEST_SUCCESS,
-				Contants.METHOD_PERSON_LOGIN);
-		MessageHandlerManager.getInstance().register(handler, Constant.SAVE_ALL_PERSON_SUCCESS,
-				Contants.METHOD_PERSON_LOGIN);
-
-		MessageHandlerManager.getInstance().register(handler,
-				Constant.QUERY_ORG_NODE_REQUEST_SUCCESS, Contants.METHOD_PERSON_GET_ORG_CODE);
-		MessageHandlerManager.getInstance().register(handler, Constant.SAVE_ORG_CODE_SUCCESS,
-				SaveOrgCodeThread.TAG);
-		MessageHandlerManager.getInstance().register(handler, Constant.SAVE_ORG_CODE_FAIL,
-				SaveOrgCodeThread.TAG);
-		MessageHandlerManager.getInstance().register(handler, Constant.QUERY_ORG_NODE_REQUEST_FAIL,
-				Contants.METHOD_PERSON_GET_ORG_CODE);
-
-		MessageHandlerManager.getInstance().register(handler,
-				Constant.QUERY_ORG_PERSON_REQUEST_SUCCESS, Contants.METHOD_PERSON_GET_ORG_PERSON);
-		MessageHandlerManager.getInstance().register(handler, Constant.SAVE_ORG_PERSON_SUCCESS,
-				SaveOrgCodePersonThread.TAG);
-		MessageHandlerManager.getInstance().register(handler, Constant.SAVE_ORG_PERSON_FAIL,
-				SaveOrgCodePersonThread.TAG);
-		MessageHandlerManager.getInstance().register(handler,
-				Constant.QUERY_ORG_PERSON_REQUEST_FAIL, Contants.METHOD_PERSON_GET_ORG_PERSON);
-		MessageHandlerManager.getInstance().register(handler,
-				Constant.UPDATE_TASK_LIST_REQUEST_SUCCESS, Contants.METHOD_AFFAIRS_UPDATE_LIST);
-		MessageHandlerManager.getInstance().register(handler, Constant.SAVE_TASK_SUCCESS,
-				SaveAffairUpdateThread.TAG);
-		MessageHandlerManager.getInstance().register(handler, Constant.SAVE_MESSAGE_SUCCESS,
-				SaveMessageUpdateThread.TAG);
-		MessageHandlerManager.getInstance().register(handler, Constant.UPDATE_MESSAGE_REQUEST_FAIL,
-				Contants.METHOD_MESSAGE_UPDATE);
-		MessageHandlerManager.getInstance().register(handler, Constant.CONFERENCE_SAVE_SUCCESS,
-				SaveConferenceThread.TAG);
-		MessageHandlerManager.getInstance().register(handler, Constant.CONFERENCE_SAVE_FAIL,
-				SaveConferenceThread.TAG);
-		MessageHandlerManager.getInstance().register(handler, Constant.GROUP_SAVE_SECCESS,
-				Contants.METHOD_GROUP_UPDATE);
-		MessageHandlerManager.getInstance().register(handler, Constant.GROUP_SAVE_FAIL,
-				Contants.METHOD_GROUP_UPDATE);
-		MessageHandlerManager.getInstance().register(handler, Constant.SAVE_GPS_SECCESS,
-				Contants.METHOD_GPS_UPDAET);
-		MessageHandlerManager.getInstance().register(handler, Constant.SAVE_GPS_FAIL,
-				Contants.METHOD_GPS_UPDAET);
-		MessageHandlerManager.getInstance().register(handler, Constant.QUERY_GPSS_REQUEST_FAIL,
-				Contants.METHOD_GPS_UPDAET);
+		MessageHandlerManager.getInstance().register(handler, Constants.LOGIN_SUCCESS,
+				LoginResponse.class.getName());
+		MessageHandlerManager.getInstance().register(handler, Constants.LOGIN_FAIL,
+				LoginResponse.class.getName());
 	}
 }
