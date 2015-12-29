@@ -3,6 +3,7 @@ package nercms.schedule.adapter;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
@@ -15,9 +16,11 @@ public class XianChangSiAdapter extends BaseAdapter {
 	int[] isRadio;
 	int[] isPhoto;
 	int[] isVideo;
+	int type;
 
 	public XianChangSiAdapter(Context c, int type) {
 		this.mContext = c;
+		this.type = type;
 		if (type == 1) {
 			ss = c.getResources().getStringArray(R.array.zuoyexianchang_si_data);
 			isRadio = c.getResources().getIntArray(R.array.zuoyexianchang_si_radio);
@@ -79,6 +82,23 @@ public class XianChangSiAdapter extends BaseAdapter {
 			holder.video.setVisibility(View.VISIBLE);
 		else
 			holder.video.setVisibility(View.GONE);
+
+		holder.photo.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+		holder.radio.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+
+			}
+		});
 
 		return convertView;
 	}
