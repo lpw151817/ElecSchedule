@@ -3,7 +3,6 @@ package nercms.schedule.activity;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,7 +37,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -48,18 +47,16 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Toast;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.wxapp.service.handler.MessageHandlerManager;
-import android.wxapp.service.jerry.model.normal.NormalServerResponse;
-import android.wxapp.service.request.Contants;
 import android.wxapp.service.util.Constant;
-import android.wxapp.service.util.HttpDownloadTask;
 import android.wxapp.service.util.HttpUploadTask;
 
 /**
@@ -136,6 +133,9 @@ public class NewTask extends Activity {
 	
 	private int count;//上传附件的个数
 	
+	private ImageButton mReceiver;//接收人按钮
+	private EditText mReceiverInput;//接受人输入框
+	private EditText mContentInput;//主要接受内容
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -154,6 +154,9 @@ public class NewTask extends Activity {
 
 		// mRecord = (RecordButton) findViewById(R.id.btn_record);
 		mVideo = (ImageButton) findViewById(R.id.fujian_bt);
+		mReceiver = (ImageButton) findViewById(R.id.jieshouren_bt);
+		mContentInput = (EditText) findViewById(R.id.zhuyaogongzuoneirong);
+		mReceiverInput = (EditText) findViewById(R.id.jieshouren_et);
 
 		// 附件缩略图展示Layout，默认不可见
 		showAttachLayout = (LinearLayout) findViewById(R.id.showAttathLayout);
@@ -177,9 +180,35 @@ public class NewTask extends Activity {
 			
 			@Override
 			public void onClick(View arg0) {
-				attachmentUploadRequest();
+				
+				boolean isReceiver = TextUtils.isEmpty(mReceiverInput.getText());
+				boolean isInput = TextUtils.isEmpty(mContentInput.getText()) ;
+				boolean iscount = (mediaIndex == 0);
+				boolean istrue = !( TextUtils.isEmpty(mReceiverInput.getText()) && TextUtils.isEmpty(mContentInput.getText()) && (count == 0) );
+				
+				System.out.println( isReceiver + " " + isInput + " " + iscount + " " + istrue + "mediaIndex : "+ mediaIndex);
+				
+				//接收人，具体内容和附件的数目都不能为空
+				if ( (!( TextUtils.isEmpty(mReceiverInput.getText())) && (!(TextUtils.isEmpty(mContentInput.getText()))) && (mediaIndex != 0) )){
+					attachmentUploadRequest();
+				} else{
+					Toast.makeText(NewTask.this, "内容不能为空", Toast.LENGTH_SHORT).show();
+				}
+				
+//				attachmentUploadRequest();
 			}
 		});
+		
+		//点击接受人的点击事件
+		mReceiver.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				
+			}
+		});
+		
+		
 		
 		initHandler();
 
@@ -232,17 +261,17 @@ public class NewTask extends Activity {
 				public void handleMessage(Message msg) {
 
 					switch (msg.what) {
-					case Constant.FILE_UPLOAD_SUCCESS:
+					case Constant.FILE_UPLOAD_SUCCESS://上传成功
 
-						count--;
-						Log.i("TAG", "count : " + count);
-						if (count == 0){
-							
-							Intent intent = new Intent(NewTask.this, ShowDownLoad.class);
-							intent.putExtra("name", (Serializable) fileNameList);
-							startActivity(intent);
-							finish();
-						}
+//						count--;
+//						Log.i("TAG", "count : " + count);
+//						if (count == 0){
+//							
+//							Intent intent = new Intent(NewTask.this, ShowDownLoad.class);
+//							intent.putExtra("name", (Serializable) fileNameList);
+//							startActivity(intent);
+//							finish();
+//						}
 						
 						break;
 					case Constant.FILE_UPLOAD_FAIL:

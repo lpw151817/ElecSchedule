@@ -34,7 +34,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/edit_text"
-                    android:editable="false"
+                    
                     android:singleLine="true" />
 
                 <ImageButton
