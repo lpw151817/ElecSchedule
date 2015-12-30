@@ -2,9 +2,11 @@ package nercms.schedule.activity;
 
 import java.io.File;
 
-import nercms.schedule.R;
-import nercms.schedule.utils.MyLog;
-import nercms.schedule.utils.Utils;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.SubMenu;
+import com.nercms.Push;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -25,18 +27,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.wxapp.service.AppApplication;
-import android.wxapp.service.dao.DAOFactory;
-import android.wxapp.service.handler.MessageHandlerManager;
 import android.wxapp.service.elec.model.LoginResponse;
-import android.wxapp.service.jerry.model.normal.NormalServerResponse;
-import android.wxapp.service.jerry.model.person.GetPersonInfoResponse;
 import android.wxapp.service.elec.request.Constants;
 import android.wxapp.service.elec.request.WebRequestManager;
+import android.wxapp.service.handler.MessageHandlerManager;
+import android.wxapp.service.jerry.model.normal.NormalServerResponse;
 import android.wxapp.service.util.MySharedPreference;
-
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.nercms.Push;
+import nercms.schedule.R;
+import nercms.schedule.utils.MyLog;
+import nercms.schedule.utils.Utils;
 
 /**
  * 
@@ -117,12 +116,6 @@ public class Login extends BaseActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-
-		// …Ë÷√∞¥≈•
-		MenuItem setting = menu.add(0, 1, 0, "…Ë÷√");
-		setting.setIcon(R.drawable.ofm_setting_icon);
-		setting.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-		setting.setVisible(false);
 
 		return super.onCreateOptionsMenu(menu);
 	}
