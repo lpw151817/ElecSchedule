@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import nercms.schedule.R;
 
@@ -49,7 +50,7 @@ public class MeiRiJiHuaAdapter extends BaseAdapter {
 			holder = new Holder();
 			holder.name = ((TextView) convertView.findViewById(R.id.textview));
 			holder.time = ((TextView) convertView.findViewById(R.id.time));
-			holder.delete = (ImageButton) convertView.findViewById(R.id.delete);
+			holder.delete = (ImageView) convertView.findViewById(R.id.delete);
 			convertView.setTag(holder);
 		} else {
 			holder = (Holder) convertView.getTag();
@@ -62,7 +63,7 @@ public class MeiRiJiHuaAdapter extends BaseAdapter {
 
 	class Holder {
 		TextView name, time;
-		ImageButton delete;
+		ImageView delete;
 	}
 
 	class Bean {

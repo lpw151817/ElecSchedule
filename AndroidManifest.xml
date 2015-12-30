@@ -45,11 +45,7 @@
         <activity
             android:name=".activity.Main"
             android:theme="@style/Theme.Schedule" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            
         </activity>
         <activity
             android:name=".activity.Profile"
@@ -170,6 +166,11 @@
             android:label="@string/title_activity_mei_ri_ji_hua"
             android:launchMode="singleTop"
             android:theme="@style/Theme.Schedule" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".activity.XianChangUpload"

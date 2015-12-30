@@ -16,7 +16,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="sadfsdafsdafsdafsdasdafsdafsdafsdafsdafsdafsdafsdaffsdafsdafsdafsfda"
-            android:textSize="17dip" />
+            android:textColor="#ffffff"
+            android:textSize="23sp" />
 
         <TextView
             android:id="@+id/time"
@@ -25,12 +26,14 @@
             android:text="2015-11-18" />
     </LinearLayout>
 
-    <ImageButton
+    <ImageView
         android:id="@+id/delete"
-        android:layout_centerVertical="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_alignParentRight="true"
-        android:src="@android:drawable/ic_delete" />
+        android:layout_centerVertical="true"
+        android:layout_margin="5dp"
+        android:src="@drawable/shanchu"
+        android:scaleType="centerInside" />
 
 </RelativeLayout>
