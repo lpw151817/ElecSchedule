@@ -2,17 +2,23 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@android:color/white"
-    android:gravity="center_horizontal"
-    android:orientation="vertical" >
+    android:background="@drawable/bg"
+    android:gravity="center_horizontal" >
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:src="@drawable/logo" />
 
     <TextView
         android:id="@+id/top_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="70dp"
         android:gravity="center"
         android:text="欢迎使用"
+        android:textColor="@android:color/white"
         android:textSize="20sp" />
 
     <TextView
@@ -23,15 +29,19 @@
         android:layout_marginTop="10dp"
         android:gravity="center"
         android:text="做事群管系统"
+        android:textColor="@android:color/white"
         android:textSize="30sp" />
 
     <TableLayout
+        android:id="@+id/login_main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
         android:layout_below="@+id/top_2"
-        android:layout_margin="10dp"
-        android:background="#000000"
-        android:gravity="center" >
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/login_outer_box"
+        android:paddingTop="20dp" >
 
         <TextView
             android:layout_width="match_parent"
@@ -52,7 +62,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_dialog_alert" />
+                android:src="@drawable/icon_id" />
 
             <EditText
                 android:id="@+id/login_user_edit"
@@ -80,7 +90,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_dialog_alert" />
+                android:src="@drawable/icon_lock" />
 
             <EditText
                 android:id="@+id/login_passwd_edit"
@@ -95,6 +105,16 @@
                 android:textColor="#000" >
             </EditText>
         </TableRow>
+    </TableLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/login_main"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/login_inter_box"
+        android:orientation="horizontal" >
 
         <Button
             android:id="@+id/login_login_btn"
@@ -105,6 +125,6 @@
             android:text="登   录"
             android:textColor="#ffffff"
             android:textSize="18sp" />
-    </TableLayout>
+    </LinearLayout>
 
 </RelativeLayout>
