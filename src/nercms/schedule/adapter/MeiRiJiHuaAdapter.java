@@ -3,9 +3,12 @@ package nercms.schedule.adapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
@@ -20,8 +23,8 @@ public class MeiRiJiHuaAdapter extends BaseAdapter {
 	public MeiRiJiHuaAdapter(Context c) {
 		this.mContext = c;
 		this.data = new ArrayList<Bean>();
-		for (int i = 0; i < 5; i++) {
-			data.add(new Bean(i + "", i + ""));
+		for (int i = 1; i < 5; i++) {
+			data.add(new Bean("日计划" + i + "", "2015-11-1" + i + ""));
 		}
 
 	}
@@ -42,7 +45,7 @@ public class MeiRiJiHuaAdapter extends BaseAdapter {
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(final int position, View convertView, ViewGroup parent) {
 		Holder holder = null;
 		if (convertView == null) {
 			LayoutInflater inflater = LayoutInflater.from(mContext);
@@ -57,6 +60,21 @@ public class MeiRiJiHuaAdapter extends BaseAdapter {
 		}
 		holder.name.setText(data.get(position).getTn());
 		holder.time.setText(data.get(position).getT());
+		holder.delete.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				showAlterDialog("提示", "确认删除吗？", R.drawable.login_error_icon, "确认",
+						new android.content.DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO 确认删除
+
+					}
+				}, "取消", null);
+			}
+		});
 
 		return convertView;
 	}
@@ -91,5 +109,22 @@ public class MeiRiJiHuaAdapter extends BaseAdapter {
 			this.t = t;
 		}
 
+	}
+
+	protected void showAlterDialog(String title, String content, Integer icon, String pB,
+			android.content.DialogInterface.OnClickListener pbListener, String nB,
+			android.content.DialogInterface.OnClickListener nbListener) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+
+		builder.setTitle(title);
+		if (content != null)
+			builder.setMessage(content);
+		if (icon != null)
+			builder.setIcon(icon);
+		if (pB != null)
+			builder.setPositiveButton(pB, pbListener);
+		if (nB != null)
+			builder.setNegativeButton(nB, nbListener);
+		builder.create().show();
 	}
 }

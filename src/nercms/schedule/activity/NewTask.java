@@ -133,7 +133,7 @@ public class NewTask extends Activity {
 	
 	private int count;//上传附件的个数
 	
-	private ImageButton mReceiver;//接收人按钮
+//	private ImageButton mReceiver;//接收人按钮
 	private EditText mReceiverInput;//接受人输入框
 	private EditText mContentInput;//主要接受内容
 
@@ -154,7 +154,7 @@ public class NewTask extends Activity {
 
 		// mRecord = (RecordButton) findViewById(R.id.btn_record);
 		mVideo = (ImageButton) findViewById(R.id.fujian_bt);
-		mReceiver = (ImageButton) findViewById(R.id.jieshouren_bt);
+//		mReceiver = (ImageButton) findViewById(R.id.jieshouren_bt);
 		mContentInput = (EditText) findViewById(R.id.zhuyaogongzuoneirong);
 		mReceiverInput = (EditText) findViewById(R.id.jieshouren_et);
 
@@ -199,14 +199,14 @@ public class NewTask extends Activity {
 			}
 		});
 		
-		//点击接受人的点击事件
-		mReceiver.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View arg0) {
-				
-			}
-		});
+//		//点击接受人的点击事件
+//		mReceiver.setOnClickListener(new OnClickListener() {
+//			
+//			@Override
+//			public void onClick(View arg0) {
+//				
+//			}
+//		});
 		
 		
 		

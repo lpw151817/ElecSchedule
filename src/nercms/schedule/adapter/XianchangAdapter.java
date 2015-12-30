@@ -29,8 +29,8 @@ public class XianchangAdapter extends BaseAdapter {
 	public XianchangAdapter(Context c, int type) {
 		this.mContext = c;
 		this.data = new ArrayList<XianchangAdapter.Bean>();
-		for (int i = 0; i < 5; i++) {
-			data.add(new Bean(i + "", i + ""));
+		for (int i = 1; i < 5; i++) {
+			data.add(new Bean("ÈÎÎñ" + i, "2015-11-1" + i + " 08:30-17:50"));
 		}
 	}
 

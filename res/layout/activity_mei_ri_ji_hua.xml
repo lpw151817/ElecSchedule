@@ -23,10 +23,18 @@
         android:id="@+id/kaishirenwu_bt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@+id/time"
         android:layout_margin="5dp"
         android:background="@drawable/btn_style_green"
         android:text="开始任务"
         android:textColor="#ffffff" />
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="2015/11/18/ 9:00" />
 
 </RelativeLayout>
