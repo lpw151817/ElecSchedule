@@ -20,7 +20,7 @@ public class Main extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		iniActionBar(null, "任务");
+		iniActionBar(true, R.drawable.iconfont_xinxi_max, "任务");
 
 		listview = (ListView) findViewById(R.id.listView1);
 		listview.setAdapter(new MainPagerAdapter(this));
@@ -40,7 +40,9 @@ public class Main extends BaseActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			finish();
+			Intent intent = new Intent(Main.this, Login.class);
+			Main.this.startActivity(intent);
+			Main.this.finish();
 			break;
 		}
 		return super.onOptionsItemSelected(item);

@@ -21,8 +21,11 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
+import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -142,28 +145,48 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 		zygznr = (EditText) findViewById(R.id.zhuyaogongzuoneirong);
 		gzfzr = (EditText) findViewById(R.id.gongzuofuzeren_et);
 		jhkssj = (EditText) findViewById(R.id.kaishishijian_et);
+		jhkssj.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if (event.getAction() == MotionEvent.ACTION_UP) {
+					showDateTimePicker(jhkssj);
+				}
+				return true;
+			}
+		});
 		jhjssj = (EditText) findViewById(R.id.jieshushijian_et);
+		jhjssj.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if (event.getAction() == MotionEvent.ACTION_UP) {
+					showDateTimePicker(jhjssj);
+				}
+				return true;
+			}
+		});
 		ysgdwld = (EditText) findViewById(R.id.lingdao_et);
 		sc = (EditText) findViewById(R.id.sancuo);
 		ssdw = (EditText) findViewById(R.id.shishidanwei);
 		rs = (EditText) findViewById(R.id.renshu);
 		bz = (EditText) findViewById(R.id.beizhu);
 
-		gzfzr_bt = (ImageButton) findViewById(R.id.gongzuofuzeren_bt);
-		jhkssj_bt = (ImageButton) findViewById(R.id.kaishishijian_bt);
-		jhjssj_bt = (ImageButton) findViewById(R.id.jieshushijian_bt);
-		ysgdwld_bt = (ImageButton) findViewById(R.id.lingdao_bt);
-		ssdw_bt = (ImageButton) findViewById(R.id.shishidanwei_bt);
+		// gzfzr_bt = (ImageButton) findViewById(R.id.gongzuofuzeren_bt);
+		// jhkssj_bt = (ImageButton) findViewById(R.id.kaishishijian_bt);
+		// jhjssj_bt = (ImageButton) findViewById(R.id.jieshushijian_bt);
+		// ysgdwld_bt = (ImageButton) findViewById(R.id.lingdao_bt);
+		// ssdw_bt = (ImageButton) findViewById(R.id.shishidanwei_bt);
 		qrtj = (Button) findViewById(R.id.tijiao);
 
 		sfxydb = (CheckBox) findViewById(R.id.dengbao);
 		sftd = (CheckBox) findViewById(R.id.tingdian);
 
-		gzfzr_bt.setOnClickListener(this);
-		jhkssj_bt.setOnClickListener(this);
-		jhjssj_bt.setOnClickListener(this);
-		ssdw_bt.setOnClickListener(this);
-		ysgdwld_bt.setOnClickListener(this);
+		// gzfzr_bt.setOnClickListener(this);
+		// jhkssj_bt.setOnClickListener(this);
+		// jhjssj_bt.setOnClickListener(this);
+		// ssdw_bt.setOnClickListener(this);
+		// ysgdwld_bt.setOnClickListener(this);
 		qrtj.setOnClickListener(this);
 	}
 
@@ -203,6 +226,7 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
+
 		case R.id.tijiao:
 			if (checkMustInput()) {
 				String weather = null;
@@ -267,22 +291,22 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 				showAlterDialog("错误", "请确认必填项填写完整!", R.drawable.login_error_icon, "确定", null);
 			}
 			break;
-		case R.id.gongzuofuzeren_bt:
-
-			break;
-		case R.id.kaishishijian_bt:
-
-			showDateTimePicker(jhkssj);
-			break;
-		case R.id.jieshushijian_bt:
-			showDateTimePicker(jhjssj);
-			break;
-		case R.id.lingdao_bt:
-
-			break;
-		case R.id.shishidanwei_bt:
-
-			break;
+		// case R.id.gongzuofuzeren_bt:
+		//
+		// break;
+		// case R.id.kaishishijian_bt:
+		//
+		// showDateTimePicker(jhkssj);
+		// break;
+		// case R.id.jieshushijian_bt:
+		// showDateTimePicker(jhjssj);
+		// break;
+		// case R.id.lingdao_bt:
+		//
+		// break;
+		// case R.id.shishidanwei_bt:
+		//
+		// break;
 
 		}
 

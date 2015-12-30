@@ -9,9 +9,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
+        android:layout_margin="5dp"
         android:layout_toLeftOf="@+id/imageView1"
         android:text="sadfsdafsdafsdafsdasdafsdafsdafsdafsdafsdafsdafsdaffsdafsdafsdafsfda"
-        android:textSize="17dip" />
+        android:textColor="#ffffff"
+        android:textSize="23sp" />
 
     <ImageView
         android:id="@+id/imageView1"

@@ -34,26 +34,22 @@
         <activity
             android:name=".activity.Login"
             android:theme="@style/Theme.Schedule" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            
         </activity>
 
         <!-- 调用警力调度系统 -->
 
         <activity android:name="com.nercms.schedule.External_Start_Schedule" >
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
+            
         </activity>
         <activity
             android:name=".activity.Main"
             android:theme="@style/Theme.Schedule" >
-            
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".activity.Profile"

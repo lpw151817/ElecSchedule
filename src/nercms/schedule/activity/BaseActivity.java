@@ -10,18 +10,23 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 import android.wxapp.service.util.MySharedPreference;
+import nercms.schedule.R;
 
 import com.actionbarsherlock.app.SherlockActivity;
 
 public class BaseActivity extends SherlockActivity {
 	protected ProgressDialog mProgressDialog;
 
-	protected void iniActionBar(Boolean isUp, String title) {
+	protected void iniActionBar(Boolean isUp, Integer iconId, String title) {
 		if (isUp != null) {
 			if (isUp) {
 				getSupportActionBar().setDisplayShowCustomEnabled(false);
 				getSupportActionBar().setDisplayShowTitleEnabled(true);
 				getSupportActionBar().setDisplayShowHomeEnabled(true);
+				if (iconId != null)
+					getSupportActionBar().setIcon(iconId);
+				else
+					getSupportActionBar().setIcon(R.drawable.ic_launcher);
 				getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 			}
 		}

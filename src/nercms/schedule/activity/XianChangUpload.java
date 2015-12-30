@@ -20,7 +20,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_xian_chang_upload);
 
-		iniActionBar(true, null);
+		iniActionBar(true, null, null);
 
 		bt_select = (Button) findViewById(R.id.select);
 		bt_upload = (Button) findViewById(R.id.upload);

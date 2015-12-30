@@ -34,13 +34,13 @@ public class TaskList extends BaseActivity {
 
 		switch (enterType) {
 		case 1:
-			iniActionBar(true, "作业现场");
+			iniActionBar(true, null, "作业现场");
 			break;
 		case 2:
-			iniActionBar(true, "操作现场");
+			iniActionBar(true, null, "操作现场");
 			break;
 		case 3:
-			iniActionBar(true, "故障紧急抢修现场");
+			iniActionBar(true, null, "故障紧急抢修现场");
 			break;
 		}
 
