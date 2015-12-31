@@ -28,10 +28,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.wxapp.service.AppApplication;
 import android.wxapp.service.elec.model.LoginResponse;
+import android.wxapp.service.elec.model.NormalServerResponse;
 import android.wxapp.service.elec.request.Constants;
 import android.wxapp.service.elec.request.WebRequestManager;
 import android.wxapp.service.handler.MessageHandlerManager;
-import android.wxapp.service.jerry.model.normal.NormalServerResponse;
+
 import android.wxapp.service.util.MySharedPreference;
 import nercms.schedule.R;
 import nercms.schedule.utils.MyLog;
@@ -175,8 +176,11 @@ public class Login extends BaseActivity {
 					MyLog.i(TAG, "登录失败");
 					dismissProgressDialog();
 					if (msg.obj != null) {
-						String errorCode = ((NormalServerResponse) msg.obj).getEc();
-						showAlterDialog("登录失败", Utils.getErrorMsg(errorCode),
+						// String errorCode = ((NormalServerResponse)
+						// msg.obj).getEc();
+						// showAlterDialog("登录失败", Utils.getErrorMsg(errorCode),
+						// R.drawable.login_error_icon, "确定", null);
+						showAlterDialog("登录失败", ((NormalServerResponse) msg.obj).getEc(),
 								R.drawable.login_error_icon, "确定", null);
 					} else {
 						showAlterDialog("登录失败", "请检查是否与服务器连接正常", R.drawable.login_error_icon, "确定",
@@ -234,9 +238,8 @@ public class Login extends BaseActivity {
 		if (inputUserName == null || inputUserName.equals("") || inputPassword == null
 				|| inputPassword.equals("")) {
 			dismissProgressDialog();
-			new AlertDialog.Builder(Login.this)
-					.setIcon(getResources().getDrawable(R.drawable.login_error_icon))
-					.setTitle("登录错误").setMessage("帐号或者密码不能为空，\n请输入后再登录！").create().show();
+			showAlterDialog("登录错误", "帐号或者密码不能为空，\n请输入后再登录！", R.drawable.login_error_icon, "确定",
+					null);
 			return;
 		}
 		webRequestManager.login(inputUserName, inputPassword);
