@@ -60,7 +60,6 @@ public class RecordActivity extends SherlockActivity {
 					@Override
 					public void onClick(View arg0) {
 						
-						
 						audiopath = AudioRecorder.path;
 						File file = new File(audiopath);
 						Uri uri = Uri.fromFile(file);

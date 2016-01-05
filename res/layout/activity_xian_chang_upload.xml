@@ -8,10 +8,30 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="nercms.schedule.activity.XianChangUpload" >
 
-    <View
+    <!--
+         <View
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
     </View>
+    -->
+
+    <LinearLayout
+        android:id="@+id/showAttathLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10.0px"
+        android:layout_marginRight="10.0px"
+        android:layout_marginTop="1.0px"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="5dp" >
+
+        <nercms.schedule.view.FixedGridLayout
+            android:id="@+id/attachContainer"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

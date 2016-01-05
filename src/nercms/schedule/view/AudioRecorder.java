@@ -29,9 +29,9 @@ public class AudioRecorder implements RecordStrategy {
         fileName = getCurrentDate();
         recorder = new MediaRecorder();
         
-        path = fileFolder + "/" + fileName + ".amr";
+        path = fileFolder + "/" + fileName + ".mp3";
         
-        recorder.setOutputFile(fileFolder + "/" + fileName + ".amr");
+        recorder.setOutputFile(fileFolder + "/" + fileName + ".mp3");
         recorder.setAudioSource(MediaRecorder.AudioSource.MIC);// 设置MediaRecorder的音频源为麦克风
         recorder.setOutputFormat(MediaRecorder.OutputFormat.RAW_AMR);// 设置MediaRecorder录制的音频格式
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);// 设置MediaRecorder录制音频的编码为amr
@@ -77,7 +77,7 @@ public class AudioRecorder implements RecordStrategy {
 //        File file = new File(fileFolder + "/" + fileName + ".amr");
 //        file.deleteOnExit();
         
-        String path = fileFolder + "/" + fileName + ".amr";
+        String path = fileFolder + "/" + fileName + ".mp3";
         
      // 获取文件并判断存在与否
      		File file = new File(path);
@@ -102,7 +102,7 @@ public class AudioRecorder implements RecordStrategy {
  
     @Override
     public String getFilePath() {
-        return fileFolder + "/" + fileName + ".amr";
+        return fileFolder + "/" + fileName + ".mp3";
     }
  
 }

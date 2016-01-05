@@ -56,6 +56,7 @@ public class Utils {
 			return "";
 		}
 	}
+	
 
 	public static String getErrorMsg(String ec) {
 
@@ -362,7 +363,7 @@ public class Utils {
 	/**
 	 * @author chenqiang
 	 */
-	private static String getFileDate() {
+	public static String getFileDate() {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy_MM_dd_HHmmss");
 		Date date = new Date(System.currentTimeMillis());
 		String file = format.format(date);

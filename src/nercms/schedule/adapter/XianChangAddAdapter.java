@@ -14,6 +14,8 @@ public class XianChangAddAdapter extends BaseAdapter {
 	Context mContext;
 	String[] ss;
 	int[] hasContent;
+	
+
 
 	/**
 	 * 需要修改是否有内容的标志位
@@ -52,6 +54,10 @@ public class XianChangAddAdapter extends BaseAdapter {
 		for (int i = 0; i < hasContent.length; i++)
 			this.hasContent[i] = 0;
 	}
+	
+	public XianChangAddAdapter(){
+		
+	}
 
 	@Override
 	public int getCount() {
@@ -83,9 +89,15 @@ public class XianChangAddAdapter extends BaseAdapter {
 		} else {
 			holder = (Holder) convertView.getTag();
 		}
+		
+		
+		
 		holder.textView.setText(ss[position]);
-		if (hasContent[position] == 1)
+		if (hasContent[position] == 1){
 			holder.textView.setTextColor(Color.RED);
+		} else {
+			holder.textView.setTextColor(Color.WHITE);
+		}
 		return convertView;
 	}
 
@@ -93,5 +105,7 @@ public class XianChangAddAdapter extends BaseAdapter {
 		TextView textView;
 		ImageButton video, radio, photo;
 	}
+	
+
 
 }

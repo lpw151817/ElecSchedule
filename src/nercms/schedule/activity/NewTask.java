@@ -65,15 +65,15 @@ import android.wxapp.service.util.HttpUploadTask;
  */
 public class NewTask extends Activity {
 
-	private static final int TYPE_IMAGE = 1;
-	private static final int TYPE_VIDEO = 2;
-	private static final int TYPE_AUDIO = 3;
-	private static final int TYPE_SELECT_IMAGE = 4;
+	public static final int TYPE_IMAGE = 1;
+	public static final int TYPE_VIDEO = 2;
+	public static final int TYPE_AUDIO = 3;
+	public static final int TYPE_SELECT_IMAGE = 4;
 	RecordButton mRecord;
 	ImageButton mVideo;
 
 	// video
-	private String fileFolder = Environment.getExternalStorageDirectory()
+	public static String fileFolder = Environment.getExternalStorageDirectory()
 			.getPath() + "/TestRecord";
 
 	private String fileName;
@@ -373,7 +373,7 @@ public class NewTask extends Activity {
 							intent.addCategory("android.intent.category.DEFAULT");
 
 							fileName = getFileDate();
-							videopath = fileFolder + "/" + fileName + ".3gp";
+							videopath = fileFolder + "/" + fileName + ".mp4";
 							File file = new File(videopath);
 							if (file.exists()) {
 								file.delete();
@@ -464,7 +464,7 @@ public class NewTask extends Activity {
 					Uri uri1 = Uri.fromFile(file1);
 					int mediaID1 = mediaIndex++;
 					// ¥Ê¥¢mediaId”ÎimageOriginPathµƒ”≥…‰
-					index_originalPath_Map.put(mediaID1, mImagePath);
+					index_originalPath_Map.put(mediaID1, selectimagepath);
 
 					loadMedia(imageContainer, mediaID1,
 							getThumbnailFromUri(uri1), uri1, TYPE_SELECT_IMAGE);
@@ -557,7 +557,7 @@ public class NewTask extends Activity {
 		return BitmapFactory.decodeStream(input, null, opts);
 	}
 
-	private String uri2filePath(Uri uri) {
+	private  String uri2filePath(Uri uri) {
 		String[] proj = { MediaStore.Images.Media.DATA };
 		Cursor cursor = managedQuery(uri, proj, null, null, null);
 		int index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);

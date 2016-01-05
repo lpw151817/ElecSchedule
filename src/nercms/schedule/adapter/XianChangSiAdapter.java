@@ -1,6 +1,18 @@
 package nercms.schedule.adapter;
 
+import java.io.File;
+
+import nercms.schedule.R;
+import nercms.schedule.activity.NewTask;
+import nercms.schedule.activity.RecordActivity;
+import nercms.schedule.activity.XianChangSi;
+import nercms.schedule.utils.LocalConstant;
+import nercms.schedule.utils.Utils;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -8,7 +20,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import nercms.schedule.R;
 
 public class XianChangSiAdapter extends BaseAdapter {
 	Context mContext;
@@ -17,6 +28,11 @@ public class XianChangSiAdapter extends BaseAdapter {
 	int[] isPhoto;
 	int[] isVideo;
 	int type;
+	ListPosition lp;
+	
+	//拍照时图片的路径
+	protected String mImagePath;
+	public static String imagePath;
 
 	public XianChangSiAdapter(Context c, int type) {
 		this.mContext = c;
@@ -55,7 +71,7 @@ public class XianChangSiAdapter extends BaseAdapter {
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(final int position, View convertView, ViewGroup parent) {
 		Holder holder = null;
 		if (convertView == null) {
 			LayoutInflater inflater = LayoutInflater.from(mContext);
@@ -87,25 +103,61 @@ public class XianChangSiAdapter extends BaseAdapter {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
+				// 拍照
+				Intent cameraintent = new Intent();
+				// 指定开启系统相机的Action
+				cameraintent
+						.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+				cameraintent.addCategory(Intent.CATEGORY_DEFAULT);
 
+				mImagePath = NewTask.fileFolder + File.separator
+						+ Utils.getFileDate() + ".jpg";
+				imagePath = mImagePath;
+				// 根据文件地址创建文件
+				File imagefile = new File(mImagePath);
+				if (imagefile.exists()) {
+					imagefile.delete();
+				}
+				// 把文件地址转换成Uri格式
+				Uri imageUri = Uri.fromFile(imagefile);
+				// 设置系统相机拍摄照片完成后图片文件的存放地址
+				cameraintent.putExtra(MediaStore.EXTRA_OUTPUT,
+						imageUri);
+				((Activity) mContext).startActivityForResult(cameraintent,
+						LocalConstant.CAPTURE_IMAGE_REQUEST_CODE);
+				
+				lp.getPositon(position);
 			}
 		});
 		holder.radio.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-
+				Intent audiointent = new Intent(((XianChangSi) mContext), RecordActivity.class);
+				((Activity) mContext).startActivityForResult(audiointent,
+						LocalConstant.CAPTURE_AUDIO_REQUEST_CODE);
+				
+				lp.getPositon(position);
 			}
 		});
-
+		
+	
 		return convertView;
 	}
 
 	class Holder {
 		TextView textView;
 		ImageButton video, radio, photo;
+	}
+	
+	public void setListPostion(ListPosition lp){
+		System.out.println("setListPostion " + lp);
+		this.lp = lp;
+	}
+	
+	
+	public interface ListPosition {
+		public int getPositon(int position);
 	}
 
 }

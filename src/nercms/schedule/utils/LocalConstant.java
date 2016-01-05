@@ -23,9 +23,11 @@ public class LocalConstant {
 	public static final int CAPTURE_IMAGE_REQUEST_CODE = 101;
 	public static final int CAPTURE_VIDEO_REQUEST_CODE = 102;
 	public static final int SELECT_IMAGE_REQUEST_CODE = 103;
+	public static final int CAPTURE_AUDIO_REQUEST_CODE = 104;
 	public static final int MEETING_PARTICIPATOR_SELECT_REQUEST_CODE = 122;
 	public static final int MEETING_SPEAKER_SELECT_REQUEST_CODE = 123;
 	public static final int TASK_POD_SELECT_REQUEST_CODE = 124;
+	public static final int SELECT_ATTACHMENT = 423;
 
 	// 联系人是否选中
 	public static final int SELECT_CONTACT_CHECKED = 120;
