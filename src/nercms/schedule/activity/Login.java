@@ -111,7 +111,6 @@ public class Login extends BaseActivity {
 		getSupportActionBar().setDisplayShowTitleEnabled(true);
 		getSupportActionBar().setDisplayShowHomeEnabled(true);
 		getSupportActionBar().setTitle("µÇÂ¼");
-
 		getSupportActionBar().hide();
 	}
 
@@ -242,7 +241,21 @@ public class Login extends BaseActivity {
 					null);
 			return;
 		}
-		webRequestManager.login(inputUserName, inputPassword);
+		if (getUserIc() == null || getUserId() == null) {
+			if (!getUserId().equals(inputUserName)) {
+				showAlterDialog("µÇÂ¼´íÎó", "Çë¼ì²éÍøÂçÁ¬½Ó×´Ì¬", R.drawable.login_error_icon, "È·¶¨", null);
+			} else {
+				if (getUserId().toLowerCase().equals(inputUserName)
+						&& getUserIc().toLowerCase().equals(inputPassword)) {
+					webRequestManager.loginUpdate(Login.this);
+				} else {
+					showAlterDialog("µÇÂ¼´íÎó", "ÃÜÂë´íÎó", R.drawable.login_error_icon, "È·¶¨", null);
+				}
+			}
+		} else {
+			webRequestManager.login(inputUserName, inputPassword);
+		}
+
 	}
 
 	@Override

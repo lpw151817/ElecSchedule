@@ -39,6 +39,10 @@ public class BaseActivity extends SherlockActivity {
 		return MySharedPreference.get(this, MySharedPreference.USER_ID, null);
 	}
 
+	protected String getUserIc() {
+		return MySharedPreference.get(this, MySharedPreference.USER_IC, null);
+	}
+
 	protected void startActivity(Bundle bundle, Class<?> targetActivity) {
 		Intent intent = new Intent();
 		intent.setClass(this, targetActivity);
