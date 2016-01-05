@@ -43,6 +43,10 @@ public class BaseActivity extends SherlockActivity {
 		return MySharedPreference.get(this, MySharedPreference.USER_IC, null);
 	}
 
+	protected String getUserName() {
+		return MySharedPreference.get(this, MySharedPreference.USER_NAME, null);
+	}
+
 	protected void startActivity(Bundle bundle, Class<?> targetActivity) {
 		Intent intent = new Intent();
 		intent.setClass(this, targetActivity);
@@ -118,5 +122,13 @@ public class BaseActivity extends SherlockActivity {
 
 	protected void showLongToast(String content) {
 		Toast.makeText(this, content, Toast.LENGTH_LONG).show();
+	}
+
+	protected void showLog_e(String t) {
+		Log.e(this.getClass().getName(), t);
+	}
+
+	protected void showLog_v(String t) {
+		Log.v(this.getClass().getName(), t);
 	}
 }

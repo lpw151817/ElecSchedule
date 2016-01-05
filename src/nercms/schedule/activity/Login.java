@@ -29,6 +29,7 @@ import android.widget.Toast;
 import android.wxapp.service.AppApplication;
 import android.wxapp.service.elec.model.LoginResponse;
 import android.wxapp.service.elec.model.NormalServerResponse;
+import android.wxapp.service.elec.model.UpdateResponse;
 import android.wxapp.service.elec.request.Constants;
 import android.wxapp.service.elec.request.WebRequestManager;
 import android.wxapp.service.handler.MessageHandlerManager;
@@ -46,8 +47,8 @@ public class Login extends BaseActivity {
 
 	private EditText etUserName; // ÓÃ»§Ãû±à¼­¿ò
 	private EditText etPassword; // ÃÜÂë±à¼­¿ò
-	// String un = "fm";
-	// String pwd = "123456";
+	String un = "admin";
+	String pwd = "admin";
 
 	private Button btnLogin;// µÇÂ¼°´Å¥
 
@@ -77,8 +78,8 @@ public class Login extends BaseActivity {
 
 		etUserName = (EditText) findViewById(R.id.login_user_edit);
 		etPassword = (EditText) findViewById(R.id.login_passwd_edit);
-		// etUserName.setText(un);
-		// etPassword.setText(pwd);
+		etUserName.setText(un);
+		etPassword.setText(pwd);
 
 		btnLogin = (Button) findViewById(R.id.login_login_btn);
 
@@ -189,6 +190,7 @@ public class Login extends BaseActivity {
 
 				case Constants.LOGIN_UPDATE_SUCCESS:
 					dismissProgressDialog();
+					showLog_v("¸üÐÂÍê³É¡¶¡¶¡¶¡¶¡¶¡¶¡¶¡¶¡¶¡¶¡¶¡¶¡¶¡¶¡¶");
 					Intent intent = new Intent(Login.this, Main.class);
 					Login.this.startActivity(intent);
 					break;
@@ -242,18 +244,19 @@ public class Login extends BaseActivity {
 			return;
 		}
 		if (getUserIc() == null || getUserId() == null) {
-			if (!getUserId().equals(inputUserName)) {
+			webRequestManager.login(inputUserName, inputPassword);
+		} else {
+			if (!getUserName().equals(inputUserName)) {
 				showAlterDialog("µÇÂ¼´íÎó", "Çë¼ì²éÍøÂçÁ¬½Ó×´Ì¬", R.drawable.login_error_icon, "È·¶¨", null);
 			} else {
-				if (getUserId().toLowerCase().equals(inputUserName)
+				if (getUserName().toLowerCase().equals(inputUserName)
 						&& getUserIc().toLowerCase().equals(inputPassword)) {
 					webRequestManager.loginUpdate(Login.this);
 				} else {
 					showAlterDialog("µÇÂ¼´íÎó", "ÃÜÂë´íÎó", R.drawable.login_error_icon, "È·¶¨", null);
 				}
 			}
-		} else {
-			webRequestManager.login(inputUserName, inputPassword);
+
 		}
 
 	}
@@ -337,6 +340,13 @@ public class Login extends BaseActivity {
 				LoginResponse.class.getName());
 		MessageHandlerManager.getInstance().unregister(Constants.LOGIN_FAIL,
 				LoginResponse.class.getName());
+
+		MessageHandlerManager.getInstance().unregister(Constants.LOGIN_UPDATE_SUCCESS,
+				UpdateResponse.class.getName());
+		MessageHandlerManager.getInstance().unregister(Constants.LOGIN_UPDATE_SAVE_FAIL,
+				UpdateResponse.class.getName());
+		MessageHandlerManager.getInstance().unregister(Constants.LOGIN_UPDATE_FAIL,
+				UpdateResponse.class.getName());
 	}
 
 	// ×¢²áHandler
@@ -345,5 +355,12 @@ public class Login extends BaseActivity {
 				LoginResponse.class.getName());
 		MessageHandlerManager.getInstance().register(handler, Constants.LOGIN_FAIL,
 				LoginResponse.class.getName());
+
+		MessageHandlerManager.getInstance().register(handler, Constants.LOGIN_UPDATE_SUCCESS,
+				UpdateResponse.class.getName());
+		MessageHandlerManager.getInstance().register(handler, Constants.LOGIN_UPDATE_SAVE_FAIL,
+				UpdateResponse.class.getName());
+		MessageHandlerManager.getInstance().register(handler, Constants.LOGIN_UPDATE_FAIL,
+				UpdateResponse.class.getName());
 	}
 }
