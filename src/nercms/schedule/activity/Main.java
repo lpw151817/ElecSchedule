@@ -1,5 +1,7 @@
 package nercms.schedule.activity;
 
+import java.util.Date;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.SubMenu;
@@ -34,6 +36,7 @@ public class Main extends BaseActivity {
 				Intent intent = new Intent(Main.this, TaskList.class);
 				intent.putExtra("enterType", position + 1);
 				Main.this.startActivity(intent);
+
 			}
 		});
 	}

@@ -1,15 +1,18 @@
 package nercms.schedule.activity;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import com.actionbarsherlock.view.MenuItem;
+import com.imooc.treeview.utils.Node;
 import com.nercms.Push;
 
 import android.R.integer;
@@ -60,13 +63,19 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 	WebRequestManager webRequest;
 	int enterType;
 
+	List<Node> gzfzrList;
+	List<Node> ysgdwldList;
+	List<Node> orgs;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_plan_add);
 
 		enterType = getIntent().getIntExtra("enterType", 1);
-
+		gzfzrList = new ArrayList<Node>();
+		ysgdwldList = new ArrayList<Node>();
+		orgs = new ArrayList<Node>();
 		// 初始化ActionBar
 		initActionBar();
 		initView();
@@ -144,6 +153,16 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 		tdyxqy = (EditText) findViewById(R.id.tingdianyingxiangquyu);
 		zygznr = (EditText) findViewById(R.id.zhuyaogongzuoneirong);
 		gzfzr = (EditText) findViewById(R.id.gongzuofuzeren_et);
+		gzfzr.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if (event.getAction() == MotionEvent.ACTION_UP) {
+					startPeopleSelect(1);
+				}
+				return true;
+			}
+		});
 		jhkssj = (EditText) findViewById(R.id.kaishishijian_et);
 		jhkssj.setOnTouchListener(new OnTouchListener() {
 
@@ -167,8 +186,32 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 			}
 		});
 		ysgdwld = (EditText) findViewById(R.id.lingdao_et);
+		ysgdwld.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if (event.getAction() == MotionEvent.ACTION_UP) {
+					startPeopleSelect(2);
+				}
+				return true;
+			}
+		});
 		sc = (EditText) findViewById(R.id.sancuo);
 		ssdw = (EditText) findViewById(R.id.shishidanwei);
+		ssdw.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if (event.getAction() == MotionEvent.ACTION_UP) {
+					Intent intent = new Intent(PlanAdd.this, OrgSelect.class);
+					Bundle bundle = new Bundle();
+					bundle.putSerializable("pod", (Serializable) orgs);
+					intent.putExtras(bundle);
+					startActivityForResult(intent, 200);
+				}
+				return true;
+			}
+		});
 		rs = (EditText) findViewById(R.id.renshu);
 		bz = (EditText) findViewById(R.id.beizhu);
 
@@ -188,6 +231,24 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 		// ssdw_bt.setOnClickListener(this);
 		// ysgdwld_bt.setOnClickListener(this);
 		qrtj.setOnClickListener(this);
+	}
+
+	/**
+	 * 
+	 * @param from
+	 *            1:工作负责人, 2：领导
+	 */
+	private void startPeopleSelect(int from) {
+		Intent intent = new Intent(PlanAdd.this, ContactSelect.class);
+		Bundle bundle = new Bundle();
+		// 表示从每日计划进入
+		bundle.putInt("entrance_flag", 1);
+		bundle.putInt("type", from);
+		// input bundle
+		bundle.putSerializable("pod", (Serializable) gzfzrList);
+		bundle.putSerializable("receiver", (Serializable) ysgdwldList);
+		intent.putExtras(bundle);
+		startActivityForResult(intent, 100);
 	}
 
 	/**
@@ -312,10 +373,55 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 
 	}
 
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode == RESULT_OK) {
+			switch (requestCode) {
+			case 100:
+				int type = data.getIntExtra("type", -1);
+				// 工作负责人
+				if (type == 1) {
+					gzfzrList = (List<Node>) data.getSerializableExtra("data");
+					StringBuilder builder = new StringBuilder();
+					for (Node i : gzfzrList) {
+						builder.append(i.getName() + "/");
+					}
+					gzfzr.setText(builder.toString());
+				}
+				// 领导
+				else if (type == 2) {
+					ysgdwldList = (List<Node>) data.getSerializableExtra("data");
+					StringBuilder builder = new StringBuilder();
+					for (Node i : ysgdwldList) {
+						builder.append(i.getName() + "/");
+					}
+					ysgdwld.setText(builder.toString());
+				}
+				break;
+			case 200:
+				orgs = (List<Node>) data.getSerializableExtra("data");
+				StringBuilder builder = new StringBuilder();
+				for (Node i : orgs) {
+					builder.append(i.getName() + "/");
+				}
+				ssdw.setText(builder.toString());
+				break;
+			}
+		}
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	////////////////////////////////////////
+	////////////////////////////////////////
+	////////////////////////////////////////
+	///////////// 以下为时间控件/////////////////
+	////////////////////////////////////////
+	////////////////////////////////////////
+	////////////////////////////////////////
 	// 时间控件相关
 	private ImageButton btn_calendar;
 	private Dialog dialog;
-	private static int START_YEAR = 2010, END_YEAR = 2020;
+	private static int START_YEAR = 2016, END_YEAR = 2030;
 
 	// 选择截止时间 对年月日进行判断
 	private void showDateTimePicker(final EditText editText) {

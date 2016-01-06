@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
+import android.wxapp.service.elec.dao.PlanTaskDao;
 import nercms.schedule.R;
 import nercms.schedule.adapter.XianChangAddAdapter;
 import nercms.schedule.adapter.XianchangAdapter;
@@ -25,6 +26,8 @@ public class TaskList extends BaseActivity {
 	Button bt_rjhlr;
 
 	int enterType;
+
+	PlanTaskDao planTaskDao;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -44,8 +47,6 @@ public class TaskList extends BaseActivity {
 			break;
 		}
 
-		listView = (ListView) findViewById(R.id.task_list);
-		listView.setAdapter(new XianchangAdapter(this, enterType));
 		bt_rjhlr = (Button) findViewById(R.id.rijihualuru);
 
 		bt_rjhlr.setOnClickListener(new OnClickListener() {
@@ -58,6 +59,11 @@ public class TaskList extends BaseActivity {
 			}
 		});
 
+		planTaskDao = new PlanTaskDao(this);
+
+		listView = (ListView) findViewById(R.id.task_list);
+		listView.setAdapter(
+				new XianchangAdapter(this, enterType, planTaskDao.getAllPlanTask(enterType, 3)));
 	}
 
 	@Override

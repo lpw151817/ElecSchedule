@@ -66,10 +66,10 @@ public class Login extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);
 
-		// this is test
-		// // 用户测试使用，直接跳过本Activity
-		// startActivity(Main.class);
-		// return;
+////		 this is test
+//		 // 用户测试使用，直接跳过本Activity
+//		 startActivity(Main.class);
+//		 return;
 
 		Log.v("Login", "Login onCreate");
 		webRequestManager = new WebRequestManager(AppApplication.getInstance(), Login.this);

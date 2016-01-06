@@ -72,9 +72,9 @@ public class PersonSelectAdapter<T> extends TreeListViewAdapter<T> {
 			else
 				holder.mCb.setChecked(false);
 
-			// 发起任务里的标志位
+			// 每日计划录入
 			if (entranceFlag == 1) {
-				// 责任人
+				// 工作负责人
 				if (type == 1) {
 					if (lsSelectedPod != null && lsSelectedPod.contains(node)) {
 						holder.mCb.setChecked(true);
@@ -85,7 +85,7 @@ public class PersonSelectAdapter<T> extends TreeListViewAdapter<T> {
 						holder.mCb.setEnabled(false);
 					}
 				}
-				// 抄送人
+				// 应到位领导
 				else if (type == 2) {
 					if (lsSelectedPod != null && lsSelectedPod.contains(node)) {
 						holder.mCb.setEnabled(false);
@@ -95,28 +95,6 @@ public class PersonSelectAdapter<T> extends TreeListViewAdapter<T> {
 						if (!selected.contains(node))
 							selected.add(node);
 					}
-				}
-			}
-			// 发起会议参与者选择
-			else if (entranceFlag == 3) {
-				if (lsSelectedPod != null && lsSelectedPod.contains(node)) {
-					holder.mCb.setEnabled(false);
-				}
-				if (lsSelectedReceiver != null && lsSelectedReceiver.contains(node)) {
-					holder.mCb.setChecked(true);
-					if (!selected.contains(node))
-						selected.add(node);
-				}
-			}
-			// 发起会议发言人选择
-			else if (entranceFlag == 4) {
-				if (lsSelectedPod != null && lsSelectedPod.contains(node)) {
-					holder.mCb.setChecked(true);
-					if (!selected.contains(node))
-						selected.add(node);
-				}
-				if (lsSelectedReceiver != null && lsSelectedReceiver.contains(node)) {
-					holder.mCb.setEnabled(false);
 				}
 			}
 

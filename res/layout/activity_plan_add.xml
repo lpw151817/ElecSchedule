@@ -241,21 +241,6 @@
                 android:editable="false"
                 android:singleLine="true"
                 android:textColor="#ffffff" />
-
-            <!--
-                 <ImageButton
-                android:id="@+id/gongzuofuzeren_bt"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="right|center_vertical"
-                android:layout_marginLeft="5dip"
-                android:clickable="true"
-                android:cropToPadding="true"
-                android:focusable="true"
-                android:gravity="center"
-                android:scaleType="fitCenter"
-                android:src="@drawable/mm_title_btn_contact_normal" />
-            -->
         </LinearLayout>
 
         <ImageView
@@ -302,20 +287,6 @@
                     android:editable="false"
                     android:singleLine="true"
                     android:textColor="#ffffff" />
-
-                <!--
-                    <ImageButton
-                    android:id="@+id/kaishishijian_bt"
-                    android:layout_width="40dip"
-                    android:layout_height="40dip"
-                    android:layout_marginLeft="5dip"
-                    android:clickable="true"
-                    android:cropToPadding="true"
-                    android:focusable="true"
-                    android:gravity="center"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/mm_title_btn_calendar" />
-                -->
             </LinearLayout>
 
             <LinearLayout
@@ -351,20 +322,6 @@
                     android:editable="false"
                     android:singleLine="true"
                     android:textColor="#ffffff" />
-
-                <!--
-                    <ImageButton
-                    android:id="@+id/jieshushijian_bt"
-                    android:layout_width="40dip"
-                    android:layout_height="40dip"
-                    android:layout_marginLeft="5dip"
-                    android:clickable="true"
-                    android:cropToPadding="true"
-                    android:focusable="true"
-                    android:gravity="center"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/mm_title_btn_calendar" />
-                -->
             </LinearLayout>
         </LinearLayout>
 
@@ -547,21 +504,6 @@
                 android:editable="false"
                 android:singleLine="true"
                 android:textColor="#ffffff" />
-
-            <!--
-                <ImageButton
-                android:id="@+id/lingdao_bt"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="right|center_vertical"
-                android:layout_marginLeft="5dip"
-                android:clickable="true"
-                android:cropToPadding="true"
-                android:focusable="true"
-                android:gravity="center"
-                android:scaleType="fitCenter"
-                android:src="@drawable/mm_title_btn_contact_normal" />
-            -->
         </LinearLayout>
 
         <ImageView
@@ -787,22 +729,9 @@
                 android:layout_weight="1"
                 android:background="@drawable/edit_text"
                 android:drawableRight="@drawable/iconfont_xiala1"
+                android:editable="false"
                 android:singleLine="true"
                 android:textColor="#ffffff" />
-
-            <!--
-                 <ImageButton
-                android:id="@+id/shishidanwei_bt"
-                android:layout_width="40dip"
-                android:layout_height="40dip"
-                android:layout_marginLeft="5dip"
-                android:clickable="true"
-                android:cropToPadding="true"
-                android:focusable="true"
-                android:gravity="center"
-                android:scaleType="fitCenter"
-                android:src="@drawable/mm_title_btn_calendar" />
-            -->
         </LinearLayout>
 
         <ImageView

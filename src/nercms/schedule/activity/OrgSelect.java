@@ -7,8 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import nercms.schedule.R;
+import nercms.schedule.adapter.OrgSelectAdapter;
+import nercms.schedule.adapter.OrgSelectAdapter.DataChanged;
 import nercms.schedule.adapter.PersonSelectAdapter;
-import nercms.schedule.adapter.PersonSelectAdapter.DataChanged;
 import nercms.schedule.adapter.SuperTreeViewAdapter;
 import nercms.schedule.adapter.TreeViewAdapter;
 import nercms.schedule.utils.LocalConstant;
@@ -46,31 +47,21 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.imooc.treeview.utils.Node;
 
-public class ContactSelect extends BaseActivity implements DataChanged {
+public class OrgSelect extends BaseActivity implements DataChanged {
 
 	private static final String TAG = "ContactSelect";
 
-	// ExpandableListView expandableListView1;
-	// TreeViewAdapter adapter;
-	// SuperTreeViewAdapter superAdapter;
-	// private int check_count = 0;
-
 	ListView listView;
-	PersonSelectAdapter<Org> adapter;
+	OrgSelectAdapter<Org> adapter;
 
 	List<Node> selectedPerson;
 	private List<Node> lsSelectedPod = new ArrayList<Node>();
-	private List<Node> lsSelectedReceiver = new ArrayList<Node>();
 
 	private OrgDao dao;
 	public ArrayList<OrgNodeModel> orgNodeSecondList;
 	public Map<String, Map<String, ArrayList<StructuredStaffModel>>> bigTreeMap;
 	private MenuItem select_ok;
 	private String userID;// 本人ID
-	// 从哪里进入，1：每日计划录入，2：指令
-	private int entranceFlag;
-	// 1-工作负责人 2-应上岗到位领导
-	private int type = -1;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -79,13 +70,9 @@ public class ContactSelect extends BaseActivity implements DataChanged {
 
 		listView = (ListView) findViewById(R.id.id_tree);
 
-		userID = MySharedPreference.get(ContactSelect.this, MySharedPreference.USER_ID, null);
-
-		entranceFlag = getIntent().getExtras().getInt("entrance_flag");
-		type = getIntent().getExtras().getInt("type");
+		userID = MySharedPreference.get(OrgSelect.this, MySharedPreference.USER_ID, null);
 
 		lsSelectedPod = (List<Node>) getIntent().getExtras().getSerializable("pod");
-		lsSelectedReceiver = (List<Node>) getIntent().getExtras().getSerializable("receiver");
 
 		initActionBar();
 		// 组织机构树数据准备
@@ -93,9 +80,8 @@ public class ContactSelect extends BaseActivity implements DataChanged {
 
 		try {
 			List<Org> data = new ArrayList<Org>();
-			data = dao.getOrg2();
-			adapter = new PersonSelectAdapter<Org>(listView, this, data, 1, lsSelectedPod,
-					lsSelectedReceiver, entranceFlag, type);
+			data = dao.getAllOrgs();
+			adapter = new OrgSelectAdapter<Org>(listView, this, data, 1, lsSelectedPod);
 			listView.setAdapter(adapter);
 			adapter.setDataChangedListener(this);
 		} catch (IllegalArgumentException e) {
@@ -127,12 +113,8 @@ public class ContactSelect extends BaseActivity implements DataChanged {
 
 		// 确定按钮
 		select_ok = menu.add(0, 1, 0, "确定");
-		if (lsSelectedPod != null && (entranceFlag == 4 || (entranceFlag == 1 && type == 1)))
+		if (lsSelectedPod != null)
 			size = lsSelectedPod.size();
-		else if (lsSelectedReceiver != null
-				&& (entranceFlag == 3 || (entranceFlag == 1 && type == 2))) {
-			size = lsSelectedReceiver.size();
-		}
 		select_ok.setTitle("确定(" + size + ")");
 		select_ok.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 		return super.onCreateOptionsMenu(menu);
@@ -164,27 +146,14 @@ public class ContactSelect extends BaseActivity implements DataChanged {
 			// 如果选择了人员并点击确定
 			Intent intent = null;
 
-			// 嵌套switch分支
-			switch (entranceFlag) {
-
-			case 1: // 每日计划录入
-				intent = new Intent();
-				intent.putExtra("data", (Serializable) selectedPerson);
-				intent.putExtra("type", type);
-				setResult(RESULT_OK, intent);
-				this.finish();
-				break;
-
-			case 2: // 发起指令
-				intent = new Intent();
-				intent.putExtra("data", (Serializable) selectedPerson);
-				setResult(RESULT_OK, intent);
-				this.finish();
-				break;
-			}
-			// }
-
+			intent = new Intent();
+			intent.putExtra("data", (Serializable) selectedPerson);
+			setResult(RESULT_OK, intent);
+			this.finish();
 			break;
+
+		// }
+
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -197,8 +166,8 @@ public class ContactSelect extends BaseActivity implements DataChanged {
 		public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,
 				int childPosition, long id) {
 
-			Toast.makeText(ContactSelect.this, groupPosition + ";" + childPosition,
-					Toast.LENGTH_SHORT).show();
+			Toast.makeText(OrgSelect.this, groupPosition + ";" + childPosition, Toast.LENGTH_SHORT)
+					.show();
 			return false;
 		}
 	};

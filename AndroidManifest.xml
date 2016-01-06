@@ -114,6 +114,11 @@
             android:label="@string/title_activity_plan_add"
             android:launchMode="singleTop"
             android:theme="@style/Theme.Schedule" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <!-- 注册服务 -->
         <service android:name=".utils.SDCardService" >
@@ -150,11 +155,6 @@
             android:label="@string/title_activity_xian_chang_si"
             android:launchMode="singleTop"
             android:theme="@style/Theme.Schedule" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".activity.XianChangAdd"
@@ -176,6 +176,11 @@
         </activity>
         <activity
             android:name="nercms.schedule.activity.ShowXianChangAttachment"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Schedule" >
+        </activity>
+        <activity
+            android:name="nercms.schedule.activity.OrgSelect"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" >
         </activity>
