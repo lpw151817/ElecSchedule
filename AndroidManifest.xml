@@ -34,6 +34,11 @@
         <activity
             android:name=".activity.Login"
             android:theme="@style/Theme.Schedule" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <!-- 调用警力调度系统 -->
@@ -114,11 +119,6 @@
             android:label="@string/title_activity_plan_add"
             android:launchMode="singleTop"
             android:theme="@style/Theme.Schedule" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <!-- 注册服务 -->
         <service android:name=".utils.SDCardService" >

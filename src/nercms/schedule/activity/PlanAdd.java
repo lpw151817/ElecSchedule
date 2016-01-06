@@ -36,9 +36,11 @@ import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.wxapp.service.AppApplication;
+import android.wxapp.service.elec.model.CreatePlanTaskResponse;
 import android.wxapp.service.elec.model.LoginResponse;
 import android.wxapp.service.elec.request.Constants;
 import android.wxapp.service.elec.request.WebRequestManager;
+import android.wxapp.service.handler.MessageHandlerManager;
 import android.wxapp.service.jerry.model.normal.NormalServerResponse;
 import android.wxapp.service.util.MySharedPreference;
 import nercms.schedule.R;
@@ -53,8 +55,8 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 	private Handler handler;
 
 	RadioGroup tq_rg, lb_rg, tsxq_rg, ssdd_rg, tdlx_rg;
-	RadioButton tx_q, tq_yin, tq_yu, lb_jhgz, lb_lsgz, lb_gzqx, lb_qt, tsxq_t, tsxq_w, ssdd_s,
-			ssdd_d, ssdd_p, ssdd_x, ssdd_qt, tdlx_lstd, tdlx_jhtd, tdlx_qt;
+	RadioButton tx_q, tq_yin, tq_yu, lb_zyxc, lb_czxc, lb_gzqxxc, tsxq_t, tsxq_w, ssdd_s, ssdd_d,
+			ssdd_p, ssdd_x, ssdd_qt, tdlx_lstd, tdlx_jhtd, tdlx_qt;
 	EditText xmmc, tdfw, tdyxqy, zygznr, gzfzr, jhkssj, jhjssj, ysgdwld, sc, ssdw, rs, bz;
 	ImageButton jhkssj_bt, jhjssj_bt, gzfzr_bt, ysgdwld_bt, ssdw_bt;
 	Button qrtj;
@@ -65,7 +67,7 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 
 	List<Node> gzfzrList;
 	List<Node> ysgdwldList;
-	List<Node> orgs;
+	Node orgs;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +77,7 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 		enterType = getIntent().getIntExtra("enterType", 1);
 		gzfzrList = new ArrayList<Node>();
 		ysgdwldList = new ArrayList<Node>();
-		orgs = new ArrayList<Node>();
+
 		// 初始化ActionBar
 		initActionBar();
 		initView();
@@ -98,8 +100,21 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 			public void handleMessage(Message msg) {
 
 				switch (msg.what) {
-				case Constants.LOGIN_SUCCESS:
-
+				case Constants.CREATE_TASK_SUCCESS:
+					// 发布成功
+					showLongToast("发布成功");
+					startActivity();
+					break;
+				case Constants.CREATE_TASK_FAIL:
+				case Constants.CREATE_TASK_SAVE_FAIL:
+					dismissProgressDialog();
+					if (msg.obj != null) {
+						showAlterDialog("发布失败", ((NormalServerResponse) msg.obj).getEc(),
+								R.drawable.login_error_icon, "确定", null);
+					} else {
+						showAlterDialog("发布失败", "请检查是否与服务器连接正常", R.drawable.login_error_icon, "确定",
+								null);
+					}
 					break;
 
 				default:
@@ -114,13 +129,23 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 	}
 
 	private void registHandler() {
-
+		MessageHandlerManager.getInstance().register(handler, Constants.CREATE_TASK_SUCCESS,
+				CreatePlanTaskResponse.class.getName());
+		MessageHandlerManager.getInstance().register(handler, Constants.CREATE_TASK_FAIL,
+				CreatePlanTaskResponse.class.getName());
+		MessageHandlerManager.getInstance().register(handler, Constants.CREATE_TASK_SAVE_FAIL,
+				CreatePlanTaskResponse.class.getName());
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		// TODO unregistHandler
+		MessageHandlerManager.getInstance().unregister(Constants.CREATE_TASK_SUCCESS,
+				CreatePlanTaskResponse.class.getName());
+		MessageHandlerManager.getInstance().unregister(Constants.CREATE_TASK_FAIL,
+				CreatePlanTaskResponse.class.getName());
+		MessageHandlerManager.getInstance().unregister(Constants.CREATE_TASK_SAVE_FAIL,
+				CreatePlanTaskResponse.class.getName());
 	}
 
 	private void initView() {
@@ -133,10 +158,9 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 		tx_q = (RadioButton) findViewById(R.id.sun);
 		tq_yin = (RadioButton) findViewById(R.id.cloudy);
 		tq_yu = (RadioButton) findViewById(R.id.rain);
-		lb_jhgz = (RadioButton) findViewById(R.id.jihuagongzuo);
-		lb_lsgz = (RadioButton) findViewById(R.id.linshigongzuo);
-		lb_gzqx = (RadioButton) findViewById(R.id.guzhangqiangxiu);
-		lb_qt = (RadioButton) findViewById(R.id.leibie_qita);
+		lb_zyxc = (RadioButton) findViewById(R.id.xianchagnzuoye);
+		lb_czxc = (RadioButton) findViewById(R.id.caozuoxianchang);
+		lb_gzqxxc = (RadioButton) findViewById(R.id.guzhangqiangxiuxianchang);
 		tsxq_t = (RadioButton) findViewById(R.id.teshuxuqiu1);
 		tsxq_w = (RadioButton) findViewById(R.id.teshuxuqiu2);
 		ssdd_s = (RadioButton) findViewById(R.id.suoshudiaodu1);
@@ -263,8 +287,8 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 				&& !TextUtils.isEmpty(jhkssj.getText().toString())
 				&& !TextUtils.isEmpty(jhjssj.getText().toString())
 				&& !TextUtils.isEmpty(ssdw.getText().toString())
-				&& !TextUtils.isEmpty(rs.getText().toString()) && (lb_gzqx.isChecked()
-						|| lb_jhgz.isChecked() || lb_lsgz.isChecked() || lb_qt.isChecked());
+				&& !TextUtils.isEmpty(rs.getText().toString())
+				&& (lb_zyxc.isChecked() || lb_czxc.isChecked() || lb_gzqxxc.isChecked());
 	}
 
 	private void initActionBar() {
@@ -290,24 +314,22 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 
 		case R.id.tijiao:
 			if (checkMustInput()) {
-				String weather = null;
+				StringBuilder weather = new StringBuilder("weather");
 				if (tq_yin.isChecked()) {
-					weather = "阴";
+					weather.append("02");
 				} else if (tq_yu.isChecked()) {
-					weather = "雨";
+					weather.append("03");
 				} else if (tx_q.isChecked()) {
-					weather = "晴";
+					weather.append("01");
 				}
 
-				String category = null;
-				if (lb_gzqx.isChecked()) {
-					category = "故障抢修";
-				} else if (lb_jhgz.isChecked()) {
-					category = "计划工作";
-				} else if (lb_lsgz.isChecked()) {
-					category = "临时工作";
-				} else if (lb_qt.isChecked()) {
-					category = "其他";
+				StringBuilder category = new StringBuilder("category");
+				if (lb_zyxc.isChecked()) {
+					category.append("01");
+				} else if (lb_czxc.isChecked()) {
+					category.append("02");
+				} else if (lb_gzqxxc.isChecked()) {
+					category.append("03");
 				}
 
 				String special = null;
@@ -317,37 +339,37 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 					special = "无";
 				}
 
-				String domain = null;
+				StringBuilder domain = new StringBuilder("domain");
 				if (ssdd_d.isChecked()) {
-					domain = "地";
+					domain.append("02");
 				} else if (ssdd_p.isChecked()) {
-					domain = "配";
+					domain.append("03");
 				} else if (ssdd_qt.isChecked()) {
-					domain = "其他";
+					domain.append("05");
 				} else if (ssdd_s.isChecked()) {
-					domain = "省";
+					domain.append("01");
 				} else if (ssdd_x.isChecked()) {
-					domain = "县";
+					domain.append("04");
 				}
 
-				String cut_type = null;
+				StringBuilder cut_type = new StringBuilder("cutType");
 				if (tdlx_jhtd.isChecked()) {
-					cut_type = "计划停电";
+					cut_type.append("02");
 				} else if (tdlx_lstd.isChecked()) {
-					cut_type = "临时停电";
+					cut_type.append("01");
 				} else if (tdlx_qt.isChecked()) {
-					cut_type = "其他";
+					cut_type.append("03");
 				}
 
-				// TODO 发送网络请求
-				webRequest.createPlanTask(PlanAdd.this, weather, xmmc.getText().toString(),
-						tdfw.getText().toString(), tdyxqy.getText().toString(),
-						zygznr.getText().toString(), gzfzr.getText().toString(),
-						jhkssj.getText().toString(), jhjssj.getText().toString(), category,
-						sfxydb.isChecked(), special, ysgdwld.getText().toString(),
-						sc.getText().toString(), domain, sftd.isChecked(), cut_type,
-						ssdw.getText().toString(), rs.getText().toString(),
-						bz.getText().toString());
+				// 发送网络请求
+				webRequest.createPlanTask(PlanAdd.this, weather.toString(),
+						xmmc.getText().toString(), tdfw.getText().toString(),
+						tdyxqy.getText().toString(), zygznr.getText().toString(), gzfzrList,
+						Utils.parseDateInFormat(jhkssj.getText().toString()),
+						Utils.parseDateInFormat(jhjssj.getText().toString()), category.toString(),
+						sfxydb.isChecked(), special, ysgdwldList, sc.getText().toString(),
+						domain.toString(), sftd.isChecked(), cut_type.toString(), orgs,
+						rs.getText().toString(), bz.getText().toString());
 			} else {
 				showAlterDialog("错误", "请确认必填项填写完整!", R.drawable.login_error_icon, "确定", null);
 			}
@@ -399,12 +421,8 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 				}
 				break;
 			case 200:
-				orgs = (List<Node>) data.getSerializableExtra("data");
-				StringBuilder builder = new StringBuilder();
-				for (Node i : orgs) {
-					builder.append(i.getName() + "/");
-				}
-				ssdw.setText(builder.toString());
+				orgs = (Node) data.getSerializableExtra("data");
+				ssdw.setText(orgs.getName());
 				break;
 			}
 		}

@@ -360,40 +360,31 @@
                 android:orientation="horizontal" >
 
                 <RadioButton
-                    android:id="@+id/jihuagongzuo"
+                    android:id="@+id/xianchagnzuoye"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
                     android:checked="true"
-                    android:text="计划工作"
+                    android:text="作业现场"
                     android:textColor="#ffffff" />
 
                 <RadioButton
-                    android:id="@+id/linshigongzuo"
+                    android:id="@+id/caozuoxianchang"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:text="临时工资"
+                    android:text="操作现场"
                     android:textColor="#ffffff" />
 
                 <RadioButton
-                    android:id="@+id/guzhangqiangxiu"
+                    android:id="@+id/guzhangqiangxiuxianchang"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:text="故障抢修"
-                    android:textColor="#ffffff" />
-
-                <RadioButton
-                    android:id="@+id/leibie_qita"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:text="其他"
+                    android:text="故障抢修现场"
                     android:textColor="#ffffff" />
             </nercms.schedule.view.FlowRadioGroup>
         </LinearLayout>

@@ -55,7 +55,7 @@ public class OrgSelect extends BaseActivity implements DataChanged {
 	OrgSelectAdapter<Org> adapter;
 
 	List<Node> selectedPerson;
-	private List<Node> lsSelectedPod = new ArrayList<Node>();
+	private Node lsSelectedPod;
 
 	private OrgDao dao;
 	public ArrayList<OrgNodeModel> orgNodeSecondList;
@@ -72,7 +72,7 @@ public class OrgSelect extends BaseActivity implements DataChanged {
 
 		userID = MySharedPreference.get(OrgSelect.this, MySharedPreference.USER_ID, null);
 
-		lsSelectedPod = (List<Node>) getIntent().getExtras().getSerializable("pod");
+		lsSelectedPod = (Node) getIntent().getExtras().getSerializable("pod");
 
 		initActionBar();
 		// 组织机构树数据准备
@@ -113,8 +113,8 @@ public class OrgSelect extends BaseActivity implements DataChanged {
 
 		// 确定按钮
 		select_ok = menu.add(0, 1, 0, "确定");
-		if (lsSelectedPod != null)
-			size = lsSelectedPod.size();
+		if (adapter.getSelectedDate() != null)
+			size = adapter.getSelectedDate().size();
 		select_ok.setTitle("确定(" + size + ")");
 		select_ok.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 		return super.onCreateOptionsMenu(menu);
@@ -147,7 +147,7 @@ public class OrgSelect extends BaseActivity implements DataChanged {
 			Intent intent = null;
 
 			intent = new Intent();
-			intent.putExtra("data", (Serializable) selectedPerson);
+			intent.putExtra("data", (Serializable) adapter.getSelectedDate().get(0));
 			setResult(RESULT_OK, intent);
 			this.finish();
 			break;

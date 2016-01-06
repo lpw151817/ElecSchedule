@@ -13,6 +13,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.imooc.treeview.utils.Node;
 import com.imooc.treeview.utils.adapter.TreeListViewAdapter;
@@ -41,14 +42,17 @@ public class OrgSelectAdapter<T> extends TreeListViewAdapter<T> {
 	// super(tree, context, datas, defaultExpandLevel);
 	// }
 
-	private List<Node> lsSelectedPod;
+	private Node lsSelectedPod;
+	Context c;
 
 	public OrgSelectAdapter(ListView tree, Context context, List<T> datas, int defaultExpandLevel,
-			List<Node> lsPod) throws IllegalArgumentException, IllegalAccessException {
+			Node lsPod) throws IllegalArgumentException, IllegalAccessException {
 		super(tree, context, datas, defaultExpandLevel);
 		this.lsSelectedPod = lsPod;
-
+		this.c = context;
 	}
+
+	private boolean hasSelect = false;
 
 	@Override
 	public View getConvertView(final Node node, int position, View convertView, ViewGroup parent) {
@@ -65,7 +69,7 @@ public class OrgSelectAdapter<T> extends TreeListViewAdapter<T> {
 
 		holder.mCb.setFocusable(false);
 
-		if (lsSelectedPod != null && lsSelectedPod.contains(node)) {
+		if (lsSelectedPod != null && lsSelectedPod.equals(node)) {
 			holder.mCb.setChecked(true);
 			if (!selected.contains(node))
 				selected.add(node);
@@ -81,12 +85,25 @@ public class OrgSelectAdapter<T> extends TreeListViewAdapter<T> {
 		holder.mCb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				if (isChecked)
-					selected.add(node);
-				else
-					selected.remove(node);
-				if (changed != null)
-					changed.onChanged(selected.size());
+				if (selected.size() == 1) {
+					if (isChecked) {
+						Toast.makeText(c, "只能选择一个", Toast.LENGTH_LONG).show();
+						buttonView.setChecked(false);
+					} else {
+						selected.remove(node);
+						if (changed != null)
+							changed.onChanged(selected.size());
+					}
+
+				} else {
+					if (isChecked)
+						selected.add(node);
+					else
+						selected.remove(node);
+
+					if (changed != null)
+						changed.onChanged(selected.size());
+				}
 			}
 		});
 
