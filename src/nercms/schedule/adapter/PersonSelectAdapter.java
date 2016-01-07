@@ -97,6 +97,14 @@ public class PersonSelectAdapter<T> extends TreeListViewAdapter<T> {
 					}
 				}
 			}
+			// ЦёБо
+			else if (entranceFlag == 2) {
+				if (lsSelectedPod != null && lsSelectedPod.contains(node)) {
+					holder.mCb.setChecked(true);
+					if (!selected.contains(node))
+						selected.add(node);
+				}
+			}
 
 			holder.mCb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 				@Override

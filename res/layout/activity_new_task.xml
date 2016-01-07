@@ -37,10 +37,12 @@
                     android:layout_weight="1"
                     android:background="@drawable/edit_text"
                     android:drawableRight="@drawable/ic_action_new"
+                    android:editable="false"
                     android:singleLine="true"
                     android:textColor="#FFFFFF" />
 
-                <!-- <ImageButton
+                <!--
+                     <ImageButton
                     android:id="@+id/jieshouren_bt"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
@@ -51,7 +53,7 @@
                     android:focusable="true"
                     android:gravity="center"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/mm_title_btn_contact_normal" /> -->
+                    android:src="@drawable/mm_title_btn_contact_normal" />                -->
             </LinearLayout>
 
             <ImageView
@@ -116,7 +118,8 @@
                     android:background="@drawable/edit_text"
                     android:gravity="top"
                     android:maxLines="5"
-                    android:textColor="#FFFFFF" />                -->
+                    android:textColor="#FFFFFF" />
+                -->
 
                 <ImageButton
                     android:id="@+id/fujian_bt"
@@ -124,12 +127,12 @@
                     android:layout_height="30dp"
                     android:layout_alignParentRight="true"
                     android:layout_marginLeft="5dip"
+                    android:background="@drawable/ic_chat_add_attach"
                     android:clickable="true"
                     android:cropToPadding="true"
                     android:focusable="true"
                     android:gravity="center"
-                    android:scaleType="fitCenter"
-                    android:background="@drawable/ic_chat_add_attach" />
+                    android:scaleType="fitCenter" />
             </RelativeLayout>
 
             <ImageView
@@ -155,7 +158,6 @@
                 android:layout_marginLeft="10.0px"
                 android:layout_marginRight="10.0px"
                 android:layout_marginTop="1.0px"
-                
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="5dp" >

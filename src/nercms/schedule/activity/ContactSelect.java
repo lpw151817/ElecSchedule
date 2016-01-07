@@ -82,7 +82,7 @@ public class ContactSelect extends BaseActivity implements DataChanged {
 		userID = MySharedPreference.get(ContactSelect.this, MySharedPreference.USER_ID, null);
 
 		entranceFlag = getIntent().getExtras().getInt("entrance_flag");
-		type = getIntent().getExtras().getInt("type");
+		type = getIntent().getExtras().getInt("type", -1);
 
 		lsSelectedPod = (List<Node>) getIntent().getExtras().getSerializable("pod");
 		lsSelectedReceiver = (List<Node>) getIntent().getExtras().getSerializable("receiver");
