@@ -14,19 +14,20 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.wxapp.service.elec.dao.PlanTaskDao;
+import android.wxapp.service.elec.model.bean.table.tb_task_info;
 import nercms.schedule.R;
 
 public class MeiRiJiHuaAdapter extends BaseAdapter {
-	List<Bean> data;
 	Context mContext;
+	List<tb_task_info> data;
+	PlanTaskDao dao;
 
-	public MeiRiJiHuaAdapter(Context c) {
+	public MeiRiJiHuaAdapter(Context c, List<tb_task_info> data, PlanTaskDao dao) {
 		this.mContext = c;
-		this.data = new ArrayList<Bean>();
-		for (int i = 1; i < 5; i++) {
-			data.add(new Bean("日计划" + i + "", "2015-11-1" + i + ""));
-		}
-
+		this.data = data;
+		this.dao = dao;
 	}
 
 	@Override
@@ -58,8 +59,8 @@ public class MeiRiJiHuaAdapter extends BaseAdapter {
 		} else {
 			holder = (Holder) convertView.getTag();
 		}
-		holder.name.setText(data.get(position).getTn());
-		holder.time.setText(data.get(position).getT());
+		holder.name.setText(data.get(position).getName());
+		holder.time.setText(data.get(position).getPlan_start_time());
 		holder.delete.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -69,8 +70,14 @@ public class MeiRiJiHuaAdapter extends BaseAdapter {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						// TODO 确认删除
-
+						// 确认删除
+						if (dao.deleteTask(data.get(position).getId())) {
+							Toast.makeText(mContext, "删除成功", Toast.LENGTH_LONG).show();
+							data.remove(position);
+							MeiRiJiHuaAdapter.this.notifyDataSetChanged();
+						} else {
+							Toast.makeText(mContext, "删除失败", Toast.LENGTH_LONG).show();
+						}
 					}
 				}, "取消", null);
 			}
@@ -82,33 +89,6 @@ public class MeiRiJiHuaAdapter extends BaseAdapter {
 	class Holder {
 		TextView name, time;
 		ImageView delete;
-	}
-
-	class Bean {
-		String tn, t;
-
-		public String getTn() {
-			return tn;
-		}
-
-		public void setTn(String tn) {
-			this.tn = tn;
-		}
-
-		public String getT() {
-			return t;
-		}
-
-		public void setT(String t) {
-			this.t = t;
-		}
-
-		public Bean(String tn, String t) {
-			super();
-			this.tn = tn;
-			this.t = t;
-		}
-
 	}
 
 	protected void showAlterDialog(String title, String content, Integer icon, String pB,

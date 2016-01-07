@@ -87,9 +87,10 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 		initHandler();
 	}
 
-	private void startActivity() {
+	private void startActivity(String tid) {
 		Intent intent = new Intent(this, MeiRiJiHua.class);
 		intent.putExtra("enterType", enterType);
+		intent.putExtra("tid", tid);
 		startActivity(intent);
 	}
 
@@ -103,7 +104,8 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 				case Constants.CREATE_TASK_SUCCESS:
 					// 发布成功
 					showLongToast("发布成功");
-					startActivity();
+					CreatePlanTaskResponse r = (CreatePlanTaskResponse) msg.obj;
+					startActivity(r.getTid());
 					break;
 				case Constants.CREATE_TASK_FAIL:
 				case Constants.CREATE_TASK_SAVE_FAIL:
