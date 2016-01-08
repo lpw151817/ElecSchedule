@@ -88,6 +88,7 @@ public class XianChangSi extends BaseActivity {
 				mMap.put("type", "image");
 				mMap.put("image", XianChangSiAdapter.imagePath);
 				mMap.put("position", myList.position+"");
+				mMap.put("from", "XianChangSi");
 				
 				mContent.put(0, mMap);
 				intent.putExtra("address", (Serializable)mContent);
@@ -113,12 +114,15 @@ public class XianChangSi extends BaseActivity {
 				mMap.put("type", "audio");
 				mMap.put("audiopath", data.getStringExtra("path"));
 				mMap.put("position", myList.position+"");
+				mMap.put("from", "XianChangSi");
 				
 				mContent.put(0, mMap);
 				intent.putExtra("address", (Serializable)mContent);
 				startActivity(intent);
 //				System.out.println("XianchangsiActivity: " +  data.getStringExtra("path"));
 			}
+			break;
+			
 
 		default:
 			break;

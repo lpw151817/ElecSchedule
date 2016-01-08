@@ -24,6 +24,8 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.ExifInterface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Environment;
 import android.os.StatFs;
 import android.telephony.TelephonyManager;
@@ -927,5 +929,25 @@ public class Utils {
 		Matcher matcher = pattern.matcher(str);
 		return matcher.matches();
 	}
+	
+	public static boolean isNetworkAvailable(Context context) {  
+        ConnectivityManager connectivity = (ConnectivityManager) context  
+                .getSystemService(Context.CONNECTIVITY_SERVICE);  
+        if (connectivity == null) {  
+        } else {  
+            NetworkInfo[] info = connectivity.getAllNetworkInfo();  
+            if (info != null) {  
+                for (int i = 0; i < info.length; i++) {  
+                    if (info[i].getState() == NetworkInfo.State.CONNECTED) {  
+                        return true;  
+                    }  
+                }  
+            }  
+        }  
+        return false;  
+    } 
+	
+	
+	
 
 }

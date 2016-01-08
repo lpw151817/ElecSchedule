@@ -131,6 +131,8 @@ public class RecordActivity extends SherlockActivity {
 		} else {
 			menu.findItem(R.id.action_sure).setVisible(false);
 		}
+		
 		return super.onPrepareOptionsMenu(menu);
 	}
+	
 }

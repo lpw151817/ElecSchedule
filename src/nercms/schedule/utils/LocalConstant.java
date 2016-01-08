@@ -28,6 +28,7 @@ public class LocalConstant {
 	public static final int MEETING_SPEAKER_SELECT_REQUEST_CODE = 123;
 	public static final int TASK_POD_SELECT_REQUEST_CODE = 124;
 	public static final int SELECT_ATTACHMENT = 423;
+	public static final int SHOWXIANCHANG_ATTACHMENT = 424;
 
 	// 联系人是否选中
 	public static final int SELECT_CONTACT_CHECKED = 120;
