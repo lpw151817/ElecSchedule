@@ -22,11 +22,12 @@ public class BaseActivity extends SherlockActivity {
 			if (isUp) {
 				getSupportActionBar().setDisplayShowCustomEnabled(false);
 				getSupportActionBar().setDisplayShowTitleEnabled(true);
-				getSupportActionBar().setDisplayShowHomeEnabled(true);
-				if (iconId != null)
+				if (iconId != null) {
+					getSupportActionBar().setDisplayShowHomeEnabled(true);
 					getSupportActionBar().setIcon(iconId);
-				else
-					getSupportActionBar().setIcon(R.drawable.ic_launcher);
+				} else {
+					getSupportActionBar().setDisplayShowHomeEnabled(false);
+				}
 				getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 			}
 		}

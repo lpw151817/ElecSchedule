@@ -11,7 +11,8 @@
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/view"
         android:text="sadfsdafsdafsdafsdasdafsdafsdafsdafsdafsdafsdafsdaffsdafsdafsdafsfda"
-        android:textSize="17dip" />
+        android:textColor="#ffffff"
+        android:textSize="23sp" />
 
     <LinearLayout
         android:id="@+id/view"
@@ -23,23 +24,23 @@
 
         <ImageButton
             android:id="@+id/video"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_menu_slideshow"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/input_video_icon"
             android:visibility="gone" />
 
         <ImageButton
             android:id="@+id/radio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_btn_speak_now"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/input_audio_icon"
             android:visibility="gone" />
 
         <ImageButton
             android:id="@+id/photo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_menu_camera"
+           android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/input_camera_icon"
             android:visibility="gone" />
     </LinearLayout>
 

@@ -22,7 +22,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
-public class RecordActivity extends SherlockActivity {
+public class RecordActivity extends BaseActivity {
 
 	RecordButton mRecord;
 	ImageView mImage;
@@ -37,13 +37,13 @@ public class RecordActivity extends SherlockActivity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_record);
+
+		iniActionBar(true, null, "附件上传");
 		com.actionbarsherlock.app.ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 
 		mRecord = (RecordButton) findViewById(R.id.btn_record);
 		mImage = (ImageView) findViewById(R.id.img_record);
-		
-		
 
 		mRecord.setAudioRecord(new AudioRecorder());
 		mRecord.setAudioFinishRecorderListener(new AudioFinishRecorderListener() {
@@ -52,14 +52,14 @@ public class RecordActivity extends SherlockActivity {
 			public void onFinished(String filePath) {
 				Log.e("TAG", "回调成功");
 				mImage.setVisibility(View.VISIBLE);
-				
+
 				isShow = true;
 				invalidateOptionsMenu();
 				mImage.setOnClickListener(new OnClickListener() {
 
 					@Override
 					public void onClick(View arg0) {
-						
+
 						audiopath = AudioRecorder.path;
 						File file = new File(audiopath);
 						Uri uri = Uri.fromFile(file);
@@ -67,8 +67,7 @@ public class RecordActivity extends SherlockActivity {
 						intent1.setAction(Intent.ACTION_DEFAULT);
 						intent1.setDataAndType(uri, "audio/*");
 						startActivity(intent1);
-						
-						
+
 					}
 				});
 
@@ -81,8 +80,8 @@ public class RecordActivity extends SherlockActivity {
 			public void onStart() {
 				isShow = false;
 				mImage.setVisibility(View.INVISIBLE);
-				
-				//更新操作栏菜单
+
+				// 更新操作栏菜单
 				invalidateOptionsMenu();
 			}
 		});
@@ -106,7 +105,7 @@ public class RecordActivity extends SherlockActivity {
 			audiopath = AudioRecorder.path;
 			Intent intent = new Intent();
 			intent.putExtra("path", audiopath);
-			System.out.println("RecordActivity audiopath: "+ audiopath);
+			System.out.println("RecordActivity audiopath: " + audiopath);
 			setResult(RESULT_OK, intent);
 			finish();
 			break;
@@ -131,8 +130,8 @@ public class RecordActivity extends SherlockActivity {
 		} else {
 			menu.findItem(R.id.action_sure).setVisible(false);
 		}
-		
+
 		return super.onPrepareOptionsMenu(menu);
 	}
-	
+
 }

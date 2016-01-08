@@ -86,8 +86,10 @@ public class ContactSelect extends BaseActivity implements DataChanged {
 
 		lsSelectedPod = (List<Node>) getIntent().getExtras().getSerializable("pod");
 		lsSelectedReceiver = (List<Node>) getIntent().getExtras().getSerializable("receiver");
-
-		initActionBar();
+		if (type == 1)
+			iniActionBar(true, null, "选择工作负责人");
+		else
+			iniActionBar(true, null, "选择应上岗到位领导");
 		// 组织机构树数据准备
 		dao = new OrgDao(this);
 
@@ -104,15 +106,6 @@ public class ContactSelect extends BaseActivity implements DataChanged {
 			e.printStackTrace();
 		}
 
-	}
-
-	// actionbar初始化
-	private void initActionBar() {
-		getSupportActionBar().setDisplayShowCustomEnabled(false);
-		getSupportActionBar().setDisplayShowTitleEnabled(true);
-		getSupportActionBar().setDisplayShowHomeEnabled(true);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		getSupportActionBar().setTitle("选择联系人");
 	}
 
 	@Override

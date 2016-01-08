@@ -33,11 +33,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ShowXianChangAttachment extends Activity implements
-		OnClickListener {
+public class ShowXianChangAttachment extends BaseActivity implements OnClickListener {
 
 	private ImageView mImage;
-	private TextView mTime;//显示时间
+	private TextView mTime;// 显示时间
 	private Button mOk;
 	private Button mCancel;
 	private String imagePath;
@@ -54,16 +53,16 @@ public class ShowXianChangAttachment extends Activity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.showxianchangsiattachment);
+
+		iniActionBar(true, null, "确认提交附件");
 
 		mImage = (ImageView) findViewById(R.id.iv_attach);
 		mTime = (TextView) findViewById(R.id.tv_time);
 		mOk = (Button) findViewById(R.id.bt_ok);
 		mCancel = (Button) findViewById(R.id.bt_cancel);
 
-		mContent = (Map<Integer, Map<String, String>>) getIntent()
-				.getSerializableExtra("address");
+		mContent = (Map<Integer, Map<String, String>>) getIntent().getSerializableExtra("address");
 
 		mMap = mContent.get(0);
 		from = mMap.get("from");
@@ -106,15 +105,15 @@ public class ShowXianChangAttachment extends Activity implements
 			} else if (type.equals("video")) {
 				filePath = mMap.get("path");
 
-				Bitmap videoThumbnailBitmap = getVideoThumbnail(filePath, 400,
-						400, MediaStore.Images.Thumbnails.MINI_KIND);
+				Bitmap videoThumbnailBitmap = getVideoThumbnail(filePath, 400, 400,
+						MediaStore.Images.Thumbnails.MINI_KIND);
 				mImage.setImageBitmap(videoThumbnailBitmap);
 
 			}
 		}
-		
+
 		mCurrentTime = Utils.formatDateMs(System.currentTimeMillis());
-		
+
 		mTime.setText(Utils.formatDateMs(System.currentTimeMillis()));
 
 		mOk.setOnClickListener(this);
@@ -129,19 +128,16 @@ public class ShowXianChangAttachment extends Activity implements
 		int id = arg0.getId();
 		switch (id) {
 		case R.id.bt_ok:
-			if (!Utils.isNetworkAvailable(getApplicationContext())
-					|| mGPS == null) {
-				Toast.makeText(getApplicationContext(), "无网络，无法获取GPS",
-						Toast.LENGTH_SHORT).show();
+			if (!Utils.isNetworkAvailable(getApplicationContext()) || mGPS == null) {
+				Toast.makeText(getApplicationContext(), "无网络，无法获取GPS", Toast.LENGTH_SHORT).show();
 				return;
 			}
 			Intent intent = new Intent();
 			if (from.equals("XianChangSi")) {
 
-				final Intent mintent = new Intent(ShowXianChangAttachment.this,
-						XianChangAdd.class);
+				final Intent mintent = new Intent(ShowXianChangAttachment.this, XianChangAdd.class);
 
-				//postion存在intent中，时间，gps,url都存在map中了（代表一个附件的完整信息）
+				// postion存在intent中，时间，gps,url都存在map中了（代表一个附件的完整信息）
 				mintent.putExtra("position", mPosition);
 				mintent.putExtra("from", "ShwoXianChangAttachment");
 
@@ -155,21 +151,21 @@ public class ShowXianChangAttachment extends Activity implements
 					mMap.put("path", audioPath);
 
 				}
-				
-				mMap.put("time", mCurrentTime);//传递附件的时间戳
-				mMap.put("index", 0+"");//第一个文件的下标是0
+
+				mMap.put("time", mCurrentTime);// 传递附件的时间戳
+				mMap.put("index", 0 + "");// 第一个文件的下标是0
 				mMap.put("gps", mGPS);
-				mintent.putExtra("path", (Serializable) mMap);//intent中存了position和mMap
+				mintent.putExtra("path", (Serializable) mMap);// intent中存了position和mMap
 				startActivity(mintent);
 				finish();
 				return;
 			} else if (from.equals("XianChangUpload")) {
 
-				//附件信息
+				// 附件信息
 				Map<String, Object> mMap1 = new HashMap<String, Object>();
 				mMap1.put("gps", mGPS);
 				mMap1.put("path", filePath);
-				mMap1.put("time", mCurrentTime);//传递附件的时间
+				mMap1.put("time", mCurrentTime);// 传递附件的时间
 				mMap1.put("index", index);
 
 				// 传递filetype的目的是在xianchangupload中区分是seletimage还是captureImage来做相应的操作
@@ -190,7 +186,7 @@ public class ShowXianChangAttachment extends Activity implements
 				intent.putExtra("path", (Serializable) mMap1);
 
 			}
-			setResult(RESULT_OK, intent);//跳到XianChangUpload
+			setResult(RESULT_OK, intent);// 跳到XianChangUpload
 			finish();
 
 			break;
@@ -203,10 +199,10 @@ public class ShowXianChangAttachment extends Activity implements
 					Utils.deleteMedia(audioPath);
 				}
 			} else if (from.equals("XianChangUpload")) {
-				//在选择附件的时候，从相册中选择图片，点击取消按钮是不删除原图片的
+				// 在选择附件的时候，从相册中选择图片，点击取消按钮是不删除原图片的
 				if (type.equals("captureImage") || type.equals("audio") || type.equals("video")) {
 					Utils.deleteMedia(filePath);
-				} 
+				}
 			}
 
 			finish();
@@ -276,8 +272,7 @@ public class ShowXianChangAttachment extends Activity implements
 		mLocationClient.stop();// 停止定位
 	}
 
-	private Bitmap getVideoThumbnail(String videoPath, int width, int height,
-			int kind) {
+	private Bitmap getVideoThumbnail(String videoPath, int width, int height, int kind) {
 		Bitmap bitmap = null;
 		// 获取视频的缩略图
 		bitmap = ThumbnailUtils.createVideoThumbnail(videoPath, kind);

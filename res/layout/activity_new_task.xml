@@ -118,8 +118,7 @@
                     android:background="@drawable/edit_text"
                     android:gravity="top"
                     android:maxLines="5"
-                    android:textColor="#FFFFFF" />
-                -->
+                    android:textColor="#FFFFFF" />                -->
 
                 <ImageButton
                     android:id="@+id/fujian_bt"

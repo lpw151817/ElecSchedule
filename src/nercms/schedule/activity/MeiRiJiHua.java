@@ -1,5 +1,7 @@
 package nercms.schedule.activity;
 
+import com.actionbarsherlock.view.MenuItem;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,7 +15,7 @@ import nercms.schedule.R;
 import nercms.schedule.adapter.MeiRiJiHuaAdapter;
 import nercms.schedule.utils.Utils;
 
-public class MeiRiJiHua extends Activity {
+public class MeiRiJiHua extends BaseActivity {
 	int enterType;
 	String tid;
 	ListView mListView;
@@ -26,6 +28,9 @@ public class MeiRiJiHua extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_mei_ri_ji_hua);
+
+		iniActionBar(true, null, null);
+
 		enterType = getIntent().getIntExtra("enterType", 1);
 		tid = getIntent().getStringExtra("tid");
 
@@ -49,4 +54,13 @@ public class MeiRiJiHua extends Activity {
 		});
 	}
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			finish();
+			break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
 }

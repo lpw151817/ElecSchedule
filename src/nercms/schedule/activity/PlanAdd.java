@@ -78,8 +78,7 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 		gzfzrList = new ArrayList<Node>();
 		ysgdwldList = new ArrayList<Node>();
 
-		// ≥ı ºªØActionBar
-		initActionBar();
+		iniActionBar(true, null, null);
 		initView();
 
 		webRequest = new WebRequestManager(AppApplication.getInstance(), PlanAdd.this);
@@ -291,13 +290,6 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 				&& !TextUtils.isEmpty(ssdw.getText().toString())
 				&& !TextUtils.isEmpty(rs.getText().toString())
 				&& (lb_zyxc.isChecked() || lb_czxc.isChecked() || lb_gzqxxc.isChecked());
-	}
-
-	private void initActionBar() {
-		getSupportActionBar().setDisplayShowCustomEnabled(false);
-		getSupportActionBar().setDisplayShowTitleEnabled(true);
-		getSupportActionBar().setDisplayShowHomeEnabled(true);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 
 	@Override

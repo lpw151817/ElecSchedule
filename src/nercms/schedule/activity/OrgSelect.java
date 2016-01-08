@@ -68,13 +68,14 @@ public class OrgSelect extends BaseActivity implements DataChanged {
 		setContentView(R.layout.contact_select);
 		Log.d(TAG, "进入选择页面");
 
+		iniActionBar(true, null, "选择实施单位");
+
 		listView = (ListView) findViewById(R.id.id_tree);
 
 		userID = MySharedPreference.get(OrgSelect.this, MySharedPreference.USER_ID, null);
 
 		lsSelectedPod = (Node) getIntent().getExtras().getSerializable("pod");
 
-		initActionBar();
 		// 组织机构树数据准备
 		dao = new OrgDao(this);
 
@@ -90,15 +91,6 @@ public class OrgSelect extends BaseActivity implements DataChanged {
 			e.printStackTrace();
 		}
 
-	}
-
-	// actionbar初始化
-	private void initActionBar() {
-		getSupportActionBar().setDisplayShowCustomEnabled(false);
-		getSupportActionBar().setDisplayShowTitleEnabled(true);
-		getSupportActionBar().setDisplayShowHomeEnabled(true);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		getSupportActionBar().setTitle("选择联系人");
 	}
 
 	@Override

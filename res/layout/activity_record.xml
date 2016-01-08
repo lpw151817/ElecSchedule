@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/main_bg"
     android:orientation="vertical" >
 
     <ImageView
         android:id="@+id/img_record"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_centerInParent="true"
-        android:background="@drawable/record"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:layout_weight="1"
+        android:scaleType="centerCrop"
+        android:src="@drawable/record"
         android:visibility="invisible" />
 
     <nercms.schedule.view.RecordButton
         android:id="@+id/btn_record"
         android:layout_width="match_parent"
-        android:layout_alignParentBottom="true"
         android:layout_height="50dp"
         android:layout_margin="10dp"
-        android:background="@drawable/button_red_normal" />
+        android:background="@drawable/button_red_normal"
+        android:textColor="#ffffff" />
 
-</RelativeLayout>
+</LinearLayout>

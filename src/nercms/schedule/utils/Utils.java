@@ -39,6 +39,19 @@ public class Utils {
 	public static final int EC_PWD_ERROR = 2;
 	public static final int EC_USERNAME_ERROR = 3;
 
+	public static String judgeFileLeixin(String s) {
+		String kuozhanming = s.substring(s.lastIndexOf(".") + 1).toLowerCase();
+		if (kuozhanming.equals("mp4"))
+			return "attachmentType03";
+		else if (kuozhanming.equals("amr") || kuozhanming.equals("mp3"))
+			return "attachmentType02";
+		else if (kuozhanming.equals("jpg") || kuozhanming.equals("png")
+				|| kuozhanming.equals("gif"))
+			return "attachmentType01";
+		return null;
+
+	}
+
 	public static String formatDateMs(String ms) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		return format.format(new Date(Long.parseLong(ms)));
@@ -58,7 +71,6 @@ public class Utils {
 			return "";
 		}
 	}
-	
 
 	public static String getErrorMsg(String ec) {
 
@@ -101,7 +113,8 @@ public class Utils {
 			sim_msin_hex = "0" + sim_msin_hex;
 		}
 
-		String _local_imsi = Long.toString(Long.parseLong(sim_mnc_hex.concat(sim_msin_hex), 16), 10);
+		String _local_imsi = Long.toString(Long.parseLong(sim_mnc_hex.concat(sim_msin_hex), 16),
+				10);
 		return _local_imsi;
 
 	}
@@ -127,8 +140,8 @@ public class Utils {
 	// 生成缩略图
 	public static String produceThunmnailID() {
 		StringBuilder thumbnailID = new StringBuilder();
-		String nowTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date(System
-				.currentTimeMillis()));
+		String nowTime = new SimpleDateFormat("yyyyMMddHHmmss")
+				.format(new Date(System.currentTimeMillis()));
 		thumbnailID.append(nowTime).append(getRandomString(12));
 		return thumbnailID.toString();
 	}
@@ -136,8 +149,8 @@ public class Utils {
 	// 生成taskID
 	public static String produceTaskID(String userID) {
 		StringBuilder taskID = new StringBuilder();
-		String nowTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date(System
-				.currentTimeMillis()));
+		String nowTime = new SimpleDateFormat("yyyyMMddHHmmss")
+				.format(new Date(System.currentTimeMillis()));
 		taskID.append("T").append(userID).append(nowTime).append(getRandomString(5));
 
 		return taskID.toString();
@@ -149,8 +162,8 @@ public class Utils {
 	 */
 	public static String produceContactID(String userID) {
 		StringBuilder contactID = new StringBuilder();
-		String nowTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date(System
-				.currentTimeMillis()));
+		String nowTime = new SimpleDateFormat("yyyyMMddHHmmss")
+				.format(new Date(System.currentTimeMillis()));
 		contactID.append("C").append(userID).append(nowTime).append(getRandomString(5));
 
 		return contactID.toString();
@@ -159,8 +172,8 @@ public class Utils {
 	// 生成feedbackID
 	public static String produceFeedbackID(String userID) {
 		StringBuilder fbID = new StringBuilder();
-		String nowTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date(System
-				.currentTimeMillis()));
+		String nowTime = new SimpleDateFormat("yyyyMMddHHmmss")
+				.format(new Date(System.currentTimeMillis()));
 		fbID.append("F").append(userID).append(nowTime).append(getRandomString(5));
 
 		return fbID.toString();
@@ -169,8 +182,8 @@ public class Utils {
 	// 生成消息ID
 	public static String produceMessageID(String userID) {
 		StringBuilder fbID = new StringBuilder();
-		String nowTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date(System
-				.currentTimeMillis()));
+		String nowTime = new SimpleDateFormat("yyyyMMddHHmmss")
+				.format(new Date(System.currentTimeMillis()));
 		fbID.append("M").append(userID).append(nowTime).append(getRandomString(5));
 
 		return fbID.toString();
@@ -179,8 +192,8 @@ public class Utils {
 	// 生成PhoneID
 	public static String producePhoneID(String userID) {
 		StringBuilder fbID = new StringBuilder();
-		String nowTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date(System
-				.currentTimeMillis()));
+		String nowTime = new SimpleDateFormat("yyyyMMddHHmmss")
+				.format(new Date(System.currentTimeMillis()));
 		fbID.append("P").append(userID).append(nowTime).append(getRandomString(5));
 
 		return fbID.toString();
@@ -192,8 +205,8 @@ public class Utils {
 	 */
 	public static String produceConferenceID(String userID) {
 		StringBuilder conferenceID = new StringBuilder();
-		String nowTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date(System
-				.currentTimeMillis()));
+		String nowTime = new SimpleDateFormat("yyyyMMddHHmmss")
+				.format(new Date(System.currentTimeMillis()));
 		conferenceID.append("C").append(userID).append(nowTime).append(getRandomString(5));
 
 		return conferenceID.toString();
@@ -225,11 +238,14 @@ public class Utils {
 			}
 
 			if (type == MEDIA_TYPE_IMAGE) {
-				return filePath.toString() + File.separator + ID + "_" + getRandomString(3) + ".jpg";
+				return filePath.toString() + File.separator + ID + "_" + getRandomString(3)
+						+ ".jpg";
 			} else if (type == MEDIA_TYPE_VIDEO) {
-				return filePath.toString() + File.separator + ID + "_" + getRandomString(3) + ".mp4";
+				return filePath.toString() + File.separator + ID + "_" + getRandomString(3)
+						+ ".mp4";
 			} else if (type == MEDIA_TYPE_AUDIO) {
-				return filePath.toString() + File.separator + ID + "_" + getRandomString(3) + ".mp3";
+				return filePath.toString() + File.separator + ID + "_" + getRandomString(3)
+						+ ".mp3";
 			} else {
 				return "";
 			}
@@ -285,10 +301,10 @@ public class Utils {
 			}
 			// 重新读入图片
 			bitmap = BitmapFactory.decodeFile(originalUri, options);
-			
-			//旋转
-			int degree = readPictureDegree(originalUri);  
-			bitmap = rotateBitmap(bitmap,degree) ;
+
+			// 旋转
+			int degree = readPictureDegree(originalUri);
+			bitmap = rotateBitmap(bitmap, degree);
 			// 保存缩略图
 			saveBitmap(bitmap, thumbnailUri);
 
@@ -298,59 +314,58 @@ public class Utils {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
 	/**
 	 * @param path
 	 * @author chenqiang
 	 */
-	public static int readPictureDegree(String path) {    
-        int degree  = 0;    
-        try {    
-                ExifInterface exifInterface = new ExifInterface(path);    
-                int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);    
-                switch (orientation) {    
-                case ExifInterface.ORIENTATION_ROTATE_90:    
-                        degree = 90;    
-                        break;    
-                case ExifInterface.ORIENTATION_ROTATE_180:    
-                        degree = 180;    
-                        break;    
-                case ExifInterface.ORIENTATION_ROTATE_270:    
-                        degree = 270;    
-                        break;    
-                }    
-        } catch (IOException e) {    
-                e.printStackTrace();    
-        }    
-        return degree;    
-    } 
-	
-	
+	public static int readPictureDegree(String path) {
+		int degree = 0;
+		try {
+			ExifInterface exifInterface = new ExifInterface(path);
+			int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+					ExifInterface.ORIENTATION_NORMAL);
+			switch (orientation) {
+			case ExifInterface.ORIENTATION_ROTATE_90:
+				degree = 90;
+				break;
+			case ExifInterface.ORIENTATION_ROTATE_180:
+				degree = 180;
+				break;
+			case ExifInterface.ORIENTATION_ROTATE_270:
+				degree = 270;
+				break;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return degree;
+	}
+
 	/**
 	 * @param bitmap
 	 * @param rotate
 	 * @author chenqiang
 	 */
-	public static Bitmap rotateBitmap(Bitmap bitmap, int rotate){  
-        if(bitmap == null)  
-            return null ;  
-          
-        int w = bitmap.getWidth();  
-        int h = bitmap.getHeight();  
-  
-        // Setting post rotate to 90  
-        Matrix mtx = new Matrix();  
-        mtx.postRotate(rotate);  
-        return Bitmap.createBitmap(bitmap, 0, 0, w, h, mtx, true);  
-    }
+	public static Bitmap rotateBitmap(Bitmap bitmap, int rotate) {
+		if (bitmap == null)
+			return null;
+
+		int w = bitmap.getWidth();
+		int h = bitmap.getHeight();
+
+		// Setting post rotate to 90
+		Matrix mtx = new Matrix();
+		mtx.postRotate(rotate);
+		return Bitmap.createBitmap(bitmap, 0, 0, w, h, mtx, true);
+	}
+
 	/**
 	 * @author chenqiang
 	 */
 	public static String getThumbnailDir() {
 		// 得到一个路径，内容是sdcard的附件缩略图路径
-		String path = Environment.getExternalStorageDirectory().getPath()
-				+ "/TestRecord/Thumbnail";
+		String path = Environment.getExternalStorageDirectory().getPath() + "/TestRecord/Thumbnail";
 		File filePath = new File(path);
 
 		if (!filePath.exists()) {
@@ -361,7 +376,7 @@ public class Utils {
 		return path + File.separator + getFileDate() + ".jpg";
 
 	}
-	
+
 	/**
 	 * @author chenqiang
 	 */
@@ -371,57 +386,57 @@ public class Utils {
 		String file = format.format(date);
 		return file;
 	}
-	
+
 	/**
 	 * @author chenqiang
 	 */
 	// 删除文件夹
-		// param folderPath 文件夹完整绝对路径
-		public static void delFolder(String folderPath) {
-			try {
-				delAllFile(folderPath); // 删除完里面所有内容
-				String filePath = folderPath;
-				filePath = filePath.toString();
-				java.io.File myFilePath = new java.io.File(filePath);
-				myFilePath.delete(); // 删除空文件夹
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+	// param folderPath 文件夹完整绝对路径
+	public static void delFolder(String folderPath) {
+		try {
+			delAllFile(folderPath); // 删除完里面所有内容
+			String filePath = folderPath;
+			filePath = filePath.toString();
+			java.io.File myFilePath = new java.io.File(filePath);
+			myFilePath.delete(); // 删除空文件夹
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+	}
 
-		/**
-		 * @author chenqiang
-		 */
-		// 删除指定文件夹下所有文件
-		// param path 文件夹完整绝对路径
-		public static boolean delAllFile(String path) {
-			boolean flag = false;
-			File file = new File(path);
-			if (!file.exists()) {
-				return flag;
-			}
-			if (!file.isDirectory()) {
-				return flag;
-			}
-			String[] tempList = file.list();
-			File temp = null;
-			for (int i = 0; i < tempList.length; i++) {
-				if (path.endsWith(File.separator)) {
-					temp = new File(path + tempList[i]);
-				} else {
-					temp = new File(path + File.separator + tempList[i]);
-				}
-				if (temp.isFile()) {
-					temp.delete();
-				}
-				if (temp.isDirectory()) {
-					delAllFile(path + "/" + tempList[i]);// 先删除文件夹里面的文件
-					delFolder(path + "/" + tempList[i]);// 再删除空文件夹
-					flag = true;
-				}
-			}
+	/**
+	 * @author chenqiang
+	 */
+	// 删除指定文件夹下所有文件
+	// param path 文件夹完整绝对路径
+	public static boolean delAllFile(String path) {
+		boolean flag = false;
+		File file = new File(path);
+		if (!file.exists()) {
 			return flag;
 		}
+		if (!file.isDirectory()) {
+			return flag;
+		}
+		String[] tempList = file.list();
+		File temp = null;
+		for (int i = 0; i < tempList.length; i++) {
+			if (path.endsWith(File.separator)) {
+				temp = new File(path + tempList[i]);
+			} else {
+				temp = new File(path + File.separator + tempList[i]);
+			}
+			if (temp.isFile()) {
+				temp.delete();
+			}
+			if (temp.isDirectory()) {
+				delAllFile(path + "/" + tempList[i]);// 先删除文件夹里面的文件
+				delFolder(path + "/" + tempList[i]);// 再删除空文件夹
+				flag = true;
+			}
+		}
+		return flag;
+	}
 
 	/**
 	 * 保存bitmap
@@ -582,7 +597,7 @@ public class Utils {
 			} catch (IOException e) {
 				e.printStackTrace();
 				return false;
-			}// ping3次
+			} // ping3次
 
 			int status = p.waitFor();
 
@@ -758,7 +773,8 @@ public class Utils {
 	 * @param filepath
 	 * @return
 	 */
-	public static void deleteFolderFile(String filePath, boolean deleteThisPath) throws IOException {
+	public static void deleteFolderFile(String filePath, boolean deleteThisPath)
+			throws IOException {
 		if (!TextUtils.isEmpty(filePath)) {
 			File file = new File(filePath);
 
@@ -929,25 +945,22 @@ public class Utils {
 		Matcher matcher = pattern.matcher(str);
 		return matcher.matches();
 	}
-	
-	public static boolean isNetworkAvailable(Context context) {  
-        ConnectivityManager connectivity = (ConnectivityManager) context  
-                .getSystemService(Context.CONNECTIVITY_SERVICE);  
-        if (connectivity == null) {  
-        } else {  
-            NetworkInfo[] info = connectivity.getAllNetworkInfo();  
-            if (info != null) {  
-                for (int i = 0; i < info.length; i++) {  
-                    if (info[i].getState() == NetworkInfo.State.CONNECTED) {  
-                        return true;  
-                    }  
-                }  
-            }  
-        }  
-        return false;  
-    } 
-	
-	
-	
+
+	public static boolean isNetworkAvailable(Context context) {
+		ConnectivityManager connectivity = (ConnectivityManager) context
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		if (connectivity == null) {
+		} else {
+			NetworkInfo[] info = connectivity.getAllNetworkInfo();
+			if (info != null) {
+				for (int i = 0; i < info.length; i++) {
+					if (info[i].getState() == NetworkInfo.State.CONNECTED) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
 
 }

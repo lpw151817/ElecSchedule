@@ -24,7 +24,7 @@ public class Main extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		iniActionBar(true, R.drawable.iconfont_xinxi_max, "任务");
+		iniActionBar(true, null, "任务");
 
 		listview = (ListView) findViewById(R.id.listView1);
 		listview.setAdapter(new MainPagerAdapter(this));
@@ -68,7 +68,7 @@ public class Main extends BaseActivity {
 
 		// 子菜单 ：发起任务，消息，会议，视频直播，智能调度，添加客户
 		SubMenu addMenu = menu.addSubMenu("add item");
-		addMenu.add(0, 1, 0, "指挥调度").setIcon(R.drawable.btn_tips);
+		addMenu.add(0, 1, 0, "指挥调度").setIcon(R.drawable.ofm_meeting_icon);
 
 		MenuItem addItem = addMenu.getItem();
 		addItem.setIcon(R.drawable.ic_action_overflow);

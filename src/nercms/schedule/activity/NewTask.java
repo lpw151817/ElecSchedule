@@ -160,7 +160,7 @@ public class NewTask extends BaseActivity {
 		iniActionBar(true, null, null);
 
 		// TODO 需要从上一个界面中传入
-		tid = getIntent().getExtras().getString("tid");
+//		tid = getIntent().getExtras().getString("tid");
 
 		manager = new WebRequestManager(AppApplication.getInstance(), this);
 

@@ -28,7 +28,15 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.wxapp.service.AppApplication;
+import android.wxapp.service.elec.model.UploadTaskAttachmentResponse;
+import android.wxapp.service.elec.model.bean.Attachments;
+import android.wxapp.service.elec.model.bean.GPS;
+import android.wxapp.service.elec.model.bean.TaskAttachment;
+import android.wxapp.service.elec.request.Constants;
+import android.wxapp.service.elec.request.WebRequestManager;
 import android.wxapp.service.handler.MessageHandlerManager;
+import android.wxapp.service.jerry.model.normal.NormalServerResponse;
 import android.wxapp.service.util.Constant;
 import android.wxapp.service.util.HttpUploadTask;
 
@@ -41,9 +49,11 @@ import com.baidu.location.LocationClientOption.LocationMode;
 /*
  * showXianchangAttachment和XianChangUpload可以跳转到该界面
  */
-public class XianChangAdd extends BaseActivity implements ReceiveGPS{
+public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 	// TODO 测试数据
 	int enterType = 1;
+	// 上一个界面传过来的任务id
+	String tid = 1 + "";
 
 	ListView mListView;
 	Button bt_jieshurenwu;
@@ -65,31 +75,37 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS{
 
 	private XianChangAddAdapter xianChangAddAdapter;
 
-
 	private Handler handler;
 	private int fileCount;
-	
+
+	WebRequestManager requestManager;
+
 	/*
 	 * 每一个条目都有一个upload界面，每个upload界面用mediaIndex来标记附件在附件集中的位置，
 	 * 在点击delete按钮的时候，就删除对应的附件，总共有6个upload界面，你从upload界面退出的时候
 	 * mediaindex会被置为0，那么下次进来的时候，附件的下标从0开始，但是这样就和附件的路径不对应了
 	 */
 	private int[] myMediaIndexs;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_xian_chang_add);
 
+		requestManager = new WebRequestManager(AppApplication.getInstance(), this);
+
+		// enterType = getIntent().getIntExtra("", -1);
+		// tid = getIntent().getStringExtra("tid");
 
 		switch (enterType) {
 		case 1:
-			getSupportActionBar().setTitle("作业现场列表");
+			iniActionBar(true, null, "作业现场");
 			break;
 		case 2:
-			getSupportActionBar().setTitle("操作现场列表");
+			iniActionBar(true, null, "操作现场");
 			break;
 		case 3:
-			getSupportActionBar().setTitle("故障紧急抢修现场列表");
+			iniActionBar(true, null, "故障紧急抢修现场");
 			break;
 		}
 
@@ -109,7 +125,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS{
 		mListView = (ListView) findViewById(R.id.listview);
 		xianChangAddAdapter = new XianChangAddAdapter(this, enterType);
 		mListView.setAdapter(xianChangAddAdapter);
-		
+
 		myMediaIndexs = new int[6];
 
 		// 创建6个条目
@@ -120,8 +136,6 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS{
 
 		flag = getIntent().getIntExtra("position", -1);
 		System.out.println("传递过来的位置信息flag :" + flag);
-		
-
 
 		// mPath.add((String) getIntent().getCharSequenceExtra("path"));
 		mList.get(flag).add((Map<String, Object>) getIntent().getSerializableExtra("path"));
@@ -129,21 +143,20 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS{
 		mListView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				Intent intent = new Intent(XianChangAdd.this,XianChangUpload.class);
-				if (from.equals("XianChangUpload")){
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				Intent intent = new Intent(XianChangAdd.this, XianChangUpload.class);
+				if (from.equals("XianChangUpload")) {
 					intent.putExtra("mediaIndex", mediaIndex);
 					System.out.println("传回mediaIndex的值来记录上次附件的下标");
 				}
-				
-				if (flag == position){
+
+				if (flag == position) {
 					myMediaIndexs[flag] = 1;
 					intent.putExtra("myMediaIndex", myMediaIndexs[position]);
-				}else {
+				} else {
 					intent.putExtra("myMediaIndex", myMediaIndexs[position]);
 				}
-				
+
 				intent.putExtra("url", (Serializable) mList.get(position));
 				intent.putExtra("position", position);// 把被点击的条目的位置传递进去，这样在接收的时候就知道该该改变哪个list的内容
 				XianChangAdd.this.startActivityForResult(intent, 100);
@@ -153,17 +166,14 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS{
 		initHandler();
 
 	}
-	
-
 
 	protected int getFileCount() {
 		int content = 0;
 		for (List<Map<String, Object>> mLi : mList) {
 
-
 			for (Map<String, Object> map : mLi) {
-				if (map != null){
-					if (map.get("path") != null) {//调用map的get方法的前提是map != null
+				if (map != null) {
+					if (map.get("path") != null) {// 调用map的get方法的前提是map != null
 						content++;
 					}
 				}
@@ -172,21 +182,18 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS{
 		return content;
 	}
 
-
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
-		changeTextColor();//重新出现的时候字体更改  因为oncreate只执行一次
+
+		changeTextColor();// 重新出现的时候字体更改 因为oncreate只执行一次
 	}
 
 	String from = "";
 	int mediaIndex;
 
-
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO Auto-generated method stub
 
 		if (resultCode == LocalConstant.SELECT_ATTACHMENT) {
 			int index = data.getIntExtra("position", -1);
@@ -195,22 +202,22 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS{
 			System.out.println("index : " + index);
 			mContent = (List<Map<String, Object>>) data.getSerializableExtra("url");
 			mList.set(index, mContent);// 改变在Upload里面对应被更改的内容
-			
+
 			myMediaIndexs[index] = mediaIndex;
 		}
 
 	}
 
-	//改变list的颜色
+	// 改变list的颜色
 	private void changeTextColor() {
 		int position = 0;
 		// 根据mList里面是否有内容来设置字体的颜色
 		for (List<Map<String, Object>> mLi : mList) {
-//			System.out.println("map : " + mLi.toString());
+			// System.out.println("map : " + mLi.toString());
 			int content = 0;
 
 			for (Map<String, Object> map : mLi) {
-				if (map != null){
+				if (map != null) {
 					if (map.get("path") != null) {
 						System.out.println("file path : " + map.get("path"));
 						content++;
@@ -230,8 +237,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS{
 
 	private void attachmentUploadRequest() {
 		if (!Utils.isNetworkAvailable(XianChangAdd.this)) {
-			Toast.makeText(XianChangAdd.this, "网络不可用", Toast.LENGTH_SHORT)
-					.show();
+			Toast.makeText(XianChangAdd.this, "网络不可用", Toast.LENGTH_SHORT).show();
 			return;
 		}
 		String uploadUrl = LocalConstant.FILE_SERVER_ATTACH_URL;
@@ -240,8 +246,8 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS{
 			for (Map<String, Object> map : mLi) {
 				if (map != null) {
 					if (map.get("path") != null) {
-						new HttpUploadTask(new TextView(this), this).execute(
-								(String)map.get("path"), uploadUrl);
+						new HttpUploadTask(new TextView(this), this)
+								.execute((String) map.get("path"), uploadUrl);
 					}
 				}
 			}
@@ -262,13 +268,67 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS{
 					fileCount--;
 					Log.i("TAG", "count : " + fileCount);
 					if (fileCount == 0) {
-						Toast.makeText(XianChangAdd.this, "上传成功",
-								Toast.LENGTH_SHORT).show();
-						finish();
+
+						Toast.makeText(XianChangAdd.this, "上传成功", Toast.LENGTH_SHORT).show();
+						// 请求http接口
+						List<TaskAttachment> attachment = new ArrayList<TaskAttachment>();
+						for (int i = 0; i < mList.size(); i++) {
+							// // TODO standard 通过i来判断
+							// StringBuilder standard = new
+							// StringBuilder("standard");
+							// // 作业现场
+							// if (enterType == 1) {
+							//
+							// }
+							// // 操作现场
+							// else if (enterType == 2) {
+							//
+							// }
+							// // 故障抢修
+							// else if (enterType == 3) {
+							//
+							// }
+
+							List<Attachments> sublist = new ArrayList<Attachments>();
+							for (int j = 0; j < mList.get(i).size(); j++) {
+								Map<String, Object> attItem = mList.get(i).get(j);
+								String filePath = (String) attItem.get("path");
+								String type = Utils.judgeFileLeixin(filePath);
+								if (type != null) {
+									Attachments att = new Attachments(type, filePath,
+											(String) attItem.get("time"), (GPS) attItem.get("gps"));
+									sublist.add(att);
+								}
+							}
+							TaskAttachment item = new TaskAttachment(
+									/* standard.toString() */i + "", sublist);
+							attachment.add(item);
+						}
+
+						requestManager.uploadTaskAttachment(XianChangAdd.this, tid, enterType + "",
+								attachment);
+
+						// finish();
 					}
 
 					break;
 				case Constant.FILE_UPLOAD_FAIL:
+					Toast.makeText(XianChangAdd.this, "上传失败", Toast.LENGTH_SHORT).show();
+					break;
+
+				case Constants.UPLOAD_TASK_ATT_SUCCESS:
+					showLongToast("上传成功");
+					// TODO http接口请求成功回调
+					break;
+				case Constants.UPLOAD_TASK_ATT_SAVE_FAIL:
+				case Constants.UPLOAD_TASK_ATT_FAIL:
+					if (msg.obj != null) {
+						showAlterDialog("上传失败", ((NormalServerResponse) msg.obj).getEc(),
+								R.drawable.login_error_icon, "确定", null);
+					} else {
+						showAlterDialog("上传失败", "请检查是否与服务器连接正常", R.drawable.login_error_icon, "确定",
+								null);
+					}
 					break;
 				default:
 					break;
@@ -277,16 +337,38 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS{
 
 		};
 
-		MessageHandlerManager.getInstance().register(handler,
-				Constant.FILE_UPLOAD_FAIL, "XianChangAdd");
-		MessageHandlerManager.getInstance().register(handler,
-				Constant.FILE_UPLOAD_SUCCESS, "XianChangAdd");
+		MessageHandlerManager.getInstance().register(handler, Constant.FILE_UPLOAD_FAIL,
+				"XianChangAdd");
+		MessageHandlerManager.getInstance().register(handler, Constant.FILE_UPLOAD_SUCCESS,
+				"XianChangAdd");
+
+		MessageHandlerManager.getInstance().register(handler, Constants.UPLOAD_TASK_ATT_SUCCESS,
+				UploadTaskAttachmentResponse.class.getName());
+		MessageHandlerManager.getInstance().register(handler, Constants.UPLOAD_TASK_ATT_SAVE_FAIL,
+				UploadTaskAttachmentResponse.class.getName());
+		MessageHandlerManager.getInstance().register(handler, Constants.UPLOAD_TASK_ATT_FAIL,
+				UploadTaskAttachmentResponse.class.getName());
 	}
 
 	@Override
 	public void onReceiveGPS(MyGPS gps) {
-		// TODO Auto-generated method stub
-		
+
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+
+		MessageHandlerManager.getInstance().unregister(Constant.FILE_UPLOAD_FAIL, "XianChangAdd");
+		MessageHandlerManager.getInstance().unregister(Constant.FILE_UPLOAD_SUCCESS,
+				"XianChangAdd");
+
+		MessageHandlerManager.getInstance().unregister(Constants.UPLOAD_TASK_ATT_SUCCESS,
+				UploadTaskAttachmentResponse.class.getName());
+		MessageHandlerManager.getInstance().unregister(Constants.UPLOAD_TASK_ATT_SAVE_FAIL,
+				UploadTaskAttachmentResponse.class.getName());
+		MessageHandlerManager.getInstance().unregister(Constants.UPLOAD_TASK_ATT_FAIL,
+				UploadTaskAttachmentResponse.class.getName());
 	}
 
 }
