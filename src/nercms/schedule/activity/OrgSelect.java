@@ -128,23 +128,23 @@ public class OrgSelect extends BaseActivity implements DataChanged {
 			// String name = "";
 			// String id = "";
 
-			// if (selectedPerson.size() == 0) {
-			// Utils.showShortToast(ContactSelect.this, "未选中任何人");
-			// // 返回上层
-			// setResult(RESULT_CANCELED);
-			// finish();
-			// break;
-			// } else {
-			// 如果选择了人员并点击确定
-			Intent intent = null;
+			if (selectedPerson.size() == 0) {
+				Utils.showShortToast(OrgSelect.this, "未选中任何单位");
+				// 返回上层
+				setResult(RESULT_CANCELED);
+				finish();
+				break;
+			} else {
+				// 如果选择了人员并点击确定
+				Intent intent = null;
 
-			intent = new Intent();
-			intent.putExtra("data", (Serializable) adapter.getSelectedDate().get(0));
-			setResult(RESULT_OK, intent);
-			this.finish();
-			break;
+				intent = new Intent();
+				intent.putExtra("data", (Serializable) adapter.getSelectedDate().get(0));
+				setResult(RESULT_OK, intent);
+				this.finish();
+				break;
 
-		// }
+			}
 
 		}
 		return super.onOptionsItemSelected(item);

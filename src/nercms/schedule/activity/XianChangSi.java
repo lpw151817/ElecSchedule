@@ -20,7 +20,8 @@ public class XianChangSi extends BaseActivity {
 
 	ListView mListView;
 	// 1:作业现场，2：操作现场，3：故障现场
-	int type = 1;
+	int type;
+	String tid;
 
 	private XianChangSiAdapter xianChangSiAdapter;
 	private MyListPosition myList;
@@ -31,7 +32,8 @@ public class XianChangSi extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_xian_chang_si);
 
-		type = getIntent().getIntExtra("enterType", 1);
+		type = getIntent().getIntExtra("enterType", -1);
+		tid = getIntent().getStringExtra("tid");
 
 		switch (type) {
 		case 1:
@@ -66,19 +68,24 @@ public class XianChangSi extends BaseActivity {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode == RESULT_OK) {
+			Intent intent = new Intent(XianChangSi.this, ShowXianChangAttachment.class);
+			intent.putExtra("enterType", type);
+			intent.putExtra("tid", tid);
 
-		switch (requestCode) {
-		case LocalConstant.CAPTURE_IMAGE_REQUEST_CODE:
-			if (resultCode == RESULT_OK) {
-				Intent intent = new Intent(XianChangSi.this, ShowXianChangAttachment.class);
+			Map<String, String> mMap = new HashMap<String, String>();
+
+			switch (requestCode) {
+			case LocalConstant.CAPTURE_IMAGE_REQUEST_CODE:
+
 				// Bundle bundle = new Bundle();
 				// bundle.putCharSequence("type", "image");
 				// bundle.putCharSequence("image",
 				// XianChangSiAdapter.imagePath);
-				// bundle.putInt("position", myList.position);//被选中的listview的位置
+				// bundle.putInt("position",
+				// myList.position);//被选中的listview的位置
 				// intent.putExtra("address", bundle);
 
-				Map<String, String> mMap = new HashMap<String, String>();
 				mMap.put("type", "image");
 				mMap.put("image", XianChangSiAdapter.imagePath);
 				mMap.put("position", myList.position + "");
@@ -86,16 +93,13 @@ public class XianChangSi extends BaseActivity {
 
 				mContent.put(0, mMap);
 				intent.putExtra("address", (Serializable) mContent);
-				startActivity(intent);
 
 				System.out.println("outer : " + myList.position);
-			}
 
-			break;
+				break;
 
-		case LocalConstant.CAPTURE_AUDIO_REQUEST_CODE:
-			if (resultCode == RESULT_OK) {
-				Intent intent = new Intent(XianChangSi.this, ShowXianChangAttachment.class);
+			case LocalConstant.CAPTURE_AUDIO_REQUEST_CODE:
+
 				// Bundle bundle = new Bundle();
 				// bundle.putCharSequence("type", "audio");
 				// bundle.putCharSequence("audiopath",
@@ -104,7 +108,6 @@ public class XianChangSi extends BaseActivity {
 				// System.out.println("position123: "+ myList.position);
 				// intent.putExtra("address", bundle);
 
-				Map<String, String> mMap = new HashMap<String, String>();
 				mMap.put("type", "audio");
 				mMap.put("audiopath", data.getStringExtra("path"));
 				mMap.put("position", myList.position + "");
@@ -112,15 +115,16 @@ public class XianChangSi extends BaseActivity {
 
 				mContent.put(0, mMap);
 				intent.putExtra("address", (Serializable) mContent);
-				startActivity(intent);
 				// System.out.println("XianchangsiActivity: " +
 				// data.getStringExtra("path"));
-			}
-			break;
+				break;
 
-		default:
-			break;
+			default:
+				break;
+			}
+			startActivity(intent);
 		}
+
 	}
 
 	class MyListPosition implements ListPosition {

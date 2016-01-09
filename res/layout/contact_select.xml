@@ -2,30 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@android:color/white"
-    android:orientation="vertical" 
-     >
-   
+    android:background="#ffffff"
+    android:orientation="vertical" >
+
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="10dp"
-        android:orientation="vertical">
-        
-     <!-- <ExpandableListView
-        android:id="@+id/expandablelistview1"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-        
-    </ExpandableListView>  -->
-    
-     <ListView
-        android:id="@+id/id_tree"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:divider="#aaa"
-        android:dividerHeight="1px" >
-    </ListView>
+        android:orientation="vertical"
+        android:paddingTop="10dp" >
+
+        <ListView
+            android:id="@+id/id_tree"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:divider="#aaa"
+            android:dividerHeight="1px" >
+        </ListView>
     </LinearLayout>
+
 </LinearLayout>

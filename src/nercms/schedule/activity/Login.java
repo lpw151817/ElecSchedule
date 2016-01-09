@@ -66,10 +66,10 @@ public class Login extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);
 
-////		 this is test
-//		 // 用户测试使用，直接跳过本Activity
-//		 startActivity(Main.class);
-//		 return;
+		//// this is test
+		// // 用户测试使用，直接跳过本Activity
+		// startActivity(Main.class);
+		// return;
 
 		Log.v("Login", "Login onCreate");
 		webRequestManager = new WebRequestManager(AppApplication.getInstance(), Login.this);
@@ -151,19 +151,20 @@ public class Login extends BaseActivity {
 					MySharedPreference.save(Login.this, MySharedPreference.USER_ID, userID);
 					// 保存用户的登录名
 					MySharedPreference.save(Login.this, MySharedPreference.USER_NAME,
-							inputUserName);
+							inputUserName.toLowerCase());
 					// 保存用户密码
 					MySharedPreference.save(Login.this, MySharedPreference.USER_IC, inputPassword);
 
-					// // 新建线程去进行MQTT连接
-					// new Thread(new Runnable() {
-					// @Override
-					// public void run() {
-					// Looper.prepare();
-					Push.PERSON_ID = getUserId();
-					Push.get_instance(Login.this).ini();
-					// }
-					// }).start();
+					// //TODO MQTT
+					// // // 新建线程去进行MQTT连接
+					// // new Thread(new Runnable() {
+					// // @Override
+					// // public void run() {
+					// // Looper.prepare();
+					// Push.PERSON_ID = getUserId();
+					// Push.get_instance(Login.this).ini();
+					// // }
+					// // }).start();
 
 					webRequestManager.loginUpdate(Login.this);
 
@@ -244,12 +245,12 @@ public class Login extends BaseActivity {
 			return;
 		}
 		if (getUserIc() == null || getUserId() == null) {
-			webRequestManager.login(inputUserName, inputPassword);
+			webRequestManager.login(inputUserName.toLowerCase(), inputPassword);
 		} else {
-			if (!getUserName().equals(inputUserName)) {
+			if (!getUserName().equals(inputUserName.toLowerCase())) {
 				showAlterDialog("登录错误", "请检查网络连接状态", R.drawable.login_error_icon, "确定", null);
 			} else {
-				if (getUserName().toLowerCase().equals(inputUserName)
+				if (getUserName().toLowerCase().equals(inputUserName.toLowerCase())
 						&& getUserIc().toLowerCase().equals(inputPassword)) {
 					webRequestManager.loginUpdate(Login.this);
 				} else {

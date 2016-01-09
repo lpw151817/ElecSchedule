@@ -50,10 +50,10 @@ import com.baidu.location.LocationClientOption.LocationMode;
  * showXianchangAttachment和XianChangUpload可以跳转到该界面
  */
 public class XianChangAdd extends BaseActivity implements ReceiveGPS {
-	// TODO 测试数据
-	int enterType = 1;
+	// 测试数据
+	int enterType;
 	// 上一个界面传过来的任务id
-	String tid = 1 + "";
+	String tid;
 
 	ListView mListView;
 	Button bt_jieshurenwu;
@@ -94,8 +94,8 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 		requestManager = new WebRequestManager(AppApplication.getInstance(), this);
 
-		// enterType = getIntent().getIntExtra("", -1);
-		// tid = getIntent().getStringExtra("tid");
+		enterType = getIntent().getIntExtra("enterType", -1);
+		tid = getIntent().getStringExtra("tid");
 
 		switch (enterType) {
 		case 1:
@@ -128,8 +128,8 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 		myMediaIndexs = new int[6];
 
-		// 创建6个条目
-		for (int i = 0; i < 6; i++) {
+		// 初始化
+		for (int i = 0; i < xianChangAddAdapter.getCount(); i++) {
 			List<Map<String, Object>> mItem = new ArrayList<Map<String, Object>>();
 			mList.add(mItem);
 		}
@@ -297,10 +297,13 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 								if (type != null) {
 
 									MyGPS myGPS = (MyGPS) attItem.get("gps");
-									// TODO 参数修改
-									GPS gps = new GPS(getUserId(), System.currentTimeMillis() + "",
+									// 参数修改
+									GPS gps = new GPS(getUserId(),
+											Utils.formatDateMs(System.currentTimeMillis()),
 											myGPS.getLongitude() + "", myGPS.getLatitude() + "", "",
-											"", "", myGPS.getSpeed() + "", myGPS.getTime(), "", "");
+											myGPS.getRadius() + "", myGPS.getAltitude() + "",
+											myGPS.getSpeed() + "", myGPS.getTime(),
+											myGPS.getCoorType(), "");
 
 									Attachments att = new Attachments(type, filePath,
 											(String) attItem.get("time"), gps);

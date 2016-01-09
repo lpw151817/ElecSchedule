@@ -45,6 +45,11 @@
         <activity
             android:name=".activity.Login"
             android:theme="@style/Theme.Schedule" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <!-- 调用警力调度系统 -->
@@ -76,6 +81,10 @@
             android:theme="@style/Theme.Schedule" />
         <activity
             android:name=".activity.ContactDetail"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.Schedule" />
+        <activity
+            android:name=".activity.OrgSelect"
             android:launchMode="singleTop"
             android:theme="@style/Theme.Schedule" />
         <activity
@@ -161,11 +170,6 @@
             android:label="@string/title_activity_xian_chang_si"
             android:launchMode="singleTop"
             android:theme="@style/Theme.Schedule" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".activity.XianChangAdd"

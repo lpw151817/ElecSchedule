@@ -34,6 +34,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class ShowXianChangAttachment extends BaseActivity implements OnClickListener {
+	// 1:作业现场，2：操作现场，3：故障现场
+	int enterType;
+	String tid;
 
 	private ImageView mImage;
 	private TextView mTime;// 显示时间
@@ -54,6 +57,9 @@ public class ShowXianChangAttachment extends BaseActivity implements OnClickList
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.showxianchangsiattachment);
+
+		enterType = getIntent().getIntExtra("enterType", -1);
+		tid = getIntent().getStringExtra("tid");
 
 		iniActionBar(true, null, "确认提交附件");
 
@@ -136,6 +142,9 @@ public class ShowXianChangAttachment extends BaseActivity implements OnClickList
 			if (from.equals("XianChangSi")) {
 
 				final Intent mintent = new Intent(ShowXianChangAttachment.this, XianChangAdd.class);
+
+				mintent.putExtra("enterType", enterType);
+				mintent.putExtra("tid", tid);
 
 				// postion存在intent中，时间，gps,url都存在map中了（代表一个附件的完整信息）
 				mintent.putExtra("position", mPosition);
