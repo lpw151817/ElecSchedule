@@ -40,7 +40,7 @@
         android:label="@string/app_name" >
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="glLtU43kL1xCSTmCZE8IV9YW" />
+            android:value="VZTGwhtPxP379Lh8EwBAr75m" />
 
         <activity
             android:name=".activity.Login"
