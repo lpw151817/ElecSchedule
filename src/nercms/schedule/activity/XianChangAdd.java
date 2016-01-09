@@ -295,8 +295,15 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 								String filePath = (String) attItem.get("path");
 								String type = Utils.judgeFileLeixin(filePath);
 								if (type != null) {
+
+									MyGPS myGPS = (MyGPS) attItem.get("gps");
+									// TODO ²ÎÊýÐÞ¸Ä
+									GPS gps = new GPS(getUserId(), System.currentTimeMillis() + "",
+											myGPS.getLongitude() + "", myGPS.getLatitude() + "", "",
+											"", "", myGPS.getSpeed() + "", myGPS.getTime(), "", "");
+
 									Attachments att = new Attachments(type, filePath,
-											(String) attItem.get("time"), (GPS) attItem.get("gps"));
+											(String) attItem.get("time"), gps);
 									sublist.add(att);
 								}
 							}
