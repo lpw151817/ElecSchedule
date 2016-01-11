@@ -806,6 +806,7 @@ public class NewTask extends BaseActivity {
 					showImageDialog(imageView, uri);
 					break;
 				case TYPE_VIDEO:
+					
 					// µã»÷²¥·ÅÊÓÆµ
 					Intent intent = new Intent(NewTask.this, PlayVideo.class);
 					intent.putExtra("path", videopath);

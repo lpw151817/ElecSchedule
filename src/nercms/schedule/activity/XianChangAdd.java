@@ -271,9 +271,9 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 						Toast.makeText(XianChangAdd.this, "上传成功", Toast.LENGTH_SHORT).show();
 						// 请求http接口
+						// // TODO standard 通过i来判断
 						List<TaskAttachment> attachment = new ArrayList<TaskAttachment>();
 						for (int i = 0; i < mList.size(); i++) {
-							// // TODO standard 通过i来判断
 							// StringBuilder standard = new
 							// StringBuilder("standard");
 							// // 作业现场

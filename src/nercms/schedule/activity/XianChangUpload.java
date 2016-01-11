@@ -556,7 +556,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 						// getIntent().getCharSequenceExtra("path");
 						mFileName = mFilePath.substring(mFilePath.lastIndexOf(File.separator) + 1);
 
-						if (mFileName.contains(".jpg") || mFileName.contains(".png")) {// 传过来的是图片
+						if (mFileName.contains(".jpg") || mFileName.contains(".png") || mFileName.contains(".jpeg")) {// 传过来的是图片
 
 							String thumbnailUri = Utils.getThumbnailDir();
 							// 获取缩略图,根据原图创建缩略图, mImagePath是原图的地址
@@ -795,7 +795,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 				case NewTask.TYPE_VIDEO:
 					// 点击播放视频
 					Intent intent = new Intent(XianChangUpload.this, PlayVideo.class);
-					intent.putExtra("path", videopath);
+					intent.putExtra("path", index_originalPath_Map.get(MediaId));
 					startActivity(intent);
 					break;
 

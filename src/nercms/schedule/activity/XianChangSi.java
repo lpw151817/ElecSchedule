@@ -69,7 +69,8 @@ public class XianChangSi extends BaseActivity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == RESULT_OK) {
-			Intent intent = new Intent(XianChangSi.this, ShowXianChangAttachment.class);
+			Intent intent = new Intent(XianChangSi.this,
+					ShowXianChangAttachment.class);
 			intent.putExtra("enterType", type);
 			intent.putExtra("tid", tid);
 
@@ -119,6 +120,16 @@ public class XianChangSi extends BaseActivity {
 				// data.getStringExtra("path"));
 				break;
 
+			case LocalConstant.CAPTURE_VIDEO_REQUEST_CODE:
+				mMap.put("type", "video");
+				mMap.put("videopath", XianChangSiAdapter.videopath);
+				mMap.put("position", myList.position + "");
+				mMap.put("from", "XianChangSi");
+
+				mContent.put(0, mMap);
+				intent.putExtra("address", (Serializable) mContent);
+
+				break;
 			default:
 				break;
 			}
