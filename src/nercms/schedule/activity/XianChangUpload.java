@@ -286,7 +286,6 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
 
 		switch (requestCode) {
@@ -556,7 +555,8 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 						// getIntent().getCharSequenceExtra("path");
 						mFileName = mFilePath.substring(mFilePath.lastIndexOf(File.separator) + 1);
 
-						if (mFileName.contains(".jpg") || mFileName.contains(".png") || mFileName.contains(".jpeg")) {// 传过来的是图片
+						if (mFileName.contains(".jpg") || mFileName.contains(".png")
+								|| mFileName.contains(".jpeg")) {// 传过来的是图片
 
 							String thumbnailUri = Utils.getThumbnailDir();
 							// 获取缩略图,根据原图创建缩略图, mImagePath是原图的地址

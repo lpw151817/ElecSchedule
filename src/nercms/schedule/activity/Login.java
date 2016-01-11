@@ -47,8 +47,8 @@ public class Login extends BaseActivity {
 
 	private EditText etUserName; // ÓÃ»§Ãû±à¼­¿ò
 	private EditText etPassword; // ÃÜÂë±à¼­¿ò
-	String un = "admin";
-	String pwd = "admin";
+//	String un = "admin";
+//	String pwd = "admin";
 
 	private Button btnLogin;// µÇÂ¼°´Å¥
 
@@ -78,8 +78,8 @@ public class Login extends BaseActivity {
 
 		etUserName = (EditText) findViewById(R.id.login_user_edit);
 		etPassword = (EditText) findViewById(R.id.login_passwd_edit);
-		etUserName.setText(un);
-		etPassword.setText(pwd);
+//		etUserName.setText(un);
+//		etPassword.setText(pwd);
 
 		btnLogin = (Button) findViewById(R.id.login_login_btn);
 
