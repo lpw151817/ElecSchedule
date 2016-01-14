@@ -1,5 +1,7 @@
 package nercms.schedule.activity;
 
+import java.util.List;
+
 import com.actionbarsherlock.view.MenuItem;
 import com.android.volley.NetworkError;
 
@@ -7,9 +9,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.wxapp.service.elec.dao.PlanTaskDao;
+import android.wxapp.service.elec.model.bean.table.tb_task_info;
 import nercms.schedule.R;
 import nercms.schedule.adapter.XianChangAddAdapter;
 import nercms.schedule.adapter.XianchangAdapter;
@@ -28,6 +33,7 @@ public class TaskList extends BaseActivity {
 	int enterType;
 
 	PlanTaskDao planTaskDao;
+	List<tb_task_info> data;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -60,10 +66,22 @@ public class TaskList extends BaseActivity {
 		});
 
 		planTaskDao = new PlanTaskDao(this);
+		data = planTaskDao.getAllPlanTask(enterType, 3);
 
 		listView = (ListView) findViewById(R.id.task_list);
-		listView.setAdapter(
-				new XianchangAdapter(this, enterType, planTaskDao.getAllPlanTask(enterType, 3)));
+		listView.setAdapter(new XianchangAdapter(this, enterType, data));
+
+		listView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				// TODO item点击事件，用于查询任务详情
+				Intent intent = new Intent(TaskList.this, PlanAdd.class);
+				intent.putExtra("enterType", 0);
+				intent.putExtra("tid", data.get(position).getId());
+				TaskList.this.startActivity(intent);
+			}
+		});
 	}
 
 	@Override

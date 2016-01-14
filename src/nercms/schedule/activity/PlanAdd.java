@@ -12,14 +12,15 @@ import java.util.Date;
 import java.util.List;
 
 import com.actionbarsherlock.view.MenuItem;
+import com.baidu.location.b.b;
 import com.imooc.treeview.utils.Node;
-import com.nercms.Push;
 
-import android.R.integer;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
@@ -27,8 +28,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -36,18 +37,17 @@ import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.wxapp.service.AppApplication;
+import android.wxapp.service.elec.dao.PlanTaskDao;
 import android.wxapp.service.elec.model.CreatePlanTaskResponse;
-import android.wxapp.service.elec.model.LoginResponse;
+import android.wxapp.service.elec.model.bean.table.tb_task_info;
 import android.wxapp.service.elec.request.Constants;
 import android.wxapp.service.elec.request.WebRequestManager;
 import android.wxapp.service.handler.MessageHandlerManager;
 import android.wxapp.service.jerry.model.normal.NormalServerResponse;
-import android.wxapp.service.util.MySharedPreference;
 import nercms.schedule.R;
 import nercms.schedule.dateSelect.NumericWheelAdapter;
 import nercms.schedule.dateSelect.OnWheelChangedListener;
 import nercms.schedule.dateSelect.WheelView;
-import nercms.schedule.utils.MyLog;
 import nercms.schedule.utils.Utils;
 
 public class PlanAdd extends BaseActivity implements OnClickListener {
@@ -178,84 +178,226 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 		tdyxqy = (EditText) findViewById(R.id.tingdianyingxiangquyu);
 		zygznr = (EditText) findViewById(R.id.zhuyaogongzuoneirong);
 		gzfzr = (EditText) findViewById(R.id.gongzuofuzeren_et);
-		gzfzr.setOnTouchListener(new OnTouchListener() {
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				if (event.getAction() == MotionEvent.ACTION_UP) {
-					startPeopleSelect(1);
-				}
-				return true;
-			}
-		});
 		jhkssj = (EditText) findViewById(R.id.kaishishijian_et);
-		jhkssj.setOnTouchListener(new OnTouchListener() {
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				if (event.getAction() == MotionEvent.ACTION_UP) {
-					showDateTimePicker(jhkssj);
-				}
-				return true;
-			}
-		});
 		jhjssj = (EditText) findViewById(R.id.jieshushijian_et);
-		jhjssj.setOnTouchListener(new OnTouchListener() {
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				if (event.getAction() == MotionEvent.ACTION_UP) {
-					showDateTimePicker(jhjssj);
-				}
-				return true;
-			}
-		});
 		ysgdwld = (EditText) findViewById(R.id.lingdao_et);
-		ysgdwld.setOnTouchListener(new OnTouchListener() {
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				if (event.getAction() == MotionEvent.ACTION_UP) {
-					startPeopleSelect(2);
-				}
-				return true;
-			}
-		});
 		sc = (EditText) findViewById(R.id.sancuo);
 		ssdw = (EditText) findViewById(R.id.shishidanwei);
-		ssdw.setOnTouchListener(new OnTouchListener() {
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				if (event.getAction() == MotionEvent.ACTION_UP) {
-					Intent intent = new Intent(PlanAdd.this, OrgSelect.class);
-					Bundle bundle = new Bundle();
-					bundle.putSerializable("pod", (Serializable) orgs);
-					intent.putExtras(bundle);
-					startActivityForResult(intent, 200);
-				}
-				return true;
-			}
-		});
+		qrtj = (Button) findViewById(R.id.tijiao);
+		sfxydb = (CheckBox) findViewById(R.id.dengbao);
+		sftd = (CheckBox) findViewById(R.id.tingdian);
 		rs = (EditText) findViewById(R.id.renshu);
 		bz = (EditText) findViewById(R.id.beizhu);
 
-		// gzfzr_bt = (ImageButton) findViewById(R.id.gongzuofuzeren_bt);
-		// jhkssj_bt = (ImageButton) findViewById(R.id.kaishishijian_bt);
-		// jhjssj_bt = (ImageButton) findViewById(R.id.jieshushijian_bt);
-		// ysgdwld_bt = (ImageButton) findViewById(R.id.lingdao_bt);
-		// ssdw_bt = (ImageButton) findViewById(R.id.shishidanwei_bt);
-		qrtj = (Button) findViewById(R.id.tijiao);
+		// 查看任务
+		if (enterType == 0) {
 
-		sfxydb = (CheckBox) findViewById(R.id.dengbao);
-		sftd = (CheckBox) findViewById(R.id.tingdian);
+			PlanTaskDao dao = new PlanTaskDao(PlanAdd.this);
+			String tid = getIntent().getStringExtra("tid");
+			if (tid != null) {
+				tb_task_info info = dao.getPlanTask(tid);
 
-		// gzfzr_bt.setOnClickListener(this);
-		// jhkssj_bt.setOnClickListener(this);
-		// jhjssj_bt.setOnClickListener(this);
-		// ssdw_bt.setOnClickListener(this);
-		// ysgdwld_bt.setOnClickListener(this);
-		qrtj.setOnClickListener(this);
+				String weather = info.getWeather().substring(info.getWeather().length() - 2);
+				tx_q.setEnabled(false);
+				tq_yin.setEnabled(false);
+				tq_yu.setEnabled(false);
+				if (weather.equals("01"))
+					tx_q.setChecked(true);
+				else if (weather.equals("02"))
+					tq_yin.setChecked(true);
+				else if (weather.equals("03"))
+					tq_yu.setChecked(true);
+
+				String category = info.getCategory().substring(info.getCategory().length() - 2);
+				lb_zyxc.setEnabled(false);
+				lb_czxc.setEnabled(false);
+				lb_gzqxxc.setEnabled(false);
+				if (category.equals("01")) {
+					lb_zyxc.setChecked(true);
+				} else if (category.equals("02")) {
+					lb_czxc.setChecked(true);
+				} else if (category.equals("03")) {
+					lb_gzqxxc.setChecked(true);
+				}
+
+				String special = info.getSpecial();
+				tsxq_t.setEnabled(false);
+				tsxq_w.setEnabled(false);
+				if (special.equals("0")) {
+					tsxq_t.setChecked(true);
+				} else if (special.equals("1")) {
+					tsxq_w.setChecked(true);
+				}
+
+				String domain = info.getDomain().substring(info.getDomain().length() - 2);
+				ssdd_d.setEnabled(false);
+				ssdd_p.setEnabled(false);
+				ssdd_qt.setEnabled(false);
+				ssdd_s.setEnabled(false);
+				ssdd_x.setEnabled(false);
+				if (domain.equals("02")) {
+					ssdd_d.setChecked(true);
+				} else if (domain.equals("03")) {
+					ssdd_p.setChecked(true);
+				} else if (domain.equals("05")) {
+					ssdd_qt.setChecked(true);
+				} else if (domain.equals("01")) {
+					ssdd_s.setChecked(true);
+				} else if (domain.equals("04")) {
+					ssdd_x.setChecked(true);
+				}
+
+				String cut_type = info.getCut_type().substring(info.getCut_type().length() - 2);
+				tdlx_jhtd.setEnabled(false);
+				tdlx_lstd.setEnabled(false);
+				tdlx_qt.setEnabled(false);
+				if (cut_type.equals("02")) {
+					tdlx_jhtd.setChecked(true);
+				} else if (cut_type.equals("01")) {
+					tdlx_lstd.setChecked(true);
+				} else if (cut_type.equals("03")) {
+					tdlx_qt.setChecked(true);
+				}
+
+				xmmc.setEnabled(false);
+				if (!TextUtils.isEmpty(info.getName()))
+					xmmc.setText(info.getName());
+				else
+					xmmc.setHint("");
+				tdfw.setEnabled(false);
+				if (!TextUtils.isEmpty(info.getPower_cut_range()))
+					tdfw.setText(info.getPower_cut_range());
+				else
+					tdfw.setHint("");
+				tdyxqy.setEnabled(false);
+				if (!TextUtils.isEmpty(info.getEffect_eara()))
+					tdyxqy.setText(info.getEffect_eara());
+				else
+					tdyxqy.setHint("");
+				zygznr.setEnabled(false);
+				if (!TextUtils.isEmpty(info.getContent()))
+					zygznr.setText(info.getContent());
+				else
+					zygznr.setHint("");
+				gzfzr.setEnabled(false);
+				if (!TextUtils.isEmpty(info.getResponsibility_user()))
+					gzfzr.setText(info.getResponsibility_user());
+				else
+					gzfzr.setHint("");
+				jhkssj.setEnabled(false);
+				if (!TextUtils.isEmpty(info.getPlan_start_time()))
+					jhkssj.setText(info.getPlan_start_time());
+				else
+					jhkssj.setHint("");
+				jhjssj.setEnabled(false);
+				if (!TextUtils.isEmpty(info.getPlan_start_time()))
+					jhjssj.setText(info.getPlan_end_time());
+				else
+					jhjssj.setHint("");
+				ysgdwld.setEnabled(false);
+				if (!TextUtils.isEmpty(info.getLeader()))
+					ysgdwld.setText(info.getLeader());
+				else
+					ysgdwld.setHint("");
+				sc.setEnabled(false);
+				if (!TextUtils.isEmpty(info.getMeasures()))
+					sc.setText(info.getMeasures());
+				else
+					sc.setHint("");
+				ssdw.setEnabled(false);
+				if (!TextUtils.isEmpty(info.getImplement_org()))
+					ssdw.setText(info.getImplement_org());
+				else
+					ssdw.setHint("");
+				rs.setEnabled(false);
+				if (!TextUtils.isEmpty(info.getNumber()))
+					rs.setText(info.getNumber());
+				else
+					rs.setHint("");
+				bz.setEnabled(false);
+				if (!TextUtils.isEmpty(info.getRemark()))
+					bz.setText(info.getRemark());
+				else
+					bz.setHint("");
+
+				// 隐藏确认提交按钮
+				qrtj.setVisibility(View.GONE);
+			}
+		}
+		// 添加任务
+		else {
+			gzfzr.setOnTouchListener(new OnTouchListener() {
+
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					if (event.getAction() == MotionEvent.ACTION_UP) {
+						startPeopleSelect(1);
+					}
+					return true;
+				}
+			});
+			jhkssj.setOnTouchListener(new OnTouchListener() {
+
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					if (event.getAction() == MotionEvent.ACTION_UP) {
+						showDateTimePicker(jhkssj);
+					}
+					return true;
+				}
+			});
+
+			jhjssj.setOnTouchListener(new OnTouchListener() {
+
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					if (event.getAction() == MotionEvent.ACTION_UP) {
+						showDateTimePicker(jhjssj);
+					}
+					return true;
+				}
+			});
+
+			ysgdwld.setOnTouchListener(new OnTouchListener() {
+
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					if (event.getAction() == MotionEvent.ACTION_UP) {
+						startPeopleSelect(2);
+					}
+					return true;
+				}
+			});
+
+			ssdw.setOnTouchListener(new OnTouchListener() {
+
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					if (event.getAction() == MotionEvent.ACTION_UP) {
+						Intent intent = new Intent(PlanAdd.this, OrgSelect.class);
+						Bundle bundle = new Bundle();
+						bundle.putSerializable("pod", (Serializable) orgs);
+						intent.putExtras(bundle);
+						startActivityForResult(intent, 200);
+					}
+					return true;
+				}
+			});
+
+			// gzfzr_bt = (ImageButton) findViewById(R.id.gongzuofuzeren_bt);
+			// jhkssj_bt = (ImageButton) findViewById(R.id.kaishishijian_bt);
+			// jhjssj_bt = (ImageButton) findViewById(R.id.jieshushijian_bt);
+			// ysgdwld_bt = (ImageButton) findViewById(R.id.lingdao_bt);
+			// ssdw_bt = (ImageButton) findViewById(R.id.shishidanwei_bt);
+
+			// gzfzr_bt.setOnClickListener(this);
+			// jhkssj_bt.setOnClickListener(this);
+			// jhjssj_bt.setOnClickListener(this);
+			// ssdw_bt.setOnClickListener(this);
+			// ysgdwld_bt.setOnClickListener(this);
+			qrtj.setOnClickListener(this);
+		}
+
 	}
 
 	/**
@@ -588,5 +730,57 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 		// 设置dialog的布局,并显示
 		dialog.setContentView(view);
 		dialog.show();
+	}
+
+	/****************** 隐藏键盘 **************************/
+
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+			// 获得当前得到焦点的View，一般情况下就是EditText（特殊情况就是轨迹求或者实体案件会移动焦点）
+			View v = getCurrentFocus();
+
+			if (isShouldHideInput(v, ev)) {
+				hideSoftInput(v.getWindowToken());
+			}
+		}
+		return super.dispatchTouchEvent(ev);
+	}
+
+	/**
+	 * 根据EditText所在坐标和用户点击的坐标相对比，来判断是否隐藏键盘，因为当用户点击EditText时没必要隐藏
+	 * 
+	 * @param v
+	 * @param event
+	 * @return
+	 */
+	private boolean isShouldHideInput(View v, MotionEvent event) {
+		if (v != null && (v instanceof EditText)) {
+			int[] l = { 0, 0 };
+			v.getLocationInWindow(l);
+			int left = l[0], top = l[1], bottom = top + v.getHeight(), right = left + v.getWidth();
+			if (event.getX() > left && event.getX() < right && event.getY() > top
+					&& event.getY() < bottom) {
+				// 点击EditText的事件，忽略它。
+				return false;
+			} else {
+				return true;
+			}
+		}
+		// 如果焦点不是EditText则忽略，这个发生在视图刚绘制完，第一个焦点不在EditView上，和用户用轨迹球选择其他的焦点
+		return false;
+	}
+
+	/**
+	 * 多种隐藏软件盘方法的其中一种
+	 * 
+	 * @param token
+	 */
+	private void hideSoftInput(IBinder token) {
+		if (token != null) {
+			InputMethodManager im = (InputMethodManager) getSystemService(
+					Context.INPUT_METHOD_SERVICE);
+			im.hideSoftInputFromWindow(token, InputMethodManager.HIDE_NOT_ALWAYS);
+		}
 	}
 }

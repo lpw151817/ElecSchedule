@@ -271,23 +271,78 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 						Toast.makeText(XianChangAdd.this, "上传成功", Toast.LENGTH_SHORT).show();
 						// 请求http接口
-						// // TODO standard 通过i来判断
 						List<TaskAttachment> attachment = new ArrayList<TaskAttachment>();
 						for (int i = 0; i < mList.size(); i++) {
-							// StringBuilder standard = new
-							// StringBuilder("standard");
-							// // 作业现场
-							// if (enterType == 1) {
-							//
-							// }
-							// // 操作现场
-							// else if (enterType == 2) {
-							//
-							// }
-							// // 故障抢修
-							// else if (enterType == 3) {
-							//
-							// }
+							StringBuilder standard = new StringBuilder("standard");
+							// 作业现场
+							if (enterType == 1) {
+								switch (i) {
+								// 工作票
+								case 0:
+									standard.append("01");
+									break;
+								case 1:
+									standard.append("02");
+									break;
+								case 2:
+									standard.append("03");
+									break;
+								case 3:
+									// TODO 数据字典文档未找到
+									standard.append("");
+									break;
+								case 4:
+									standard.append("05");
+									break;
+								case 5:
+									standard.append("06");
+									break;
+								}
+							}
+							// 操作现场
+							else if (enterType == 2) {
+								switch (i) {
+								case 0:
+									standard.append("07");
+									break;
+								case 1:
+									standard.append("08");
+									break;
+								case 2:
+									standard.append("09");
+									break;
+								case 3:
+									standard.append("10");
+									break;
+								case 4:
+									standard.append("11");
+									break;
+								}
+							}
+							// 故障抢修
+							else if (enterType == 3) {
+								switch (i) {
+								case 0:
+									standard.append("01");
+									break;
+								case 1:
+									standard.append("02");
+									break;
+								case 2:
+									standard.append("03");
+									break;
+								case 3:
+									// TODO 数据字典问题
+									standard.append("");
+									break;
+								case 4:
+									standard.append("05");
+									break;
+								case 5:
+									standard.append("06");
+									break;
+								}
+							}
 
 							List<Attachments> sublist = new ArrayList<Attachments>();
 							for (int j = 0; j < mList.get(i).size(); j++) {
@@ -310,15 +365,13 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 									sublist.add(att);
 								}
 							}
-							TaskAttachment item = new TaskAttachment(
-									/* standard.toString() */i + "", sublist);
+							TaskAttachment item = new TaskAttachment(standard.toString(), sublist);
 							attachment.add(item);
 						}
 
 						requestManager.uploadTaskAttachment(XianChangAdd.this, tid, enterType + "",
 								attachment);
 
-						// finish();
 					}
 
 					break;
