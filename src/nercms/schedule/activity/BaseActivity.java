@@ -12,6 +12,9 @@ import android.widget.Toast;
 import android.wxapp.service.util.MySharedPreference;
 import nercms.schedule.R;
 
+import java.util.StringTokenizer;
+
+import com.Generate_md5;
 import com.actionbarsherlock.app.SherlockActivity;
 
 public class BaseActivity extends SherlockActivity {
@@ -42,6 +45,11 @@ public class BaseActivity extends SherlockActivity {
 
 	protected String getUserIc() {
 		return MySharedPreference.get(this, MySharedPreference.USER_IC, null);
+	}
+
+	protected void saveUserIc(String ic) {
+		MySharedPreference.save(this, MySharedPreference.USER_IC, Generate_md5.generate_md5(ic));
+
 	}
 
 	protected String getUserName() {

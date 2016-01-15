@@ -492,7 +492,7 @@ public class TaskDetail extends BaseActivity {
 					});
 
 					if (!new File(mediaPath).exists()) {
-						String downUrl = LocalConstant.FILE_SERVER_ATTACH_URL + File.separator
+						String downUrl = android.wxapp.service.elec.request.Contants.HFS_URL + File.separator
 								+ mediaName;
 						// ÇëÇóÍøÂçÍ¼Æ¬
 						ImageRequest imageRequest = new ImageRequest(downUrl,

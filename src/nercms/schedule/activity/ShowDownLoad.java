@@ -91,8 +91,8 @@ public class ShowDownLoad extends Activity {
 
 	private Handler handler;
 
-	private String fileFolder = Environment.getExternalStorageDirectory()
-			.getPath() + "/nercms-Schedule/DownloadAttachments/";
+	private String fileFolder = Environment.getExternalStorageDirectory().getPath()
+			+ "/nercms-Schedule/DownloadAttachments/";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -100,8 +100,7 @@ public class ShowDownLoad extends Activity {
 
 		setContentView(R.layout.showdownload);
 
-		WindowManager wm = (WindowManager) this
-				.getSystemService(Context.WINDOW_SERVICE);
+		WindowManager wm = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
 
 		int width = wm.getDefaultDisplay().getWidth();
 		int height = wm.getDefaultDisplay().getHeight();
@@ -128,17 +127,15 @@ public class ShowDownLoad extends Activity {
 		}
 
 		Intent intent = getIntent();
-		List<String> fileName = (List<String>) intent
-				.getSerializableExtra("name");
+		List<String> fileName = (List<String>) intent.getSerializableExtra("name");
 		for (String mediaName : fileName) {
 
-			String downUrl = LocalConstant.FILE_SERVER_ATTACH_URL
-					+ File.separator + mediaName;
-			
+			String downUrl = android.wxapp.service.elec.request.Contants.HFS_URL + File.separator
+					+ mediaName;
+
 			Log.e("TAG", "fileFolder : " + fileFolder);
 			new HttpDownloadTask(ShowDownLoad.this).execute(downUrl,
 					"/nercms-Schedule/DownloadAttachments/", mediaName);
-
 
 		}
 	}
@@ -154,15 +151,13 @@ public class ShowDownLoad extends Activity {
 				switch (msg.what) {
 				case Constant.FILE_DOWNLOAD_SUCCESS:
 					String mediaName = (String) msg.obj;
-					Log.e("TAG", "case Constant.FILE_DOWNLOAD_SUCCESS: "
-							+ mediaName);
-					System.out.println("case Constant.FILE_DOWNLOAD_SUCCESS: "
-							+ mediaName);
+					Log.e("TAG", "case Constant.FILE_DOWNLOAD_SUCCESS: " + mediaName);
+					System.out.println("case Constant.FILE_DOWNLOAD_SUCCESS: " + mediaName);
 					if (mediaName.contains(".3gp")) {
 						loadVideo(fileFolder + mediaName);
-					} else if (mediaName.contains(".jpg")){
+					} else if (mediaName.contains(".jpg")) {
 						loadImage(fileFolder + mediaName);
-					} else if (mediaName.contains(".amr")){
+					} else if (mediaName.contains(".amr")) {
 						loadAudio(fileFolder + mediaName);
 					}
 					break;
@@ -176,31 +171,29 @@ public class ShowDownLoad extends Activity {
 
 		};
 
-		MessageHandlerManager.getInstance().register(handler,
-				Constant.FILE_DOWNLOAD_FAIL, "ShowDownLoad");
-		MessageHandlerManager.getInstance().register(handler,
-				Constant.FILE_DOWNLOAD_SUCCESS, "ShowDownLoad");
+		MessageHandlerManager.getInstance().register(handler, Constant.FILE_DOWNLOAD_FAIL,
+				"ShowDownLoad");
+		MessageHandlerManager.getInstance().register(handler, Constant.FILE_DOWNLOAD_SUCCESS,
+				"ShowDownLoad");
 	}
-	
-	private void loadAudio(String audiopath){
-		// 根据图片生成bitmap对象
-		Bitmap AudioThumbnailBitmap = BitmapFactory.decodeResource(
-				getResources(), R.drawable.record);
 
-		
+	private void loadAudio(String audiopath) {
+		// 根据图片生成bitmap对象
+		Bitmap AudioThumbnailBitmap = BitmapFactory.decodeResource(getResources(),
+				R.drawable.record);
+
 		File file = new File(audiopath);
-		
-		String captureAudioName = audiopath.substring(audiopath.lastIndexOf(File.separator)+1);
+
+		String captureAudioName = audiopath.substring(audiopath.lastIndexOf(File.separator) + 1);
 		mediaList.add(new Media(Utils.MEDIA_TYPE_AUDIO, captureAudioName, audiopath));
 
 		Uri uri = Uri.fromFile(file);
 		int mediaID = mediaIndex++;
 		index_originalPath_Map.put(mediaID, audiopath);
-		loadMedia(imageContainer, mediaID, AudioThumbnailBitmap, uri,
-				TYPE_AUDIO);
+		loadMedia(imageContainer, mediaID, AudioThumbnailBitmap, uri, TYPE_AUDIO);
 	}
-	
-	public void loadImage(String mImagePath){
+
+	public void loadImage(String mImagePath) {
 		// 缩略图地址
 		String thumbnailUri = Utils.getThumbnailDir();
 		// 获取缩略图,根据原图创建缩略图, mImagePath是原图的地址
@@ -210,9 +203,9 @@ public class ShowDownLoad extends Activity {
 		// Bitmap imageThumbnailBitmap =
 		// BitmapFactory.decodeFile(mImagePath);
 		File file2 = new File(thumbnailUri);
-		
-		String captureImageName = mImagePath.substring(mImagePath.lastIndexOf(File.separator)+1);
-		System.out.println("captureImageName: "+captureImageName);
+
+		String captureImageName = mImagePath.substring(mImagePath.lastIndexOf(File.separator) + 1);
+		System.out.println("captureImageName: " + captureImageName);
 		mediaList.add(new Media(Utils.MEDIA_TYPE_IMAGE, captureImageName, mImagePath));
 
 		Uri uri2 = Uri.fromFile(file2);
@@ -220,13 +213,12 @@ public class ShowDownLoad extends Activity {
 		// 存储mediaId与imageOriginPath的映射
 		index_originalPath_Map.put(mediaID2, mImagePath);
 
-		loadMedia(imageContainer, mediaID2, getThumbnailFromUri(uri2),
-				uri2, TYPE_IMAGE);
+		loadMedia(imageContainer, mediaID2, getThumbnailFromUri(uri2), uri2, TYPE_IMAGE);
 
 		// 存储mediaId与thumbnailUri的映射
 		index_path_Map.put(mediaID2, thumbnailUri);
 	}
-	
+
 	/** 通过图片的Uri获取图片的缩略图 */
 	public Bitmap getThumbnailFromUri(final Uri uri) {
 		ContentResolver cr = this.getContentResolver();
@@ -244,7 +236,6 @@ public class ShowDownLoad extends Activity {
 		return BitmapFactory.decodeStream(input, null, opts);
 	}
 
-
 	public void loadVideo(String videopath) {
 		File file = new File(videopath);
 
@@ -257,19 +248,16 @@ public class ShowDownLoad extends Activity {
 		Uri uri = Uri.fromFile(file);
 		int mediaID = mediaIndex++;
 
-		String videoName = videopath.substring(videopath
-				.lastIndexOf(File.separator) + 1);
+		String videoName = videopath.substring(videopath.lastIndexOf(File.separator) + 1);
 		System.out.println("videoName: " + videoName);
 		mediaList.add(new Media(Utils.MEDIA_TYPE_VIDEO, videoName, videopath));
 		// 存储文件的路径
 		index_originalPath_Map.put(mediaID, videopath);
-		loadMedia(imageContainer, mediaID, videoThumbnailBitmap, uri,
-				TYPE_VIDEO);
+		loadMedia(imageContainer, mediaID, videoThumbnailBitmap, uri, TYPE_VIDEO);
 	}
 
 	// 还没下载完就获取了bitmap
-	private Bitmap getVideoThumbnail(String videoPath, int width, int height,
-			int kind) {
+	private Bitmap getVideoThumbnail(String videoPath, int width, int height, int kind) {
 		Bitmap bitmap = null;
 		// 获取视频的缩略图
 		bitmap = ThumbnailUtils.createVideoThumbnail(videoPath, kind);
@@ -281,7 +269,6 @@ public class ShowDownLoad extends Activity {
 				ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
 		return bitmap;
 	}
-
 
 	// 媒体类
 	private class Media {
@@ -322,11 +309,10 @@ public class ShowDownLoad extends Activity {
 
 	}
 
-	public void loadMedia(FixedGridLayout viewContainer, int mediaId,
-			Bitmap thumbnail, final Uri uri, final int MediaType) {
+	public void loadMedia(FixedGridLayout viewContainer, int mediaId, Bitmap thumbnail,
+			final Uri uri, final int MediaType) {
 
-		System.out.println("index_originalPath_Map:"
-				+ index_originalPath_Map.toString());
+		System.out.println("index_originalPath_Map:" + index_originalPath_Map.toString());
 
 		// WeiHao 如果附件展示布局不可见，置未可见
 		if (showAttachLayout.getVisibility() == View.GONE) {
@@ -334,10 +320,8 @@ public class ShowDownLoad extends Activity {
 		}
 		// 将图片缩略图添加到缩略图列表，便于新建完成后回收
 		// bitmapList.add(thumbnail);
-		final ImageView imageView = CreateImgView(this, thumbnail, IMG_WIDTH,
-				IMG_HEIGHT);
+		final ImageView imageView = CreateImgView(this, thumbnail, IMG_WIDTH, IMG_HEIGHT);
 		setImageviewListener(uri, imageView, MediaType, mediaId);
-
 
 		final RelativeLayout r1 = WrapImgView(MediaType, imageView);
 		r1.setId(mediaId);
@@ -347,8 +331,7 @@ public class ShowDownLoad extends Activity {
 
 	}
 
-	public ImageView CreateImgView(Context context, Bitmap pic, int width,
-			int height) {
+	public ImageView CreateImgView(Context context, Bitmap pic, int width, int height) {
 		// 加载图片的ImageView
 		ImageView imageView = new RoundAngleImageView(context);
 		// 将图片缩略图加载到ImageView
@@ -356,15 +339,14 @@ public class ShowDownLoad extends Activity {
 		// // 为图片设置编号
 		// imageView.setId(mediaId);
 		// 设置图片显示格式
-		FixedGridLayout.LayoutParams params = new FixedGridLayout.LayoutParams(
-				width, height);
+		FixedGridLayout.LayoutParams params = new FixedGridLayout.LayoutParams(width, height);
 		imageView.setLayoutParams(params);
 		imageView.setScaleType(ScaleType.CENTER_CROP);
 		return imageView;
 	}
 
-	public void setImageviewListener(final Uri uri, final ImageView imageView,
-			final int MediaType, final int MediaId) {
+	public void setImageviewListener(final Uri uri, final ImageView imageView, final int MediaType,
+			final int MediaId) {
 		// 为图片设置触摸事件
 		imageView.setOnTouchListener(new OnTouchListener() {
 			public boolean onTouch(View v, MotionEvent event) {
@@ -395,8 +377,7 @@ public class ShowDownLoad extends Activity {
 					break;
 				case TYPE_VIDEO:
 					// 点击播放视频
-					Intent intent = new Intent(ShowDownLoad.this,
-							PlayVideo.class);
+					Intent intent = new Intent(ShowDownLoad.this, PlayVideo.class);
 					intent.putExtra("path", mVideoPath);
 					startActivity(intent);
 					break;
@@ -432,8 +413,7 @@ public class ShowDownLoad extends Activity {
 		imageDialog = new Dialog(this, R.style.imageDialog);
 		imageDialog.setContentView(view);
 		// 添加图片
-		ImageView dialogImageView = (ImageView) view
-				.findViewById(R.id.imageImageView);
+		ImageView dialogImageView = (ImageView) view.findViewById(R.id.imageImageView);
 		// 获取图片
 		final Bitmap pic = getBitmapFromUri(uri);
 		// 将图片缩略图加载到ImageView
@@ -467,15 +447,12 @@ public class ShowDownLoad extends Activity {
 		return BitmapFactory.decodeStream(input, null, null);
 	}
 
-	public RelativeLayout WrapImgView(int mediaType, ImageView imgview
-			) {
+	public RelativeLayout WrapImgView(int mediaType, ImageView imgview) {
 		RelativeLayout rl = new RelativeLayout(this);
-		rl.setLayoutParams(new FixedGridLayout.LayoutParams(IMG_WIDTH,
-				IMG_HEIGHT));
+		rl.setLayoutParams(new FixedGridLayout.LayoutParams(IMG_WIDTH, IMG_HEIGHT));
 		rl.setPadding(2, 2, 2, 2);
 		RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(
-				ViewGroup.LayoutParams.WRAP_CONTENT,
-				ViewGroup.LayoutParams.WRAP_CONTENT);
+				ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 		lp1.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		lp1.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
 		// imgview 位于父 View 的顶部，在父 View 中居左
@@ -483,8 +460,7 @@ public class ShowDownLoad extends Activity {
 		lp1.rightMargin = 15;
 		rl.addView(imgview, lp1);
 
-		RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(30,
-				30);
+		RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(30, 30);
 		lp2.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		lp2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 		// btn1 位于父 View 的顶部，在父 View 中水平居右
@@ -498,8 +474,7 @@ public class ShowDownLoad extends Activity {
 		waterMark.setBackgroundColor(getResources().getColor(R.color.darkgrey));
 		waterMark.setTextColor(getResources().getColor(R.color.white));
 		RelativeLayout.LayoutParams lp3 = new RelativeLayout.LayoutParams(
-				ViewGroup.LayoutParams.WRAP_CONTENT,
-				ViewGroup.LayoutParams.WRAP_CONTENT);
+				ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 		// waterMark位于父View的左下
 		lp3.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		lp3.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
@@ -536,7 +511,6 @@ public class ShowDownLoad extends Activity {
 		return rl;
 	}
 
-
 	/**
 	 * 删除媒体文件
 	 */
@@ -553,11 +527,11 @@ public class ShowDownLoad extends Activity {
 			return false;
 		}
 	}
-	
-//	@Override
-//	public void onBackPressed() {
-//		finish();
-//		super.onBackPressed();
-//	}
+
+	// @Override
+	// public void onBackPressed() {
+	// finish();
+	// super.onBackPressed();
+	// }
 
 }

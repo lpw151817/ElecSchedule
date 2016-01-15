@@ -417,7 +417,7 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 		// 媒体文件地址
 		String originalUri;
 
-		String uploadUrl = LocalConstant.FILE_SERVER_ATTACH_URL;
+		String uploadUrl = android.wxapp.service.elec.request.Contants.HFS_URL;
 
 		switch (requestCode) {
 		case LocalConstant.CAPTURE_IMAGE_REQUEST_CODE:

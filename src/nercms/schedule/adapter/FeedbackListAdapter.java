@@ -171,7 +171,7 @@ public class FeedbackListAdapter extends BaseAdapter {
 
 					// 判断文件是否存在，不存在则连接文件服务器下载
 					if (!new File(picPath).exists()) {
-						String downUrl = LocalConstant.FILE_SERVER_ATTACH_URL + File.separator + picName;
+						String downUrl = android.wxapp.service.elec.request.Contants.HFS_URL + File.separator + picName;
 
 						// new HttpDownloadTask(context).execute(downUrl,
 						// "/nercms-Schedule/Attachments/", picName);

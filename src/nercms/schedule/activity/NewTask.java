@@ -1,7 +1,9 @@
 package nercms.schedule.activity;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -62,6 +64,7 @@ import android.wxapp.service.AppApplication;
 import android.wxapp.service.elec.model.CreateInsResponse;
 import android.wxapp.service.elec.model.bean.Attachments;
 import android.wxapp.service.elec.request.Constants;
+import android.wxapp.service.elec.request.Contants;
 import android.wxapp.service.elec.request.WebRequestManager;
 import android.wxapp.service.handler.MessageHandlerManager;
 import android.wxapp.service.util.Constant;
@@ -160,7 +163,7 @@ public class NewTask extends BaseActivity {
 		iniActionBar(true, null, null);
 
 		// TODO 需要从上一个界面中传入
-//		tid = getIntent().getExtras().getString("tid");
+		// tid = getIntent().getExtras().getString("tid");
 
 		manager = new WebRequestManager(AppApplication.getInstance(), this);
 
@@ -267,7 +270,7 @@ public class NewTask extends BaseActivity {
 			media = mediaList.get(i);
 
 			String mediaPath = media.getMediaUrl();// 媒体文件的本地路径，用户附件上传时
-			String uploadUrl = LocalConstant.FILE_SERVER_ATTACH_URL;
+			String uploadUrl = Contants.HFS_URL;
 
 			fileName = path2FileName(mediaPath);
 			fileNameList.add(fileName);
@@ -309,12 +312,14 @@ public class NewTask extends BaseActivity {
 					// }
 
 					// http接口请求
-					String server = LocalConstant.FILE_SERVER_ATTACH_URL;
+					String server = android.wxapp.service.elec.request.Contants.HFS_URL;
 					List<Attachments> attachments = new ArrayList<Attachments>();
 					for (Media item : mediaList) {
+						String md5 = Utils.getFileMD5(new File(item.getMediaUrl()));
 						attachments.add(new Attachments(item.getMediaType() + "",
 								server + File.separator + path2FileName(item.getMediaUrl()),
-								System.currentTimeMillis() + "", null));
+								System.currentTimeMillis() + "", null, md5));
+
 					}
 					manager.createInsRequest(NewTask.this, receiverList, tid,
 							mContentInput.getText().toString(), attachments);
@@ -806,7 +811,7 @@ public class NewTask extends BaseActivity {
 					showImageDialog(imageView, uri);
 					break;
 				case TYPE_VIDEO:
-					
+
 					// 点击播放视频
 					Intent intent = new Intent(NewTask.this, PlayVideo.class);
 					intent.putExtra("path", videopath);

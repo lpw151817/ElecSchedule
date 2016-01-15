@@ -2,6 +2,7 @@ package nercms.schedule.activity;
 
 import java.io.File;
 
+import com.Generate_md5;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.SubMenu;
@@ -47,8 +48,8 @@ public class Login extends BaseActivity {
 
 	private EditText etUserName; // 用户名编辑框
 	private EditText etPassword; // 密码编辑框
-//	String un = "admin";
-//	String pwd = "admin";
+	// String un = "admin";
+	// String pwd = "admin";
 
 	private Button btnLogin;// 登录按钮
 
@@ -78,8 +79,8 @@ public class Login extends BaseActivity {
 
 		etUserName = (EditText) findViewById(R.id.login_user_edit);
 		etPassword = (EditText) findViewById(R.id.login_passwd_edit);
-//		etUserName.setText(un);
-//		etPassword.setText(pwd);
+		// etUserName.setText(un);
+		// etPassword.setText(pwd);
 
 		btnLogin = (Button) findViewById(R.id.login_login_btn);
 
@@ -153,7 +154,8 @@ public class Login extends BaseActivity {
 					MySharedPreference.save(Login.this, MySharedPreference.USER_NAME,
 							inputUserName.toLowerCase());
 					// 保存用户密码
-					MySharedPreference.save(Login.this, MySharedPreference.USER_IC, inputPassword);
+					MySharedPreference.save(Login.this, MySharedPreference.USER_IC,
+							Generate_md5.generate_md5(inputPassword));
 
 					// //TODO MQTT
 					// // // 新建线程去进行MQTT连接
@@ -245,13 +247,14 @@ public class Login extends BaseActivity {
 			return;
 		}
 		if (getUserIc() == null || getUserId() == null) {
-			webRequestManager.login(inputUserName.toLowerCase(), inputPassword);
+			webRequestManager.login(inputUserName.toLowerCase(),
+					Generate_md5.generate_md5(inputPassword));
 		} else {
 			if (!getUserName().equals(inputUserName.toLowerCase())) {
 				showAlterDialog("登录错误", "请检查网络连接状态", R.drawable.login_error_icon, "确定", null);
 			} else {
 				if (getUserName().toLowerCase().equals(inputUserName.toLowerCase())
-						&& getUserIc().toLowerCase().equals(inputPassword)) {
+						&& getUserIc().equals(Generate_md5.generate_md5(inputPassword))) {
 					webRequestManager.loginUpdate(Login.this);
 				} else {
 					showAlterDialog("登录错误", "密码错误", R.drawable.login_error_icon, "确定", null);

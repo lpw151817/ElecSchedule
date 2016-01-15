@@ -63,6 +63,7 @@ import android.wxapp.service.AppApplication;
 import android.wxapp.service.dao.AffairDao;
 import android.wxapp.service.dao.DAOFactory;
 import android.wxapp.service.dao.PersonDao;
+import android.wxapp.service.elec.request.Constants;
 import android.wxapp.service.handler.MessageHandlerManager;
 import android.wxapp.service.jerry.model.affair.CreateTaskRequestAttachment;
 import android.wxapp.service.jerry.model.affair.CreateTaskRequestIds;
@@ -360,7 +361,7 @@ public class TaskAdd extends BaseActivity {
 						});
 
 						if (!new File(mediaPath).exists()) {
-							String downUrl = LocalConstant.FILE_SERVER_ATTACH_URL + File.separator
+							String downUrl = android.wxapp.service.elec.request.Contants.HFS_URL + File.separator
 									+ mediaName;
 							// 请求网络图片
 							ImageRequest imageRequest = new ImageRequest(downUrl,
@@ -580,7 +581,7 @@ public class TaskAdd extends BaseActivity {
 		for (Media item : mediaList) {
 			tempAttachmentTypes.add(item.getMediaType() + "");
 			tempAttachmentUrls.add(
-					LocalConstant.FILE_SERVER_ATTACH_URL + File.separator + item.getMediaName());
+					android.wxapp.service.elec.request.Contants.HFS_URL + File.separator + item.getMediaName());
 			tempAttachments.add(
 					new CreateTaskRequestAttachment(item.getMediaType() + "", item.getMediaUrl()));
 		}
@@ -624,7 +625,7 @@ public class TaskAdd extends BaseActivity {
 			List<String> tempAttachmentUrls = new ArrayList<String>();
 			for (Media item : mediaList) {
 				tempAttachmentTypes.add(item.getMediaType() + "");
-				tempAttachmentUrls.add(LocalConstant.FILE_SERVER_ATTACH_URL + File.separator
+				tempAttachmentUrls.add(android.wxapp.service.elec.request.Contants.HFS_URL + File.separator
 						+ item.getMediaName());
 				// TODO 待测试，此url表示的是什么
 				tempAtts.add(new CreateTaskRequestAttachment(item.getMediaType() + "",
@@ -645,7 +646,7 @@ public class TaskAdd extends BaseActivity {
 			attach = new AffairAttachModel(taskID, media.getMediaType(), media.getMediaName());
 
 			String mediaPath = media.getMediaUrl();// 媒体文件的本地路径，用户附件上传时
-			String uploadUrl = LocalConstant.FILE_SERVER_ATTACH_URL;
+			String uploadUrl = android.wxapp.service.elec.request.Contants.HFS_URL;
 			// 开启上传
 			new HttpUploadTask(tvUploadStatus, this).execute(mediaPath, uploadUrl);
 		}

@@ -1,5 +1,9 @@
 package nercms.schedule.activity;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -240,7 +244,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 			Toast.makeText(XianChangAdd.this, "网络不可用", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		String uploadUrl = LocalConstant.FILE_SERVER_ATTACH_URL;
+		String uploadUrl = android.wxapp.service.elec.request.Contants.HFS_URL;
 		for (List<Map<String, Object>> mLi : mList) {
 
 			for (Map<String, Object> map : mLi) {
@@ -288,8 +292,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 									standard.append("03");
 									break;
 								case 3:
-									// TODO 数据字典文档未找到
-									standard.append("");
+									standard.append("04");
 									break;
 								case 4:
 									standard.append("05");
@@ -332,8 +335,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 									standard.append("03");
 									break;
 								case 3:
-									// TODO 数据字典问题
-									standard.append("");
+									standard.append("04");
 									break;
 								case 4:
 									standard.append("05");
@@ -345,6 +347,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 							}
 
 							List<Attachments> sublist = new ArrayList<Attachments>();
+							String server = android.wxapp.service.elec.request.Contants.HFS_URL;
 							for (int j = 0; j < mList.get(i).size(); j++) {
 								Map<String, Object> attItem = mList.get(i).get(j);
 								String filePath = (String) attItem.get("path");
@@ -360,9 +363,15 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 											myGPS.getSpeed() + "", myGPS.getTime(),
 											myGPS.getCoorType(), "");
 
-									Attachments att = new Attachments(type, filePath,
-											(String) attItem.get("time"), gps);
+									// String md5 = DigestUtils
+									// .md5Hex(new FileInputStream(new
+									// File(filePath)));
+									String md5 = Utils.getFileMD5(new File(filePath));
+									Attachments att = new Attachments(type,
+											server + File.separator + path2FileName(filePath),
+											(String) attItem.get("time"), gps, md5);
 									sublist.add(att);
+
 								}
 							}
 							TaskAttachment item = new TaskAttachment(standard.toString(), sublist);
@@ -434,4 +443,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 				UploadTaskAttachmentResponse.class.getName());
 	}
 
+	private String path2FileName(String path) {
+		return path.substring(path.lastIndexOf(File.separator) + 1);
+	}
 }
