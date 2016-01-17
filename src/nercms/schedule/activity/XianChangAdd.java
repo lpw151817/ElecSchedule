@@ -40,6 +40,7 @@ import android.wxapp.service.elec.model.bean.TaskAttachment;
 import android.wxapp.service.elec.request.Constants;
 import android.wxapp.service.elec.request.WebRequestManager;
 import android.wxapp.service.handler.MessageHandlerManager;
+import android.wxapp.service.jerry.model.affair.EndTaskResponse;
 import android.wxapp.service.jerry.model.normal.NormalServerResponse;
 import android.wxapp.service.util.Constant;
 import android.wxapp.service.util.HttpUploadTask;
@@ -389,11 +390,16 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 					break;
 
 				case Constants.UPLOAD_TASK_ATT_SUCCESS:
-					showLongToast("上传成功");
-					// TODO http接口请求成功回调
+					requestManager.endTask(XianChangAdd.this, tid, System.currentTimeMillis() + "");
 					break;
+				case Constants.END_TASK_SUCCESS:
+					showLongToast("上传成功");
+					break;
+
 				case Constants.UPLOAD_TASK_ATT_SAVE_FAIL:
 				case Constants.UPLOAD_TASK_ATT_FAIL:
+				case Constants.END_TASK_FAIL:
+				case Constants.END_TASK_SAVE_FAIL:
 					if (msg.obj != null) {
 						showAlterDialog("上传失败", ((NormalServerResponse) msg.obj).getEc(),
 								R.drawable.login_error_icon, "确定", null);
@@ -420,6 +426,13 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 				UploadTaskAttachmentResponse.class.getName());
 		MessageHandlerManager.getInstance().register(handler, Constants.UPLOAD_TASK_ATT_FAIL,
 				UploadTaskAttachmentResponse.class.getName());
+
+		MessageHandlerManager.getInstance().register(handler, Constants.END_TASK_SUCCESS,
+				EndTaskResponse.class.getName());
+		MessageHandlerManager.getInstance().register(handler, Constants.END_TASK_FAIL,
+				EndTaskResponse.class.getName());
+		MessageHandlerManager.getInstance().register(handler, Constants.END_TASK_SAVE_FAIL,
+				EndTaskResponse.class.getName());
 	}
 
 	@Override
@@ -441,6 +454,13 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 				UploadTaskAttachmentResponse.class.getName());
 		MessageHandlerManager.getInstance().unregister(Constants.UPLOAD_TASK_ATT_FAIL,
 				UploadTaskAttachmentResponse.class.getName());
+
+		MessageHandlerManager.getInstance().unregister(Constants.END_TASK_SUCCESS,
+				EndTaskResponse.class.getName());
+		MessageHandlerManager.getInstance().unregister(Constants.END_TASK_FAIL,
+				EndTaskResponse.class.getName());
+		MessageHandlerManager.getInstance().unregister(Constants.END_TASK_SAVE_FAIL,
+				EndTaskResponse.class.getName());
 	}
 
 	private String path2FileName(String path) {

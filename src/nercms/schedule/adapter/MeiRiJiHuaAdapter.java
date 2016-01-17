@@ -6,6 +6,8 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,18 +18,29 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.wxapp.service.elec.dao.PlanTaskDao;
+import android.wxapp.service.elec.model.DeleteTaskResponse;
 import android.wxapp.service.elec.model.bean.table.tb_task_info;
+import android.wxapp.service.elec.request.Constants;
+import android.wxapp.service.elec.request.WebRequestManager;
+import android.wxapp.service.handler.MessageHandlerManager;
 import nercms.schedule.R;
 
 public class MeiRiJiHuaAdapter extends BaseAdapter {
 	Context mContext;
 	List<tb_task_info> data;
 	PlanTaskDao dao;
+	OnItemDeleteButtonClick listener;
 
-	public MeiRiJiHuaAdapter(Context c, List<tb_task_info> data, PlanTaskDao dao) {
+	public List<tb_task_info> getData() {
+		return data;
+	}
+
+	public MeiRiJiHuaAdapter(Context c, List<tb_task_info> data, PlanTaskDao dao,
+			OnItemDeleteButtonClick listener) {
 		this.mContext = c;
 		this.data = data;
 		this.dao = dao;
+		this.listener = listener;
 	}
 
 	@Override
@@ -70,14 +83,7 @@ public class MeiRiJiHuaAdapter extends BaseAdapter {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						// 确认删除
-						if (dao.deleteTask(data.get(position).getId())) {
-							Toast.makeText(mContext, "删除成功", Toast.LENGTH_LONG).show();
-							data.remove(position);
-							MeiRiJiHuaAdapter.this.notifyDataSetChanged();
-						} else {
-							Toast.makeText(mContext, "删除失败", Toast.LENGTH_LONG).show();
-						}
+						listener.onClick(position);
 					}
 				}, "取消", null);
 			}
@@ -106,5 +112,9 @@ public class MeiRiJiHuaAdapter extends BaseAdapter {
 		if (nB != null)
 			builder.setNegativeButton(nB, nbListener);
 		builder.create().show();
+	}
+
+	public interface OnItemDeleteButtonClick {
+		public void onClick(int position);
 	}
 }
