@@ -296,62 +296,73 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 					tdlx_qt.setChecked(true);
 				}
 
-				xmmc.setEnabled(false);
+				Utils.setEditTextUnEditable(xmmc);
 				if (!TextUtils.isEmpty(info.getName()))
 					xmmc.setText(info.getName());
 				else
 					xmmc.setHint("");
-				tdfw.setEnabled(false);
+
+				Utils.setEditTextUnEditable(tdfw);
 				if (!TextUtils.isEmpty(info.getPower_cut_range()))
 					tdfw.setText(info.getPower_cut_range());
 				else
 					tdfw.setHint("");
-				tdyxqy.setEnabled(false);
+
+				Utils.setEditTextUnEditable(tdyxqy);
 				if (!TextUtils.isEmpty(info.getEffect_eara()))
 					tdyxqy.setText(info.getEffect_eara());
 				else
 					tdyxqy.setHint("");
-				zygznr.setEnabled(false);
+
+				Utils.setEditTextUnEditable(zygznr);
 				if (!TextUtils.isEmpty(info.getContent()))
 					zygznr.setText(info.getContent());
 				else
 					zygznr.setHint("");
-				gzfzr.setEnabled(false);
+
+				Utils.setEditTextUnEditable(gzfzr);
 				if (!TextUtils.isEmpty(info.getResponsibility_user()))
 					gzfzr.setText(info.getResponsibility_user());
 				else
 					gzfzr.setHint("");
-				jhkssj.setEnabled(false);
+
+				Utils.setEditTextUnEditable(jhkssj);
 				if (!TextUtils.isEmpty(info.getPlan_start_time()))
 					jhkssj.setText(Utils.formatDateMs(info.getPlan_start_time()));
 				else
 					jhkssj.setHint("");
-				jhjssj.setEnabled(false);
+
+				Utils.setEditTextUnEditable(jhjssj);
 				if (!TextUtils.isEmpty(info.getPlan_start_time()))
 					jhjssj.setText(Utils.formatDateMs(info.getPlan_end_time()));
 				else
 					jhjssj.setHint("");
-				ysgdwld.setEnabled(false);
+
+				Utils.setEditTextUnEditable(ysgdwld);
 				if (!TextUtils.isEmpty(info.getLeader()))
 					ysgdwld.setText(info.getLeader());
 				else
 					ysgdwld.setHint("");
-				sc.setEnabled(false);
+
+				Utils.setEditTextUnEditable(sc);
 				if (!TextUtils.isEmpty(info.getMeasures()))
 					sc.setText(info.getMeasures());
 				else
 					sc.setHint("");
-				ssdw.setEnabled(false);
+
+				Utils.setEditTextUnEditable(ssdw);
 				if (!TextUtils.isEmpty(info.getImplement_org()))
 					ssdw.setText(info.getImplement_org());
 				else
 					ssdw.setHint("");
-				rs.setEnabled(false);
+
+				Utils.setEditTextUnEditable(rs);
 				if (!TextUtils.isEmpty(info.getNumber()))
 					rs.setText(info.getNumber());
 				else
 					rs.setHint("");
-				bz.setEnabled(false);
+
+				Utils.setEditTextUnEditable(bz);
 				if (!TextUtils.isEmpty(info.getRemark()))
 					bz.setText(info.getRemark());
 				else

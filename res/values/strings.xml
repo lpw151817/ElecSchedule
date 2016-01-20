@@ -13,5 +13,6 @@
     <string name="title_activity_xian_chang_upload">附件上传</string>
     <string name="title_activity_schedule">ScheduleActivity</string>
     <string name="title_activity_schedule_person">SchedulePersonActivity</string>
+    <string name="title_activity_zhiling">ZhilingActivity</string>
 
 </resources>

@@ -45,15 +45,14 @@ public class Main extends BaseActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			Intent intent = new Intent(Main.this, Login.class);
-			Main.this.startActivity(intent);
+			startActivity(Login.class);
 			Main.this.finish();
 			break;
 		case -1:
-			showShortToast("指令");
+			startActivity(ZhilingActivity.class);
 			break;
 		case 1:
-			showShortToast("指挥调度");
+			startActivity(ScheduleActivity.class);
 			break;
 		}
 		return super.onOptionsItemSelected(item);

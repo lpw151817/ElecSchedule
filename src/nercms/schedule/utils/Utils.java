@@ -33,9 +33,15 @@ import android.os.StatFs;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.Toast;
 
 public class Utils {
+
+	public static void setEditTextUnEditable(EditText et) {
+		et.setFocusable(false);
+		et.setFocusableInTouchMode(false);
+	}
 
 	public static final int EC_USER_NOT_EXIST = 1;
 	public static final int EC_PWD_ERROR = 2;

@@ -9,6 +9,10 @@
         <item name="android:button">@drawable/audio_selector</item>
     </style>
 
+    <style name="isread" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/isread_selector</item>
+    </style>
+
     <style name="videoButton" parent="@android:style/Widget.CompoundButton.CheckBox">
         <item name="android:button">@drawable/video_selector</item>
     </style>

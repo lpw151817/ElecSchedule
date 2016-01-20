@@ -26,6 +26,8 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_schedule);
 
+		iniActionBar(true, null, "Ö¸»Óµ÷¶È");
+
 		bt1 = (Button) findViewById(R.id.button1);
 		bt1.setOnClickListener(this);
 		bt2 = (Button) findViewById(R.id.button2);
@@ -33,6 +35,16 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener {
 		bt3 = (Button) findViewById(R.id.button3);
 		bt3.setOnClickListener(this);
 
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			finish();
+			break;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override

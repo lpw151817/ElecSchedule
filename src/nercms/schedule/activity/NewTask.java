@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import com.actionbarsherlock.view.MenuItem;
 import com.imooc.treeview.utils.Node;
 
 import nercms.schedule.R;
@@ -61,8 +62,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.wxapp.service.AppApplication;
+import android.wxapp.service.elec.dao.OrgDao;
+import android.wxapp.service.elec.dao.TaskInsDao;
 import android.wxapp.service.elec.model.CreateInsResponse;
 import android.wxapp.service.elec.model.bean.Attachments;
+import android.wxapp.service.elec.model.bean.table.tb_task_instructions;
 import android.wxapp.service.elec.request.Constants;
 import android.wxapp.service.elec.request.Contants;
 import android.wxapp.service.elec.request.WebRequestManager;
@@ -77,6 +81,7 @@ import android.wxapp.service.util.HttpUploadTask;
 public class NewTask extends BaseActivity {
 
 	String tid;
+	TaskInsDao dao;
 
 	public static final int TYPE_IMAGE = 1;
 	public static final int TYPE_VIDEO = 2;
@@ -162,8 +167,7 @@ public class NewTask extends BaseActivity {
 
 		iniActionBar(true, null, null);
 
-		// TODO 需要从上一个界面中传入
-		// tid = getIntent().getExtras().getString("tid");
+		dao = new TaskInsDao(this);
 
 		manager = new WebRequestManager(AppApplication.getInstance(), this);
 
@@ -181,19 +185,32 @@ public class NewTask extends BaseActivity {
 		mContentInput = (EditText) findViewById(R.id.zhuyaogongzuoneirong);
 		mReceiverInput = (EditText) findViewById(R.id.jieshouren_et);
 
-		mReceiverInput.setOnTouchListener(new OnTouchListener() {
+		// 需要从上一个界面中传入
+		tid = getIntent().getExtras().getString("tid");
+		if (!TextUtils.isEmpty(tid)) {
+			tb_task_instructions data = dao.getTaskIns(tid);
+			mContentInput.setText(data.getContent());
+			Utils.setEditTextUnEditable(mContentInput);
+			mReceiverInput.setText(new OrgDao(this).getPerson(data.getSend_id()).getName());
+			Utils.setEditTextUnEditable(mReceiverInput);
+			// TODO 旧任务显示附件信息
 
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				if (event.getAction() == MotionEvent.ACTION_UP) {
-					Intent intent = new Intent(NewTask.this, ContactSelect.class);
-					intent.putExtra("entrance_flag", 2);
-					intent.putExtra("pod", (Serializable) receiverList);
-					NewTask.this.startActivityForResult(intent, TYPE_PEOPLE_SELECT);
-				}
-				return true;
-			}
-		});
+		}
+		// else {
+		// mReceiverInput.setOnTouchListener(new OnTouchListener() {
+		//
+		// @Override
+		// public boolean onTouch(View v, MotionEvent event) {
+		// if (event.getAction() == MotionEvent.ACTION_UP) {
+		// Intent intent = new Intent(NewTask.this, ContactSelect.class);
+		// intent.putExtra("entrance_flag", 2);
+		// intent.putExtra("pod", (Serializable) receiverList);
+		// NewTask.this.startActivityForResult(intent, TYPE_PEOPLE_SELECT);
+		// }
+		// return true;
+		// }
+		// });
+		// }
 
 		// 附件缩略图展示Layout，默认不可见
 		showAttachLayout = (LinearLayout) findViewById(R.id.showAttathLayout);
@@ -249,6 +266,16 @@ public class NewTask extends BaseActivity {
 
 		initHandler();
 
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			finish();
+			break;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	/**
