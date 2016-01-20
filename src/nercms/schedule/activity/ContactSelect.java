@@ -88,8 +88,10 @@ public class ContactSelect extends BaseActivity implements DataChanged {
 		lsSelectedReceiver = (List<Node>) getIntent().getExtras().getSerializable("receiver");
 		if (type == 1)
 			iniActionBar(true, null, "选择工作负责人");
-		else
+		else if (type == 2)
 			iniActionBar(true, null, "选择应上岗到位领导");
+		else if (type == 3)
+			iniActionBar(false, null, "选择调度人员");
 		// 组织机构树数据准备
 		dao = new OrgDao(this);
 

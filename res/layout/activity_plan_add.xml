@@ -803,6 +803,16 @@
             android:background="@drawable/btn_style_green"
             android:text="确认提交"
             android:textColor="#ffffff" />
+
+        <Button
+            android:id="@+id/renwu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@drawable/btn_style_green"
+            android:text=""
+            android:textColor="#ffffff"
+            android:visibility="gone" />
     </LinearLayout>
 
 </ScrollView>

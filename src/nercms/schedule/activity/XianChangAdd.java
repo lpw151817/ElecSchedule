@@ -33,6 +33,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.wxapp.service.AppApplication;
+import android.wxapp.service.elec.model.StartTaskResponse;
 import android.wxapp.service.elec.model.UploadTaskAttachmentResponse;
 import android.wxapp.service.elec.model.bean.Attachments;
 import android.wxapp.service.elec.model.bean.GPS;
@@ -361,7 +362,8 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 											Utils.formatDateMs(System.currentTimeMillis()),
 											myGPS.getLongitude() + "", myGPS.getLatitude() + "", "",
 											myGPS.getRadius() + "", myGPS.getAltitude() + "",
-											myGPS.getSpeed() + "", myGPS.getTime(),
+											myGPS.getSpeed() + "",
+											Utils.formatDateMs(System.currentTimeMillis()),
 											myGPS.getCoorType(), "");
 
 									// String md5 = DigestUtils
@@ -428,11 +430,11 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 				UploadTaskAttachmentResponse.class.getName());
 
 		MessageHandlerManager.getInstance().register(handler, Constants.END_TASK_SUCCESS,
-				EndTaskResponse.class.getName());
+				StartTaskResponse.class.getName());
 		MessageHandlerManager.getInstance().register(handler, Constants.END_TASK_FAIL,
-				EndTaskResponse.class.getName());
+				StartTaskResponse.class.getName());
 		MessageHandlerManager.getInstance().register(handler, Constants.END_TASK_SAVE_FAIL,
-				EndTaskResponse.class.getName());
+				StartTaskResponse.class.getName());
 	}
 
 	@Override
@@ -456,11 +458,11 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 				UploadTaskAttachmentResponse.class.getName());
 
 		MessageHandlerManager.getInstance().unregister(Constants.END_TASK_SUCCESS,
-				EndTaskResponse.class.getName());
+				StartTaskResponse.class.getName());
 		MessageHandlerManager.getInstance().unregister(Constants.END_TASK_FAIL,
-				EndTaskResponse.class.getName());
+				StartTaskResponse.class.getName());
 		MessageHandlerManager.getInstance().unregister(Constants.END_TASK_SAVE_FAIL,
-				EndTaskResponse.class.getName());
+				StartTaskResponse.class.getName());
 	}
 
 	private String path2FileName(String path) {

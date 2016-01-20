@@ -39,6 +39,7 @@ import android.widget.RadioGroup;
 import android.wxapp.service.AppApplication;
 import android.wxapp.service.elec.dao.PlanTaskDao;
 import android.wxapp.service.elec.model.CreatePlanTaskResponse;
+import android.wxapp.service.elec.model.StartTaskResponse;
 import android.wxapp.service.elec.model.bean.table.tb_task_info;
 import android.wxapp.service.elec.request.Constants;
 import android.wxapp.service.elec.request.WebRequestManager;
@@ -59,7 +60,7 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 			ssdd_p, ssdd_x, ssdd_qt, tdlx_lstd, tdlx_jhtd, tdlx_qt;
 	EditText xmmc, tdfw, tdyxqy, zygznr, gzfzr, jhkssj, jhjssj, ysgdwld, sc, ssdw, rs, bz;
 	ImageButton jhkssj_bt, jhjssj_bt, gzfzr_bt, ysgdwld_bt, ssdw_bt;
-	Button qrtj;
+	Button qrtj, renwu;
 	CheckBox sfxydb, sftd;
 
 	WebRequestManager webRequest;
@@ -68,6 +69,9 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 	List<Node> gzfzrList;
 	List<Node> ysgdwldList;
 	Node orgs;
+
+	String tid;
+	tb_task_info info;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +112,8 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 					break;
 				case Constants.CREATE_TASK_FAIL:
 				case Constants.CREATE_TASK_SAVE_FAIL:
+				case Constants.START_TASK_FAIL:
+				case Constants.START_TASK_SAVE_FAIL:
 					dismissProgressDialog();
 					if (msg.obj != null) {
 						showAlterDialog("发布失败", ((NormalServerResponse) msg.obj).getEc(),
@@ -118,6 +124,22 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 					}
 					break;
 
+				case Constants.START_TASK_SUCCESS:
+					// 任务开始
+					Bundle bundle = new Bundle();
+					if (info != null) {
+						if (info.getCategory().equals("category01")) {
+							bundle.putInt("enterType", 1);
+						} else if (info.getCategory().equals("category02")) {
+							bundle.putInt("enterType", 2);
+						} else if (info.getCategory().equals("category03")) {
+							bundle.putInt("enterType", 3);
+						}
+						bundle.putString("tid", tid);
+						startActivity(bundle, XianChangSi.class);
+					}
+
+					break;
 				default:
 					Log.e(PlanAdd.class.getName(), msg.what + "<<<<未处理");
 					break;
@@ -136,6 +158,13 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 				CreatePlanTaskResponse.class.getName());
 		MessageHandlerManager.getInstance().register(handler, Constants.CREATE_TASK_SAVE_FAIL,
 				CreatePlanTaskResponse.class.getName());
+
+		MessageHandlerManager.getInstance().register(handler, Constants.START_TASK_SUCCESS,
+				StartTaskResponse.class.getName());
+		MessageHandlerManager.getInstance().register(handler, Constants.START_TASK_FAIL,
+				StartTaskResponse.class.getName());
+		MessageHandlerManager.getInstance().register(handler, Constants.START_TASK_SAVE_FAIL,
+				StartTaskResponse.class.getName());
 	}
 
 	@Override
@@ -147,6 +176,13 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 				CreatePlanTaskResponse.class.getName());
 		MessageHandlerManager.getInstance().unregister(Constants.CREATE_TASK_SAVE_FAIL,
 				CreatePlanTaskResponse.class.getName());
+
+		MessageHandlerManager.getInstance().unregister(Constants.START_TASK_SUCCESS,
+				StartTaskResponse.class.getName());
+		MessageHandlerManager.getInstance().unregister(Constants.START_TASK_FAIL,
+				StartTaskResponse.class.getName());
+		MessageHandlerManager.getInstance().unregister(Constants.START_TASK_SAVE_FAIL,
+				StartTaskResponse.class.getName());
 	}
 
 	private void initView() {
@@ -184,6 +220,7 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 		sc = (EditText) findViewById(R.id.sancuo);
 		ssdw = (EditText) findViewById(R.id.shishidanwei);
 		qrtj = (Button) findViewById(R.id.tijiao);
+		renwu = (Button) findViewById(R.id.renwu);
 		sfxydb = (CheckBox) findViewById(R.id.dengbao);
 		sftd = (CheckBox) findViewById(R.id.tingdian);
 		rs = (EditText) findViewById(R.id.renshu);
@@ -193,9 +230,9 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 		if (enterType == 0) {
 
 			PlanTaskDao dao = new PlanTaskDao(PlanAdd.this);
-			String tid = getIntent().getStringExtra("tid");
+			tid = getIntent().getStringExtra("tid");
 			if (tid != null) {
-				tb_task_info info = dao.getPlanTask(tid);
+				info = dao.getPlanTask(tid);
 
 				String weather = info.getWeather().substring(info.getWeather().length() - 2);
 				tx_q.setEnabled(false);
@@ -286,12 +323,12 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 					gzfzr.setHint("");
 				jhkssj.setEnabled(false);
 				if (!TextUtils.isEmpty(info.getPlan_start_time()))
-					jhkssj.setText(info.getPlan_start_time());
+					jhkssj.setText(Utils.formatDateMs(info.getPlan_start_time()));
 				else
 					jhkssj.setHint("");
 				jhjssj.setEnabled(false);
 				if (!TextUtils.isEmpty(info.getPlan_start_time()))
-					jhjssj.setText(info.getPlan_end_time());
+					jhjssj.setText(Utils.formatDateMs(info.getPlan_end_time()));
 				else
 					jhjssj.setHint("");
 				ysgdwld.setEnabled(false);
@@ -322,6 +359,29 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 
 				// 隐藏确认提交按钮
 				qrtj.setVisibility(View.GONE);
+
+				renwu.setVisibility(View.VISIBLE);
+				if (!TextUtils.isEmpty(info.getStart_time())) {
+					renwu.setText("继续任务");
+					renwu.setOnClickListener(new OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							// TODO 跳转到查看任务界面
+
+						}
+					});
+				} else {
+					renwu.setText("开始任务");
+					renwu.setOnClickListener(new OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							webRequest.startTask(PlanAdd.this, tid,
+									System.currentTimeMillis() + "");
+						}
+					});
+				}
 			}
 		}
 		// 添加任务

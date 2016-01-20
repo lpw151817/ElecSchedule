@@ -89,7 +89,7 @@ public class MeiRiJiHua extends BaseActivity
 					intent.putExtra("tid", tid);
 					MeiRiJiHua.this.startActivity(intent);
 					break;
-					
+
 				case Constants.START_TASK_FAIL:
 				case Constants.START_TASK_SAVE_FAIL:
 				case Constants.DELETE_TASK_FAIL:
@@ -131,6 +131,7 @@ public class MeiRiJiHua extends BaseActivity
 
 	@Override
 	protected void onDestroy() {
+		super.onDestroy();
 		MessageHandlerManager.getInstance().unregister(Constants.START_TASK_SUCCESS,
 				StartTaskResponse.class.getName());
 		MessageHandlerManager.getInstance().unregister(Constants.START_TASK_FAIL,
@@ -144,6 +145,7 @@ public class MeiRiJiHua extends BaseActivity
 				DeleteTaskResponse.class.getName());
 		MessageHandlerManager.getInstance().unregister(Constants.DELETE_TASK_SAVE_FAIL,
 				DeleteTaskResponse.class.getName());
+
 	}
 
 	@Override

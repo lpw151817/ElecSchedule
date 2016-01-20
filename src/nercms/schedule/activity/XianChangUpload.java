@@ -574,7 +574,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 							// 存储mediaId与thumbnailUri的映射
 							index_path_Map.put(mediaID2, thumbnailUri);
-						} else if (mFileName.contains(".mp3")) {// 传递过来的是音频
+						} else if (mFileName.contains(".mp3") || mFileName.contains(".amr")) {// 传递过来的是音频
 
 							// 根据图片生成bitmap对象
 							Bitmap AudioThumbnailBitmap = BitmapFactory

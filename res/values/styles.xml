@@ -5,6 +5,14 @@
         <item name="vpiTabPageIndicatorStyle">@style/CustomTabPageIndicator</item>
     </style>
 
+    <style name="audioButton" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/audio_selector</item>
+    </style>
+
+    <style name="videoButton" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/video_selector</item>
+    </style>
+
     <!-- 聊天展示页面 -->
     <style name="chat_text_date_style">
         <item name="android:padding">2dp</item>
