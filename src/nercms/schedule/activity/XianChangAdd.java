@@ -1,9 +1,6 @@
 package nercms.schedule.activity;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +10,6 @@ import java.util.Map;
 import nercms.schedule.R;
 import nercms.schedule.adapter.XianChangAddAdapter;
 import nercms.schedule.utils.LocalConstant;
-import nercms.schedule.utils.LocationAttachment;
 import nercms.schedule.utils.MyGPS;
 import nercms.schedule.utils.MyLocationListener.ReceiveGPS;
 import nercms.schedule.utils.Utils;
@@ -22,7 +18,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -41,16 +36,9 @@ import android.wxapp.service.elec.model.bean.TaskAttachment;
 import android.wxapp.service.elec.request.Constants;
 import android.wxapp.service.elec.request.WebRequestManager;
 import android.wxapp.service.handler.MessageHandlerManager;
-import android.wxapp.service.jerry.model.affair.EndTaskResponse;
 import android.wxapp.service.jerry.model.normal.NormalServerResponse;
 import android.wxapp.service.util.Constant;
 import android.wxapp.service.util.HttpUploadTask;
-
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
-import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
-import com.baidu.location.LocationClientOption.LocationMode;
 
 /*
  * showXianchangAttachment和XianChangUpload可以跳转到该界面
@@ -252,6 +240,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 			for (Map<String, Object> map : mLi) {
 				if (map != null) {
 					if (map.get("path") != null) {
+						Log.e("TAG", "上传的路径 : " + map.get("path"));
 						new HttpUploadTask(new TextView(this), this)
 								.execute((String) map.get("path"), uploadUrl);
 					}
@@ -352,6 +341,11 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 							String server = android.wxapp.service.elec.request.Contants.HFS_URL;
 							for (int j = 0; j < mList.get(i).size(); j++) {
 								Map<String, Object> attItem = mList.get(i).get(j);
+								
+								if (attItem == null){
+									return;
+								}
+								
 								String filePath = (String) attItem.get("path");
 								String type = Utils.judgeFileLeixin(filePath);
 								if (type != null) {

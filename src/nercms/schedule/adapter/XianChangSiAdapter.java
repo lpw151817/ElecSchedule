@@ -173,6 +173,8 @@ public class XianChangSiAdapter extends BaseAdapter {
 				intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
 				((Activity) mContext).startActivityForResult(intent,
 						LocalConstant.CAPTURE_VIDEO_REQUEST_CODE);
+				
+				lp.getPositon(position);
 			}
 		});
 

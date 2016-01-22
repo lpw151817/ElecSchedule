@@ -131,6 +131,8 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 	private int mediaID4;
 
 	private Bitmap videoThumbnailBitmap;
+	
+	private Context c;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -138,6 +140,8 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		setContentView(R.layout.activity_xian_chang_upload);
 
 		iniActionBar(true, null, null);
+		
+		c = XianChangUpload.this;
 
 		bt_select = (Button) findViewById(R.id.select);
 		// bt_upload = (Button) findViewById(R.id.upload);
@@ -178,88 +182,241 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.select:// 选择附件
+			int[] isRadio;
+			int[] isPhoto;
+			int[] isVideo;
+			int position = getIntent().getIntExtra("position", -1);
+			List<String> name = new ArrayList<String>();
 
-			AlertDialog.Builder builder = new AlertDialog.Builder(XianChangUpload.this);
-			builder.setTitle("选择附件类型").setItems(new String[] { "图库", "拍照", "摄像", "录音" },
-					new DialogInterface.OnClickListener() {
+			switch (v.getId()) {
+			case R.id.select:// 选择附件
 
-						@Override
-						public void onClick(DialogInterface arg0, int which) {
-							switch (which) {
-							case 0:
-								// Utilss.showShortToast(MainActivity.this,
-								// "图库");
-								Intent getAlbum = new Intent(Intent.ACTION_PICK,
-										android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-								// 开启Pictures画面Type设定为image
-								getAlbum.setType("image/*");
-								// getAlbum.setAction(Intent.ACTION_GET_CONTENT);
-								startActivityForResult(getAlbum, NewTask.SELECT_IMAGE_REQUEST_CODE);
-								break;
+				//操作线程和作业现场的每个条目中的附件按钮的操作是不一样的
+				if (XianChangSi.pageType == 1) {
 
-							case 1:
-								// Utilss.showShortToast(MainActivity.this,"拍照");
-								// 拍照
-								Intent cameraintent = new Intent();
-								// 指定开启系统相机的Action
-								cameraintent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-								cameraintent.addCategory(Intent.CATEGORY_DEFAULT);
+					isRadio = c.getResources().getIntArray(
+							R.array.zuoyexianchang_si_radio);
+					isPhoto = c.getResources().getIntArray(
+							R.array.zuoyexianchang_si_photo);
+					isVideo = c.getResources().getIntArray(
+							R.array.zuoyexianchang_si_video);
+					
+				
 
-								mImagePath = NewTask.fileFolder + File.separator + getFileDate()
-										+ ".jpg";
-								// 根据文件地址创建文件
-								File imagefile = new File(mImagePath);
-								if (imagefile.exists()) {
-									imagefile.delete();
+					if (isPhoto[position] == 1) {
+						name.add("拍照");
+					}
+
+					if (isRadio[position] == 1) {
+						name.add("录音");
+					}
+					
+				} else if (XianChangSi.pageType == 2){
+					isRadio = c.getResources().getIntArray(
+							R.array.caozuoxianchang_si_radio);
+					isPhoto = c.getResources().getIntArray(
+							R.array.caozuoxianchang_si_photo);
+					isVideo = c.getResources().getIntArray(
+							R.array.caozuoxianchang_si_video);
+					
+				
+
+					if (isPhoto[position] == 1) {
+						name.add("拍照");
+					}
+
+					if (isRadio[position] == 1) {
+						name.add("录音");
+					}
+					
+					if (isVideo[position] == 1){
+						name.add("摄像");
+					}
+				}
+				
+				else if (XianChangSi.pageType == 3){
+					isRadio = c.getResources().getIntArray(
+							R.array.guzhangjinji_si_radio);
+					isPhoto = c.getResources().getIntArray(
+							R.array.guzhangjinji_si_photo);
+					isVideo = c.getResources().getIntArray(
+							R.array.guzhangjinji_si_video);
+
+					if (isPhoto[position] == 1) {
+						name.add("拍照");
+					}
+
+					if (isRadio[position] == 1) {
+						name.add("录音");
+					}
+					
+					if (isVideo[position] == 1){
+						name.add("摄像");
+					}
+				}
+				
+				//主要就是根据不同的页面和不同的条目，弹出的附件对话框的内容不一样，有的只需要录音，有点只需要摄像。。。
+
+					int size = name.size();
+					String[] array = (String[]) name.toArray(new String[size]);
+
+					AlertDialog.Builder builder = new AlertDialog.Builder(
+							XianChangUpload.this);
+					builder.setTitle("选择附件类型").setItems(array,
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface arg0, int which) {
+									switch (which) {
+
+									case 0:
+										// Utilss.showShortToast(MainActivity.this,"拍照");
+										// 拍照
+										Intent cameraintent = new Intent();
+										// 指定开启系统相机的Action
+										cameraintent
+												.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+										cameraintent
+												.addCategory(Intent.CATEGORY_DEFAULT);
+
+										mImagePath = NewTask.fileFolder
+												+ File.separator + getFileDate()
+												+ ".jpg";
+										// 根据文件地址创建文件
+										File imagefile = new File(mImagePath);
+										if (imagefile.exists()) {
+											imagefile.delete();
+										}
+										// 把文件地址转换成Uri格式
+										Uri imageUri = Uri.fromFile(imagefile);
+										// 设置系统相机拍摄照片完成后图片文件的存放地址
+										cameraintent.putExtra(
+												MediaStore.EXTRA_OUTPUT, imageUri);
+										startActivityForResult(
+												cameraintent,
+												LocalConstant.CAPTURE_IMAGE_REQUEST_CODE);
+										break;
+
+									case 1:
+
+										Intent recordIntent = new Intent(
+												XianChangUpload.this,
+												RecordActivity.class);
+										startActivityForResult(
+												recordIntent,
+												LocalConstant.CAPTURE_AUDIO_REQUEST_CODE);
+										break;
+										
+										 case 2:
+										 Intent intent = new Intent();
+										 intent.setAction("android.media.action.VIDEO_CAPTURE");
+										 intent.addCategory("android.intent.category.DEFAULT");
+										
+										 fileName = getFileDate();
+										 videopath = NewTask.fileFolder + "/" + fileName + ".mp4";
+										 File file = new File(videopath);
+										 if (file.exists()) {
+										 file.delete();
+										 }
+										 Uri uri = Uri.fromFile(file);
+										 intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+										 startActivityForResult(intent,
+										 LocalConstant.CAPTURE_VIDEO_REQUEST_CODE);
+										
+										 break;
+
+									default:
+										break;
+									}
+
 								}
-								// 把文件地址转换成Uri格式
-								Uri imageUri = Uri.fromFile(imagefile);
-								// 设置系统相机拍摄照片完成后图片文件的存放地址
-								cameraintent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-								startActivityForResult(cameraintent,
-										LocalConstant.CAPTURE_IMAGE_REQUEST_CODE);
-								break;
+							});
+					AlertDialog dialog = builder.create();
+					dialog.show();
+			}
+		}
 
-							case 2:
-								Intent intent = new Intent();
-								intent.setAction("android.media.action.VIDEO_CAPTURE");
-								intent.addCategory("android.intent.category.DEFAULT");
-
-								fileName = getFileDate();
-								videopath = NewTask.fileFolder + "/" + fileName + ".mp4";
-								File file = new File(videopath);
-								if (file.exists()) {
-									file.delete();
-								}
-								Uri uri = Uri.fromFile(file);
-								intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-								startActivityForResult(intent,
-										LocalConstant.CAPTURE_VIDEO_REQUEST_CODE);
-
-								break;
-
-							case 3:
-								Intent recordIntent = new Intent(XianChangUpload.this,
-										RecordActivity.class);
-								startActivityForResult(recordIntent,
-										LocalConstant.CAPTURE_AUDIO_REQUEST_CODE);
-
-								break;
-
-							default:
-								break;
-							}
-
-						}
-					});
-			AlertDialog dialog = builder.create();
-			dialog.show();
-
-			break;
+//			AlertDialog.Builder builder = new AlertDialog.Builder(XianChangUpload.this);
+//			builder.setTitle("选择附件类型").setItems(new String[] { "图库", "拍照", "摄像", "录音" },
+//					new DialogInterface.OnClickListener() {
+//
+//						@Override
+//						public void onClick(DialogInterface arg0, int which) {
+//							switch (which) {
+//							case 0:
+//								// Utilss.showShortToast(MainActivity.this,
+//								// "图库");
+//								Intent getAlbum = new Intent(Intent.ACTION_PICK,
+//										android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//								// 开启Pictures画面Type设定为image
+//								getAlbum.setType("image/*");
+//								// getAlbum.setAction(Intent.ACTION_GET_CONTENT);
+//								startActivityForResult(getAlbum, NewTask.SELECT_IMAGE_REQUEST_CODE);
+//								break;
+//
+//							case 1:
+//								// Utilss.showShortToast(MainActivity.this,"拍照");
+//								// 拍照
+//								Intent cameraintent = new Intent();
+//								// 指定开启系统相机的Action
+//								cameraintent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+//								cameraintent.addCategory(Intent.CATEGORY_DEFAULT);
+//
+//								mImagePath = NewTask.fileFolder + File.separator + getFileDate()
+//										+ ".jpg";
+//								// 根据文件地址创建文件
+//								File imagefile = new File(mImagePath);
+//								if (imagefile.exists()) {
+//									imagefile.delete();
+//								}
+//								// 把文件地址转换成Uri格式
+//								Uri imageUri = Uri.fromFile(imagefile);
+//								// 设置系统相机拍摄照片完成后图片文件的存放地址
+//								cameraintent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+//								startActivityForResult(cameraintent,
+//										LocalConstant.CAPTURE_IMAGE_REQUEST_CODE);
+//								break;
+//
+//							case 2:
+//								Intent intent = new Intent();
+//								intent.setAction("android.media.action.VIDEO_CAPTURE");
+//								intent.addCategory("android.intent.category.DEFAULT");
+//
+//								fileName = getFileDate();
+//								videopath = NewTask.fileFolder + "/" + fileName + ".mp4";
+//								File file = new File(videopath);
+//								if (file.exists()) {
+//									file.delete();
+//								}
+//								Uri uri = Uri.fromFile(file);
+//								intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+//								startActivityForResult(intent,
+//										LocalConstant.CAPTURE_VIDEO_REQUEST_CODE);
+//
+//								break;
+//
+//							case 3:
+//								Intent recordIntent = new Intent(XianChangUpload.this,
+//										RecordActivity.class);
+//								startActivityForResult(recordIntent,
+//										LocalConstant.CAPTURE_AUDIO_REQUEST_CODE);
+//
+//								break;
+//
+//							default:
+//								break;
+//							}
+//
+//						}
+//					});
+//			AlertDialog dialog = builder.create();
+//			dialog.show();
+//
+//			break;
 		// case R.id.upload:// 上传附件
 		//
 		// break;
-		}
+//		}
 
 	}
 

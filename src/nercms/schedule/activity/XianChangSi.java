@@ -22,6 +22,8 @@ public class XianChangSi extends BaseActivity {
 	// 1:作业现场，2：操作现场，3：故障现场
 	int type;
 	String tid;
+	
+	public static int pageType;
 
 	private XianChangSiAdapter xianChangSiAdapter;
 	private MyListPosition myList;
@@ -34,6 +36,8 @@ public class XianChangSi extends BaseActivity {
 
 		type = getIntent().getIntExtra("enterType", -1);
 		tid = getIntent().getStringExtra("tid");
+		
+		pageType  = type;
 
 		switch (type) {
 		case 1:
@@ -147,6 +151,5 @@ public class XianChangSi extends BaseActivity {
 			this.position = position;
 			return 0;
 		}
-
 	}
 }
