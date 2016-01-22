@@ -28,11 +28,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.wxapp.service.AppApplication;
+import android.wxapp.service.elec.dao.PlanTaskDao;
 import android.wxapp.service.elec.model.StartTaskResponse;
 import android.wxapp.service.elec.model.UploadTaskAttachmentResponse;
 import android.wxapp.service.elec.model.bean.Attachments;
 import android.wxapp.service.elec.model.bean.GPS;
 import android.wxapp.service.elec.model.bean.TaskAttachment;
+import android.wxapp.service.elec.model.bean.table.tb_task_attachment;
 import android.wxapp.service.elec.request.Constants;
 import android.wxapp.service.elec.request.WebRequestManager;
 import android.wxapp.service.handler.MessageHandlerManager;
@@ -73,7 +75,10 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 	private int fileCount;
 
 	WebRequestManager requestManager;
-
+	boolean isContinueTask;
+	PlanTaskDao planTaskDao;
+	// TODO 附件列表，用于显示
+	List<tb_task_attachment> atts;
 	/*
 	 * 每一个条目都有一个upload界面，每个upload界面用mediaIndex来标记附件在附件集中的位置，
 	 * 在点击delete按钮的时候，就删除对应的附件，总共有6个upload界面，你从upload界面退出的时候
@@ -90,6 +95,12 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 		enterType = getIntent().getIntExtra("enterType", -1);
 		tid = getIntent().getStringExtra("tid");
+		isContinueTask = getIntent().getBooleanExtra("isContinueTask", false);
+		// 如果是从继续任务界面过来则初始化附件列表并显示出来
+		if (isContinueTask) {
+			planTaskDao = new PlanTaskDao(this);
+			atts = planTaskDao.getPlanTaskAtt(tid);
+		}
 
 		switch (enterType) {
 		case 1:
@@ -341,11 +352,11 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 							String server = android.wxapp.service.elec.request.Contants.HFS_URL;
 							for (int j = 0; j < mList.get(i).size(); j++) {
 								Map<String, Object> attItem = mList.get(i).get(j);
-								
-								if (attItem == null){
+
+								if (attItem == null) {
 									return;
 								}
-								
+
 								String filePath = (String) attItem.get("path");
 								String type = Utils.judgeFileLeixin(filePath);
 								if (type != null) {

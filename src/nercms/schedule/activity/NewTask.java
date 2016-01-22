@@ -67,6 +67,7 @@ import android.wxapp.service.elec.dao.TaskInsDao;
 import android.wxapp.service.elec.model.CreateInsResponse;
 import android.wxapp.service.elec.model.bean.Attachments;
 import android.wxapp.service.elec.model.bean.table.tb_task_instructions;
+import android.wxapp.service.elec.model.bean.table.tb_task_instructions_attachment;
 import android.wxapp.service.elec.request.Constants;
 import android.wxapp.service.elec.request.Contants;
 import android.wxapp.service.elec.request.WebRequestManager;
@@ -80,7 +81,7 @@ import android.wxapp.service.util.HttpUploadTask;
  */
 public class NewTask extends BaseActivity {
 
-	String tid;
+	String taskInsId;
 	TaskInsDao dao;
 
 	public static final int TYPE_IMAGE = 1;
@@ -160,6 +161,8 @@ public class NewTask extends BaseActivity {
 
 	List<Node> receiverList = new ArrayList<Node>();
 
+	TaskInsDao taskInsDao;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -186,13 +189,16 @@ public class NewTask extends BaseActivity {
 		mReceiverInput = (EditText) findViewById(R.id.jieshouren_et);
 
 		// 需要从上一个界面中传入
-		tid = getIntent().getExtras().getString("tid");
-		if (!TextUtils.isEmpty(tid)) {
-			tb_task_instructions data = dao.getTaskIns(tid);
+		taskInsId = getIntent().getExtras().getString("taskInsId");
+		if (!TextUtils.isEmpty(taskInsId)) {
+			tb_task_instructions data = dao.getTaskIns(taskInsId);
 			mContentInput.setText(data.getContent());
 			Utils.setEditTextUnEditable(mContentInput);
 			mReceiverInput.setText(new OrgDao(this).getPerson(data.getSend_id()).getName());
 			Utils.setEditTextUnEditable(mReceiverInput);
+
+			taskInsDao = new TaskInsDao(this);
+			List<tb_task_instructions_attachment> atts = dao.getTaskInsAtt(taskInsId);
 			// TODO 旧任务显示附件信息
 
 		}
@@ -348,7 +354,7 @@ public class NewTask extends BaseActivity {
 								System.currentTimeMillis() + "", null, md5));
 
 					}
-					manager.createInsRequest(NewTask.this, receiverList, tid,
+					manager.createInsRequest(NewTask.this, receiverList, taskInsId,
 							mContentInput.getText().toString(), attachments);
 					break;
 				case Constant.FILE_UPLOAD_FAIL:

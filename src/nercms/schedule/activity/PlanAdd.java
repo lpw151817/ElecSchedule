@@ -40,6 +40,7 @@ import android.wxapp.service.AppApplication;
 import android.wxapp.service.elec.dao.PlanTaskDao;
 import android.wxapp.service.elec.model.CreatePlanTaskResponse;
 import android.wxapp.service.elec.model.StartTaskResponse;
+import android.wxapp.service.elec.model.bean.table.tb_task_attachment;
 import android.wxapp.service.elec.model.bean.table.tb_task_info;
 import android.wxapp.service.elec.request.Constants;
 import android.wxapp.service.elec.request.WebRequestManager;
@@ -378,7 +379,22 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 
 						@Override
 						public void onClick(View v) {
-							// TODO 跳转到查看任务界面
+							// 跳转到查看任务界面
+							if (info != null) {
+								Intent intent = new Intent(PlanAdd.this, XianChangAdd.class);
+								Bundle bundle = new Bundle();
+								bundle.putString("tid", tid);
+								if (info.getCategory().equals("category01")) {
+									bundle.putInt("enterType", 1);
+								} else if (info.getCategory().equals("category02")) {
+									bundle.putInt("enterType", 2);
+								} else if (info.getCategory().equals("category03")) {
+									bundle.putInt("enterType", 3);
+								}
+								bundle.putBoolean("isContinueTask", true);
+								intent.putExtras(bundle);
+								PlanAdd.this.startActivity(intent);
+							}
 
 						}
 					});

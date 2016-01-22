@@ -45,7 +45,7 @@ public class ZhilingActivity extends BaseActivity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Intent intent = new Intent(ZhilingActivity.this, NewTask.class);
-				intent.putExtra("tid", data.get(position).getTask_id());
+				intent.putExtra("taskInsId", data.get(position).getId());
 				startActivity(intent);
 			}
 		});
