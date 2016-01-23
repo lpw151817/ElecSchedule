@@ -162,6 +162,7 @@ public class NewTask extends BaseActivity {
 	List<Node> receiverList = new ArrayList<Node>();
 
 	TaskInsDao taskInsDao;
+	List<tb_task_instructions_attachment> atts;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -198,7 +199,7 @@ public class NewTask extends BaseActivity {
 			Utils.setEditTextUnEditable(mReceiverInput);
 
 			taskInsDao = new TaskInsDao(this);
-			List<tb_task_instructions_attachment> atts = dao.getTaskInsAtt(taskInsId);
+			atts = dao.getTaskInsAtt(taskInsId);
 			// TODO 旧任务显示附件信息
 
 		}
