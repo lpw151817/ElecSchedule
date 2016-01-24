@@ -100,6 +100,8 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 		if (isContinueTask) {
 			planTaskDao = new PlanTaskDao(this);
 			atts = planTaskDao.getPlanTaskAtt(tid);
+			
+			
 		}
 
 		switch (enterType) {

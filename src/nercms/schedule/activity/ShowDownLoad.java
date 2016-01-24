@@ -153,11 +153,11 @@ public class ShowDownLoad extends Activity {
 					String mediaName = (String) msg.obj;
 					Log.e("TAG", "case Constant.FILE_DOWNLOAD_SUCCESS: " + mediaName);
 					System.out.println("case Constant.FILE_DOWNLOAD_SUCCESS: " + mediaName);
-					if (mediaName.contains(".3gp")) {
+					if (mediaName.contains(".3gp")  ||mediaName.contains(".mp4")) {
 						loadVideo(fileFolder + mediaName);
-					} else if (mediaName.contains(".jpg")) {
+					} else if (mediaName.contains(".jpg") || mediaName.contains(".png") || mediaName.contains(".jpeg")) {
 						loadImage(fileFolder + mediaName);
-					} else if (mediaName.contains(".amr")) {
+					} else if (mediaName.contains(".amr") || mediaName.contains(".mp3")) {
 						loadAudio(fileFolder + mediaName);
 					}
 					break;

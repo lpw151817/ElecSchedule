@@ -73,11 +73,12 @@ import android.wxapp.service.elec.request.Contants;
 import android.wxapp.service.elec.request.WebRequestManager;
 import android.wxapp.service.handler.MessageHandlerManager;
 import android.wxapp.service.util.Constant;
+import android.wxapp.service.util.HttpDownloadTask;
 import android.wxapp.service.util.HttpUploadTask;
 
 /**
  * @author chen
- *
+ * 
  */
 public class NewTask extends BaseActivity {
 
@@ -93,8 +94,10 @@ public class NewTask extends BaseActivity {
 	ImageButton mVideo;
 
 	// video
-	public static String fileFolder = Environment.getExternalStorageDirectory().getPath()
-			+ "/TestRecord";
+	public static String fileFolder = Environment.getExternalStorageDirectory()
+			.getPath() + "/TestRecord";
+	private String DownloadfileFolder = Environment.getExternalStorageDirectory().getPath()
+			+ "/nercms-Schedule/DownloadAttachments/";
 
 	private String fileName;
 	private String audioFileName;
@@ -175,7 +178,8 @@ public class NewTask extends BaseActivity {
 
 		manager = new WebRequestManager(AppApplication.getInstance(), this);
 
-		WindowManager wm = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
+		WindowManager wm = (WindowManager) this
+				.getSystemService(Context.WINDOW_SERVICE);
 
 		int width = wm.getDefaultDisplay().getWidth();
 		int height = wm.getDefaultDisplay().getHeight();
@@ -195,13 +199,29 @@ public class NewTask extends BaseActivity {
 			tb_task_instructions data = dao.getTaskIns(taskInsId);
 			mContentInput.setText(data.getContent());
 			Utils.setEditTextUnEditable(mContentInput);
-			mReceiverInput.setText(new OrgDao(this).getPerson(data.getSend_id()).getName());
+			mReceiverInput.setText(new OrgDao(this)
+					.getPerson(data.getSend_id()).getName());
 			Utils.setEditTextUnEditable(mReceiverInput);
 
 			taskInsDao = new TaskInsDao(this);
 			atts = dao.getTaskInsAtt(taskInsId);
+			
+			if (atts == null) {
+				return;//没有内容
+			}
+			
 			// TODO 旧任务显示附件信息
+			System.out.println("attrs : " + atts.toString());
+			for (tb_task_instructions_attachment attachment : atts) {
+				String mediaName = attachment.getUrl();
+				String downUrl = android.wxapp.service.elec.request.Contants.HFS_URL + File.separator
+						+ mediaName;
 
+				Log.e("TAG", "fileFolder : " + fileFolder);
+				new HttpDownloadTask(NewTask.this).execute(downUrl,
+						"/nercms-Schedule/DownloadAttachments/", mediaName);
+
+			}
 		}
 		// else {
 		// mReceiverInput.setOnTouchListener(new OnTouchListener() {
@@ -231,9 +251,6 @@ public class NewTask extends BaseActivity {
 
 		mVideo.setOnClickListener(click);
 
-		System.out.println("width:" + width);
-		System.out.println("height:" + height);
-
 		mSend = (Button) findViewById(R.id.fasong);// 点击发送按钮上传附件
 		mProgress = (TextView) findViewById(R.id.upload_status_textview);
 		mSend.setOnClickListener(new OnClickListener() {
@@ -247,15 +264,16 @@ public class NewTask extends BaseActivity {
 				boolean istrue = !(TextUtils.isEmpty(mReceiverInput.getText())
 						&& TextUtils.isEmpty(mContentInput.getText()) && (count == 0));
 
-				System.out.println(isReceiver + " " + isInput + " " + iscount + " " + istrue
-						+ "mediaIndex : " + mediaIndex);
+				System.out.println(isReceiver + " " + isInput + " " + iscount
+						+ " " + istrue + "mediaIndex : " + mediaIndex);
 
 				// 接收人，具体内容和附件的数目都不能为空
 				if ((!(TextUtils.isEmpty(mReceiverInput.getText()))
 						&& (!(TextUtils.isEmpty(mContentInput.getText()))) && (mediaIndex != 0))) {
 					attachmentUploadRequest();
 				} else {
-					Toast.makeText(NewTask.this, "内容不能为空", Toast.LENGTH_SHORT).show();
+					Toast.makeText(NewTask.this, "内容不能为空", Toast.LENGTH_SHORT)
+							.show();
 				}
 
 				// attachmentUploadRequest();
@@ -349,17 +367,42 @@ public class NewTask extends BaseActivity {
 					String server = android.wxapp.service.elec.request.Contants.HFS_URL;
 					List<Attachments> attachments = new ArrayList<Attachments>();
 					for (Media item : mediaList) {
-						String md5 = Utils.getFileMD5(new File(item.getMediaUrl()));
-						attachments.add(new Attachments(item.getMediaType() + "",
-								server + File.separator + path2FileName(item.getMediaUrl()),
-								System.currentTimeMillis() + "", null, md5));
+						String md5 = Utils.getFileMD5(new File(item
+								.getMediaUrl()));
+						attachments.add(new Attachments(item.getMediaType()
+								+ "", server + File.separator
+								+ path2FileName(item.getMediaUrl()), System
+								.currentTimeMillis() + "", null, md5));
 
 					}
-					manager.createInsRequest(NewTask.this, receiverList, taskInsId,
-							mContentInput.getText().toString(), attachments);
+					manager.createInsRequest(NewTask.this, receiverList,
+							taskInsId, mContentInput.getText().toString(),
+							attachments);
 					break;
 				case Constant.FILE_UPLOAD_FAIL:
 					showLongToast("附件上传失败");
+					break;
+
+				case Constant.FILE_DOWNLOAD_SUCCESS:
+					String mediaName = (String) msg.obj;
+					Log.e("TAG", "case Constant.FILE_DOWNLOAD_SUCCESS: "
+							+ mediaName);
+					System.out.println("case Constant.FILE_DOWNLOAD_SUCCESS: "
+							+ mediaName);
+					if (mediaName.contains(".3gp")
+							|| mediaName.contains(".mp4")) {
+						loadVideo(DownloadfileFolder + mediaName);
+					} else if (mediaName.contains(".jpg")
+							|| mediaName.contains(".png")
+							|| mediaName.contains(".jpeg")) {
+						loadImage(DownloadfileFolder + mediaName);
+					} else if (mediaName.contains(".amr")
+							|| mediaName.contains(".mp3")) {
+						loadAudio(DownloadfileFolder + mediaName);
+					}
+					break;
+				case Constant.FILE_DOWNLOAD_FAIL:
+					Log.e("TAG", "case Constant.FILE_DOWNLOAD_SUCCESS: ");
 					break;
 				default:
 					break;
@@ -368,31 +411,48 @@ public class NewTask extends BaseActivity {
 
 		};
 
-		MessageHandlerManager.getInstance().register(handler, Constant.FILE_UPLOAD_FAIL, "NewTask");
-		MessageHandlerManager.getInstance().register(handler, Constant.FILE_UPLOAD_SUCCESS,
-				"NewTask");
+		MessageHandlerManager.getInstance().register(handler,
+				Constant.FILE_UPLOAD_FAIL, "NewTask");
+		MessageHandlerManager.getInstance().register(handler,
+				Constant.FILE_UPLOAD_SUCCESS, "NewTask");
 
-		MessageHandlerManager.getInstance().register(handler, Constants.CREATE_INS_SUCCESS,
+		MessageHandlerManager.getInstance()
+				.register(handler, Constants.CREATE_INS_SUCCESS,
+						CreateInsResponse.class.getName());
+		MessageHandlerManager.getInstance().register(handler,
+				Constants.CREATE_INS_SAVE_FAIL,
 				CreateInsResponse.class.getName());
-		MessageHandlerManager.getInstance().register(handler, Constants.CREATE_INS_SAVE_FAIL,
-				CreateInsResponse.class.getName());
-		MessageHandlerManager.getInstance().register(handler, Constants.CREATE_INS_FAIL,
-				CreateInsResponse.class.getName());
+		MessageHandlerManager.getInstance().register(handler,
+				Constants.CREATE_INS_FAIL, CreateInsResponse.class.getName());
+
+		MessageHandlerManager.getInstance().register(handler,
+				Constant.FILE_DOWNLOAD_FAIL, "NewTask");
+		MessageHandlerManager.getInstance().register(handler,
+				Constant.FILE_DOWNLOAD_SUCCESS, "NewTask");
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 
-		MessageHandlerManager.getInstance().unregister(Constant.FILE_UPLOAD_FAIL, "NewTask");
-		MessageHandlerManager.getInstance().unregister(Constant.FILE_UPLOAD_SUCCESS, "NewTask");
+		MessageHandlerManager.getInstance().unregister(
+				Constant.FILE_UPLOAD_FAIL, "NewTask");
+		MessageHandlerManager.getInstance().unregister(
+				Constant.FILE_UPLOAD_SUCCESS, "NewTask");
 
-		MessageHandlerManager.getInstance().unregister(Constants.CREATE_INS_SUCCESS,
+		MessageHandlerManager.getInstance().unregister(
+				Constant.FILE_DOWNLOAD_FAIL, "NewTask");
+		MessageHandlerManager.getInstance().unregister(
+				Constant.FILE_DOWNLOAD_SUCCESS, "NewTask");
+
+		MessageHandlerManager.getInstance()
+				.unregister(Constants.CREATE_INS_SUCCESS,
+						CreateInsResponse.class.getName());
+		MessageHandlerManager.getInstance().unregister(
+				Constants.CREATE_INS_SAVE_FAIL,
 				CreateInsResponse.class.getName());
-		MessageHandlerManager.getInstance().unregister(Constants.CREATE_INS_SAVE_FAIL,
-				CreateInsResponse.class.getName());
-		MessageHandlerManager.getInstance().unregister(Constants.CREATE_INS_FAIL,
-				CreateInsResponse.class.getName());
+		MessageHandlerManager.getInstance().unregister(
+				Constants.CREATE_INS_FAIL, CreateInsResponse.class.getName());
 
 	}
 
@@ -426,31 +486,36 @@ public class NewTask extends BaseActivity {
 	 */
 	private void initAttachPickBtn() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(NewTask.this);
-		builder.setTitle("选择附件类型").setItems(new String[] { "图库", "拍照", "摄像", "录音" },
+		builder.setTitle("选择附件类型").setItems(
+				new String[] {  "拍照", "摄像", "录音" },
 				new DialogInterface.OnClickListener() {
 
 					@Override
 					public void onClick(DialogInterface arg0, int which) {
 						switch (which) {
-						case 0:
-							// Utilss.showShortToast(MainActivity.this, "图库");
-							Intent getAlbum = new Intent(Intent.ACTION_PICK,
-									android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-							// 开启Pictures画面Type设定为image
-							getAlbum.setType("image/*");
-							// getAlbum.setAction(Intent.ACTION_GET_CONTENT);
-							startActivityForResult(getAlbum, SELECT_IMAGE_REQUEST_CODE);
-							break;
+//						case 0:
+//							// Utilss.showShortToast(MainActivity.this, "图库");
+//							Intent getAlbum = new Intent(
+//									Intent.ACTION_PICK,
+//									android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//							// 开启Pictures画面Type设定为image
+//							getAlbum.setType("image/*");
+//							// getAlbum.setAction(Intent.ACTION_GET_CONTENT);
+//							startActivityForResult(getAlbum,
+//									SELECT_IMAGE_REQUEST_CODE);
+//							break;
 
-						case 1:
+						case 0:
 							// Utilss.showShortToast(MainActivity.this,"拍照");
 							// 拍照
 							Intent cameraintent = new Intent();
 							// 指定开启系统相机的Action
-							cameraintent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+							cameraintent
+									.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
 							cameraintent.addCategory(Intent.CATEGORY_DEFAULT);
 
-							mImagePath = fileFolder + File.separator + getFileDate() + ".jpg";
+							mImagePath = fileFolder + File.separator
+									+ getFileDate() + ".jpg";
 							// 根据文件地址创建文件
 							File imagefile = new File(mImagePath);
 							if (imagefile.exists()) {
@@ -459,11 +524,13 @@ public class NewTask extends BaseActivity {
 							// 把文件地址转换成Uri格式
 							Uri imageUri = Uri.fromFile(imagefile);
 							// 设置系统相机拍摄照片完成后图片文件的存放地址
-							cameraintent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-							startActivityForResult(cameraintent, CAPTURE_IMAGE_REQUEST_CODE);
+							cameraintent.putExtra(MediaStore.EXTRA_OUTPUT,
+									imageUri);
+							startActivityForResult(cameraintent,
+									CAPTURE_IMAGE_REQUEST_CODE);
 							break;
 
-						case 2:
+						case 1:
 							Intent intent = new Intent();
 							intent.setAction("android.media.action.VIDEO_CAPTURE");
 							intent.addCategory("android.intent.category.DEFAULT");
@@ -476,13 +543,16 @@ public class NewTask extends BaseActivity {
 							}
 							Uri uri = Uri.fromFile(file);
 							intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-							startActivityForResult(intent, CAPTURE_VIDEO_REQUEST_CODE);
+							startActivityForResult(intent,
+									CAPTURE_VIDEO_REQUEST_CODE);
 
 							break;
 
-						case 3:
-							Intent recordIntent = new Intent(NewTask.this, RecordActivity.class);
-							startActivityForResult(recordIntent, CAPTURE_AUDIO_REQUEST_CODE);
+						case 2:
+							Intent recordIntent = new Intent(NewTask.this,
+									RecordActivity.class);
+							startActivityForResult(recordIntent,
+									CAPTURE_AUDIO_REQUEST_CODE);
 
 							break;
 
@@ -518,19 +588,22 @@ public class NewTask extends BaseActivity {
 
 				File file = new File(videopath);
 
-				Bitmap videoThumbnailBitmap = getVideoThumbnail(videopath, 400, 400,
-						MediaStore.Images.Thumbnails.MINI_KIND);
+				Bitmap videoThumbnailBitmap = getVideoThumbnail(videopath, 400,
+						400, MediaStore.Images.Thumbnails.MINI_KIND);
 
 				// 显示所录制视频
 				Uri uri = Uri.fromFile(file);
 				int mediaID = mediaIndex++;
 
-				String videoName = videopath.substring(videopath.lastIndexOf(File.separator) + 1);
+				String videoName = videopath.substring(videopath
+						.lastIndexOf(File.separator) + 1);
 				System.out.println("videoName: " + videoName);
-				mediaList.add(new Media(Utils.MEDIA_TYPE_VIDEO, videoName, videopath));
+				mediaList.add(new Media(Utils.MEDIA_TYPE_VIDEO, videoName,
+						videopath));
 				// 存储文件的路径
 				index_originalPath_Map.put(mediaID, videopath);
-				loadMedia(imageContainer, mediaID, videoThumbnailBitmap, uri, TYPE_VIDEO);
+				loadMedia(imageContainer, mediaID, videoThumbnailBitmap, uri,
+						TYPE_VIDEO);
 			}
 
 			break;
@@ -551,10 +624,11 @@ public class NewTask extends BaseActivity {
 					File file1 = new File(selectThumbnailUri);
 
 					String selectImageName = selectimagepath
-							.substring(selectimagepath.lastIndexOf(File.separator) + 1);
+							.substring(selectimagepath
+									.lastIndexOf(File.separator) + 1);
 					System.out.println("selectImageName: " + selectImageName);
-					mediaList.add(
-							new Media(Utils.MEDIA_TYPE_IMAGE, selectImageName, selectimagepath));
+					mediaList.add(new Media(Utils.MEDIA_TYPE_IMAGE,
+							selectImageName, selectimagepath));
 
 					// 显示所录制视频
 					Uri uri1 = Uri.fromFile(file1);
@@ -562,8 +636,8 @@ public class NewTask extends BaseActivity {
 					// 存储mediaId与imageOriginPath的映射
 					index_originalPath_Map.put(mediaID1, selectimagepath);
 
-					loadMedia(imageContainer, mediaID1, getThumbnailFromUri(uri1), uri1,
-							TYPE_SELECT_IMAGE);
+					loadMedia(imageContainer, mediaID1,
+							getThumbnailFromUri(uri1), uri1, TYPE_SELECT_IMAGE);
 
 					// 存储mediaId与thumbnailUri的映射
 					index_path_Map.put(mediaID1, selectThumbnailUri);
@@ -586,17 +660,19 @@ public class NewTask extends BaseActivity {
 				// BitmapFactory.decodeFile(mImagePath);
 				File file2 = new File(thumbnailUri);
 
-				String captureImageName = mImagePath
-						.substring(mImagePath.lastIndexOf(File.separator) + 1);
+				String captureImageName = mImagePath.substring(mImagePath
+						.lastIndexOf(File.separator) + 1);
 				System.out.println("captureImageName: " + captureImageName);
-				mediaList.add(new Media(Utils.MEDIA_TYPE_IMAGE, captureImageName, mImagePath));
+				mediaList.add(new Media(Utils.MEDIA_TYPE_IMAGE,
+						captureImageName, mImagePath));
 
 				Uri uri2 = Uri.fromFile(file2);
 				int mediaID2 = mediaIndex++;
 				// 存储mediaId与imageOriginPath的映射
 				index_originalPath_Map.put(mediaID2, mImagePath);
 
-				loadMedia(imageContainer, mediaID2, getThumbnailFromUri(uri2), uri2, TYPE_IMAGE);
+				loadMedia(imageContainer, mediaID2, getThumbnailFromUri(uri2),
+						uri2, TYPE_IMAGE);
 
 				// 存储mediaId与thumbnailUri的映射
 				index_path_Map.put(mediaID2, thumbnailUri);
@@ -608,23 +684,25 @@ public class NewTask extends BaseActivity {
 			if (resultCode == RESULT_OK) {
 				System.out.println("声音返回成功");
 				// 根据图片生成bitmap对象
-				Bitmap AudioThumbnailBitmap = BitmapFactory.decodeResource(getResources(),
-						R.drawable.record);
+				Bitmap AudioThumbnailBitmap = BitmapFactory.decodeResource(
+						getResources(), R.drawable.record);
 				audioFileName = getFileDate();
 				audiopath = data.getStringExtra("path");
 
 				System.out.println("audiopath: " + audiopath);
 				File file = new File(audiopath);
 
-				String captureAudioName = audiopath
-						.substring(audiopath.lastIndexOf(File.separator) + 1);
+				String captureAudioName = audiopath.substring(audiopath
+						.lastIndexOf(File.separator) + 1);
 				System.out.println("captureAudioName: " + captureAudioName);
-				mediaList.add(new Media(Utils.MEDIA_TYPE_AUDIO, captureAudioName, audiopath));
+				mediaList.add(new Media(Utils.MEDIA_TYPE_AUDIO,
+						captureAudioName, audiopath));
 
 				Uri uri = Uri.fromFile(file);
 				int mediaID = mediaIndex++;
 				index_originalPath_Map.put(mediaID, audiopath);
-				loadMedia(imageContainer, mediaID, AudioThumbnailBitmap, uri, TYPE_AUDIO);
+				loadMedia(imageContainer, mediaID, AudioThumbnailBitmap, uri,
+						TYPE_AUDIO);
 			}
 
 			break;
@@ -677,10 +755,11 @@ public class NewTask extends BaseActivity {
 	 * @param uri
 	 * @param MediaType
 	 */
-	public void loadMedia(FixedGridLayout viewContainer, int mediaId, Bitmap thumbnail,
-			final Uri uri, final int MediaType) {
+	public void loadMedia(FixedGridLayout viewContainer, int mediaId,
+			Bitmap thumbnail, final Uri uri, final int MediaType) {
 
-		System.out.println("index_originalPath_Map:" + index_originalPath_Map.toString());
+		System.out.println("index_originalPath_Map:"
+				+ index_originalPath_Map.toString());
 
 		// WeiHao 如果附件展示布局不可见，置未可见
 		if (showAttachLayout.getVisibility() == View.GONE) {
@@ -688,7 +767,8 @@ public class NewTask extends BaseActivity {
 		}
 		// 将图片缩略图添加到缩略图列表，便于新建完成后回收
 		// bitmapList.add(thumbnail);
-		final ImageView imageView = CreateImgView(this, thumbnail, IMG_WIDTH, IMG_HEIGHT);
+		final ImageView imageView = CreateImgView(this, thumbnail, IMG_WIDTH,
+				IMG_HEIGHT);
 		setImageviewListener(uri, imageView, MediaType, mediaId);
 
 		ImageButton deleteBtn = new ImageButton(this);
@@ -719,12 +799,15 @@ public class NewTask extends BaseActivity {
 	 * @since 2014-5-17
 	 * @return
 	 */
-	public RelativeLayout WrapImgView(int mediaType, ImageView imgview, ImageButton btn) {
+	public RelativeLayout WrapImgView(int mediaType, ImageView imgview,
+			ImageButton btn) {
 		RelativeLayout rl = new RelativeLayout(this);
-		rl.setLayoutParams(new FixedGridLayout.LayoutParams(IMG_WIDTH, IMG_HEIGHT));
+		rl.setLayoutParams(new FixedGridLayout.LayoutParams(IMG_WIDTH,
+				IMG_HEIGHT));
 		rl.setPadding(2, 2, 2, 2);
 		RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(
-				ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+				ViewGroup.LayoutParams.WRAP_CONTENT,
+				ViewGroup.LayoutParams.WRAP_CONTENT);
 		lp1.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		lp1.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
 		// imgview 位于父 View 的顶部，在父 View 中居左
@@ -732,7 +815,8 @@ public class NewTask extends BaseActivity {
 		lp1.rightMargin = 15;
 		rl.addView(imgview, lp1);
 
-		RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(30, 30);
+		RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(30,
+				30);
 		lp2.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		lp2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 		// btn1 位于父 View 的顶部，在父 View 中水平居右
@@ -747,7 +831,8 @@ public class NewTask extends BaseActivity {
 		waterMark.setBackgroundColor(getResources().getColor(R.color.darkgrey));
 		waterMark.setTextColor(getResources().getColor(R.color.white));
 		RelativeLayout.LayoutParams lp3 = new RelativeLayout.LayoutParams(
-				ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+				ViewGroup.LayoutParams.WRAP_CONTENT,
+				ViewGroup.LayoutParams.WRAP_CONTENT);
 		// waterMark位于父View的左下
 		lp3.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		lp3.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
@@ -794,7 +879,8 @@ public class NewTask extends BaseActivity {
 	 * @param height
 	 * @return
 	 */
-	public ImageView CreateImgView(Context context, Bitmap pic, int width, int height) {
+	public ImageView CreateImgView(Context context, Bitmap pic, int width,
+			int height) {
 		// 加载图片的ImageView
 		ImageView imageView = new RoundAngleImageView(context);
 		// 将图片缩略图加载到ImageView
@@ -802,7 +888,8 @@ public class NewTask extends BaseActivity {
 		// // 为图片设置编号
 		// imageView.setId(mediaId);
 		// 设置图片显示格式
-		FixedGridLayout.LayoutParams params = new FixedGridLayout.LayoutParams(width, height);
+		FixedGridLayout.LayoutParams params = new FixedGridLayout.LayoutParams(
+				width, height);
 		imageView.setLayoutParams(params);
 		imageView.setScaleType(ScaleType.CENTER_CROP);
 		return imageView;
@@ -814,8 +901,8 @@ public class NewTask extends BaseActivity {
 	 * @param uri
 	 * @param imageView
 	 */
-	public void setImageviewListener(final Uri uri, final ImageView imageView, final int MediaType,
-			final int MediaId) {
+	public void setImageviewListener(final Uri uri, final ImageView imageView,
+			final int MediaType, final int MediaId) {
 		// 为图片设置触摸事件
 		imageView.setOnTouchListener(new OnTouchListener() {
 			public boolean onTouch(View v, MotionEvent event) {
@@ -883,7 +970,8 @@ public class NewTask extends BaseActivity {
 		imageDialog = new Dialog(this, R.style.imageDialog);
 		imageDialog.setContentView(view);
 		// 添加图片
-		ImageView dialogImageView = (ImageView) view.findViewById(R.id.imageImageView);
+		ImageView dialogImageView = (ImageView) view
+				.findViewById(R.id.imageImageView);
 		// 获取图片
 		final Bitmap pic = getBitmapFromUri(uri);
 		// 将图片缩略图加载到ImageView
@@ -925,7 +1013,8 @@ public class NewTask extends BaseActivity {
 	 * @param MediaType
 	 *            媒体文件类型 1-图片 2-视频
 	 */
-	private void showDeleteMediaDialog(final RelativeLayout rl, final int MediaType) {
+	private void showDeleteMediaDialog(final RelativeLayout rl,
+			final int MediaType) {
 		String text = "";
 
 		if (MediaType == TYPE_AUDIO) {
@@ -1036,7 +1125,8 @@ public class NewTask extends BaseActivity {
 		builder.create().show();
 	}
 
-	private Bitmap getVideoThumbnail(String videoPath, int width, int height, int kind) {
+	private Bitmap getVideoThumbnail(String videoPath, int width, int height,
+			int kind) {
 		Bitmap bitmap = null;
 		// 获取视频的缩略图
 		bitmap = ThumbnailUtils.createVideoThumbnail(videoPath, kind);
@@ -1116,6 +1206,68 @@ public class NewTask extends BaseActivity {
 			this.mediaUrl = mediaUrl;
 		}
 
+	}
+	
+	private void loadAudio(String audiopath) {
+		// 根据图片生成bitmap对象
+		Bitmap AudioThumbnailBitmap = BitmapFactory.decodeResource(getResources(),
+				R.drawable.record);
+
+		File file = new File(audiopath);
+
+		String captureAudioName = audiopath.substring(audiopath.lastIndexOf(File.separator) + 1);
+		mediaList.add(new Media(Utils.MEDIA_TYPE_AUDIO, captureAudioName, audiopath));
+
+		Uri uri = Uri.fromFile(file);
+		int mediaID = mediaIndex++;
+		index_originalPath_Map.put(mediaID, audiopath);
+		loadMedia(imageContainer, mediaID, AudioThumbnailBitmap, uri, TYPE_AUDIO);
+	}
+
+	public void loadImage(String mImagePath) {
+		// 缩略图地址
+		String thumbnailUri = Utils.getThumbnailDir();
+		// 获取缩略图,根据原图创建缩略图, mImagePath是原图的地址
+		Utils.getThumbnail(mImagePath, thumbnailUri);
+
+		// // 根据图片生成bitmap对象
+		// Bitmap imageThumbnailBitmap =
+		// BitmapFactory.decodeFile(mImagePath);
+		File file2 = new File(thumbnailUri);
+
+		String captureImageName = mImagePath.substring(mImagePath.lastIndexOf(File.separator) + 1);
+		System.out.println("captureImageName: " + captureImageName);
+		mediaList.add(new Media(Utils.MEDIA_TYPE_IMAGE, captureImageName, mImagePath));
+
+		Uri uri2 = Uri.fromFile(file2);
+		int mediaID2 = mediaIndex++;
+		// 存储mediaId与imageOriginPath的映射
+		index_originalPath_Map.put(mediaID2, mImagePath);
+
+		loadMedia(imageContainer, mediaID2, getThumbnailFromUri(uri2), uri2, TYPE_IMAGE);
+
+		// 存储mediaId与thumbnailUri的映射
+		index_path_Map.put(mediaID2, thumbnailUri);
+	}
+	
+	public void loadVideo(String videoPath) {
+		File file = new File(videoPath);
+
+		videopath = videoPath;
+
+		Bitmap videoThumbnailBitmap = getVideoThumbnail(videoPath, 400, 400,
+				MediaStore.Images.Thumbnails.MINI_KIND);
+
+		// 显示所录制视频
+		Uri uri = Uri.fromFile(file);
+		int mediaID = mediaIndex++;
+
+		String videoName = videoPath.substring(videoPath.lastIndexOf(File.separator) + 1);
+		System.out.println("videoName: " + videoName);
+		mediaList.add(new Media(Utils.MEDIA_TYPE_VIDEO, videoName, videoPath));
+		// 存储文件的路径
+		index_originalPath_Map.put(mediaID, videoPath);
+		loadMedia(imageContainer, mediaID, videoThumbnailBitmap, uri, TYPE_VIDEO);
 	}
 
 }
