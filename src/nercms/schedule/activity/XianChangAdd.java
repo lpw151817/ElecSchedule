@@ -98,6 +98,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 	private int[] counts;// 为从网络上下载的附件设置下标index
 	boolean isClickShangchuanfujian = false;
+	boolean hasUpload = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -126,10 +127,14 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 			@Override
 			public void onClick(View v) {
-				fileCount = getFileCount();// 获取文件的个数，上传完后finish当前页免
-				// Log.e("TAG", "xianChangAdd fileCount : "+ fileCount);
-				isClickShangchuanfujian = false;
-				attachmentUploadRequest();// 上传附件
+				if (!hasUpload) {
+					fileCount = getFileCount();// 获取文件的个数，上传完后finish当前页免
+					// Log.e("TAG", "xianChangAdd fileCount : "+ fileCount);
+					isClickShangchuanfujian = false;
+					attachmentUploadRequest();// 上传附件
+				} else {
+					requestManager.endTask(XianChangAdd.this, tid, System.currentTimeMillis() + "");
+				}
 			}
 
 		});
@@ -139,10 +144,14 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 			@Override
 			public void onClick(View v) {
-				fileCount = getFileCount();// 获取文件的个数，上传完后finish当前页免
-				// Log.e("TAG", "xianChangAdd fileCount : "+ fileCount);
-				isClickShangchuanfujian = true;
-				attachmentUploadRequest();// 上传附件
+				if (hasUpload) {
+					showLongToast("附件已上传");
+				} else {
+					fileCount = getFileCount();// 获取文件的个数，上传完后finish当前页免
+					// Log.e("TAG", "xianChangAdd fileCount : "+ fileCount);
+					isClickShangchuanfujian = true;
+					attachmentUploadRequest();// 上传附件
+				}
 			}
 		});
 
@@ -564,12 +573,14 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 					break;
 
 				case Constants.UPLOAD_TASK_ATT_SUCCESS:
+					hasUpload = true;
 					if (!isClickShangchuanfujian)
 						requestManager.endTask(XianChangAdd.this, tid,
 								System.currentTimeMillis() + "");
 					break;
 				case Constants.END_TASK_SUCCESS:
-					showLongToast("上传成功");
+					showLongToast("任务已结束");
+					findViewById(R.id.bottom).setVisibility(View.GONE);
 					break;
 
 				case Constants.UPLOAD_TASK_ATT_SAVE_FAIL:
