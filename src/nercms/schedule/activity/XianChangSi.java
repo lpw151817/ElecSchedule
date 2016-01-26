@@ -23,7 +23,7 @@ public class XianChangSi extends BaseActivity {
 	int type;
 	String tid;
 	
-	public static int pageType;
+	
 
 	private XianChangSiAdapter xianChangSiAdapter;
 	private MyListPosition myList;
@@ -37,7 +37,7 @@ public class XianChangSi extends BaseActivity {
 		type = getIntent().getIntExtra("enterType", -1);
 		tid = getIntent().getStringExtra("tid");
 		
-		pageType  = type;
+		
 
 		switch (type) {
 		case 1:

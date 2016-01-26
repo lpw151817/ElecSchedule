@@ -16,7 +16,7 @@ import nercms.schedule.R;
 import nercms.schedule.adapter.MainPagerAdapter;
 
 public class Main extends BaseActivity {
-
+	public static int pageType;
 	ListView listview;
 
 	@Override
@@ -36,7 +36,7 @@ public class Main extends BaseActivity {
 				Intent intent = new Intent(Main.this, TaskList.class);
 				intent.putExtra("enterType", position + 1);
 				Main.this.startActivity(intent);
-
+				pageType  = position;
 			}
 		});
 	}
