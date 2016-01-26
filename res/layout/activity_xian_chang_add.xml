@@ -12,19 +12,36 @@
         android:id="@+id/listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/jieshurenwu" >
+        android:layout_above="@+id/bottom" >
     </ListView>
 
-    <Button
-        android:id="@+id/jieshurenwu"
+    <LinearLayout
+        android:id="@+id/bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/time"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="5dp"
-        android:background="@drawable/btn_style_green"
-        android:text="结束任务"
-        android:textColor="#ffffff" />
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/shangchuanfujian"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_style_green"
+            android:text="上传附件"
+            android:textColor="#ffffff" />
+
+        <Button
+            android:id="@+id/jieshurenwu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_style_green"
+            android:text="结束任务"
+            android:textColor="#ffffff" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/time"

@@ -373,8 +373,8 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 				qrtj.setVisibility(View.GONE);
 
 				renwu.setVisibility(View.VISIBLE);
-				if (!TextUtils.isEmpty(info.getStart_time())) {
-					renwu.setText("继续任务");
+				if (!TextUtils.isEmpty(info.getEnd_time())) {
+					renwu.setText("查看附件");
 					renwu.setOnClickListener(new OnClickListener() {
 
 						@Override
@@ -395,19 +395,45 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 								intent.putExtras(bundle);
 								PlanAdd.this.startActivity(intent);
 							}
-
 						}
 					});
 				} else {
-					renwu.setText("开始任务");
-					renwu.setOnClickListener(new OnClickListener() {
+					if (!TextUtils.isEmpty(info.getStart_time())) {
+						renwu.setText("继续任务");
+						renwu.setOnClickListener(new OnClickListener() {
 
-						@Override
-						public void onClick(View v) {
-							webRequest.startTask(PlanAdd.this, tid,
-									System.currentTimeMillis() + "");
-						}
-					});
+							@Override
+							public void onClick(View v) {
+								// 跳转到查看任务界面
+								if (info != null) {
+									Intent intent = new Intent(PlanAdd.this, XianChangAdd.class);
+									Bundle bundle = new Bundle();
+									bundle.putString("tid", tid);
+									if (info.getCategory().equals("category01")) {
+										bundle.putInt("enterType", 1);
+									} else if (info.getCategory().equals("category02")) {
+										bundle.putInt("enterType", 2);
+									} else if (info.getCategory().equals("category03")) {
+										bundle.putInt("enterType", 3);
+									}
+									bundle.putBoolean("isContinueTask", true);
+									intent.putExtras(bundle);
+									PlanAdd.this.startActivity(intent);
+								}
+
+							}
+						});
+					} else {
+						renwu.setText("开始任务");
+						renwu.setOnClickListener(new OnClickListener() {
+
+							@Override
+							public void onClick(View v) {
+								webRequest.startTask(PlanAdd.this, tid,
+										System.currentTimeMillis() + "");
+							}
+						});
+					}
 				}
 			}
 		}
