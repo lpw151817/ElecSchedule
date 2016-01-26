@@ -10,28 +10,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.TextUtils;
 import android.util.Log;
 import android.wxapp.service.AppApplication;
-import android.wxapp.service.dao.AffairDao;
-import android.wxapp.service.dao.ConferenceDao;
-import android.wxapp.service.dao.GroupDao;
-import android.wxapp.service.dao.PersonDao;
+import android.wxapp.service.elec.model.UpdateResponse;
+import android.wxapp.service.elec.request.Constants;
+import android.wxapp.service.elec.request.Contants;
+import android.wxapp.service.elec.request.WebRequestManager;
 import android.wxapp.service.handler.MessageHandlerManager;
-import android.wxapp.service.jerry.model.affair.CreateTaskRequestIds;
-import android.wxapp.service.jerry.model.affair.QueryAffairInfoResponse;
-import android.wxapp.service.jerry.model.conference.ConferenceQueryResponse;
-import android.wxapp.service.jerry.model.conference.ConferenceUpdateQueryResponseItem;
-import android.wxapp.service.jerry.model.message.ReceiveMessageResponse;
 import android.wxapp.service.jerry.model.mqtt.MqttResponse;
-import android.wxapp.service.request.Contants;
-import android.wxapp.service.request.WebRequestManager;
-import android.wxapp.service.util.Constant;
 import android.wxapp.service.util.MySharedPreference;
 import nercms.schedule.R;
-import nercms.schedule.activity.ChatDetail;
-import nercms.schedule.activity.MeetingDetail;
-import nercms.schedule.activity.TaskDetail;
+import nercms.schedule.activity.NewTask;
+import nercms.schedule.activity.PlanAdd;
 
 /*
  * 使用方法：
@@ -51,10 +41,10 @@ public class Push {
 
 	private final String TAG = getClass().getName();
 
-	public static String SERVER_URL = Contants.SERVER;
-	private static final int PORT = 1883;
+	public static String SERVER_URL = Contants.MQTT_SERVER;
+	private static final int PORT = Integer.parseInt(Contants.MQTT_PORT);
 	private final String TOPIC_HEADER = "nercms/schedule/";
-	public static String PERSON_ID = "";// personid
+	public static String PERSON_ID;// personid
 	private final int QOS = 1;
 	// Qos 0: 至多一次,消息发布完全依赖底层网络,会发生消息丢失或重复;
 	// Qos 1: 至少一次,确保消息到达,但消息重复可能会发生;
@@ -75,10 +65,14 @@ public class Push {
 		return _unique_instance;
 	}
 
+	MqttResponse response;
+
 	public void ini() {
 		Log.e("mqtt ini", "ini()");
 		// ini handler
 		iniHandler();
+		// ini uid
+		PERSON_ID = getUserId();
 		// clientid为m_开头
 		init("m_" + PERSON_ID, SERVER_URL, PORT);
 		setCallbacks(new ICallBacks() {
@@ -89,50 +83,16 @@ public class Push {
 				Log.v(TAG, msg);
 				// TODO 进行到达消息的处理
 				try {
+
 					WebRequestManager manager = new WebRequestManager(AppApplication.getInstance(),
 							c);
 
 					Gson gson = new Gson();
-					MqttResponse response = gson.fromJson(msg, MqttResponse.class);
+					response = gson.fromJson(msg, MqttResponse.class);
 
 					if (response != null) {
-						switch (Integer.parseInt(response.getType())) {
-						// 事务
-						case 1:
-							AffairDao affairDao = new AffairDao(c);
-							QueryAffairInfoResponse affair = affairDao
-									.getAffairInfoByAid(response.getId());
-							// 如果存在，则删除旧数据
-							if (affair != null) {
-								affairDao.deleteAffair(response.getId());
-							}
-							manager.getAffair(response.getId());
-							break;
-						// 会议
-						case 2:
-							ConferenceDao conferenceDao = new ConferenceDao(c);
-							ConferenceUpdateQueryResponseItem conference = conferenceDao
-									.getConferenceByCid(response.getId());
-							// 如果存在，则删除旧数据
-							if (conference != null) {
-								conferenceDao.deleteConferenceByID(response.getId());
-							}
-							manager.getConference(response.getId());
-							break;
-						// 个人消息
-						case 3:
-							manager.getMessage(response.getId());
-							break;
-						// 群组消息
-						case 4:
-							manager.getMessage(response.getId());
-							break;
-						// 事务反馈
-						case 5:
-							manager.getMessage(response.getId());
-							break;
-
-						}
+						// 进行数据更新
+						manager.loginUpdate(c);
 
 					}
 				} catch (Exception e) {
@@ -170,94 +130,42 @@ public class Push {
 				String content = "您有新的";
 
 				switch (msg.what) {
-				case Constant.QUERY_TASK_INFO_REQUEST_SUCCESS:
-					QueryAffairInfoResponse info = (QueryAffairInfoResponse) msg.obj;
-					int entranceStatus;
-					int entranceType;
-					// 入口类型：1-发起任务；2-接收任务
-					if (info.getPod().contains(new CreateTaskRequestIds(getUserId()))) {
-						entranceType = 1;
-					} else
-						entranceType = 2;
-
-					// 当没有完成时间
-					if (info.getCt() == null) {
-						// 结束时间小于当前时间,任务已经延迟
-						if (info.getEt().compareTo(System.currentTimeMillis() + "") < 0) {
-							entranceStatus = 3;
-						} else
-							entranceStatus = 1;
-					} else {
-						entranceStatus = 2;
-					}
-					b.putInt("type", entranceType);
-					b.putInt("status", entranceStatus);
-					b.putString("id", info.getAid());
-					target = TaskDetail.class;
-					content += "事务";
-					break;
-				case Constant.CONFERENCE_QUERY_SECCUESS:
-					ConferenceQueryResponse r = (ConferenceQueryResponse) msg.obj;
-					target = MeetingDetail.class;
-					b.putString("conference_id", r.getCid());
-					content += "会议";
-					break;
-				case Constant.QUERY_MESSAGE_INFO_REQUEST_SUCCESS:
-					ReceiveMessageResponse response = (ReceiveMessageResponse) msg.obj;
-					target = ChatDetail.class;
-
-					// 个人消息
-					if (response.getT().equals("0")) {
-						content += "消息";
-						// 如果接收到推送，则需要查询的是本用户与发送者的聊天记录，而不是接受者
-						b.putInt("selected_id", Integer.parseInt(response.getSid()));
-						b.putString("selected_name",
-								new PersonDao(c).getPersonInfo(response.getSid()).getN());
-						b.putBoolean("isGroup", false);
-						b.putInt("entrance_type", 1);
-					}
-					// 群组消息
-					else if (response.getT().equals("1") || response.getT().equals("2")) {
-						content += "消息";
-						// 如果接收到推送，则接受者为group的id
-						b.putInt("selected_id", Integer.parseInt(response.getRid()));
-						b.putString("selected_name",
-								new GroupDao(c).queryGroupById(response.getRid()).getN());
-						b.putBoolean("isGroup", true);
-						b.putInt("entrance_type", 1);
-					}
-					// 反馈
-					else if (response.getT().equals("4")) {
-						b.putInt("entrance_type", 2);
-						content += "反馈";
-						// 接受者为taskId
-						b.putString("task_id", response.getRid());
-						QueryAffairInfoResponse affairInfoResponse = new AffairDao(c)
-								.getAffairInfoByAid(response.getRid());
-						// task_status: 1-进行中（未完成）；2-已完成；3-已延迟
-						// 如果存在结束时间,证明已经完成
-						if (!TextUtils.isEmpty(affairInfoResponse.getCt())) {
-							b.putInt("task_status", 2);
-						}
-						// 不存在结束时间
-						else {
-							// 简单点，置为-1
-							b.putInt("task_status", -1);
+				case Constants.LOGIN_UPDATE_SUCCESS:
+					if (response != null) {
+						if (response.getType().equals("1")) {
+							// 开始和结束任务推送给领导
+							b.putInt("enterType", 0);
+							b.putString("tid", response.getId());
+							target = PlanAdd.class;
+							content += "任务";
+						} else if (response.getType().equals("2")) {
+							// 新建指令时进行推送给任务负责人
+							target = NewTask.class;
+							b.putString("taskInsId", response.getId());
+							content += "指令";
+						} else if (response.getType().equals("3")) {
+							// 上传附件后，推送给应上岗到位领导，如果没有就不推送
+							b.putInt("enterType", 0);
+							b.putString("tid", response.getId());
+							target = PlanAdd.class;
+							content += "任务附件";
 						}
 					}
+					break;
+				case Constants.LOGIN_UPDATE_FAIL:
+				case Constants.LOGIN_UPDATE_SAVE_FAIL:
 					break;
 				}
-
 				showNotification(Push.this.c, target, b, content, "调度系统", content);
 			}
 		};
 
-		MessageHandlerManager.getInstance().register(handler,
-				Constant.QUERY_TASK_INFO_REQUEST_SUCCESS, Contants.METHOD_AFFAIRS_QUERY_INFO);
-		MessageHandlerManager.getInstance().register(handler, Constant.CONFERENCE_QUERY_SECCUESS,
-				Contants.METHOD_CONFERENCE_QUERY);
-		MessageHandlerManager.getInstance().register(handler,
-				Constant.QUERY_MESSAGE_INFO_REQUEST_SUCCESS, Contants.METHOD_MESSAGE_RECEIVE);
+		MessageHandlerManager.getInstance().register(handler, Constants.LOGIN_UPDATE_SUCCESS,
+				UpdateResponse.class.getName());
+		MessageHandlerManager.getInstance().register(handler, Constants.LOGIN_UPDATE_SAVE_FAIL,
+				UpdateResponse.class.getName());
+		MessageHandlerManager.getInstance().register(handler, Constants.LOGIN_UPDATE_FAIL,
+				UpdateResponse.class.getName());
 	}
 
 	protected String getUserId() {

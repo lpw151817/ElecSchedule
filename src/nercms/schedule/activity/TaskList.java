@@ -75,7 +75,7 @@ public class TaskList extends BaseActivity {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				// TODO item点击事件，用于查询任务详情
+				// item点击事件，用于查询任务详情
 				Intent intent = new Intent(TaskList.this, PlanAdd.class);
 				intent.putExtra("enterType", 0);
 				intent.putExtra("tid", data.get(position).getId());
