@@ -31,6 +31,7 @@ import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -47,6 +48,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.wxapp.service.elec.dao.PlanTaskDao;
 
 /*
  * 
@@ -135,6 +137,8 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 	private Context c;
 
+	String tid;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -142,9 +146,16 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 		iniActionBar(true, null, null);
 
+		tid = getIntent().getStringExtra("tid");
+
 		c = XianChangUpload.this;
 
 		bt_select = (Button) findViewById(R.id.select);
+		if (!TextUtils.isEmpty(new PlanTaskDao(this).getPlanTask(tid)
+				.getEnd_time())) {
+			bt_select.setVisibility(View.GONE);
+		}
+
 		// bt_upload = (Button) findViewById(R.id.upload);
 
 		WindowManager wm = (WindowManager) this
@@ -727,9 +738,9 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 								+ map.get("path"));
 
 						mFilePath = (String) map.get("path");
-						
+
 						File mfile = new File(mFilePath);
-						if (mfile.exists()){//针对的是从网络上下载附件的时候，没有下载完成，就点击进入，会显示不了附件
+						if (mfile.exists()) {// 针对的是从网络上下载附件的时候，没有下载完成，就点击进入，会显示不了附件
 							// mFilePath = (String)
 							// getIntent().getCharSequenceExtra("path");
 							mFileName = mFilePath.substring(mFilePath
@@ -807,11 +818,11 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 								loadMedia(imageContainer, mediaID,
 										videoThumbnailBitmap, uri,
 										NewTask.TYPE_VIDEO);
-						}
-						
-						
-						}else {
-							Toast.makeText(this, "附件正在下载", Toast.LENGTH_SHORT).show();
+							}
+
+						} else {
+							Toast.makeText(this, "附件正在下载", Toast.LENGTH_SHORT)
+									.show();
 						}
 
 					}
@@ -1271,7 +1282,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		Bitmap bitmap = null;
 		// 获取视频的缩略图
 		bitmap = ThumbnailUtils.createVideoThumbnail(videoPath, kind);
-		
+
 		if (bitmap == null) {
 			return null;
 		}
