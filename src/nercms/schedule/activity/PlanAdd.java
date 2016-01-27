@@ -96,6 +96,7 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 		intent.putExtra("enterType", enterType);
 		intent.putExtra("tid", tid);
 		startActivity(intent);
+		this.finish();
 	}
 
 	private void initHandler() {

@@ -24,6 +24,7 @@ import android.wxapp.service.elec.request.Constants;
 import android.wxapp.service.elec.request.WebRequestManager;
 import android.wxapp.service.handler.MessageHandlerManager;
 import nercms.schedule.R;
+import nercms.schedule.utils.Utils;
 
 public class MeiRiJiHuaAdapter extends BaseAdapter {
 	Context mContext;
@@ -73,7 +74,7 @@ public class MeiRiJiHuaAdapter extends BaseAdapter {
 			holder = (Holder) convertView.getTag();
 		}
 		holder.name.setText(data.get(position).getName());
-		holder.time.setText(data.get(position).getPlan_start_time());
+		holder.time.setText(Utils.formatDateMs(data.get(position).getPlan_start_time()));
 		holder.delete.setOnClickListener(new OnClickListener() {
 
 			@Override

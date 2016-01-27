@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.actionbarsherlock.view.MenuItem;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
@@ -34,8 +35,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ShowXianChangAttachment extends BaseActivity implements
-		OnClickListener {
+public class ShowXianChangAttachment extends BaseActivity implements OnClickListener {
 	// 1:作业现场，2：操作现场，3：故障现场
 	int enterType;
 	String tid;
@@ -71,8 +71,7 @@ public class ShowXianChangAttachment extends BaseActivity implements
 		mOk = (Button) findViewById(R.id.bt_ok);
 		mCancel = (Button) findViewById(R.id.bt_cancel);
 
-		mContent = (Map<Integer, Map<String, String>>) getIntent()
-				.getSerializableExtra("address");
+		mContent = (Map<Integer, Map<String, String>>) getIntent().getSerializableExtra("address");
 
 		mMap = mContent.get(0);
 		from = mMap.get("from");
@@ -85,11 +84,11 @@ public class ShowXianChangAttachment extends BaseActivity implements
 
 			if (type.equals("image")) {
 				imagePath = mMap.get("image");
-				//图片太大，imageview显示的时候容易内存溢出，所以需要将原图进行压缩
+				// 图片太大，imageview显示的时候容易内存溢出，所以需要将原图进行压缩
 				String thumbnailUri = Utils.getThumbnailDir();
 				// 获取缩略图,根据原图创建缩略图, mImagePath是原图的地址
 				Utils.getThumbnail(imagePath, thumbnailUri);
-				
+
 				Bitmap bitmap = BitmapFactory.decodeFile(thumbnailUri);
 				// 旋转
 				int degree = Utils.readPictureDegree(imagePath);
@@ -106,8 +105,8 @@ public class ShowXianChangAttachment extends BaseActivity implements
 				// audioPath = bundle.getString("audiopath");
 				videoPath = mMap.get("videopath");
 				System.out.println("showXianChangActivity: " + videoPath);
-				Bitmap videoThumbnailBitmap = getVideoThumbnail(videoPath, 400,
-						400, MediaStore.Images.Thumbnails.MINI_KIND);
+				Bitmap videoThumbnailBitmap = getVideoThumbnail(videoPath, 400, 400,
+						MediaStore.Images.Thumbnails.MINI_KIND);
 				mImage.setImageBitmap(videoThumbnailBitmap);
 				mImage.setOnClickListener(this);
 			}
@@ -116,12 +115,12 @@ public class ShowXianChangAttachment extends BaseActivity implements
 
 			if (type.equals("selectImage") || type.equals("captureImage")) {
 				filePath = mMap.get("path");
-				
-				//图片太大，imageview显示的时候容易内存溢出，所以需要将原图进行压缩
+
+				// 图片太大，imageview显示的时候容易内存溢出，所以需要将原图进行压缩
 				String thumbnailUri = Utils.getThumbnailDir();
 				// 获取缩略图,根据原图创建缩略图, mImagePath是原图的地址
 				Utils.getThumbnail(filePath, thumbnailUri);
-				
+
 				Bitmap bitmap = BitmapFactory.decodeFile(thumbnailUri);
 				// 旋转
 				int degree = Utils.readPictureDegree(filePath);
@@ -134,8 +133,8 @@ public class ShowXianChangAttachment extends BaseActivity implements
 			} else if (type.equals("video")) {
 				filePath = mMap.get("path");
 
-				Bitmap videoThumbnailBitmap = getVideoThumbnail(filePath, 400,
-						400, MediaStore.Images.Thumbnails.MINI_KIND);
+				Bitmap videoThumbnailBitmap = getVideoThumbnail(filePath, 400, 400,
+						MediaStore.Images.Thumbnails.MINI_KIND);
 				mImage.setImageBitmap(videoThumbnailBitmap);
 
 			}
@@ -153,21 +152,28 @@ public class ShowXianChangAttachment extends BaseActivity implements
 	}
 
 	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			finish();
+			break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
 	public void onClick(View arg0) {
 		int id = arg0.getId();
 		switch (id) {
 		case R.id.bt_ok:
-			if (!Utils.isNetworkAvailable(getApplicationContext())
-					|| mGPS == null) {
-				Toast.makeText(getApplicationContext(), "无网络，无法获取GPS",
-						Toast.LENGTH_SHORT).show();
+			if (!Utils.isNetworkAvailable(getApplicationContext()) || mGPS == null) {
+				Toast.makeText(getApplicationContext(), "无网络，无法获取GPS", Toast.LENGTH_SHORT).show();
 				return;
 			}
 			Intent intent = new Intent();
 			if (from.equals("XianChangSi")) {
 
-				final Intent mintent = new Intent(ShowXianChangAttachment.this,
-						XianChangAdd.class);
+				final Intent mintent = new Intent(ShowXianChangAttachment.this, XianChangAdd.class);
 
 				mintent.putExtra("enterType", enterType);
 				mintent.putExtra("tid", tid);
@@ -189,7 +195,7 @@ public class ShowXianChangAttachment extends BaseActivity implements
 
 					mMap.put("path", videoPath);
 
-				} 
+				}
 
 				mMap.put("time", mCurrentTime);// 传递附件的时间戳
 				mMap.put("index", 0 + "");// 第一个文件的下标是0
@@ -239,8 +245,7 @@ public class ShowXianChangAttachment extends BaseActivity implements
 				}
 			} else if (from.equals("XianChangUpload")) {
 				// 在选择附件的时候，从相册中选择图片，点击取消按钮是不删除原图片的
-				if (type.equals("captureImage") || type.equals("audio")
-						|| type.equals("video")) {
+				if (type.equals("captureImage") || type.equals("audio") || type.equals("video")) {
 					Utils.deleteMedia(filePath);
 				}
 			}
@@ -256,7 +261,7 @@ public class ShowXianChangAttachment extends BaseActivity implements
 				intent1.setAction(Intent.ACTION_DEFAULT);
 				intent1.setDataAndType(uri, "audio/*");
 				startActivity(intent1);
-			} else if (type.equals("video")){
+			} else if (type.equals("video")) {
 				// 点击播放视频
 				Intent videoIntent = new Intent(ShowXianChangAttachment.this, PlayVideo.class);
 				videoIntent.putExtra("path", videoPath);
@@ -319,8 +324,7 @@ public class ShowXianChangAttachment extends BaseActivity implements
 		mLocationClient.stop();// 停止定位
 	}
 
-	private Bitmap getVideoThumbnail(String videoPath, int width, int height,
-			int kind) {
+	private Bitmap getVideoThumbnail(String videoPath, int width, int height, int kind) {
 		Bitmap bitmap = null;
 		// 获取视频的缩略图
 		bitmap = ThumbnailUtils.createVideoThumbnail(videoPath, kind);

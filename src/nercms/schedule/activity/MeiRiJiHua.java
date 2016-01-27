@@ -88,6 +88,7 @@ public class MeiRiJiHua extends BaseActivity
 					intent.putExtra("enterType", enterType);
 					intent.putExtra("tid", tid);
 					MeiRiJiHua.this.startActivity(intent);
+					MeiRiJiHua.this.finish();
 					break;
 
 				case Constants.START_TASK_FAIL:
@@ -132,19 +133,19 @@ public class MeiRiJiHua extends BaseActivity
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		MessageHandlerManager.getInstance().unregister(Constants.START_TASK_SUCCESS,
-				StartTaskResponse.class.getName());
-		MessageHandlerManager.getInstance().unregister(Constants.START_TASK_FAIL,
-				StartTaskResponse.class.getName());
-		MessageHandlerManager.getInstance().unregister(Constants.START_TASK_SAVE_FAIL,
-				StartTaskResponse.class.getName());
-
-		MessageHandlerManager.getInstance().unregister(Constants.DELETE_TASK_SUCCESS,
-				DeleteTaskResponse.class.getName());
-		MessageHandlerManager.getInstance().unregister(Constants.DELETE_TASK_FAIL,
-				DeleteTaskResponse.class.getName());
-		MessageHandlerManager.getInstance().unregister(Constants.DELETE_TASK_SAVE_FAIL,
-				DeleteTaskResponse.class.getName());
+		// MessageHandlerManager.getInstance().unregister(Constants.START_TASK_SUCCESS,
+		// StartTaskResponse.class.getName());
+		// MessageHandlerManager.getInstance().unregister(Constants.START_TASK_FAIL,
+		// StartTaskResponse.class.getName());
+		// MessageHandlerManager.getInstance().unregister(Constants.START_TASK_SAVE_FAIL,
+		// StartTaskResponse.class.getName());
+		//
+		// MessageHandlerManager.getInstance().unregister(Constants.DELETE_TASK_SUCCESS,
+		// DeleteTaskResponse.class.getName());
+		// MessageHandlerManager.getInstance().unregister(Constants.DELETE_TASK_FAIL,
+		// DeleteTaskResponse.class.getName());
+		// MessageHandlerManager.getInstance().unregister(Constants.DELETE_TASK_SAVE_FAIL,
+		// DeleteTaskResponse.class.getName());
 
 	}
 

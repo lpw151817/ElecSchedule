@@ -127,6 +127,8 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 			@Override
 			public void onClick(View v) {
+				if (planTaskDao == null)
+					planTaskDao = new PlanTaskDao(XianChangAdd.this);
 				if (!TextUtils.isEmpty(planTaskDao.getPlanTask(tid).getEnd_time())) {
 					showLongToast("任务已结束");
 				} else {
@@ -588,9 +590,12 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 				case Constants.UPLOAD_TASK_ATT_SUCCESS:
 					hasUpload = true;
-					if (!isClickShangchuanfujian)
+					if (!isClickShangchuanfujian) {
 						requestManager.endTask(XianChangAdd.this, tid,
 								System.currentTimeMillis() + "");
+					} else {
+						bt_shangchuanfujian.setVisibility(View.GONE);
+					}
 					break;
 				case Constants.END_TASK_SUCCESS:
 					showLongToast("任务已结束");
