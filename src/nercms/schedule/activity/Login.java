@@ -251,12 +251,14 @@ public class Login extends BaseActivity {
 					Generate_md5.generate_md5(inputPassword));
 		} else {
 			if (!getUserName().equals(inputUserName.toLowerCase())) {
+				dismissProgressDialog();
 				showAlterDialog("µÇÂ¼´íÎó", "Çë¼ì²éÍøÂçÁ¬½Ó×´Ì¬", R.drawable.login_error_icon, "È·¶¨", null);
 			} else {
 				if (getUserName().toLowerCase().equals(inputUserName.toLowerCase())
 						&& getUserIc().equals(Generate_md5.generate_md5(inputPassword))) {
 					webRequestManager.loginUpdate(Login.this);
 				} else {
+					dismissProgressDialog();
 					showAlterDialog("µÇÂ¼´íÎó", "ÃÜÂë´íÎó", R.drawable.login_error_icon, "È·¶¨", null);
 				}
 			}

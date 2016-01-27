@@ -127,13 +127,18 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 			@Override
 			public void onClick(View v) {
-				if (!hasUpload) {
-					fileCount = getFileCount();// 获取文件的个数，上传完后finish当前页免
-					// Log.e("TAG", "xianChangAdd fileCount : "+ fileCount);
-					isClickShangchuanfujian = false;
-					attachmentUploadRequest();// 上传附件
+				if (!TextUtils.isEmpty(planTaskDao.getPlanTask(tid).getEnd_time())) {
+					showLongToast("任务已结束");
 				} else {
-					requestManager.endTask(XianChangAdd.this, tid, System.currentTimeMillis() + "");
+					if (!hasUpload) {
+						fileCount = getFileCount();// 获取文件的个数，上传完后finish当前页免
+						// Log.e("TAG", "xianChangAdd fileCount : "+ fileCount);
+						isClickShangchuanfujian = false;
+						attachmentUploadRequest();// 上传附件
+					} else {
+						requestManager.endTask(XianChangAdd.this, tid,
+								System.currentTimeMillis() + "");
+					}
 				}
 			}
 
@@ -144,13 +149,17 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 			@Override
 			public void onClick(View v) {
-				if (hasUpload) {
-					showLongToast("附件已上传");
+				if (getFileCount() < 1) {
+					showShortToast("请选择附件");
 				} else {
-					fileCount = getFileCount();// 获取文件的个数，上传完后finish当前页免
-					// Log.e("TAG", "xianChangAdd fileCount : "+ fileCount);
-					isClickShangchuanfujian = true;
-					attachmentUploadRequest();// 上传附件
+					if (hasUpload) {
+						showLongToast("附件已上传");
+					} else {
+						fileCount = getFileCount();// 获取文件的个数，上传完后finish当前页免
+						// Log.e("TAG", "xianChangAdd fileCount : "+ fileCount);
+						isClickShangchuanfujian = true;
+						attachmentUploadRequest();// 上传附件
+					}
 				}
 			}
 		});
@@ -176,117 +185,117 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 			System.out.println("传递过来的位置信息flag :" + flag);
 		}
-		
+
 		// 如果是从继续任务界面过来则初始化附件列表并显示出来
-				if (isContinueTask) {
-					planTaskDao = new PlanTaskDao(this);
+		if (isContinueTask) {
+			planTaskDao = new PlanTaskDao(this);
 
-					tb_task_info data = planTaskDao.getPlanTask(tid);
-					if (!TextUtils.isEmpty(data.getEnd_time())) {
-						v_bottom = (View) findViewById(R.id.bottom);
-						v_bottom.setVisibility(View.GONE);
-					} 
+			tb_task_info data = planTaskDao.getPlanTask(tid);
+			if (!TextUtils.isEmpty(data.getEnd_time())) {
+				v_bottom = (View) findViewById(R.id.bottom);
+				v_bottom.setVisibility(View.GONE);
+			}
 
-						atts = planTaskDao.getPlanTaskAtt(tid);
+			atts = planTaskDao.getPlanTaskAtt(tid);
 
-						// atts.get(0).getStandard();
-						// atts每个任务原来的已经上传的附件列表，它的getStandard是返回的是附件所属的条目，
+			// atts.get(0).getStandard();
+			// atts每个任务原来的已经上传的附件列表，它的getStandard是返回的是附件所属的条目，
 
-						counts = new int[xianChangAddAdapter.getCount()];
+			counts = new int[xianChangAddAdapter.getCount()];
 
-						// TODO 还要将附件下载下来
-						for (tb_task_attachment attachment : atts) {
-							String standard = attachment.getStandard();
+			// TODO 还要将附件下载下来
+			for (tb_task_attachment attachment : atts) {
+				String standard = attachment.getStandard();
 
-							GpsDao gpsDao = new GpsDao(this);
-							GPS gps = gpsDao.getHistory(attachment.getHistorygps());// 从数据库中获取gps信息
-							MyGPS mGPS = new MyGPS(gps.getOllectionTime(),
-									Double.valueOf(gps.getLongitude()), Double.valueOf(gps.getLatitude()),
-									Float.valueOf(gps.getAccuracy()), Double.valueOf(gps.getHeight()),
-									Float.valueOf(gps.getSpeed()), gps.getCoordinate());
+				GpsDao gpsDao = new GpsDao(this);
+				GPS gps = gpsDao.getHistory(attachment.getHistorygps());// 从数据库中获取gps信息
+				MyGPS mGPS = new MyGPS(gps.getOllectionTime(), Double.valueOf(gps.getLongitude()),
+						Double.valueOf(gps.getLatitude()), Float.valueOf(gps.getAccuracy()),
+						Double.valueOf(gps.getHeight()), Float.valueOf(gps.getSpeed()),
+						gps.getCoordinate());
 
-							String mediaName = attachment.getUrl();
-							String filePath = DownloadfileFolder + File.separator + mediaName;
-							String downUrl = android.wxapp.service.elec.request.Contants.HFS_URL
-									+ File.separator + mediaName;
+				String mediaName = attachment.getUrl();
+				String filePath = DownloadfileFolder + File.separator + mediaName;
+				String downUrl = android.wxapp.service.elec.request.Contants.HFS_URL
+						+ File.separator + mediaName;
 
-							File file = new File(filePath);
-							if (!file.exists()) {// 文件有缓存，就不需要下载了
-								new HttpDownloadTask(XianChangAdd.this).execute(downUrl,
-										"/nercms-Schedule/DownloadAttachments/", mediaName);// 将附件下载下来
-							}
+				File file = new File(filePath);
+				if (!file.exists()) {// 文件有缓存，就不需要下载了
+					new HttpDownloadTask(XianChangAdd.this).execute(downUrl,
+							"/nercms-Schedule/DownloadAttachments/", mediaName);// 将附件下载下来
+				}
 
-							// 附件信息
-							Map<String, Object> mMap1 = new HashMap<String, Object>();
-							mMap1.put("gps", mGPS);
-							mMap1.put("path", filePath);
-							mMap1.put("time", gps.getOllectionTime());// 传递附件的时间
+				// 附件信息
+				Map<String, Object> mMap1 = new HashMap<String, Object>();
+				mMap1.put("gps", mGPS);
+				mMap1.put("path", filePath);
+				mMap1.put("time", gps.getOllectionTime());// 传递附件的时间
 
-							if (standard.equals("standard01")) {
-								mMap1.put("index", counts[0] + "");
-								counts[0]++;
-								mList.get(0).add(mMap1);
-							}
-							if (standard.equals("standard02")) {
-								mMap1.put("index", counts[1] + "");
-								counts[1]++;
-								mList.get(1).add(mMap1);
-							}
-							if (standard.equals("standard03")) {
-								mMap1.put("index", counts[2] + "");
-								counts[2]++;
-								mList.get(2).add(mMap1);
-							}
-							if (standard.equals("standard04")) {
-								mMap1.put("index", counts[3] + "");
-								counts[3]++;
-								mList.get(3).add(mMap1);
-							}
-							if (standard.equals("standard05")) {
-								mMap1.put("index", counts[4] + "");
-								counts[4]++;
-								mList.get(4).add(mMap1);
-							}
-							if (standard.equals("standard06")) {
-								mMap1.put("index", counts[5] + "");
-								counts[5]++;
-								mList.get(5).add(mMap1);
-							}
+				if (standard.equals("standard01")) {
+					mMap1.put("index", counts[0] + "");
+					counts[0]++;
+					mList.get(0).add(mMap1);
+				}
+				if (standard.equals("standard02")) {
+					mMap1.put("index", counts[1] + "");
+					counts[1]++;
+					mList.get(1).add(mMap1);
+				}
+				if (standard.equals("standard03")) {
+					mMap1.put("index", counts[2] + "");
+					counts[2]++;
+					mList.get(2).add(mMap1);
+				}
+				if (standard.equals("standard04")) {
+					mMap1.put("index", counts[3] + "");
+					counts[3]++;
+					mList.get(3).add(mMap1);
+				}
+				if (standard.equals("standard05")) {
+					mMap1.put("index", counts[4] + "");
+					counts[4]++;
+					mList.get(4).add(mMap1);
+				}
+				if (standard.equals("standard06")) {
+					mMap1.put("index", counts[5] + "");
+					counts[5]++;
+					mList.get(5).add(mMap1);
+				}
 
-							// 操作现场
-							if (standard.equals("standard07")) {
-								mMap1.put("index", counts[0] + "");
-								counts[0]++;
-								mList.get(0).add(mMap1);
-							}
+				// 操作现场
+				if (standard.equals("standard07")) {
+					mMap1.put("index", counts[0] + "");
+					counts[0]++;
+					mList.get(0).add(mMap1);
+				}
 
-							if (standard.equals("standard08")) {
-								mMap1.put("index", counts[1] + "");
-								counts[1]++;
-								mList.get(1).add(mMap1);
-							}
+				if (standard.equals("standard08")) {
+					mMap1.put("index", counts[1] + "");
+					counts[1]++;
+					mList.get(1).add(mMap1);
+				}
 
-							if (standard.equals("standard09")) {
-								mMap1.put("index", counts[2] + "");
-								counts[2]++;
-								mList.get(2).add(mMap1);
-							}
+				if (standard.equals("standard09")) {
+					mMap1.put("index", counts[2] + "");
+					counts[2]++;
+					mList.get(2).add(mMap1);
+				}
 
-							if (standard.equals("standard10")) {
-								mMap1.put("index", counts[3] + "");
-								counts[3]++;
-								mList.get(3).add(mMap1);
-							}
+				if (standard.equals("standard10")) {
+					mMap1.put("index", counts[3] + "");
+					counts[3]++;
+					mList.get(3).add(mMap1);
+				}
 
-							if (standard.equals("standard11")) {
-								mMap1.put("index", counts[4] + "");
-								counts[4]++;
-								mList.get(4).add(mMap1);
-							}
-						}
-						System.out.println("XianChangAdd atts : " + atts.toString());
-					}
-//				}
+				if (standard.equals("standard11")) {
+					mMap1.put("index", counts[4] + "");
+					counts[4]++;
+					mList.get(4).add(mMap1);
+				}
+			}
+			System.out.println("XianChangAdd atts : " + atts.toString());
+		}
+		// }
 
 		mListView.setOnItemClickListener(new OnItemClickListener() {
 
@@ -344,8 +353,6 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 				XianChangAdd.this.startActivityForResult(intent, 100);
 			}
 		});
-
-		
 
 		initHandler();
 
@@ -425,14 +432,18 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 			return;
 		}
 		String uploadUrl = android.wxapp.service.elec.request.Contants.HFS_URL;
-		for (List<Map<String, Object>> mLi : mList) {
+		if (getFileCount() < 1) {
+			showLongToast("请选择附件上传");
+		} else {
+			for (List<Map<String, Object>> mLi : mList) {
 
-			for (Map<String, Object> map : mLi) {
-				if (map != null) {
-					if (map.get("path") != null) {
-						Log.e("TAG", "上传的路径 : " + map.get("path"));
-						new HttpUploadTask(new TextView(this), this)
-								.execute((String) map.get("path"), uploadUrl);
+				for (Map<String, Object> map : mLi) {
+					if (map != null) {
+						if (map.get("path") != null) {
+							Log.e("TAG", "上传的路径 : " + map.get("path"));
+							new HttpUploadTask(new TextView(this), this)
+									.execute((String) map.get("path"), uploadUrl);
+						}
 					}
 				}
 			}
