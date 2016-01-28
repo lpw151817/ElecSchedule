@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.actionbarsherlock.view.MenuItem;
+
 import nercms.schedule.R;
 import nercms.schedule.adapter.XianChangAddAdapter;
 import nercms.schedule.utils.LocalConstant;
@@ -121,6 +123,9 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 			iniActionBar(true, null, "π ’œΩÙº±«¿–ﬁœ÷≥°");
 			break;
 		}
+
+		if (isAdmin())
+			findViewById(R.id.bottom).setVisibility(View.GONE);
 
 		bt_jieshurenwu = (Button) findViewById(R.id.jieshurenwu);
 		bt_jieshurenwu.setOnClickListener(new OnClickListener() {
@@ -358,6 +363,21 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 		initHandler();
 
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			this.finish();
+			break;
+
+		default:
+			break;
+		}
+
+		return super.onOptionsItemSelected(item);
 	}
 
 	protected int getFileCount() {

@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.wxapp.service.AppApplication;
+import android.wxapp.service.elec.dao.OrgDao;
 import android.wxapp.service.elec.dao.PlanTaskDao;
 import android.wxapp.service.elec.model.DeleteTaskResponse;
 import android.wxapp.service.elec.model.LoginResponse;
@@ -62,7 +63,14 @@ public class MeiRiJiHua extends BaseActivity
 		mListView = (ListView) findViewById(R.id.listView1);
 		tv_time = (TextView) findViewById(R.id.time);
 		tv_time.setText(Utils.formatDateMs(System.currentTimeMillis()));
-		adapter = new MeiRiJiHuaAdapter(this, dao.getAllPlanTask(enterType, 3), dao, this);
+
+		if (!isAdmin()) {
+			adapter = new MeiRiJiHuaAdapter(this, dao.getPlanTasks(enterType, 3, getUserId()), dao,
+					this);
+		} else {
+			adapter = new MeiRiJiHuaAdapter(this, dao.getPlanTasks(enterType, 3, null), dao, this);
+		}
+
 		mListView.setAdapter(adapter);
 
 		bt_kaishirenwu = (Button) findViewById(R.id.kaishirenwu_bt);

@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
+import android.wxapp.service.elec.dao.OrgDao;
 import android.wxapp.service.elec.dao.PlanTaskDao;
 import android.wxapp.service.elec.model.bean.table.tb_task_info;
 import nercms.schedule.R;
@@ -53,20 +54,26 @@ public class TaskList extends BaseActivity {
 			break;
 		}
 
-		bt_rjhlr = (Button) findViewById(R.id.rijihualuru);
-
-		bt_rjhlr.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(TaskList.this, PlanAdd.class);
-				intent.putExtra("enterType", enterType);
-				TaskList.this.startActivity(intent);
-			}
-		});
-
 		planTaskDao = new PlanTaskDao(this);
-		data = planTaskDao.getAllPlanTask(enterType, 3);
+
+		bt_rjhlr = (Button) findViewById(R.id.rijihualuru);
+		// 当当前登录用户非管理员，则不能录入计划
+		if (!isAdmin()) {
+			bt_rjhlr.setVisibility(View.GONE);
+			data = planTaskDao.getPlanTasks(enterType, 3, getUserId());
+		} else {
+			data = planTaskDao.getPlanTasks(enterType, 3, null);
+			bt_rjhlr.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(TaskList.this, PlanAdd.class);
+					intent.putExtra("enterType", enterType);
+					TaskList.this.startActivity(intent);
+				}
+			});
+
+		}
 
 		listView = (ListView) findViewById(R.id.task_list);
 		listView.setAdapter(new XianchangAdapter(this, enterType, data));

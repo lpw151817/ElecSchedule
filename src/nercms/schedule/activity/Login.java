@@ -175,7 +175,7 @@ public class Login extends BaseActivity {
 					break;
 				// 登录 失败
 				case Constants.LOGIN_FAIL:
-				case Constants.LOGIN_UPDATE_FAIL:
+
 					MyLog.i(TAG, "登录失败");
 					dismissProgressDialog();
 					if (msg.obj != null) {
@@ -191,11 +191,30 @@ public class Login extends BaseActivity {
 					}
 					break;
 
+				case Constants.LOGIN_UPDATE_FAIL:
+					dismissProgressDialog();
+					if (msg.obj != null) {
+						// String errorCode = ((NormalServerResponse)
+						// msg.obj).getEc();
+						// showAlterDialog("登录失败", Utils.getErrorMsg(errorCode),
+						// R.drawable.login_error_icon, "确定", null);
+						showAlterDialog("登录失败", ((NormalServerResponse) msg.obj).getEc(),
+								R.drawable.login_error_icon, "确定", null);
+					} else {
+						showLongToast("无法更新数据，请检查是否与服务器连接正常");
+						dismissProgressDialog();
+						Intent intent = new Intent(Login.this, Main.class);
+						Login.this.startActivity(intent);
+						Login.this.finish();
+					}
+					break;
+
 				case Constants.LOGIN_UPDATE_SUCCESS:
 					dismissProgressDialog();
 					showLog_v("更新完成《《《《《《《《《《《《《《《");
 					Intent intent = new Intent(Login.this, Main.class);
 					Login.this.startActivity(intent);
+					Login.this.finish();
 					break;
 
 				case Constants.LOGIN_UPDATE_SAVE_FAIL:
@@ -226,10 +245,10 @@ public class Login extends BaseActivity {
 				Context.INPUT_METHOD_SERVICE);
 		mInputMethodManager.hideSoftInputFromWindow(etPassword.getWindowToken(), 0);
 
-		if (!checkInternet()) {
-			dismissProgressDialog();
-			return;
-		}
+		// if (!checkInternet()) {
+		// dismissProgressDialog();
+		// return;
+		// }
 
 		if (!checkSDCard()) {
 			dismissProgressDialog();
@@ -246,24 +265,52 @@ public class Login extends BaseActivity {
 					null);
 			return;
 		}
-		if (getUserIc() == null || getUserId() == null) {
+		// 有网络情况
+		if (Utils.isNetworkAvailable(Login.this)) {
 			webRequestManager.login(inputUserName.toLowerCase(),
 					Generate_md5.generate_md5(inputPassword));
-		} else {
-			if (!getUserName().equals(inputUserName.toLowerCase())) {
-				dismissProgressDialog();
-				showAlterDialog("登录错误", "请检查网络连接状态", R.drawable.login_error_icon, "确定", null);
-			} else {
+		}
+		// 无网络情况
+		else {
+			if (getUserIc() != null && getUserId() != null) {
 				if (getUserName().toLowerCase().equals(inputUserName.toLowerCase())
 						&& getUserIc().equals(Generate_md5.generate_md5(inputPassword))) {
 					webRequestManager.loginUpdate(Login.this);
 				} else {
 					dismissProgressDialog();
-					showAlterDialog("登录错误", "密码错误", R.drawable.login_error_icon, "确定", null);
+					showAlterDialog("登录错误", "请检查网络连接状态", R.drawable.login_error_icon, "确定", null);
 				}
+			} else {
+				dismissProgressDialog();
+				showAlterDialog("登录错误", "请检查网络连接状态", R.drawable.login_error_icon, "确定", null);
 			}
-
 		}
+
+		// //如果是第一次登录
+		// if (getUserIc() == null || getUserId() == null) {
+		// webRequestManager.login(inputUserName.toLowerCase(),
+		// Generate_md5.generate_md5(inputPassword));
+		// } else {
+		// if (!getUserName().equals(inputUserName.toLowerCase())) {
+		// if (Utils.isNetworkAvailable(Login.this)) {
+		// webRequestManager.login(inputUserName.toLowerCase(),
+		// Generate_md5.generate_md5(inputPassword));
+		// } else {
+		// dismissProgressDialog();
+		// showAlterDialog("登录错误", "请检查网络连接状态", R.drawable.login_error_icon,
+		// "确定", null);
+		// }
+		// } else {
+		// if (getUserName().toLowerCase().equals(inputUserName.toLowerCase())
+		// && getUserIc().equals(Generate_md5.generate_md5(inputPassword))) {
+		// webRequestManager.loginUpdate(Login.this);
+		// } else {
+		// dismissProgressDialog();
+		// showAlterDialog("登录错误", "密码错误", R.drawable.login_error_icon, "确定",
+		// null);
+		// }
+		// }
+		// }
 
 	}
 

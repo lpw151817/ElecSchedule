@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
+import android.wxapp.service.elec.dao.OrgDao;
 import android.wxapp.service.util.MySharedPreference;
 import nercms.schedule.R;
 
@@ -19,6 +20,10 @@ import com.actionbarsherlock.app.SherlockActivity;
 
 public class BaseActivity extends SherlockActivity {
 	protected ProgressDialog mProgressDialog;
+
+	protected boolean isAdmin() {
+		return new OrgDao(this).getPerson(getUserId()).getName().contains("π‹¿Ì‘±");
+	}
 
 	protected void iniActionBar(Boolean isUp, Integer iconId, String title) {
 		if (isUp != null) {

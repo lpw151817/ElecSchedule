@@ -757,7 +757,8 @@ public class NewTask extends BaseActivity {
 
 		// 将图片添加入图片列表
 		viewContainer.addView(r1);
-
+		if (isAdmin())
+			deleteBtn.setVisibility(View.GONE);
 	}
 
 	/**
