@@ -85,12 +85,12 @@ public class FixedGridLayout extends ViewGroup {
         }
 
         @Override
-	public void addView(View child) {
-		// TODO Auto-generated method stub
-		super.addView(child);
-	}
+		public void addView(View child) {
+			// TODO Auto-generated method stub
+			super.addView(child);
+		}
 
-	@Override
+        @Override
         protected void dispatchDraw(Canvas canvas) {
                 // TODO Auto-generated method stub
 //                //获取布局控件宽高

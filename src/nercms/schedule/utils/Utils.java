@@ -37,6 +37,15 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class Utils {
+	
+	public static Toast mToast;
+	public static void showToast(Context mContext, String msg){
+		if (mToast == null){
+			mToast = Toast.makeText(mContext, "", Toast.LENGTH_SHORT);
+		}
+		mToast.setText(msg);
+		mToast.show();
+	}
 
 	public static void setEditTextUnEditable(EditText et) {
 		et.setFocusable(false);
