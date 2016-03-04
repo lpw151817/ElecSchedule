@@ -172,19 +172,19 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		MessageHandlerManager.getInstance().unregister(Constants.CREATE_TASK_SUCCESS,
-				CreatePlanTaskResponse.class.getName());
-		MessageHandlerManager.getInstance().unregister(Constants.CREATE_TASK_FAIL,
-				CreatePlanTaskResponse.class.getName());
-		MessageHandlerManager.getInstance().unregister(Constants.CREATE_TASK_SAVE_FAIL,
-				CreatePlanTaskResponse.class.getName());
-
-		MessageHandlerManager.getInstance().unregister(Constants.START_TASK_SUCCESS,
-				StartTaskResponse.class.getName());
-		MessageHandlerManager.getInstance().unregister(Constants.START_TASK_FAIL,
-				StartTaskResponse.class.getName());
-		MessageHandlerManager.getInstance().unregister(Constants.START_TASK_SAVE_FAIL,
-				StartTaskResponse.class.getName());
+//		MessageHandlerManager.getInstance().unregister(Constants.CREATE_TASK_SUCCESS,
+//				CreatePlanTaskResponse.class.getName());
+//		MessageHandlerManager.getInstance().unregister(Constants.CREATE_TASK_FAIL,
+//				CreatePlanTaskResponse.class.getName());
+//		MessageHandlerManager.getInstance().unregister(Constants.CREATE_TASK_SAVE_FAIL,
+//				CreatePlanTaskResponse.class.getName());
+//
+//		MessageHandlerManager.getInstance().unregister(Constants.START_TASK_SUCCESS,
+//				StartTaskResponse.class.getName());
+//		MessageHandlerManager.getInstance().unregister(Constants.START_TASK_FAIL,
+//				StartTaskResponse.class.getName());
+//		MessageHandlerManager.getInstance().unregister(Constants.START_TASK_SAVE_FAIL,
+//				StartTaskResponse.class.getName());
 	}
 
 	private void initView() {

@@ -122,7 +122,8 @@ public class MeiRiJiHua extends BaseActivity
 			}
 
 		};
-
+		// 先解除所有handler绑定
+//		MessageHandlerManager.getInstance().unregisterAll();
 		MessageHandlerManager.getInstance().register(handler, Constants.START_TASK_SUCCESS,
 				StartTaskResponse.class.getName());
 		MessageHandlerManager.getInstance().register(handler, Constants.START_TASK_FAIL,

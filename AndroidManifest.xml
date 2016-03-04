@@ -61,6 +61,10 @@
             android:theme="@style/Theme.Schedule" >
         </activity>
         <activity
+            android:name=".activity.MainContent"
+            android:theme="@style/Theme.Schedule" >
+        </activity>
+        <activity
             android:name=".activity.Profile"
             android:theme="@style/Theme.Schedule" >
         </activity>
@@ -212,8 +216,13 @@
             android:theme="@style/Theme.Schedule" >
         </activity>
         <activity
-            android:name="nercms.schedule.activity.ZhilingActivity"
+            android:name=".activity.ZhilingActivity"
             android:label="@string/title_activity_zhiling"
+            android:theme="@style/Theme.Schedule" >
+        </activity>
+        <activity
+            android:name="nercms.schedule.activity.TaskSelectorActivity"
+            android:label="@string/title_activity_task_selector"
             android:theme="@style/Theme.Schedule" >
         </activity>
     </application>

@@ -1,4 +1,4 @@
-package nercms.schedule.activity;
+package nercms.schedule.fragment;
 
 
 import nercms.schedule.R;
