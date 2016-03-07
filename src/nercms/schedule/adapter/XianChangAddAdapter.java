@@ -14,6 +14,7 @@ public class XianChangAddAdapter extends BaseAdapter {
 	Context mContext;
 	String[] ss;
 	int[] hasContent;
+	int[] contentCount;
 	
 
 
@@ -40,7 +41,7 @@ public class XianChangAddAdapter extends BaseAdapter {
 	 * @param hasContent
 	 *            标记每一项是否有内容，1：有，0：没有
 	 */
-	public XianChangAddAdapter(Context c, int type) {
+	public XianChangAddAdapter(Context c, int type, int[] num) {
 		this.mContext = c;
 		if (type == 1) {
 			ss = c.getResources().getStringArray(R.array.zuoyexianchang_si_data);
@@ -53,6 +54,8 @@ public class XianChangAddAdapter extends BaseAdapter {
 		// 初始化
 		for (int i = 0; i < hasContent.length; i++)
 			this.hasContent[i] = 0;
+		
+		contentCount = num;
 	}
 	
 	public XianChangAddAdapter(){
@@ -91,8 +94,17 @@ public class XianChangAddAdapter extends BaseAdapter {
 		}
 		
 		
+		if (contentCount != null){
+			if (contentCount[position] == 0){
+				holder.textView.setText(ss[position]);
+			} else {
+				holder.textView.setText(ss[position] +"    " +"( " +contentCount[position] +" )");
+			}
+			
+		} else {
+			holder.textView.setText(ss[position]);
+		}
 		
-		holder.textView.setText(ss[position]);
 		if (hasContent[position] == 1){
 			holder.textView.setTextColor(Color.RED);
 		} else {
