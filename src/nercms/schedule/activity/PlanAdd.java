@@ -67,6 +67,7 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 
 	WebRequestManager webRequest;
 	int enterType;
+	String status;
 
 	List<Node> gzfzrList;
 	List<Node> ysgdwldList;
@@ -81,6 +82,7 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 		setContentView(R.layout.activity_plan_add);
 
 		enterType = getIntent().getIntExtra("enterType", 1);
+		status = getIntent().getStringExtra("status");
 		gzfzrList = new ArrayList<Node>();
 		ysgdwldList = new ArrayList<Node>();
 
@@ -95,6 +97,7 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 	private void startActivity(String tid) {
 		Intent intent = new Intent(this, MeiRiJiHua.class);
 		intent.putExtra("enterType", enterType);
+		intent.putExtra("status", status);
 		intent.putExtra("tid", tid);
 		startActivity(intent);
 		this.finish();

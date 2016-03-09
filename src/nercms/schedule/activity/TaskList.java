@@ -32,6 +32,7 @@ public class TaskList extends BaseActivity {
 	Button bt_rjhlr;
 
 	int enterType;
+	String status;
 
 	PlanTaskDao planTaskDao;
 	List<tb_task_info> data;
@@ -54,21 +55,24 @@ public class TaskList extends BaseActivity {
 			break;
 		}
 
+		status = getIntent().getStringExtra("status");
+
 		planTaskDao = new PlanTaskDao(this);
 
 		bt_rjhlr = (Button) findViewById(R.id.rijihualuru);
 		// 当当前登录用户非管理员，则不能录入计划
 		if (!isAdmin()) {
 			bt_rjhlr.setVisibility(View.GONE);
-			data = planTaskDao.getPlanTasks(enterType, 3, getUserId(), null);
+			data = planTaskDao.getPlanTasks(enterType, 3, getUserId(), status);
 		} else {
-			data = planTaskDao.getPlanTasks(enterType, 3, null, null);
+			data = planTaskDao.getPlanTasks(enterType, 3, null, status);
 			bt_rjhlr.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
 					Intent intent = new Intent(TaskList.this, PlanAdd.class);
 					intent.putExtra("enterType", enterType);
+					intent.putExtra("statue", status);
 					TaskList.this.startActivity(intent);
 				}
 			});

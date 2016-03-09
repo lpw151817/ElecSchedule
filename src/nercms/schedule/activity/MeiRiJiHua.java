@@ -34,6 +34,7 @@ import nercms.schedule.utils.Utils;
 public class MeiRiJiHua extends BaseActivity
 		implements nercms.schedule.adapter.MeiRiJiHuaAdapter.OnItemDeleteButtonClick {
 	int enterType;
+	String status;
 	String tid;
 	ListView mListView;
 	MeiRiJiHuaAdapter adapter;
@@ -57,6 +58,7 @@ public class MeiRiJiHua extends BaseActivity
 
 		enterType = getIntent().getIntExtra("enterType", 1);
 		tid = getIntent().getStringExtra("tid");
+		status = getIntent().getStringExtra("status");
 
 		dao = new PlanTaskDao(this);
 
@@ -65,10 +67,10 @@ public class MeiRiJiHua extends BaseActivity
 		tv_time.setText(Utils.formatDateMs(System.currentTimeMillis()));
 
 		if (!isAdmin()) {
-			adapter = new MeiRiJiHuaAdapter(this, dao.getPlanTasks(enterType, 3, getUserId(), null),
-					dao, this);
+			adapter = new MeiRiJiHuaAdapter(this,
+					dao.getPlanTasks(enterType, 3, getUserId(), status), dao, this);
 		} else {
-			adapter = new MeiRiJiHuaAdapter(this, dao.getPlanTasks(enterType, 3, null, null), dao,
+			adapter = new MeiRiJiHuaAdapter(this, dao.getPlanTasks(enterType, 3, null, status), dao,
 					this);
 		}
 
