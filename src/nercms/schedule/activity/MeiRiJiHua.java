@@ -65,10 +65,11 @@ public class MeiRiJiHua extends BaseActivity
 		tv_time.setText(Utils.formatDateMs(System.currentTimeMillis()));
 
 		if (!isAdmin()) {
-			adapter = new MeiRiJiHuaAdapter(this, dao.getPlanTasks(enterType, 3, getUserId()), dao,
-					this);
+			adapter = new MeiRiJiHuaAdapter(this, dao.getPlanTasks(enterType, 3, getUserId(), null),
+					dao, this);
 		} else {
-			adapter = new MeiRiJiHuaAdapter(this, dao.getPlanTasks(enterType, 3, null), dao, this);
+			adapter = new MeiRiJiHuaAdapter(this, dao.getPlanTasks(enterType, 3, null, null), dao,
+					this);
 		}
 
 		mListView.setAdapter(adapter);
@@ -123,7 +124,7 @@ public class MeiRiJiHua extends BaseActivity
 
 		};
 		// 先解除所有handler绑定
-//		MessageHandlerManager.getInstance().unregisterAll();
+		// MessageHandlerManager.getInstance().unregisterAll();
 		MessageHandlerManager.getInstance().register(handler, Constants.START_TASK_SUCCESS,
 				StartTaskResponse.class.getName());
 		MessageHandlerManager.getInstance().register(handler, Constants.START_TASK_FAIL,

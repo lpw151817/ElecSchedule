@@ -27,6 +27,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.wxapp.service.elec.dao.PlanTaskDao;
 
 import com.readystatesoftware.viewbadger.BadgeView;
 
@@ -50,6 +51,7 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_content);
+
 		WindowManager wm = (WindowManager) (MainContent.this)
 				.getSystemService(Context.WINDOW_SERVICE);
 

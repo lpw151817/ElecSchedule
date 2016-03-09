@@ -60,9 +60,9 @@ public class TaskList extends BaseActivity {
 		// 当当前登录用户非管理员，则不能录入计划
 		if (!isAdmin()) {
 			bt_rjhlr.setVisibility(View.GONE);
-			data = planTaskDao.getPlanTasks(enterType, 3, getUserId());
+			data = planTaskDao.getPlanTasks(enterType, 3, getUserId(), null);
 		} else {
-			data = planTaskDao.getPlanTasks(enterType, 3, null);
+			data = planTaskDao.getPlanTasks(enterType, 3, null, null);
 			bt_rjhlr.setOnClickListener(new OnClickListener() {
 
 				@Override

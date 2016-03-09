@@ -203,7 +203,8 @@ public class Login extends BaseActivity {
 					} else {
 						showLongToast("无法更新数据，请检查是否与服务器连接正常");
 						dismissProgressDialog();
-						Intent intent = new Intent(Login.this, Main.class);
+						// Intent intent = new Intent(Login.this, Main.class);
+						Intent intent = new Intent(Login.this, MainContent.class);
 						Login.this.startActivity(intent);
 						Login.this.finish();
 					}
@@ -212,7 +213,8 @@ public class Login extends BaseActivity {
 				case Constants.LOGIN_UPDATE_SUCCESS:
 					dismissProgressDialog();
 					showLog_v("更新完成《《《《《《《《《《《《《《《");
-					Intent intent = new Intent(Login.this, Main.class);
+					// Intent intent = new Intent(Login.this, Main.class);
+					Intent intent = new Intent(Login.this, MainContent.class);
 					Login.this.startActivity(intent);
 					Login.this.finish();
 					break;
