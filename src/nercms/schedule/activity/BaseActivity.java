@@ -22,7 +22,14 @@ public class BaseActivity extends SherlockActivity {
 	protected ProgressDialog mProgressDialog;
 
 	protected boolean isAdmin() {
-		return new OrgDao(this).getPerson(getUserId()).getName().contains("管理员");
+		OrgDao dao = new OrgDao(this);
+		if (dao.getPerson(getUserId()).getType() != null) {
+			return dao.getPerson(getUserId()).getType().equals("0");
+		} else {
+			return dao.getPerson(getUserId()).getName().contains("管理员")
+					|| dao.getPerson(getUserId()).getName().contains("领导");
+		}
+
 	}
 
 	protected void iniActionBar(Boolean isUp, Integer iconId, String title) {

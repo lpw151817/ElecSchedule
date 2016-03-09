@@ -372,13 +372,13 @@ public class NewTask extends BaseActivity {
 					}
 					if (TextUtils.isEmpty(taskInsId))
 						manager.createInsRequest(NewTask.this, receiverList, taskInsId,
-								mContentInput.getText().toString(), attachments);
+								mContentInput.getText().toString(), attachments, "0");
 					else {
 						List<Node> receivers = new ArrayList<Node>();
 						receivers.add(
 								new Node("p" + dao.getTaskIns(taskInsId).getSend_id(), "", ""));
 						manager.createInsRequest(NewTask.this, receivers, taskInsId,
-								mContentInput.getText().toString(), attachments);
+								mContentInput.getText().toString(), attachments, "0");
 					}
 					break;
 				case Constant.FILE_UPLOAD_FAIL:

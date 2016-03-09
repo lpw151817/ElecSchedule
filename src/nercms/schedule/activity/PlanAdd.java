@@ -36,6 +36,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 import android.wxapp.service.AppApplication;
 import android.wxapp.service.elec.dao.PlanTaskDao;
 import android.wxapp.service.elec.model.CreatePlanTaskResponse;
@@ -117,13 +118,19 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 				case Constants.START_TASK_FAIL:
 				case Constants.START_TASK_SAVE_FAIL:
 					dismissProgressDialog();
-					if (msg.obj != null) {
-						showAlterDialog("发布失败", ((NormalServerResponse) msg.obj).getEc(),
-								R.drawable.login_error_icon, "确定", null);
-					} else {
-						showAlterDialog("发布失败", "请检查是否与服务器连接正常", R.drawable.login_error_icon, "确定",
-								null);
+					try {
+						if (msg.obj != null) {
+							showAlterDialog("发布失败", ((NormalServerResponse) msg.obj).getEc(),
+									R.drawable.login_error_icon, "确定", null);
+						} else {
+							showAlterDialog("发布失败", "请检查是否与服务器连接正常", R.drawable.login_error_icon,
+									"确定", null);
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+						showLongToast("请检查是否与服务器连接正常");
 					}
+
 					break;
 
 				case Constants.START_TASK_SUCCESS:
@@ -172,19 +179,19 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-//		MessageHandlerManager.getInstance().unregister(Constants.CREATE_TASK_SUCCESS,
-//				CreatePlanTaskResponse.class.getName());
-//		MessageHandlerManager.getInstance().unregister(Constants.CREATE_TASK_FAIL,
-//				CreatePlanTaskResponse.class.getName());
-//		MessageHandlerManager.getInstance().unregister(Constants.CREATE_TASK_SAVE_FAIL,
-//				CreatePlanTaskResponse.class.getName());
-//
-//		MessageHandlerManager.getInstance().unregister(Constants.START_TASK_SUCCESS,
-//				StartTaskResponse.class.getName());
-//		MessageHandlerManager.getInstance().unregister(Constants.START_TASK_FAIL,
-//				StartTaskResponse.class.getName());
-//		MessageHandlerManager.getInstance().unregister(Constants.START_TASK_SAVE_FAIL,
-//				StartTaskResponse.class.getName());
+		// MessageHandlerManager.getInstance().unregister(Constants.CREATE_TASK_SUCCESS,
+		// CreatePlanTaskResponse.class.getName());
+		// MessageHandlerManager.getInstance().unregister(Constants.CREATE_TASK_FAIL,
+		// CreatePlanTaskResponse.class.getName());
+		// MessageHandlerManager.getInstance().unregister(Constants.CREATE_TASK_SAVE_FAIL,
+		// CreatePlanTaskResponse.class.getName());
+		//
+		// MessageHandlerManager.getInstance().unregister(Constants.START_TASK_SUCCESS,
+		// StartTaskResponse.class.getName());
+		// MessageHandlerManager.getInstance().unregister(Constants.START_TASK_FAIL,
+		// StartTaskResponse.class.getName());
+		// MessageHandlerManager.getInstance().unregister(Constants.START_TASK_SAVE_FAIL,
+		// StartTaskResponse.class.getName());
 	}
 
 	private void initView() {

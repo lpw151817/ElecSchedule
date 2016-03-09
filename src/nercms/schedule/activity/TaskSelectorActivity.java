@@ -5,6 +5,7 @@ import com.actionbarsherlock.view.MenuItem;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.wxapp.service.elec.dao.PlanTaskDao;
@@ -55,7 +56,13 @@ public class TaskSelectorActivity extends BaseActivity implements OnClickListene
 		case R.id.jiaohuxinxi:
 			intent.setClass(TaskSelectorActivity.this, ChatDetail.class);
 			intent.putExtra("task_id", tid);
-			
+			if (info != null) {
+				if (TextUtils.isEmpty(info.getEnd_time())) {
+					intent.putExtra("task_status", 1);
+				} else {
+					intent.putExtra("task_status", 2);
+				}
+			}
 			break;
 		case R.id.renwuxiangqing:
 			intent.setClass(TaskSelectorActivity.this, PlanAdd.class);

@@ -27,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.wxapp.service.AppApplication;
+import android.wxapp.service.elec.model.bean.table.tb_task_instructions;
 import android.wxapp.service.jerry.model.message.ReceiveMessageResponse;
 import android.wxapp.service.model.FeedbackModel;
 import android.wxapp.service.util.HttpDownloadTask;
@@ -47,7 +48,7 @@ public class FeedbackListAdapter extends BaseAdapter {
 	public static final int LEFT_ITEM = 1;
 
 	private Context context;
-	private List<ReceiveMessageResponse> fblist;
+	private List<tb_task_instructions> fblist;
 	private LayoutInflater mInflater;
 
 	// 显示大图对话框
@@ -60,7 +61,7 @@ public class FeedbackListAdapter extends BaseAdapter {
 	// 附件显示图片容器的集合
 	private ArrayList<ImageView> imageViewList = new ArrayList<ImageView>();
 
-	public FeedbackListAdapter(Context context, List<ReceiveMessageResponse> fblist) {
+	public FeedbackListAdapter(Context context, List<tb_task_instructions> fblist) {
 		this.context = context;
 		this.fblist = fblist;
 		this.mInflater = LayoutInflater.from(context);
@@ -106,7 +107,7 @@ public class FeedbackListAdapter extends BaseAdapter {
 	@Override
 	public int getItemViewType(int position) {
 		// 根据发送人ID设置消息的位置在左端还是右端
-		String senderID = fblist.get(position).getSid();
+		String senderID = fblist.get(position).getSend_id();
 		String userID = MySharedPreference.get(context, MySharedPreference.USER_ID, "");
 		if (senderID.equals(userID))
 			return RIGHT_ITEM;
@@ -142,129 +143,12 @@ public class FeedbackListAdapter extends BaseAdapter {
 		convertView.setTag(holder);
 
 		// 设置值
-		final ReceiveMessageResponse fb = fblist.get(position);
-		holder.time.setText(Utils.formatDateMs(fb.getSt()));
+		final tb_task_instructions fb = fblist.get(position);
+		holder.time.setText(Utils.formatDateMs(fb.getSend_time()));
 
-		if (fb.getAt() == null || fb.getAt().equals("1")) { // 文本反馈
-			holder.text.setVisibility(View.VISIBLE);
-			holder.text.setText(fb.getC());
-			holder.media.setVisibility(View.GONE);
-		} else { // 附件反馈
-			holder.media.setVisibility(View.VISIBLE);
-			holder.text.setVisibility(View.GONE);
-			int type = Integer.parseInt(fb.getAt());
-
-			File sdcardDir = Environment.getExternalStorageDirectory();
-			String path = sdcardDir.getPath() + "/nercms-Schedule/Attachments/";
-			String videoThumbnailDir = sdcardDir.getPath() + "/nercms-Schedule/Thumbnail/";
-
-			switch (type) {
-			case LocalConstant.IAMGE_TYPE:
-				// 获取附件的url
-				String picName = fb.getAu();
-				// 获取文件名
-				picName = picName.substring(picName.lastIndexOf("/" + 1));
-				final String picPath = path.toString() + File.separator + picName;
-				if (picPath != null && !picPath.equalsIgnoreCase("")) {
-					holder.text.setVisibility(View.GONE);
-					holder.media.setVisibility(View.VISIBLE);
-
-					// 判断文件是否存在，不存在则连接文件服务器下载
-					if (!new File(picPath).exists()) {
-						String downUrl = android.wxapp.service.elec.request.Contants.HFS_URL + File.separator + picName;
-
-						// new HttpDownloadTask(context).execute(downUrl,
-						// "/nercms-Schedule/Attachments/", picName);
-
-						// 请求网络图片
-						ImageRequest imageRequest = new ImageRequest(downUrl,
-								new Response.Listener<Bitmap>() {
-
-									@Override
-									public void onResponse(Bitmap response) {
-										// 图片保存到本地
-										Utils.saveBitmap(response, picPath);
-										// 异步加载本地图片
-										com.nostra13.universalimageloader.core.ImageLoader
-												.getInstance()
-												.displayImage("file://" + picPath, holder.media, options);
-									}
-								}, 0, 0, Config.RGB_565, new Response.ErrorListener() {
-
-									@Override
-									public void onErrorResponse(VolleyError error) {
-										// TODO Auto-generated method stub
-
-									}
-								});
-						// 加入请求队列
-						AppApplication.getInstance().myQueue.add(imageRequest);
-
-					} else {
-						// 异步加载本地图片
-						com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(
-								"file://" + picPath, holder.media, options);
-					}
-				}
-				break;
-
-			case LocalConstant.VIDEO_TYPE:
-				// 获取附件的url
-				String videoName = fb.getAu();
-				// 获取文件名
-				videoName = videoName.substring(videoName.lastIndexOf("/") + 1);
-				String videoPath = path.toString() + videoName;
-				if (videoPath != null && !videoPath.equalsIgnoreCase("")) {
-					holder.text.setVisibility(View.GONE);
-					holder.media.setVisibility(View.VISIBLE);
-					// 判断文件是否存在，不存在则连接文件服务器下载
-					if (!new File(videoPath).exists()) {
-						String downUrl = LocalConstant.FILE_SERVER_ATTACH_URL + File.separator
-								+ videoName;
-						new HttpDownloadTask(context).execute(downUrl, "/nercms-Schedule/Attachments/",
-								videoName);
-					} else {
-						// 判断视频缩略图是否存在，不存在则声称缩略图
-						String thumbnailPath = videoThumbnailDir
-								+ videoName.substring(0, videoName.indexOf(".")) + ".jpg";
-						if (!new File(thumbnailPath).exists()) {
-							Utils.saveBitmap(
-									ThumbnailUtils.createVideoThumbnail(videoPath, Thumbnails.MINI_KIND),
-									thumbnailPath);
-						}
-
-						com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(
-								"file://" + thumbnailPath, holder.media, options);
-					}
-				}
-
-				break;
-
-			default:
-				break;
-			}
-
-		}
-
-		holder.media.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				if (fb.getAt().equals(LocalConstant.IAMGE_TYPE + "")) {
-					Intent intent = new Intent(Intent.ACTION_VIEW);
-					intent.setDataAndType(
-							Uri.parse("file://" + Environment.getExternalStorageDirectory().getPath()
-									+ "/nercms-Schedule/Attachments/" + fb.getAu()), "image/*");
-					context.startActivity(intent);
-				} else if (fb.getAt().equals(LocalConstant.VIDEO_TYPE + "")) {
-					Intent intent = new Intent(Intent.ACTION_VIEW);
-					intent.setDataAndType(
-							Uri.parse("file://" + Environment.getExternalStorageDirectory().getPath()
-									+ "/nercms-Schedule/Attachments/" + fb.getAu()), "video/*");
-					context.startActivity(intent);
-				}
-			}
-		});
+		holder.text.setVisibility(View.VISIBLE);
+		holder.text.setText(fb.getContent());
+		holder.media.setVisibility(View.GONE);
 
 		return convertView;
 	}
