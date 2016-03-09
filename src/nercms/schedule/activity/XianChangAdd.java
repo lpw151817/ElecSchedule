@@ -17,6 +17,7 @@ import nercms.schedule.utils.MyGPS;
 import nercms.schedule.utils.MyLocationListener.ReceiveGPS;
 import nercms.schedule.utils.Utils;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -75,6 +76,9 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 	// 整个List
 	List<List<Map<String, Object>>> mList = new ArrayList<List<Map<String, Object>>>();
+	
+	//存放每個條目裡面的附件的數目
+	private int[] mContentCount;
 
 	public static boolean hasContent = false;// 用来标志条目里面是否有内容来决定XianChangUpload中loadAttachment方法是否执行
 
@@ -173,9 +177,14 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 		tv_time = (TextView) findViewById(R.id.time);
 
+		
+		mContentCount = new int[getItemCount(XianChangAdd.this)];
+		
 		mListView = (ListView) findViewById(R.id.listview);
-		xianChangAddAdapter = new XianChangAddAdapter(this, enterType);
+		xianChangAddAdapter = new XianChangAddAdapter(this, enterType, mContentCount);
 		mListView.setAdapter(xianChangAddAdapter);
+		
+		
 
 		// myMediaIndexs = new int[6];
 		myMediaIndexs = new int[xianChangAddAdapter.getCount()];
@@ -325,18 +334,24 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 					isContinueTask = false;
 				} else {
-					if (flag == position) {
-						myMediaIndexs[flag] = 1;
-						intent.putExtra("myMediaIndex", myMediaIndexs[position]);
-					} else {
-						intent.putExtra("myMediaIndex", myMediaIndexs[position]);
-					}
+					setMediaIndex();
+					intent.putExtra("myMediaIndex", myMediaIndexs[position]);
+					
+//					if (flag == position) {
+//						myMediaIndexs[flag] = 1;
+//						intent.putExtra("myMediaIndex", myMediaIndexs[position]);
+//					} else {
+//						intent.putExtra("myMediaIndex", myMediaIndexs[position]);
+//					}
 				}
 
 				for (List<Map<String, Object>> ma : mList) {
 					for (Map<String, Object> mm : ma) {
-						String attachmentFilePath = (String) mm.get("path");
-						mFileName.add(attachmentFilePath);
+						if (mm != null){
+							String attachmentFilePath = (String) mm.get("path");
+							mFileName.add(attachmentFilePath);
+						}
+						
 					}
 				}
 
@@ -363,6 +378,31 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 		initHandler();
 
+	}
+	
+	private void setMediaIndex(){
+		for (int i = 0; i < mList.size(); i ++){
+			int count = 0; 
+			for (int j = 0;  j < mList.get(i).size(); j++){
+				if (mList.get(i).get(j) != null || mList.get(i).get(j) == null){
+					count ++;
+				}
+			}
+			myMediaIndexs[i] = count;
+		}
+	}
+
+	private int  getItemCount(Context c) {
+		String []ss = null;
+		if (enterType == 1) {
+			ss = c.getResources().getStringArray(R.array.zuoyexianchang_si_data);
+		} else if (enterType == 2) {
+			ss = c.getResources().getStringArray(R.array.caozuoxianchang_si_data);
+		} else if (enterType == 3) {
+			ss = c.getResources().getStringArray(R.array.guzhangjinji_si_data);
+		}
+		
+		return ss.length;
 	}
 
 	@Override
@@ -398,7 +438,19 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 	@Override
 	protected void onResume() {
 		super.onResume();
-
+//TODO
+		//遍历mList获取每个条目的数目
+		for (int i = 0; i < mList.size(); i ++){
+			int count = 0; 
+			for (int j = 0;  j < mList.get(i).size(); j++){
+				if (mList.get(i).get(j) != null){
+					count ++;
+				}
+			}
+			mContentCount[i] = count;
+		}
+		xianChangAddAdapter.notifyDataSetChanged();
+		
 		changeTextColor();// 重新出现的时候字体更改 因为oncreate只执行一次
 	}
 
@@ -412,7 +464,6 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 			int index = data.getIntExtra("position", -1);
 			from = data.getStringExtra("from");
 			mediaIndex = data.getIntExtra("mediaIndex", 0);
-			System.out.println("index : " + index);
 			mContent = (List<Map<String, Object>>) data.getSerializableExtra("url");
 			mList.set(index, mContent);// 改变在Upload里面对应被更改的内容
 
