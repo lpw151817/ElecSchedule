@@ -1,63 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:id="@+id/newtasklayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+         android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp" >
+
+        <Button
+            android:id="@+id/tab01_bt_newtask"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+           
+            android:text="新任务" />
+    </LinearLayout>
 
     <Button
-        android:id="@+id/tab01_bt_newtask"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true"
-        android:text="新任务" />
-    
-        <Button
         android:id="@+id/tab01_bt_delaytask"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_below="@id/tab01_bt_newtask"
+        android:layout_below="@id/newtasklayout"
         android:text="延误的任务" />
-        
-                <Button
+
+    <Button
         android:id="@+id/tab01_bt_performtask"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_below="@id/tab01_bt_newtask"
         android:layout_alignParentRight="true"
+        android:layout_below="@id/newtasklayout"
         android:text="执行中的任务" />
-                
-                   <Button
+
+    <Button
         android:id="@+id/tab01_bt_finishedtask"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_below="@id/tab01_bt_delaytask"
         android:layout_alignParentLeft="true"
+        android:layout_below="@id/tab01_bt_delaytask"
         android:text="已完成的任务" />
-                   
-                   <Button
+
+    <Button
         android:id="@+id/tab01_bt_cancelledtask"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_below="@id/tab01_bt_delaytask"
         android:layout_alignParentRight="true"
+        android:layout_below="@id/tab01_bt_delaytask"
         android:text="已取消的任务" />
-                   
-                   <Button 
-                       android:layout_height="wrap_content"
-                       android:layout_width="match_parent"
-                       android:id="@+id/tab01_bt_add"
-                       android:layout_below="@id/tab01_bt_cancelledtask"
-                       android:text="增加"
-                       />
-                   
-                    <Button 
-                       android:layout_height="wrap_content"
-                       android:layout_width="match_parent"
-                       android:id="@+id/tab01_bt_decrease"
-                       android:text="减少"
-                       android:layout_below="@id/tab01_bt_add"
-                       />
-    
+
 
 </RelativeLayout>

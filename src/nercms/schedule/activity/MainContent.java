@@ -11,76 +11,92 @@ import nercms.schedule.fragment.SecondFragment;
 import nercms.schedule.fragment.ThirdFragment;
 import nercms.schedule.utils.Utils;
 import nercms.schedule.view.NoScrollViewPager;
-
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.LinearLayout;
+import android.wxapp.service.elec.dao.OrgDao;
 import android.wxapp.service.elec.dao.PlanTaskDao;
-
-import com.readystatesoftware.viewbadger.BadgeView;
+import android.wxapp.service.util.MySharedPreference;
 
 public class MainContent extends FragmentActivity implements OnClickListener {
 
-	private TextView tv;
 	int count;
 	int secondCount;
-	private BadgeView badgeView;
-	private TextView tv_second;
-	private BadgeView secondBadgeView;
-	private TextView tv_third;
 	private NoScrollViewPager contentPager;
 	private List<Fragment> mLi = new ArrayList<Fragment>();
 	Map<String, String> mPageReferenceMap = new HashMap<String, String>();
 	private FirstFragment mFirstFrag;
 	private SecondFragment mSecondFrag;
 	private ThirdFragment mThirdFrag;
+	public int zuoyecount;
+	public int caozuocount;
+	public int qiangxiucount;
+
+	private LinearLayout zuoYeLayout;
+	private LinearLayout caoZuoLayout;
+	private LinearLayout qiangXiuLayout;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_content);
-
-		WindowManager wm = (WindowManager) (MainContent.this)
-				.getSystemService(Context.WINDOW_SERVICE);
-
-		int width = wm.getDefaultDisplay().getWidth();
-		int height = wm.getDefaultDisplay().getHeight();
+		PlanTaskDao dao = new PlanTaskDao(this);
+		/*
+		 * userid,如果是管理员就传入null,如果不是就getUserId在BaseActivity中，
+		 */
+		// dao.getPlanTasks(1, 3, "", 0).size();
+		if (isAdmin()) {
+			zuoyecount = dao.getPlanTasks(1, 3, null, "0").size();
+			caozuocount = dao.getPlanTasks(2, 3, null, "0").size();
+			qiangxiucount = dao.getPlanTasks(3, 3, null, "0").size();
+		} else {
+			zuoyecount = dao.getPlanTasks(1, 3, getUserId(), "0").size();
+			caozuocount = dao.getPlanTasks(2, 3, getUserId(), "0").size();
+			qiangxiucount = dao.getPlanTasks(3, 3, getUserId(), "0").size();
+		}
 
 		contentPager = (NoScrollViewPager) findViewById(R.id.lv_viewpager);
-		tv = (TextView) findViewById(R.id.tv_first);
-		tv_second = (TextView) findViewById(R.id.tv_second);
-		tv_third = (TextView) findViewById(R.id.tv_third);
-		count = 0;
 
-		tv.setLayoutParams(new LayoutParams(width / 3, LayoutParams.MATCH_PARENT));
-		tv_second.setLayoutParams(new LayoutParams(width / 3, LayoutParams.MATCH_PARENT));
+		zuoYeLayout = (LinearLayout) findViewById(R.id.zuoyeLayout);
+		caoZuoLayout = (LinearLayout) findViewById(R.id.caozuoLayout);
+		qiangXiuLayout = (LinearLayout) findViewById(R.id.qiangxiuLayout);
 
-		// 绑定监听
-		tv.setOnClickListener(this);
-		tv_second.setOnClickListener(this);
-		tv_third.setOnClickListener(this);
+		
 
-		badgeView = new BadgeView(MainContent.this, tv);
-		secondBadgeView = new BadgeView(MainContent.this, tv_second);
+		mFirstFrag = new FirstFragment(MainContent.this, zuoyecount);
 
-		mFirstFrag = new FirstFragment(MainContent.this, tv);
+		mSecondFrag = new SecondFragment(MainContent.this, caozuocount);
 
-		mSecondFrag = new SecondFragment(MainContent.this, tv_second);
+		mThirdFrag = new ThirdFragment(MainContent.this, qiangxiucount);
 
-		mThirdFrag = new ThirdFragment(MainContent.this);
-		FragmentPagerAdapter madapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
+		com.jauker.widget.BadgeView badgeView1 = new com.jauker.widget.BadgeView(
+				this);
+		badgeView1.setText("" + zuoyecount);
+		zuoYeLayout.addView(badgeView1);
+
+		com.jauker.widget.BadgeView badgeView2 = new com.jauker.widget.BadgeView(
+				this);
+		badgeView2.setText("" + caozuocount);
+		caoZuoLayout.addView(badgeView2);
+
+		com.jauker.widget.BadgeView badgeView3 = new com.jauker.widget.BadgeView(
+				this);
+		badgeView3.setText("" + qiangxiucount);
+		qiangXiuLayout.addView(badgeView3);
+
+		zuoYeLayout.setOnClickListener(this);
+		caoZuoLayout.setOnClickListener(this);
+		qiangXiuLayout.setOnClickListener(this);
+		
+
+		FragmentPagerAdapter madapter = new FragmentPagerAdapter(
+				getSupportFragmentManager()) {
 
 			@Override
 			public int getCount() {
@@ -99,62 +115,45 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		mLi.add(mThirdFrag);
 		contentPager.setAdapter(madapter);
 		contentPager.setOffscreenPageLimit(3);
-
-		// show(count);
-
 	}
-
-	// private void show(int count) {
-	// if (count == 0 || count < 0){
-	// badgeView.setVisibility(View.GONE);
-	// secondBadgeView.setVisibility(View.GONE);
-	// return;
-	// }
-	// badgeView.setText(count+"");
-	// badgeView.show();
-	//
-	// secondBadgeView.setText(count+"");
-	// secondBadgeView.show();
-	//
-	//
-	// }
-
-	// private void showFragmentBadge(int count){
-	// int index = contentPager.getCurrentItem();
-	// switch (index) {
-	// case 0:
-	// mFirstFrag.show(count);
-	// break;
-	//
-	// case 1:
-	// mSecondFrag.show(count);
-	// break;
-	//
-	// default:
-	// break;
-	// }
-	// }
 
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.tv_first:
+		case R.id.zuoyeLayout:
 			Utils.showToast(MainContent.this, "tab1");
 			contentPager.setCurrentItem(0);
 			break;
 
-		case R.id.tv_second:
+		case R.id.caozuoLayout:
 			Utils.showToast(MainContent.this, "tab2");
 			contentPager.setCurrentItem(1);
 			break;
 
-		case R.id.tv_third:
+		case R.id.qiangxiuLayout:
 			Utils.showToast(MainContent.this, "tab2");
 			contentPager.setCurrentItem(2);
 			break;
+
+
 		default:
 			break;
 		}
+	}
+
+	protected boolean isAdmin() {
+		OrgDao dao = new OrgDao(this);
+		if (dao.getPerson(getUserId()).getType() != null) {
+			return dao.getPerson(getUserId()).getType().equals("0");
+		} else {
+			return dao.getPerson(getUserId()).getName().contains("管理员")
+					|| dao.getPerson(getUserId()).getName().contains("领导");
+		}
+
+	}
+
+	protected String getUserId() {
+		return MySharedPreference.get(this, MySharedPreference.USER_ID, null);
 	}
 
 }
