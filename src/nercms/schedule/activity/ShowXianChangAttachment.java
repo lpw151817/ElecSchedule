@@ -132,11 +132,11 @@ public class ShowXianChangAttachment extends BaseActivity implements OnClickList
 				mImage.setOnClickListener(this);
 			} else if (type.equals("video")) {
 				filePath = mMap.get("path");
-
+				videoPath = mMap.get("path");
 				Bitmap videoThumbnailBitmap = getVideoThumbnail(filePath, 400, 400,
 						MediaStore.Images.Thumbnails.MINI_KIND);
 				mImage.setImageBitmap(videoThumbnailBitmap);
-
+				mImage.setOnClickListener(this);
 			}
 		}
 

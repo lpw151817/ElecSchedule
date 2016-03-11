@@ -41,12 +41,16 @@ public class LocalConstant {
 	// 网络状态
 	public static final int NET_AVAILABLE = 140;
 	public static final int NET_UNAVAILABLE = 141;
+	
+	public static final int START_XIANCHANGUPLOAD = 721;
 
 	// 应用服务器地址
 	// public static final String APP_SERVER_IP = "202.114.117.234";
 	// public static final String APP_SERVER_IP = "192.168.1.100";
 	public static final String APP_SERVER_IP = "http://" + Contants.SERVER + ":8080";
-
+	//   http://120.26.78.7:3000/ScheduleFileServer
+	
+	
 	// 附件的服务器地址
 	// public static final String FILE_SERVER_ATTACH_URL =
 	// "http://192.168.1.100:15005/HFSFileServer";

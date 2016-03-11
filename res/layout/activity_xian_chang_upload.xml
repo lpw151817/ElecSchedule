@@ -44,6 +44,16 @@
             android:background="@drawable/btn_style_green"
             android:text="选择附件"
             android:textColor="#ffffff" />
+        
+                <Button
+            android:id="@+id/shangchuanfujian"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_style_green"
+            android:text="上传附件"
+            android:textColor="#ffffff" />
 
         <!-- <Button
             android:id="@+id/upload"
