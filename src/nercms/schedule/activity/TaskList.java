@@ -55,7 +55,7 @@ public class TaskList extends BaseActivity {
 			break;
 		}
 
-		status = getIntent().getStringExtra("status");
+		status = getIntent().getStringExtra("statue");
 
 		planTaskDao = new PlanTaskDao(this);
 
