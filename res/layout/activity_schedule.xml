@@ -5,36 +5,63 @@
     android:orientation="vertical"
     tools:context="nercms.schedule.activity.ScheduleActivity" >
 
-    <View
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <SurfaceView
+            android:id="@+id/videorenderview"
+            android:layout_width="288px"
+            android:layout_height="352px"
+            android:layout_gravity="center"
+            android:layout_marginBottom="2px"
+            android:layout_marginTop="2px"
+            android:background="#00ff0000"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="visible" >
+        </SurfaceView>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal" >
+        android:layout_height="70dp"
+        android:orientation="horizontal"
+        android:padding="5dp" >
 
         <Button
             android:id="@+id/button1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             android:layout_weight="1"
-            android:text="设置" />
+            android:background="@drawable/btn_style_green"
+            android:text="设置"
+            android:textColor="#ffffff" />
 
         <Button
             android:id="@+id/button2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             android:layout_weight="1"
-            android:text="调度" />
+            android:background="@drawable/btn_style_green"
+            android:text="调度"
+            android:textColor="#ffffff" />
 
         <Button
             android:id="@+id/button3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             android:layout_weight="1"
-            android:text="退出" />
+            android:background="@drawable/btn_style_green"
+            android:text="退出"
+            android:textColor="#ffffff" />
     </LinearLayout>
 
 </LinearLayout>
