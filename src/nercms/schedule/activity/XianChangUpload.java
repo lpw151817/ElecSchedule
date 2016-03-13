@@ -99,6 +99,8 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 	List<Map<String, Object>> mUrl = new ArrayList<Map<String, Object>>();
 
 	List<Map<String, Object>> mUploadUrl = new ArrayList<Map<String, Object>>();// 用来存放已经上传的附件
+	
+	List<Map<String, Object>> mUnUploadUrl = new ArrayList<Map<String, Object>>();// 用来存放未上传的附件
 
 	private String fileName;
 
@@ -185,6 +187,9 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 		int mIndex = getIntent().getIntExtra("myMediaIndex", -1);
 		System.out.println("mIndex: " + mIndex);
+
+		mUploadUrl = (List<Map<String, Object>>) getIntent()
+				.getSerializableExtra("mUploadUrl");
 
 		// 进入upload有两种顺序：1.从showxianchangattachment=>xianchangAdd=>upload,这种设置为0
 		// 2.xianchanadd=>upload(点击actionbar的home)=>xianchangadd=>upload,这种mediaIndex保存上次的值
@@ -314,16 +319,16 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 			if (fileCount < 1) {
 				showShortToast("请选择附件");
 			} else {
-				 attachmentUploadRequest();// 上传附件
+				attachmentUploadRequest();// 上传附件
 			}
 			break;
 		}
 	}
-	
-	//TODO
+
 	private void attachmentUploadRequest() {
 		if (!Utils.isNetworkAvailable(XianChangUpload.this)) {
-			Toast.makeText(XianChangUpload.this, "网络不可用", Toast.LENGTH_SHORT).show();
+			Toast.makeText(XianChangUpload.this, "网络不可用", Toast.LENGTH_SHORT)
+					.show();
 			return;
 		}
 		String uploadUrl = android.wxapp.service.elec.request.Contants.HFS_URL;
@@ -331,21 +336,60 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 			showLongToast("请选择附件上传");
 		} else {
 
-				for (Map<String, Object> map : mUrl) {
-					if (map != null) {
-						if (map.get("path") != null) {
-							Log.e("TAG", "上传的路径 : " + map.get("path"));
-							mUploadUrl.add(map);
-							new HttpUploadTask(new TextView(this), this)
-									.execute((String) map.get("path"), uploadUrl);
+			//避免重复上传
+			mUnUploadUrl.clear();
+			//TODO 将mUrl-mUploadList = mUnploadList
+			for (int i = 0; i < mUrl.size(); i++){
+				
+				if (mUploadUrl.size() == 0){
+					mUnUploadUrl.add(mUrl.get(i));
+				}
+				
+				for (int j = 0; j < mUploadUrl.size(); j++){
+					if (mUrl.get(i) != null) {
+						boolean isContain = mUrl.get(i).get("path")
+								.equals(mUploadUrl.get(j).get("path"));
+						if (isContain) {
+							continue;
+						}
+						
+
+						if (!isContain && j == mUploadUrl.size() - 1) {
+							mUnUploadUrl.add(mUrl.get(i));
+							break;
 						}
 					}
+
+				}
+				
+				
 			}
 			
+			for (Map<String, Object> map : mUnUploadUrl) {
+				if (map != null) {
+					if (map.get("path") != null) {
+						Log.e("TAG", "上传的路径 : " + map.get("path"));
+						mUploadUrl.add(map);
+						new HttpUploadTask(new TextView(this), this).execute(
+								(String) map.get("path"), uploadUrl);
+					}
+				}
+			}
+			
+//			for (Map<String, Object> map : mUrl) {
+//				if (map != null) {
+//					if (map.get("path") != null) {
+//						Log.e("TAG", "上传的路径 : " + map.get("path"));
+//						mUploadUrl.add(map);
+//						new HttpUploadTask(new TextView(this), this).execute(
+//								(String) map.get("path"), uploadUrl);
+//					}
+//				}
+//			}
+
 		}
 
 	}
-
 
 	private int getFileCount() {
 		int fileCount = 0;
@@ -411,58 +455,123 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		case android.R.id.home:
 			System.out.println("是从home调回去的么");
 
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage("附件未上传，是否继续上传");
-			builder.setCancelable(false);
-			builder.setPositiveButton("是",
-					new DialogInterface.OnClickListener() {
+			if (isShowDialog() == true) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				builder.setMessage("附件未上传，是否继续上传");
+				builder.setCancelable(false);
+				builder.setPositiveButton("是",
+						new DialogInterface.OnClickListener() {
 
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
 
-						}
-					});
-			builder.setNegativeButton("否",
-					new DialogInterface.OnClickListener() {
+							}
+						});
+				builder.setNegativeButton("否",
+						new DialogInterface.OnClickListener() {
 
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							
-							for (int i = 0; i < mUrl.size(); i++){
-								
-								if (mUploadUrl.size() == 0){
-									mUrl.set(i, null);
-								}
-								
-								for (int j =0; j < mUploadUrl.size(); j++){
-									
-									if (mUrl.get(i) != null){
-										boolean isContain = mUrl.get(i).equals(mUploadUrl.get(j));
-										if (!isContain){
-											mUrl.set(i, null);
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+
+								for (int i = 0; i < mUrl.size(); i++) {
+
+									if (mUploadUrl.size() == 0) {
+										mUrl.set(i, null);
+									}
+
+									boolean flag = false;
+
+									for (int j = 0; j < mUploadUrl.size(); j++) {
+
+										if (mUrl.get(i) != null) {
+											boolean isContain = mUrl
+													.get(i)
+													.get("path")
+													.equals(mUploadUrl.get(j)
+															.get("path"));
+											if (isContain) {
+												flag = true;
+											}
 										}
+
+									}
+
+									if (flag == false) {
+										mUrl.set(i, null);
 									}
 								}
+
+								Intent data = new Intent();
+								data.putExtra("url", (Serializable) mUrl);
+								System.out.println("home : mUrl "
+										+ mUrl.toString());
+								data.putExtra("mediaIndex", mediaIndex);// 把附件的下标值传回去，下次进来的时候，mediaIndex从上次的位置开始自增
+								data.putExtra("position", getIntent()
+										.getIntExtra("position", -1));
+								data.putExtra("from", "XianChangUpload");
+								data.putExtra("mUploadUrl",
+										(Serializable) mUploadUrl);
+								setResult(LocalConstant.SELECT_ATTACHMENT, data);
+								finish();
 							}
-							
-							Intent data = new Intent();
-							data.putExtra("url", (Serializable) mUrl);
-							System.out.println("home : mUrl " + mUrl.toString());
-							data.putExtra("mediaIndex", mediaIndex);// 把附件的下标值传回去，下次进来的时候，mediaIndex从上次的位置开始自增
-							data.putExtra("position",
-									getIntent().getIntExtra("position", -1));
-							data.putExtra("from", "XianChangUpload");
-							setResult(LocalConstant.SELECT_ATTACHMENT, data);
-							finish();
-						}
-					});
-			AlertDialog alert = builder.create();
-			alert.show();
+						});
+				AlertDialog alert = builder.create();
+				alert.show();
+			} else {
+				Intent data = new Intent();
+				data.putExtra("url", (Serializable) mUrl);
+				System.out.println("home : mUrl " + mUrl.toString());
+				data.putExtra("mediaIndex", mediaIndex);// 把附件的下标值传回去，下次进来的时候，mediaIndex从上次的位置开始自增
+				data.putExtra("position",
+						getIntent().getIntExtra("position", -1));
+				data.putExtra("from", "XianChangUpload");
+				data.putExtra("mUploadUrl", (Serializable) mUploadUrl);
+				setResult(LocalConstant.SELECT_ATTACHMENT, data);
+				finish();
+			}
 
 			break;
 		}
 		return super.onOptionsItemSelected(item);
 
+	}
+
+	public boolean isShowDialog() {
+
+		boolean isShow = false;
+		for (int i = 0; i < mUrl.size(); i++) {
+
+
+			isShow = false;
+			
+			if (mUploadUrl.size() == 0  ){
+				if (mUrl.get(i)!=null)
+				isShow = true;
+				break;
+			}
+
+			for (int j = 0; j < mUploadUrl.size(); j++) {
+
+				if (mUrl.get(i) != null) {
+					boolean isContain = mUrl.get(i).get("path")
+							.equals(mUploadUrl.get(j).get("path"));
+					if (isContain) {
+						continue;
+					}
+					
+
+					if (!isContain && j == mUploadUrl.size() - 1) {
+						isShow = true;
+						break;
+					}
+				}
+
+			}
+		}
+
+		return isShow;
 	}
 
 	@Override

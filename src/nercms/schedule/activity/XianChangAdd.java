@@ -82,6 +82,12 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 	// 整个List
 	List<List<Map<String, Object>>> mList = new ArrayList<List<Map<String, Object>>>();
 	
+	//存放每个条目中被上传了的附件
+	List<List<Map<String, Object>>> mUploadList = new ArrayList<List<Map<String, Object>>>();
+	
+	//存放对应条目中上传的附件
+	List<Map<String, Object>> mUploadUrl = new ArrayList<Map<String,Object>>();
+	
 	List<Map<String, Object>> mVideoAttach = new ArrayList<Map<String,Object>>();
 	
 	//存放每個條目裡面的附件的數目
@@ -233,7 +239,9 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 		for (int i = 0; i < xianChangAddAdapter.getCount(); i++) {
 			List<Map<String, Object>> mItem = new ArrayList<Map<String, Object>>();
 			mList.add(mItem);
+			mUploadList.add(mItem);
 		}
+		
 
 		// mPath.add((String) getIntent().getCharSequenceExtra("path"));
 		if (!isContinueTask) {// 不是从继续任务plantask这个页面跳过了
@@ -411,6 +419,8 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 				// return;//目的是不让iscontinueTask置为false
 				// }
 
+					
+					intent.putExtra("mUploadUrl", (Serializable)mUploadList.get(position));
 				intent.putExtra("url", (Serializable) mList.get(position));
 				intent.putExtra("position", position);// 把被点击的条目的位置传递进去，这样在接收的时候就知道该该改变哪个list的内容
 				XianChangAdd.this.startActivityForResult(intent, LocalConstant.START_XIANCHANGUPLOAD);
@@ -526,7 +536,9 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 				mediaIndex = data.getIntExtra("mediaIndex", 0);
 				mContent = (List<Map<String, Object>>) data.getSerializableExtra("url");
 				mList.set(index, mContent);// 改变在Upload里面对应被更改的内容
-
+				
+				mUploadUrl = (List<Map<String, Object>>) data.getSerializableExtra("mUploadUrl");
+				mUploadList.set(index, mUploadUrl);
 				myMediaIndexs[index] = mediaIndex;
 			}
 			break;

@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.wxapp.service.elec.dao.OrgDao;
 import android.wxapp.service.elec.dao.PlanTaskDao;
 import android.wxapp.service.util.MySharedPreference;
@@ -40,6 +41,9 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 	private LinearLayout zuoYeLayout;
 	private LinearLayout caoZuoLayout;
 	private LinearLayout qiangXiuLayout;
+	private TextView zuoye;
+	private TextView caozuo;
+	private TextView qiangxiu;
 
 
 	@Override
@@ -66,8 +70,10 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		zuoYeLayout = (LinearLayout) findViewById(R.id.zuoyeLayout);
 		caoZuoLayout = (LinearLayout) findViewById(R.id.caozuoLayout);
 		qiangXiuLayout = (LinearLayout) findViewById(R.id.qiangxiuLayout);
-
 		
+		zuoye = (TextView) findViewById(R.id.zuoye);
+		caozuo = (TextView) findViewById(R.id.caozuo);
+		qiangxiu = (TextView) findViewById(R.id.qiangxiu);
 
 		mFirstFrag = new FirstFragment(MainContent.this, zuoyecount);
 
@@ -121,18 +127,27 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.zuoyeLayout:
-			Utils.showToast(MainContent.this, "tab1");
+//			Utils.showToast(MainContent.this, "tab1");
 			contentPager.setCurrentItem(0);
+			zuoye.setTextColor(getResources().getColor(R.color.blue));
+			caozuo.setTextColor(getResources().getColor(R.color.black));
+			qiangxiu.setTextColor(getResources().getColor(R.color.black));
 			break;
 
 		case R.id.caozuoLayout:
-			Utils.showToast(MainContent.this, "tab2");
+//			Utils.showToast(MainContent.this, "tab2");
 			contentPager.setCurrentItem(1);
+			caozuo.setTextColor(getResources().getColor(R.color.blue));
+			zuoye.setTextColor(getResources().getColor(R.color.black));
+			qiangxiu.setTextColor(getResources().getColor(R.color.black));
 			break;
 
 		case R.id.qiangxiuLayout:
-			Utils.showToast(MainContent.this, "tab2");
+//			Utils.showToast(MainContent.this, "tab2");
 			contentPager.setCurrentItem(2);
+			qiangxiu.setTextColor(getResources().getColor(R.color.blue));
+			zuoye.setTextColor(getResources().getColor(R.color.black));
+			caozuo.setTextColor(getResources().getColor(R.color.black));
 			break;
 
 
