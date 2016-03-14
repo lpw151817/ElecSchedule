@@ -27,12 +27,12 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 	private String server_ip = "192.168.2.150";// 调度服务器IP
 	// private String server_ip = "192.168.3.2";//调度服务器IP
 	private int server_port = 5060;// 调度服务器通信端口
-	private String self_id = "111";// 本机注册ID
+	private String self_id = getUserId();// 本机注册ID
 	private String encrypt_info = "JEO!FGL#GGG)GG$G$HIG((^&%$FJEF";
-	private String remote_id1 = "222";// "4294967295";//被叫终端ID，可有多个
-	// private String remote_id2 = "333";
-	private String remote_id2 = "4294967295";
-	private String video_source = remote_id2;// 视频源ID
+//	private String remote_id1 = "222";// "4294967295";//被叫终端ID，可有多个
+//	// private String remote_id2 = "333";
+//	private String remote_id2 = "4294967295";
+//	private String video_source = remote_id2;// 视频源ID
 
 	private Button bt1, bt2, bt3;
 	private SurfaceView surfaceView;

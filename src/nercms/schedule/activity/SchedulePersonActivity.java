@@ -20,7 +20,7 @@ public class SchedulePersonActivity extends BaseActivity {
 	OrgDao dao;
 	List<Org> data;
 	SchedulePersonAdapter adapter;
-
+	// 调度人数最大值
 	private final int MAX_USER = 4;
 
 	@Override

@@ -11,10 +11,14 @@ import nercms.schedule.fragment.SecondFragment;
 import nercms.schedule.fragment.ThirdFragment;
 import nercms.schedule.utils.Utils;
 import nercms.schedule.view.NoScrollViewPager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -45,7 +49,6 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 	private TextView caozuo;
 	private TextView qiangxiu;
 
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -70,7 +73,7 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		zuoYeLayout = (LinearLayout) findViewById(R.id.zuoyeLayout);
 		caoZuoLayout = (LinearLayout) findViewById(R.id.caozuoLayout);
 		qiangXiuLayout = (LinearLayout) findViewById(R.id.qiangxiuLayout);
-		
+
 		zuoye = (TextView) findViewById(R.id.zuoye);
 		caozuo = (TextView) findViewById(R.id.caozuo);
 		qiangxiu = (TextView) findViewById(R.id.qiangxiu);
@@ -81,28 +84,23 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 
 		mThirdFrag = new ThirdFragment(MainContent.this, qiangxiucount);
 
-		com.jauker.widget.BadgeView badgeView1 = new com.jauker.widget.BadgeView(
-				this);
+		com.jauker.widget.BadgeView badgeView1 = new com.jauker.widget.BadgeView(this);
 		badgeView1.setText("" + zuoyecount);
 		zuoYeLayout.addView(badgeView1);
 
-		com.jauker.widget.BadgeView badgeView2 = new com.jauker.widget.BadgeView(
-				this);
+		com.jauker.widget.BadgeView badgeView2 = new com.jauker.widget.BadgeView(this);
 		badgeView2.setText("" + caozuocount);
 		caoZuoLayout.addView(badgeView2);
 
-		com.jauker.widget.BadgeView badgeView3 = new com.jauker.widget.BadgeView(
-				this);
+		com.jauker.widget.BadgeView badgeView3 = new com.jauker.widget.BadgeView(this);
 		badgeView3.setText("" + qiangxiucount);
 		qiangXiuLayout.addView(badgeView3);
 
 		zuoYeLayout.setOnClickListener(this);
 		caoZuoLayout.setOnClickListener(this);
 		qiangXiuLayout.setOnClickListener(this);
-		
 
-		FragmentPagerAdapter madapter = new FragmentPagerAdapter(
-				getSupportFragmentManager()) {
+		FragmentPagerAdapter madapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
 
 			@Override
 			public int getCount() {
@@ -127,7 +125,7 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.zuoyeLayout:
-//			Utils.showToast(MainContent.this, "tab1");
+			// Utils.showToast(MainContent.this, "tab1");
 			contentPager.setCurrentItem(0);
 			zuoye.setTextColor(getResources().getColor(R.color.blue));
 			caozuo.setTextColor(getResources().getColor(R.color.black));
@@ -135,7 +133,7 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 			break;
 
 		case R.id.caozuoLayout:
-//			Utils.showToast(MainContent.this, "tab2");
+			// Utils.showToast(MainContent.this, "tab2");
 			contentPager.setCurrentItem(1);
 			caozuo.setTextColor(getResources().getColor(R.color.blue));
 			zuoye.setTextColor(getResources().getColor(R.color.black));
@@ -143,17 +141,46 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 			break;
 
 		case R.id.qiangxiuLayout:
-//			Utils.showToast(MainContent.this, "tab2");
+			// Utils.showToast(MainContent.this, "tab2");
 			contentPager.setCurrentItem(2);
 			qiangxiu.setTextColor(getResources().getColor(R.color.blue));
 			zuoye.setTextColor(getResources().getColor(R.color.black));
 			caozuo.setTextColor(getResources().getColor(R.color.black));
 			break;
 
-
 		default:
 			break;
 		}
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+
+		// 子菜单 ：发起任务，消息，会议，视频直播，智能调度，添加客户
+		SubMenu addMenu = menu.addSubMenu("add item");
+		addMenu.add(0, 1, 0, "指挥调度").setIcon(R.drawable.ofm_meeting_icon);
+
+		MenuItem addItem = addMenu.getItem();
+		addItem.setIcon(R.drawable.ic_action_overflow);
+		addItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);// 总是作为Action项显示
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			startActivity(Login.class);
+			MainContent.this.finish();
+			break;
+		case -1:
+			startActivity(ZhilingActivity.class);
+			break;
+		case 1:
+			startActivity(ScheduleActivity.class);
+			break;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	protected boolean isAdmin() {
@@ -171,4 +198,15 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		return MySharedPreference.get(this, MySharedPreference.USER_ID, null);
 	}
 
+	protected void startActivity(Bundle bundle, Class<?> targetActivity) {
+		Intent intent = new Intent();
+		intent.setClass(this, targetActivity);
+		if (bundle != null)
+			intent.putExtras(bundle);
+		startActivity(intent);
+	}
+
+	protected void startActivity(Class<?> targetActivity) {
+		startActivity(null, targetActivity);
+	}
 }
