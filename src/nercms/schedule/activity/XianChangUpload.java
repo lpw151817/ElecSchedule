@@ -339,32 +339,42 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 			//避免重复上传
 			mUnUploadUrl.clear();
 			//TODO 将mUrl-mUploadList = mUnploadList
-			for (int i = 0; i < mUrl.size(); i++){
-				
-				if (mUploadUrl.size() == 0){
-					mUnUploadUrl.add(mUrl.get(i));
+			
+			List<String> mUrlPath = new ArrayList<String>();
+			List<String> mUrlUploadPath = new ArrayList<String>();
+			List<String> mUrlUnUploadPath = new ArrayList<String>();
+			
+			//打印出多余的数据
+			for (Map<String, Object> ma : mUrl){
+				if(ma != null){
+					mUrlPath.add((String) ma.get("path"));
 				}
-				
-				for (int j = 0; j < mUploadUrl.size(); j++){
-					if (mUrl.get(i) != null) {
-						boolean isContain = mUrl.get(i).get("path")
-								.equals(mUploadUrl.get(j).get("path"));
-						if (isContain) {
-							continue;
-						}
-						
-
-						if (!isContain && j == mUploadUrl.size() - 1) {
-							mUnUploadUrl.add(mUrl.get(i));
-							break;
-						}
-					}
-
-				}
-				
-				
 			}
 			
+			for (Map<String, Object> md : mUploadUrl){
+				mUrlUploadPath.add((String) md.get("path"));
+			}
+			
+			for (String path : mUrlPath){
+				if (!mUrlUploadPath.contains(path)){
+					mUrlUnUploadPath.add(path);
+					Log.e("TAG", "-------------------");
+					Log.e("TAG", path);
+					
+					for (Map<String, Object> ma : mUrl){
+						if(ma != null){
+							String maPath = (String) ma.get("path");
+   							if (maPath.equals(path)){
+								mUnUploadUrl.add(ma);
+							}
+						}
+					}
+				}
+			}
+			
+			
+			
+			//上传
 			for (Map<String, Object> map : mUnUploadUrl) {
 				if (map != null) {
 					if (map.get("path") != null) {
@@ -376,16 +386,6 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 				}
 			}
 			
-//			for (Map<String, Object> map : mUrl) {
-//				if (map != null) {
-//					if (map.get("path") != null) {
-//						Log.e("TAG", "上传的路径 : " + map.get("path"));
-//						mUploadUrl.add(map);
-//						new HttpUploadTask(new TextView(this), this).execute(
-//								(String) map.get("path"), uploadUrl);
-//					}
-//				}
-//			}
 
 		}
 
@@ -541,35 +541,47 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 	public boolean isShowDialog() {
 
 		boolean isShow = false;
-		for (int i = 0; i < mUrl.size(); i++) {
+//		for (int i = 0; i < mUrl.size(); i++) {
+//
+//
+//			isShow = false;
+//			
+//			if (mUploadUrl.size() == 0  ){
+//				if (mUrl.get(i)!=null)
+//				isShow = true;
+//				break;
+//			}
 
-
-			isShow = false;
+			List<String> mUrlPath = new ArrayList<String>();
+			List<String> mUrlUploadPath = new ArrayList<String>();
 			
-			if (mUploadUrl.size() == 0  ){
-				if (mUrl.get(i)!=null)
-				isShow = true;
-				break;
+			//打印出多余的数据
+			for (Map<String, Object> ma : mUrl){
+				if(ma != null){
+					mUrlPath.add((String) ma.get("path"));
+				}
 			}
-
-			for (int j = 0; j < mUploadUrl.size(); j++) {
-
-				if (mUrl.get(i) != null) {
-					boolean isContain = mUrl.get(i).get("path")
-							.equals(mUploadUrl.get(j).get("path"));
-					if (isContain) {
-						continue;
+			
+			for (Map<String, Object> md : mUploadUrl){
+				if (md != null){
+					mUrlUploadPath.add((String) md.get("path"));
+				}
+			}
+			
+			if (mUrlPath.size() != 0){
+				if (mUrlUploadPath.size() == 0){
+					isShow = true;
+				} else {
+					for (String path : mUrlPath){
+						if (!mUrlUploadPath.contains(path)){
+							isShow = true;
+						}
 					}
 					
-
-					if (!isContain && j == mUploadUrl.size() - 1) {
-						isShow = true;
-						break;
-					}
 				}
-
 			}
-		}
+			
+//		}
 
 		return isShow;
 	}
