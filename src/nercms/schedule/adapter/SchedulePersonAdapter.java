@@ -22,14 +22,14 @@ public class SchedulePersonAdapter extends BaseAdapter {
 	Context c;
 	List<Org> data;
 	boolean isSelected = false;
-	int selectedVideo = -1;
+	String selectedVideo;
 	List<Org> selectedPeople = new ArrayList<Org>();
 
 	public List<Org> getSelectedPeople() {
 		return selectedPeople;
 	}
 
-	public int getSelectedVideo() {
+	public String getSelectedVideo() {
 		return selectedVideo;
 	}
 
@@ -70,22 +70,14 @@ public class SchedulePersonAdapter extends BaseAdapter {
 			holder = (Holder) convertView.getTag();
 		}
 
-		// 标记本人
-		if (data.get(position).getId().substring(1).equals(getUserId())) {
-			holder.ischecked.setChecked(true);
-			holder.ischecked.setEnabled(false);
-			if (!selectedPeople.contains(data.get(position)))
-				selectedPeople.add(data.get(position));
-		}
-
 		holder.video.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				if (!isChecked) {
-					selectedVideo = -1;
+					selectedVideo = null;
 					isSelected = false;
 				} else if (isChecked && !isSelected) {
-					selectedVideo = position;
+					selectedVideo = data.get(position).getId();
 					isSelected = true;
 				} else {
 					Toast.makeText(c, "只能选一个视频源", Toast.LENGTH_LONG).show();
@@ -98,13 +90,10 @@ public class SchedulePersonAdapter extends BaseAdapter {
 
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				if (isChecked) {
-					if (!selectedPeople.contains(data.get(position)))
-						selectedPeople.add(data.get(position));
-				} else {
-					if (selectedPeople.contains(data.get(position)))
-						selectedPeople.remove(data.get(position));
-				}
+				if (!selectedPeople.contains(data.get(position)))
+					selectedPeople.add(data.get(position));
+				else
+					selectedPeople.remove(data.get(position));
 			}
 		});
 
@@ -118,8 +107,19 @@ public class SchedulePersonAdapter extends BaseAdapter {
 		// }
 		// });
 
+		// 标记本人
+		if (data.get(position).equals(new Org("p" + getUserId(), "", ""))) {
+			holder.ischecked.setChecked(true);
+			holder.ischecked.setEnabled(false);
+			if (!selectedPeople.contains(data.get(position)))
+				selectedPeople.add(data.get(position));
+		} else {
+			holder.ischecked.setChecked(false);
+			holder.ischecked.setEnabled(true);
+			if (selectedPeople.contains(data.get(position)))
+				selectedPeople.remove(data.get(position));
+		}
 		holder.name.setText(data.get(position).getTitle());
-
 		return convertView;
 	}
 

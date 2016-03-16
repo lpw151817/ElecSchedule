@@ -50,7 +50,7 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:background="@drawable/btn_style_green"
-            android:text="调度"
+            android:text="呼叫"
             android:textColor="#ffffff" />
 
         <Button
@@ -60,7 +60,17 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:background="@drawable/btn_style_green"
-            android:text="退出"
+            android:text="接听"
+            android:textColor="#ffffff" />
+
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_style_green"
+            android:text="挂断"
             android:textColor="#ffffff" />
     </LinearLayout>
 

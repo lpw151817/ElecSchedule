@@ -7,6 +7,7 @@ import com.actionbarsherlock.view.MenuItem;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.ListView;
 import android.wxapp.service.elec.dao.Org;
 import android.wxapp.service.elec.dao.OrgDao;
@@ -55,22 +56,26 @@ public class SchedulePersonActivity extends BaseActivity {
 			setResult(RESULT_CANCELED);
 			break;
 		case 1:
-			int position = adapter.getSelectedVideo();
-			if (position == -1) {
+			String videoSource = adapter.getSelectedVideo();
+			if (TextUtils.isEmpty(videoSource)) {
 				showLongToast("请选择视频源");
 			} else if (adapter.getSelectedPeople().size() < 2) {
 				showLongToast("请选择多个用户");
 			} else if (adapter.getSelectedPeople().size() > MAX_USER) {
 				showLongToast("最多只能选择" + MAX_USER + "个用户");
 			} else {
-				Intent intent = new Intent();
-				Bundle bundle = new Bundle();
-				bundle.putSerializable("people", (Serializable) adapter.getSelectedPeople());
-				String videoId = ((Org) adapter.getItem(position)).getId().substring(1);
-				bundle.putString("videoId", videoId);
-				intent.putExtras(bundle);
-				setResult(RESULT_OK, intent);
-				finish();
+				if (adapter.getSelectedPeople()
+						.contains(new Org(adapter.getSelectedVideo(), "", ""))) {
+					Intent intent = new Intent();
+					Bundle bundle = new Bundle();
+					bundle.putSerializable("people", (Serializable) adapter.getSelectedPeople());
+					bundle.putString("videoId", videoSource.substring(1));
+					intent.putExtras(bundle);
+					setResult(RESULT_OK, intent);
+					finish();
+				} else {
+					showLongToast("请选择已勾选的人作为视频源");
+				}
 			}
 			break;
 		}
