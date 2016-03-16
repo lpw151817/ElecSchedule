@@ -239,6 +239,9 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 		for (int i = 0; i < xianChangAddAdapter.getCount(); i++) {
 			List<Map<String, Object>> mItem = new ArrayList<Map<String, Object>>();
 			mList.add(mItem);
+		}
+		for (int i = 0; i < xianChangAddAdapter.getCount(); i++) {
+			List<Map<String, Object>> mItem = new ArrayList<Map<String, Object>>();
 			mUploadList.add(mItem);
 		}
 		
