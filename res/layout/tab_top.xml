@@ -14,24 +14,24 @@
 
         <LinearLayout
             android:id="@+id/zuoyeLayout"
-            android:orientation="horizontal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center" >
+            android:gravity="center"
+            android:orientation="horizontal" >
 
             <TextView
-                android:clickable="false"
                 android:id="@+id/zuoye"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:clickable="false"
                 android:text="作业现场"
                 android:textColor="#0000FF"
                 android:textSize="17sp" />
         </LinearLayout>
 
         <LinearLayout
-             android:id="@+id/caozuoLayout"
+            android:id="@+id/caozuoLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -60,6 +60,7 @@
                 android:textSize="17sp" />
         </LinearLayout>
     </LinearLayout>
+
 
 
 </LinearLayout>
