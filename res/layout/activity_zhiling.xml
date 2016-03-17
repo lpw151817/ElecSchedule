@@ -23,7 +23,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="未读"
-                android:textColor="#89A39D" />
+                android:textSize="17sp"
+                android:textColor="#0000FF" />
         </LinearLayout>
 
         <LinearLayout
@@ -38,7 +39,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="已读"
-                android:textColor="#B3B9BE" />
+                android:textSize="17sp"
+                 />
         </LinearLayout>
     </LinearLayout>
 
