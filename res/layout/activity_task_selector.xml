@@ -1,33 +1,103 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
     tools:context="nercms.schedule.activity.TaskSelectorActivity" >
 
-    <Button
-        android:id="@+id/shangchuanxianchangxinxi"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:text="上传现场信息" />
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-    <Button
-        android:id="@+id/jiaohuxinxi"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/shangchuanxianchangxinxi"
-        android:text="交互信息" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
 
-    <Button
-        android:id="@+id/renwuxiangqing"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/jiaohuxinxi"
-        android:text="任务详情" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical" >
 
-</RelativeLayout>
+            <Button
+                android:layout_marginTop="5dp"
+                android:id="@+id/shangchuanxianchangxinxi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="上传现场信息" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="上传现场信息"
+                android:layout_marginBottom="5dp"
+                android:textColor="#A8A8A8" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="#E7E8E5" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical" >
+
+            <Button
+                android:layout_marginTop="5dp"
+                android:id="@+id/jiaohuxinxi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="交互信息" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="上传现场信息"
+                android:layout_marginBottom="5dp"
+                android:textColor="#A8A8A8" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="#E7E8E5" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical" >
+
+            <Button
+                android:layout_marginTop="5dp"
+                android:id="@+id/renwuxiangqing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="任务详情" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="上传现场信息"
+                android:layout_marginBottom="5dp"
+                android:textColor="#A8A8A8" />
+        </LinearLayout>
+    </LinearLayout>
+    
+    <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#E7E8E5" />
+
+</LinearLayout>

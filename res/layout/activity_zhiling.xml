@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="已读"
-                android:textColor="#89A39D" />
+                android:textColor="#B3B9BE" />
         </LinearLayout>
     </LinearLayout>
 
