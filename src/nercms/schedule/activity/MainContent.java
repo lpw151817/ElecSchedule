@@ -155,16 +155,21 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-
+		if (isAdmin()) {
+			MenuItem item2 = menu.add(0, 3, 0, "日计划录入");
+			item2.setIcon(android.R.drawable.ic_menu_add);
+			item2.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);// 总是作为Action项显示
+		}
 		// 子菜单 ：发起任务，消息，会议，视频直播，智能调度，添加客户
 		SubMenu addMenu = menu.addSubMenu("add item");
-		addMenu.add(0, 1, 0, "视频调度").setIcon(R.drawable.ofm_meeting_icon);
-		addMenu.add(0, 2, 0, "修改密码").setIcon(R.drawable.ofm_meeting_icon);
-		addMenu.add(0, -1, 0, "通知").setIcon(R.drawable.ofm_meeting_icon);
+		addMenu.add(0, 1, 1, "视频调度").setIcon(R.drawable.ofm_meeting_icon);
+		// addMenu.add(0, 2, 1, "修改密码").setIcon(R.drawable.ofm_meeting_icon);
+		addMenu.add(0, -1, 1, "通知").setIcon(R.drawable.ofm_meeting_icon);
 
 		MenuItem addItem = addMenu.getItem();
 		addItem.setIcon(R.drawable.ic_action_overflow);
 		addItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);// 总是作为Action项显示
+
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -183,6 +188,12 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 			break;
 		case 1:
 			startActivity(ScheduleActivity.class);
+			break;
+		case 3:
+			// 添加日计划
+			Intent intent = new Intent(MainContent.this, PlanAdd.class);
+			intent.putExtra("enterType", 1);
+			MainContent.this.startActivity(intent);
 			break;
 		}
 		return super.onOptionsItemSelected(item);

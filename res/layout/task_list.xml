@@ -19,6 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:visibility="gone"
         android:layout_margin="5dp"
         android:background="@drawable/btn_style_green"
         android:text="日计划录入"

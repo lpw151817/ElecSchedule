@@ -99,14 +99,14 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 		initHandler();
 	}
 
-	private void startActivity(String tid) {
-		Intent intent = new Intent(this, MeiRiJiHua.class);
-		intent.putExtra("enterType", enterType);
-		intent.putExtra("status", status);
-		intent.putExtra("tid", tid);
-		startActivity(intent);
-		this.finish();
-	}
+	// private void startActivity(String tid) {
+	// Intent intent = new Intent(this, MeiRiJiHua.class);
+	// intent.putExtra("enterType", enterType);
+	// intent.putExtra("status", status);
+	// intent.putExtra("tid", tid);
+	// startActivity(intent);
+	// this.finish();
+	// }
 
 	private void initHandler() {
 		handler = new Handler() {
@@ -118,8 +118,11 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 				case Constants.CREATE_TASK_SUCCESS:
 					// 发布成功
 					showLongToast("发布成功");
-					CreatePlanTaskResponse r = (CreatePlanTaskResponse) msg.obj;
-					startActivity(r.getTid());
+					// CreatePlanTaskResponse r = (CreatePlanTaskResponse)
+					// msg.obj;
+					// startActivity(r.getTid());
+
+					PlanAdd.this.finish();
 					break;
 				case Constants.CREATE_TASK_FAIL:
 				case Constants.CREATE_TASK_SAVE_FAIL:

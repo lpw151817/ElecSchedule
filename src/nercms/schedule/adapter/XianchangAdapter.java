@@ -14,6 +14,7 @@ import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.wxapp.service.elec.dao.OrgDao;
 import android.wxapp.service.elec.model.bean.table.tb_task_info;
 import android.wxapp.service.jerry.model.affair.CreateTaskRequestIds;
 import android.wxapp.service.jerry.model.affair.QueryAffairListResponseAffairs;
@@ -27,11 +28,13 @@ public class XianchangAdapter extends BaseAdapter {
 	List<tb_task_info> data;
 	Context mContext;
 	int renwuleibie;
+	OrgDao dao;
 
 	public XianchangAdapter(Context c, int renwuleibie, List<tb_task_info> data) {
 		this.mContext = c;
 		this.renwuleibie = renwuleibie;
 		this.data = data;
+		this.dao = new OrgDao(c);
 	}
 
 	@Override
@@ -58,18 +61,19 @@ public class XianchangAdapter extends BaseAdapter {
 			holder = new Holder();
 			holder.taskName = ((TextView) convertView.findViewById(R.id.task_name));
 			holder.time = ((TextView) convertView.findViewById(R.id.task_time));
+			holder.xcfzr = (TextView) convertView.findViewById(R.id.xcfzr);
 			convertView.setTag(holder);
 		} else {
 			holder = (Holder) convertView.getTag();
 		}
 		holder.taskName.setText(data.get(position).getName());
 		holder.time.setText(Utils.formatDateMs(data.get(position).getCreator_time()));
-
+		holder.xcfzr.setText(dao.getPerson(data.get(position).getResponsibility_user()).getName());
 		return convertView;
 	}
 
 	class Holder {
-		TextView taskName, time;
+		TextView taskName, time, xcfzr;
 	}
 
 }
