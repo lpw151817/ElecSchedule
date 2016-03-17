@@ -1,54 +1,169 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    android:orientation="vertical" >
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <LinearLayout
         android:id="@+id/newtasklayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp" >
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical" >
 
         <Button
             android:id="@+id/tab02_bt_newtask"
             android:layout_width="100dp"
             android:layout_height="100dp"
-           
             android:text="新任务" />
-    </LinearLayout>
-    
-        <Button
-        android:id="@+id/tab02_bt_delaytask"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_below="@id/newtasklayout"
-        android:text="延误的任务" />
-        
-                <Button
-        android:id="@+id/tab02_bt_performtask"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_below="@id/newtasklayout"
-        android:layout_alignParentRight="true"
-        android:text="执行中的任务" />
-                
-                   <Button
-        android:id="@+id/tab02_bt_finishedtask"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_below="@id/tab02_bt_delaytask"
-        android:layout_alignParentLeft="true"
-        android:text="已完成的任务" />
-                   
-                   <Button
-        android:id="@+id/tab02_bt_cancelledtask"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_below="@id/tab02_bt_delaytask"
-        android:layout_alignParentRight="true"
-        android:text="已取消的任务" />
-    
 
-</RelativeLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="新的任务"
+            android:textColor="#A8A8A8" />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="5dp"
+        android:background="#E7E8E5" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+
+                <Button
+                    android:id="@+id/tab02_bt_delaytask"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_gravity="center_horizontal"
+                    android:text="延误的任务" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="延误的任务"
+                    android:layout_marginBottom="5dp"
+                    android:textColor="#A8A8A8" />
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="#E7E8E5" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+
+                <Button
+                    android:layout_marginTop="5dp"
+                    android:id="@+id/tab02_bt_performtask"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center_horizontal"
+                    android:text="执行中的任务" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="执行中的任务"
+                    android:layout_marginBottom="5dp"
+                    android:textColor="#A8A8A8" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#E7E8E5" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+
+                <Button
+                    android:layout_marginTop="5dp"
+                    android:id="@+id/tab02_bt_finishedtask"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center_horizontal"
+                    android:text="已完成的任务" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="已完成的任务"
+                    android:layout_marginBottom="5dp"
+                    android:textColor="#A8A8A8" />
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="#E7E8E5" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+
+                <Button
+                    android:layout_marginTop="5dp"
+                    android:id="@+id/tab02_bt_cancelledtask"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center_horizontal"
+                    android:text="已取消的任务" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="已取消的任务"
+                    android:layout_marginBottom="5dp"
+                    android:textColor="#A8A8A8" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#E7E8E5" />
+
+</LinearLayout>
