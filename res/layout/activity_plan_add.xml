@@ -2,7 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/main_bg"
     android:padding="5dp"
     tools:context="nercms.schedule.activity.PlanAdd" >
 
@@ -23,7 +22,7 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
                 android:text="天气："
-                android:textColor="#ffffff"
+                android:textColor="@color/black"
                 android:textSize="17dip" />
 
             <RadioGroup
@@ -40,7 +39,7 @@
                     android:layout_marginRight="5dp"
                     android:checked="true"
                     android:text="晴"
-                    android:textColor="#ffffff" />
+                   android:textColor="@color/black" />
 
                 <RadioButton
                     android:id="@+id/cloudy"
@@ -49,7 +48,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
                     android:text="阴"
-                    android:textColor="#ffffff" />
+                   android:textColor="@color/black" />
 
                 <RadioButton
                     android:id="@+id/rain"
@@ -58,7 +57,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
                     android:text="雨"
-                    android:textColor="#ffffff" />
+                   android:textColor="@color/black" />
             </RadioGroup>
         </LinearLayout>
 
@@ -87,7 +86,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="项目名称："
-                android:textColor="#ffffff"
+               android:textColor="@color/black"
                 android:textSize="17dip" />
 
             <EditText
@@ -97,7 +96,7 @@
                 android:background="@drawable/edit_text"
                 android:hint="请在此输入..."
                 android:singleLine="true"
-                android:textColor="#ffffff" />
+               android:textColor="@color/black" />
         </LinearLayout>
 
         <ImageView
@@ -123,7 +122,7 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="10dp"
                     android:text="停电范围："
-                    android:textColor="#ffffff"
+                   android:textColor="@color/black"
                     android:textSize="17dip" />
 
                 <EditText
@@ -134,7 +133,7 @@
                     android:gravity="top"
                     android:hint="请在此输入..."
                     android:maxLines="5"
-                    android:textColor="#ffffff" />
+                   android:textColor="@color/black" />
             </LinearLayout>
 
             <LinearLayout
@@ -149,7 +148,7 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="10dp"
                     android:text="停电影响   \n区域："
-                    android:textColor="#ffffff"
+                   android:textColor="@color/black"
                     android:textSize="17dip" />
 
                 <EditText
@@ -160,7 +159,7 @@
                     android:gravity="top"
                     android:hint="请在此输入..."
                     android:maxLines="5"
-                    android:textColor="#ffffff" />
+                   android:textColor="@color/black" />
             </LinearLayout>
         </LinearLayout>
 
@@ -189,7 +188,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="主要工作   \n内容："
-                android:textColor="#ffffff"
+               android:textColor="@color/black"
                 android:textSize="17dip" />
 
             <EditText
@@ -200,7 +199,7 @@
                 android:gravity="top"
                 android:hint="请在此输入..."
                 android:maxLines="5"
-                android:textColor="#ffffff" />
+               android:textColor="@color/black" />
         </LinearLayout>
 
         <ImageView
@@ -228,7 +227,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="工作负责人："
-                android:textColor="#ffffff"
+               android:textColor="@color/black"
                 android:textSize="17dip" />
 
             <EditText
@@ -240,7 +239,7 @@
                 android:drawableRight="@drawable/ofm_add_icon2"
                 android:editable="false"
                 android:singleLine="true"
-                android:textColor="#ffffff" />
+               android:textColor="@color/black" />
         </LinearLayout>
 
         <ImageView
@@ -273,7 +272,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="计划开始时间："
-                    android:textColor="#ffffff"
+                   android:textColor="@color/black"
                     android:textSize="17dip" />
 
                 <EditText
@@ -286,7 +285,7 @@
                     android:drawableRight="@drawable/ofm_task_modify2"
                     android:editable="false"
                     android:singleLine="true"
-                    android:textColor="#ffffff" />
+                   android:textColor="@color/black" />
             </LinearLayout>
 
             <LinearLayout
@@ -308,7 +307,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="计划结束时间："
-                    android:textColor="#ffffff"
+                   android:textColor="@color/black"
                     android:textSize="17dip" />
 
                 <EditText
@@ -321,7 +320,7 @@
                     android:drawableRight="@drawable/ofm_task_modify2"
                     android:editable="false"
                     android:singleLine="true"
-                    android:textColor="#ffffff" />
+                   android:textColor="@color/black" />
             </LinearLayout>
         </LinearLayout>
 
@@ -350,7 +349,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:text="类别："
-                android:textColor="#ffffff"
+               android:textColor="@color/black"
                 android:textSize="17dip" />
 
             <nercms.schedule.view.FlowRadioGroup
@@ -367,7 +366,7 @@
                     android:layout_marginRight="5dp"
                     android:checked="true"
                     android:text="作业现场"
-                    android:textColor="#ffffff" />
+                   android:textColor="@color/black" />
 
                 <RadioButton
                     android:id="@+id/caozuoxianchang"
@@ -376,7 +375,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
                     android:text="操作现场"
-                    android:textColor="#ffffff" />
+                   android:textColor="@color/black" />
 
                 <RadioButton
                     android:id="@+id/guzhangqiangxiuxianchang"
@@ -385,7 +384,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
                     android:text="故障抢修现场"
-                    android:textColor="#ffffff" />
+                   android:textColor="@color/black" />
             </nercms.schedule.view.FlowRadioGroup>
         </LinearLayout>
 
@@ -407,7 +406,7 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
                 android:text="是否需要登报："
-                android:textColor="#ffffff"
+               android:textColor="@color/black"
                 android:textSize="17dip" />
 
             <CheckBox
@@ -434,7 +433,7 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
                 android:text="特殊需求："
-                android:textColor="#ffffff"
+               android:textColor="@color/black"
                 android:textSize="17dip" />
 
             <RadioGroup
@@ -451,7 +450,7 @@
                     android:layout_marginRight="5dp"
                     android:checked="true"
                     android:text="T"
-                    android:textColor="#ffffff" />
+                   android:textColor="@color/black" />
 
                 <RadioButton
                     android:id="@+id/teshuxuqiu2"
@@ -460,7 +459,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
                     android:text="无"
-                    android:textColor="#ffffff" />
+                   android:textColor="@color/black" />
             </RadioGroup>
         </LinearLayout>
 
@@ -482,7 +481,7 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
                 android:text="应上岗到位领导："
-                android:textColor="#ffffff"
+               android:textColor="@color/black"
                 android:textSize="17dip" />
 
             <EditText
@@ -494,7 +493,7 @@
                 android:drawableRight="@drawable/ofm_add_icon2"
                 android:editable="false"
                 android:singleLine="true"
-                android:textColor="#ffffff" />
+               android:textColor="@color/black" />
         </LinearLayout>
 
         <ImageView
@@ -515,7 +514,7 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
                 android:text="三措："
-                android:textColor="#ffffff"
+               android:textColor="@color/black"
                 android:textSize="17dip" />
 
             <EditText
@@ -525,7 +524,7 @@
                 android:background="@drawable/edit_text"
                 android:hint="请在此输入..."
                 android:singleLine="true"
-                android:textColor="#ffffff" />
+               android:textColor="@color/black" />
         </LinearLayout>
 
         <ImageView
@@ -546,7 +545,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
                 android:text="所属调度："
-                android:textColor="#ffffff"
+               android:textColor="@color/black"
                 android:textSize="17dip" />
 
             <nercms.schedule.view.FlowRadioGroup
@@ -563,7 +562,7 @@
                     android:layout_marginRight="5dp"
                     android:checked="true"
                     android:text="省"
-                    android:textColor="#ffffff" />
+                   android:textColor="@color/black" />
 
                 <RadioButton
                     android:id="@+id/suoshudiaodu2"
@@ -572,7 +571,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
                     android:text="地"
-                    android:textColor="#ffffff" />
+                   android:textColor="@color/black" />
 
                 <RadioButton
                     android:id="@+id/suoshudiaodu3"
@@ -581,7 +580,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
                     android:text="配"
-                    android:textColor="#ffffff" />
+                   android:textColor="@color/black" />
 
                 <RadioButton
                     android:id="@+id/suoshudiaodu4"
@@ -590,7 +589,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
                     android:text="县"
-                    android:textColor="#ffffff" />
+                   android:textColor="@color/black" />
 
                 <RadioButton
                     android:id="@+id/suoshudiaodu5"
@@ -599,7 +598,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
                     android:text="其他"
-                    android:textColor="#ffffff" />
+                   android:textColor="@color/black" />
             </nercms.schedule.view.FlowRadioGroup>
         </LinearLayout>
 
@@ -626,7 +625,7 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="10dp"
                     android:text="是否停电："
-                    android:textColor="#ffffff"
+                   android:textColor="@color/black"
                     android:textSize="17dip" />
 
                 <CheckBox
@@ -646,7 +645,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"
                     android:text="停电类型："
-                    android:textColor="#ffffff"
+                   android:textColor="@color/black"
                     android:textSize="17dip" />
 
                 <nercms.schedule.view.FlowRadioGroup
@@ -663,7 +662,7 @@
                         android:layout_marginRight="5dp"
                         android:checked="true"
                         android:text="临时停电"
-                        android:textColor="#ffffff" />
+                       android:textColor="@color/black" />
 
                     <RadioButton
                         android:id="@+id/jihuatingdian"
@@ -672,7 +671,7 @@
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="5dp"
                         android:text="计划停电"
-                        android:textColor="#ffffff" />
+                       android:textColor="@color/black" />
 
                     <RadioButton
                         android:id="@+id/tingdian_qita"
@@ -681,7 +680,7 @@
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="5dp"
                         android:text="其他"
-                        android:textColor="#ffffff" />
+                       android:textColor="@color/black" />
                 </nercms.schedule.view.FlowRadioGroup>
             </LinearLayout>
         </LinearLayout>
@@ -710,7 +709,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="实施单位：江陵供电公司"
-                android:textColor="#ffffff"
+               android:textColor="@color/black"
                 android:textSize="17dip" />
 
             <EditText
@@ -722,7 +721,7 @@
                 android:drawableRight="@drawable/iconfont_xiala1"
                 android:editable="false"
                 android:singleLine="true"
-                android:textColor="#ffffff" />
+               android:textColor="@color/black" />
         </LinearLayout>
 
         <ImageView
@@ -749,7 +748,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="人数："
-                android:textColor="#ffffff"
+               android:textColor="@color/black"
                 android:textSize="17dip" />
 
             <EditText
@@ -760,7 +759,7 @@
                 android:hint="请在此输入..."
                 android:numeric="integer"
                 android:singleLine="true"
-                android:textColor="#ffffff" />
+               android:textColor="@color/black" />
         </LinearLayout>
 
         <ImageView
@@ -781,7 +780,7 @@
                 android:layout_gravity="top"
                 android:layout_marginLeft="10dp"
                 android:text="备注："
-                android:textColor="#ffffff"
+               android:textColor="@color/black"
                 android:textSize="17dip" />
 
             <EditText
@@ -792,7 +791,7 @@
                 android:gravity="top"
                 android:hint="请在此输入..."
                 android:singleLine="true"
-                android:textColor="#ffffff" />
+               android:textColor="@color/black" />
         </LinearLayout>
 
         <Button
@@ -802,7 +801,7 @@
             android:layout_margin="5dp"
             android:background="@drawable/btn_style_green"
             android:text="确认提交"
-            android:textColor="#ffffff" />
+           android:textColor="@color/white" />
 
         <Button
             android:id="@+id/renwu"
@@ -811,7 +810,7 @@
             android:layout_margin="5dp"
             android:background="@drawable/btn_style_green"
             android:text=""
-            android:textColor="#ffffff"
+           android:textColor="@color/black"
             android:visibility="gone" />
     </LinearLayout>
 

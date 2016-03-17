@@ -11,36 +11,30 @@
         android:layout_margin="5dp"
         android:src="@drawable/logo" />
 
-    <TextView
+    <me.grantland.widget.AutofitTextView
         android:id="@+id/top_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="70dp"
+        android:focusable="false"
         android:gravity="center"
-        android:text="欢迎使用"
-        android:textColor="@android:color/white"
-        android:textSize="20sp" />
-
-    <TextView
-        android:id="@+id/top_2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/top_1"
-        android:layout_marginTop="10dp"
-        android:gravity="center"
-        android:text="做事群管系统"
-        android:textColor="@android:color/white"
+        android:maxLines="1"
+        android:padding="15dp"
+        android:singleLine="true"
+        android:text="国网江陵网改现场云检系统"
+        android:textColor="@color/white"
         android:textSize="30sp" />
 
-    <TableLayout
+    <LinearLayout
         android:id="@+id/login_main"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:layout_below="@+id/top_2"
+        android:layout_below="@+id/top_1"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="30dp"
         android:background="@drawable/login_outer_box"
+        android:orientation="vertical"
         android:paddingTop="20dp" >
 
         <TextView
@@ -52,60 +46,41 @@
             android:textColor="#ffffff"
             android:textSize="23sp" />
 
-        <TableRow
-            android:id="@+id/tableRow2"
+        <EditText
+            android:id="@+id/login_user_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:gravity="center" >
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/login_editbox"
+            android:drawableLeft="@drawable/username"
+            android:drawablePadding="8dp"
+            android:ems="10"
+            android:hint="请输入用户名"
+            android:singleLine="true"
+            android:textColor="#000" >
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/icon_id" />
+            <requestFocus />
+        </EditText>
 
-            <EditText
-                android:id="@+id/login_user_edit"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/top_2"
-                android:layout_marginLeft="10dp"
-                android:background="@drawable/login_editbox"
-                android:ems="10"
-                android:hint="用户名"
-                android:singleLine="true"
-                android:textColor="#000" >
-
-                <requestFocus />
-            </EditText>
-        </TableRow>
-
-        <TableRow
-            android:id="@+id/tableRow3"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/login_passwd_edit"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:gravity="center" >
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/icon_lock" />
-
-            <EditText
-                android:id="@+id/login_passwd_edit"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:background="@drawable/login_editbox"
-                android:ems="10"
-                android:hint="密码"
-                android:password="true"
-                android:singleLine="true"
-                android:textColor="#000" >
-            </EditText>
-        </TableRow>
-    </TableLayout>
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/login_editbox"
+            android:drawableLeft="@drawable/password"
+            android:drawablePadding="8dp"
+            android:ems="10"
+            android:hint="请输入密码"
+            android:password="true"
+            android:singleLine="true"
+            android:textColor="#000" >
+        </EditText>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -26,7 +26,8 @@
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp" >
 
-        <!-- <ImageView
+        <!--
+             <ImageView
             android:id="@+id/iv_userhead"
             android:layout_width="45dp"
             android:layout_height="45dp"
@@ -34,28 +35,31 @@
             android:layout_alignParentTop="true"
             android:layout_centerVertical="true"
             android:background="@drawable/default_user_avatar"
-            android:clickable="true" /> -->
+            android:clickable="true" />
+        -->
+
         <me.grantland.widget.AutofitTextView
-            android:padding="3dp"
             android:id="@+id/iv_userhead"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_centerVertical="true"
-            android:background="@color/orange"
+            android:background="@drawable/name_yellow"
             android:focusable="false"
-            android:maxLines="1"
-            android:singleLine="true"
             android:gravity="center"
+            android:maxLines="1"
+            android:padding="3dp"
+            android:singleLine="true"
             android:textColor="@color/white"
             android:textSize="20sp" />
+
         <TextView
             android:id="@+id/tv_username"
             android:layout_width="wrap_content"
             android:layout_height="18dp"
-            android:layout_toRightOf="@+id/iv_userhead"
             android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@+id/iv_userhead"
             android:text="someone"
             android:visibility="gone" />
 
@@ -63,8 +67,8 @@
             android:id="@+id/rl_contentLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/iv_userhead"
             android:layout_below="@+id/tv_username"
+            android:layout_toRightOf="@id/iv_userhead"
             android:background="@drawable/chatfrom_bg" >
 
             <TextView
@@ -85,8 +89,6 @@
                 android:scaleType="centerInside"
                 android:visibility="gone" />
         </RelativeLayout>
-
-        
     </RelativeLayout>
 
 </LinearLayout>

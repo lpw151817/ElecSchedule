@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="@drawable/chat_bg_default" >
+    android:layout_height="fill_parent" >
 
     <!-- 底部操作栏 -->
 
@@ -10,9 +9,10 @@
         android:id="@+id/rl_bottom"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:padding="5dp"
         android:layout_above="@+id/attachment_linearLayout"
         android:layout_alignWithParentIfMissing="true"
-        android:background="@drawable/chat_footer_bg" >
+        android:background="#f7f8f9" >
 
         <Button
             android:id="@+id/btn_chat_add_attach"
@@ -31,8 +31,8 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="5dp"
-            android:background="@drawable/chat_send_btn"
-            android:text="发送" />
+            android:background="@drawable/send"
+             />
 
         <EditText
             android:id="@+id/et_sendmessage"
@@ -43,7 +43,7 @@
             android:layout_marginRight="5dp"
             android:layout_toLeftOf="@id/btn_send"
             android:layout_toRightOf="@+id/btn_chat_add_attach"
-            android:background="@drawable/login_edit_normal"
+            android:background="@drawable/login_editbox"
             android:singleLine="false"
             android:textSize="16sp" />
     </RelativeLayout>

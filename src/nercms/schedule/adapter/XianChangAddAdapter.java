@@ -108,7 +108,7 @@ public class XianChangAddAdapter extends BaseAdapter {
 		if (hasContent[position] == 1){
 			holder.textView.setTextColor(Color.RED);
 		} else {
-			holder.textView.setTextColor(Color.WHITE);
+			holder.textView.setTextColor(Color.BLACK);
 		}
 		return convertView;
 	}

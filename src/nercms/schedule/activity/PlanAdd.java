@@ -13,6 +13,7 @@ import java.util.List;
 
 import com.actionbarsherlock.view.MenuItem;
 import com.baidu.location.b.b;
+import com.baidu.location.e.p;
 import com.imooc.treeview.utils.Node;
 
 import android.app.Dialog;
@@ -38,10 +39,13 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 import android.wxapp.service.AppApplication;
+import android.wxapp.service.dao.PersonDao;
+import android.wxapp.service.elec.dao.Org;
 import android.wxapp.service.elec.dao.OrgDao;
 import android.wxapp.service.elec.dao.PlanTaskDao;
 import android.wxapp.service.elec.model.CreatePlanTaskResponse;
 import android.wxapp.service.elec.model.StartTaskResponse;
+import android.wxapp.service.elec.model.bean.table.TB_SYS_Person;
 import android.wxapp.service.elec.model.bean.table.tb_task_attachment;
 import android.wxapp.service.elec.model.bean.table.tb_task_info;
 import android.wxapp.service.elec.request.Constants;
@@ -359,9 +363,12 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 					jhjssj.setHint("");
 
 				Utils.setEditTextUnEditable(ysgdwld);
-				if (!TextUtils.isEmpty(info.getLeader()))
-					ysgdwld.setText(info.getLeader());
-				else
+				if (!TextUtils.isEmpty(info.getLeader())) {
+					TB_SYS_Person person = orgDao.getPerson(info.getLeader());
+					if (person != null)
+						ysgdwld.setText(person.getName());
+
+				} else
 					ysgdwld.setHint("");
 
 				Utils.setEditTextUnEditable(sc);
@@ -371,9 +378,12 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 					sc.setHint("");
 
 				Utils.setEditTextUnEditable(ssdw);
-				if (!TextUtils.isEmpty(info.getImplement_org()))
-					ssdw.setText(orgDao.getOrg(info.getImplement_org()).getTitle());
-				else
+				if (!TextUtils.isEmpty(info.getImplement_org())) {
+					Org org = orgDao.getOrg(info.getImplement_org());
+					if (org != null)
+						ssdw.setText(org.getTitle());
+
+				} else
 					ssdw.setHint("");
 
 				Utils.setEditTextUnEditable(rs);
