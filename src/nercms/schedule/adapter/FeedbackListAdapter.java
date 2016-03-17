@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.http.conn.BasicEofSensorWatcher;
+
 import nercms.schedule.R;
 import nercms.schedule.utils.LocalConstant;
 import nercms.schedule.utils.Utils;
@@ -27,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.wxapp.service.AppApplication;
+import android.wxapp.service.elec.dao.OrgDao;
 import android.wxapp.service.elec.model.bean.table.tb_task_instructions;
 import android.wxapp.service.jerry.model.message.ReceiveMessageResponse;
 import android.wxapp.service.model.FeedbackModel;
@@ -55,6 +58,8 @@ public class FeedbackListAdapter extends BaseAdapter {
 	Dialog imageDialog;
 
 	DisplayImageOptions options;
+
+	OrgDao orgDao;
 
 	// 软引用
 	private HashMap<String, SoftReference<Bitmap>> imageCache = new HashMap<String, SoftReference<Bitmap>>();
@@ -140,6 +145,7 @@ public class FeedbackListAdapter extends BaseAdapter {
 		holder.contentLayout = (RelativeLayout) convertView.findViewById(R.id.rl_contentLayout);
 		holder.text = (TextView) convertView.findViewById(R.id.tv_chatcontent);
 		holder.media = (ImageView) convertView.findViewById(R.id.iv_chat_media);
+		holder.header = (TextView) convertView.findViewById(R.id.iv_userhead);
 		convertView.setTag(holder);
 
 		// 设置值
@@ -149,6 +155,15 @@ public class FeedbackListAdapter extends BaseAdapter {
 		holder.text.setVisibility(View.VISIBLE);
 		holder.text.setText(fb.getContent());
 		holder.media.setVisibility(View.GONE);
+		String headerText = null;
+		if (getItemViewType(position) == RIGHT_ITEM) { // 自己发出的消息
+			headerText = "我";
+		} else {
+			if (orgDao == null)
+				orgDao = new OrgDao(context);
+			headerText = orgDao.getPerson(fb.getSend_id()).getName();
+		}
+		holder.header.setText(headerText);
 
 		return convertView;
 	}
@@ -164,6 +179,7 @@ public class FeedbackListAdapter extends BaseAdapter {
 		ImageView media;
 		// 时长（只针对视频和音频）
 		TextView duration;
+		TextView header;
 	}
 
 	// 2014-6-4 WeiHao

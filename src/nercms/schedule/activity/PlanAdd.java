@@ -38,6 +38,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 import android.wxapp.service.AppApplication;
+import android.wxapp.service.elec.dao.OrgDao;
 import android.wxapp.service.elec.dao.PlanTaskDao;
 import android.wxapp.service.elec.model.CreatePlanTaskResponse;
 import android.wxapp.service.elec.model.StartTaskResponse;
@@ -76,10 +77,14 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 	String tid;
 	tb_task_info info;
 
+	OrgDao orgDao;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_plan_add);
+
+		orgDao = new OrgDao(this);
 
 		enterType = getIntent().getIntExtra("enterType", 1);
 		status = getIntent().getStringExtra("status");
@@ -334,7 +339,7 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 
 				Utils.setEditTextUnEditable(gzfzr);
 				if (!TextUtils.isEmpty(info.getResponsibility_user()))
-					gzfzr.setText(info.getResponsibility_user());
+					gzfzr.setText(orgDao.getPerson(info.getResponsibility_user()).getName());
 				else
 					gzfzr.setHint("");
 
@@ -364,7 +369,7 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 
 				Utils.setEditTextUnEditable(ssdw);
 				if (!TextUtils.isEmpty(info.getImplement_org()))
-					ssdw.setText(info.getImplement_org());
+					ssdw.setText(orgDao.getOrg(info.getImplement_org()).getTitle());
 				else
 					ssdw.setHint("");
 

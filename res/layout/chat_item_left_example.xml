@@ -26,7 +26,7 @@
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp" >
 
-        <ImageView
+        <!-- <ImageView
             android:id="@+id/iv_userhead"
             android:layout_width="45dp"
             android:layout_height="45dp"
@@ -34,8 +34,22 @@
             android:layout_alignParentTop="true"
             android:layout_centerVertical="true"
             android:background="@drawable/default_user_avatar"
-            android:clickable="true" />
-        
+            android:clickable="true" /> -->
+        <me.grantland.widget.AutofitTextView
+            android:padding="3dp"
+            android:id="@+id/iv_userhead"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
+            android:background="@color/orange"
+            android:focusable="false"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
         <TextView
             android:id="@+id/tv_username"
             android:layout_width="wrap_content"
