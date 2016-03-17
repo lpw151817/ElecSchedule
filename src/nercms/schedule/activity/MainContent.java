@@ -158,7 +158,9 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 
 		// 子菜单 ：发起任务，消息，会议，视频直播，智能调度，添加客户
 		SubMenu addMenu = menu.addSubMenu("add item");
-		addMenu.add(0, 1, 0, "指挥调度").setIcon(R.drawable.ofm_meeting_icon);
+		addMenu.add(0, 1, 0, "视频调度").setIcon(R.drawable.ofm_meeting_icon);
+		addMenu.add(0, 2, 0, "修改密码").setIcon(R.drawable.ofm_meeting_icon);
+		addMenu.add(0, -1, 0, "通知").setIcon(R.drawable.ofm_meeting_icon);
 
 		MenuItem addItem = addMenu.getItem();
 		addItem.setIcon(R.drawable.ic_action_overflow);
@@ -175,6 +177,9 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 			break;
 		case -1:
 			startActivity(ZhilingActivity.class);
+			break;
+		case 2:
+			// TODO 修改密码
 			break;
 		case 1:
 			startActivity(ScheduleActivity.class);
