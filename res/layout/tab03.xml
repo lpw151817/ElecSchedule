@@ -5,6 +5,7 @@
     android:orientation="vertical" >
 
     <ImageView
+        android:background="@drawable/banner3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
@@ -18,9 +19,9 @@
 
         <Button
             android:id="@+id/tab03_bt_newtask"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:text="新任务" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/icon_new" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -54,18 +55,18 @@
 
                 <Button
                     android:id="@+id/tab03_bt_delaytask"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_marginTop="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="延误的任务" />
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/icon_yanwu" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="延误的任务"
                     android:layout_marginBottom="5dp"
+                    android:text="延误的任务"
                     android:textColor="#A8A8A8" />
             </LinearLayout>
 
@@ -81,19 +82,19 @@
                 android:orientation="vertical" >
 
                 <Button
-                    android:layout_marginTop="5dp"
                     android:id="@+id/tab03_bt_performtask"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="执行中的任务" />
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/icon_zhixingzhong" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="执行中的任务"
                     android:layout_marginBottom="5dp"
+                    android:text="执行中的任务"
                     android:textColor="#A8A8A8" />
             </LinearLayout>
         </LinearLayout>
@@ -115,19 +116,19 @@
                 android:orientation="vertical" >
 
                 <Button
-                    android:layout_marginTop="5dp"
                     android:id="@+id/tab03_bt_finishedtask"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="已完成的任务" />
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/icon_yiwancheng" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="已完成的任务"
                     android:layout_marginBottom="5dp"
+                    android:text="已完成的任务"
                     android:textColor="#A8A8A8" />
             </LinearLayout>
 
@@ -143,19 +144,19 @@
                 android:orientation="vertical" >
 
                 <Button
-                    android:layout_marginTop="5dp"
                     android:id="@+id/tab03_bt_cancelledtask"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="已取消的任务" />
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/icon_yiquxiao" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="已取消的任务"
                     android:layout_marginBottom="5dp"
+                    android:text="已取消的任务"
                     android:textColor="#A8A8A8" />
             </LinearLayout>
         </LinearLayout>

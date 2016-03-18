@@ -7,7 +7,8 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="@drawable/banner2" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,19 +23,20 @@
             android:gravity="center_horizontal"
             android:orientation="vertical" >
 
-            <Button
-                android:layout_marginTop="5dp"
+            <ImageButton
                 android:id="@+id/shangchuanxianchangxinxi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="上传现场信息" />
+                android:layout_marginTop="5dp"
+                android:background="#00ffffff"
+                android:src="@drawable/icon_chakan" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="上传现场信息"
                 android:layout_marginBottom="5dp"
+                android:text="上传现场信息"
                 android:textColor="#A8A8A8" />
         </LinearLayout>
 
@@ -50,19 +52,20 @@
             android:gravity="center_horizontal"
             android:orientation="vertical" >
 
-            <Button
-                android:layout_marginTop="5dp"
+            <ImageButton
                 android:id="@+id/jiaohuxinxi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="交互信息" />
+                android:layout_marginTop="5dp"
+                android:background="#00ffffff"
+                android:src="@drawable/icon_jiaohu" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="上传现场信息"
                 android:layout_marginBottom="5dp"
+                android:text="交互信息"
                 android:textColor="#A8A8A8" />
         </LinearLayout>
 
@@ -78,26 +81,27 @@
             android:gravity="center_horizontal"
             android:orientation="vertical" >
 
-            <Button
-                android:layout_marginTop="5dp"
+            <ImageButton
                 android:id="@+id/renwuxiangqing"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="任务详情" />
+                android:layout_marginTop="5dp"
+                android:background="#00ffffff"
+                android:src="@drawable/icon_xiangqing" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="上传现场信息"
                 android:layout_marginBottom="5dp"
+                android:text="任务详情"
                 android:textColor="#A8A8A8" />
         </LinearLayout>
     </LinearLayout>
-    
+
     <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="#E7E8E5" />
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#E7E8E5" />
 
 </LinearLayout>

@@ -5,14 +5,12 @@
     android:orientation="vertical"
     tools:context="com.example.jiaobiao.MainContent" >
 
-    <include layout="@layout/tab_top"/>
-
+    <include layout="@layout/tab_top" />
 
     <nercms.schedule.view.NoScrollViewPager
         android:id="@+id/lv_viewpager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
-    
 
 </LinearLayout>
