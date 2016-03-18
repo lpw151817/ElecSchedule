@@ -144,14 +144,14 @@ public class ZhilingActivity extends BaseActivity implements OnClickListener {
 		switch (v.getId()) {
 		case R.id.tv_unread:
 			viewPager.setCurrentItem(0);
-			mUnRead.setTextColor(getResources().getColor(R.color.blue));
-			mRead.setTextColor(getResources().getColor(R.color.black));
+			mUnRead.setTextColor(getResources().getColor(R.color.bluegreen));
+			mRead.setTextColor(getResources().getColor(R.color.darkgray));
 			break;
 
 		case R.id.tv_read:
 			viewPager.setCurrentItem(1);
-			mUnRead.setTextColor(getResources().getColor(R.color.black));
-			mRead.setTextColor(getResources().getColor(R.color.blue));
+			mUnRead.setTextColor(getResources().getColor(R.color.darkgray));
+			mRead.setTextColor(getResources().getColor(R.color.bluegreen));
 			break;
 		default:
 			break;

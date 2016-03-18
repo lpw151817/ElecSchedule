@@ -26,7 +26,7 @@
                 android:layout_height="wrap_content"
                 android:clickable="false"
                 android:text="作业现场"
-                android:textColor="#0000FF"
+                android:textColor="#0E5D50"
                 android:textSize="17sp" />
         </LinearLayout>
 
@@ -42,6 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="操作现场"
+                android:textColor="#838C96"
                 android:textSize="17sp" />
         </LinearLayout>
 
@@ -50,6 +51,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            
             android:gravity="center" >
 
             <TextView
@@ -57,6 +59,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="故障抢修现场"
+                android:textColor="#838C96"
                 android:textSize="17sp" />
         </LinearLayout>
     </LinearLayout>

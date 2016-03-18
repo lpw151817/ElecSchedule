@@ -127,25 +127,25 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		case R.id.zuoyeLayout:
 			// Utils.showToast(MainContent.this, "tab1");
 			contentPager.setCurrentItem(0);
-			zuoye.setTextColor(getResources().getColor(R.color.blue));
-			caozuo.setTextColor(getResources().getColor(R.color.black));
-			qiangxiu.setTextColor(getResources().getColor(R.color.black));
+			zuoye.setTextColor(getResources().getColor(R.color.bluegreen));
+			caozuo.setTextColor(getResources().getColor(R.color.deepgray));
+			qiangxiu.setTextColor(getResources().getColor(R.color.deepgray));
 			break;
 
 		case R.id.caozuoLayout:
 			// Utils.showToast(MainContent.this, "tab2");
 			contentPager.setCurrentItem(1);
-			caozuo.setTextColor(getResources().getColor(R.color.blue));
-			zuoye.setTextColor(getResources().getColor(R.color.black));
-			qiangxiu.setTextColor(getResources().getColor(R.color.black));
+			caozuo.setTextColor(getResources().getColor(R.color.bluegreen));
+			zuoye.setTextColor(getResources().getColor(R.color.deepgray));
+			qiangxiu.setTextColor(getResources().getColor(R.color.deepgray));
 			break;
 
 		case R.id.qiangxiuLayout:
 			// Utils.showToast(MainContent.this, "tab2");
 			contentPager.setCurrentItem(2);
-			qiangxiu.setTextColor(getResources().getColor(R.color.blue));
-			zuoye.setTextColor(getResources().getColor(R.color.black));
-			caozuo.setTextColor(getResources().getColor(R.color.black));
+			qiangxiu.setTextColor(getResources().getColor(R.color.bluegreen));
+			zuoye.setTextColor(getResources().getColor(R.color.deepgray));
+			caozuo.setTextColor(getResources().getColor(R.color.deepgray));
 			break;
 
 		default:
