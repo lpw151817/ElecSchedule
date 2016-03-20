@@ -292,6 +292,14 @@
             android:label="@string/title_activity_task_selector"
             android:theme="@style/Theme.Schedule" >
         </activity>
+        <activity
+            android:name="nercms.schedule.activity.Notification"
+            android:theme="@style/Theme.Schedule" >
+        </activity>
+        <activity
+            android:name="nercms.schedule.activity.DailyTaskDetail"
+            android:theme="@style/Theme.Schedule" >
+        </activity>
     </application>
 
 </manifest>

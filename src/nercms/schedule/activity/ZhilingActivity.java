@@ -1,19 +1,25 @@
 package nercms.schedule.activity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import nercms.schedule.R;
 import nercms.schedule.adapter.ZhilingAdapter;
+import nercms.schedule.utils.Utils;
 import nercms.schedule.view.NoScrollViewPager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.wxapp.service.elec.dao.OrgDao;
 import android.wxapp.service.elec.dao.TaskInsDao;
 import android.wxapp.service.elec.model.bean.table.tb_task_instructions;
 import android.wxapp.service.elec.model.bean.table.tb_task_instructions_receive;
@@ -39,13 +45,14 @@ public class ZhilingActivity extends BaseActivity implements OnClickListener {
 	private TaskInsDao dao;
 	private ZhilingAdapter unReadAdapter;
 	private ZhilingAdapter readAdapter;
+	private OrgDao orgDao;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_zhiling);
 
-		iniActionBar(true, null, "临时指令");
+		iniActionBar(true, null, "通知");
 
 		initViews();
 
@@ -134,9 +141,39 @@ public class ZhilingActivity extends BaseActivity implements OnClickListener {
 		mUnReadListView.setAdapter(unReadAdapter);
 		mReadListView.setAdapter(readAdapter);
 		
+		orgDao = new OrgDao(ZhilingActivity.this);
+		mUnReadListView.setOnItemClickListener(new OnItemClickListener() {
 
-		// public tb_task_instructions getTaskIns(String taskInsId) {
-		// List<tb_task_instructions> data;
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				Intent intent  = new Intent(ZhilingActivity.this, Notification.class);
+				
+				String name = orgDao.getPerson(unReadData.get(position).getSend_id()).getName();
+				String time = Utils.formatDateMs(unReadData.get(position).getSend_time());
+				String content = unReadData.get(position).getContent();
+				intent.putExtra("name", name);
+				intent.putExtra("time", time);
+				intent.putExtra("content", content);
+				startActivity(intent);
+			}
+		});
+		
+		mReadListView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				Intent intent  = new Intent(ZhilingActivity.this, Notification.class);
+				String name = orgDao.getPerson(readData.get(position).getSend_id()).getName();
+				String time = Utils.formatDateMs(readData.get(position).getSend_time());
+				String content = readData.get(position).getContent();
+				intent.putExtra("name", name);
+				intent.putExtra("time", time);
+				intent.putExtra("content", content);
+				startActivity(intent);
+			}
+		});
 	}
 
 	@Override

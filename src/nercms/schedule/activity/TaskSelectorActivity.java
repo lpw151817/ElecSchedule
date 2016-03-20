@@ -65,7 +65,8 @@ public class TaskSelectorActivity extends BaseActivity implements OnClickListene
 			}
 			break;
 		case R.id.renwuxiangqing:
-			intent.setClass(TaskSelectorActivity.this, PlanAdd.class);
+//			intent.setClass(TaskSelectorActivity.this, PlanAdd.class);
+			intent.setClass(TaskSelectorActivity.this, DailyTaskDetail.class);
 			intent.putExtra("enterType", 0);
 			intent.putExtra("tid", tid);
 			break;

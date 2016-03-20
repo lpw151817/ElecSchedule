@@ -48,12 +48,17 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 	private TextView zuoye;
 	private TextView caozuo;
 	private TextView qiangxiu;
+	private PlanTaskDao dao;
+	private com.jauker.widget.BadgeView badgeView1;
+	private com.jauker.widget.BadgeView badgeView2;
+	private com.jauker.widget.BadgeView badgeView3;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_content);
-		PlanTaskDao dao = new PlanTaskDao(this);
+
+		dao = new PlanTaskDao(this);
 		/*
 		 * userid,如果是管理员就传入null,如果不是就getUserId在BaseActivity中，
 		 */
@@ -84,23 +89,24 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 
 		mThirdFrag = new ThirdFragment(MainContent.this, qiangxiucount);
 
-		com.jauker.widget.BadgeView badgeView1 = new com.jauker.widget.BadgeView(this);
-		badgeView1.setText("" + zuoyecount);
+		badgeView1 = new com.jauker.widget.BadgeView(this);
+
 		zuoYeLayout.addView(badgeView1);
 
-		com.jauker.widget.BadgeView badgeView2 = new com.jauker.widget.BadgeView(this);
-		badgeView2.setText("" + caozuocount);
+		badgeView2 = new com.jauker.widget.BadgeView(this);
+
 		caoZuoLayout.addView(badgeView2);
 
-		com.jauker.widget.BadgeView badgeView3 = new com.jauker.widget.BadgeView(this);
-		badgeView3.setText("" + qiangxiucount);
+		badgeView3 = new com.jauker.widget.BadgeView(this);
+
 		qiangXiuLayout.addView(badgeView3);
 
 		zuoYeLayout.setOnClickListener(this);
 		caoZuoLayout.setOnClickListener(this);
 		qiangXiuLayout.setOnClickListener(this);
 
-		FragmentPagerAdapter madapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
+		FragmentPagerAdapter madapter = new FragmentPagerAdapter(
+				getSupportFragmentManager()) {
 
 			@Override
 			public int getCount() {
@@ -119,6 +125,31 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		mLi.add(mThirdFrag);
 		contentPager.setAdapter(madapter);
 		contentPager.setOffscreenPageLimit(3);
+
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		PlanTaskDao mDao;
+		mDao = new PlanTaskDao(this);
+		/*
+		 * userid,如果是管理员就传入null,如果不是就getUserId在BaseActivity中，
+		 */
+		// dao.getPlanTasks(1, 3, "", 0).size();
+		if (isAdmin()) {
+			zuoyecount = mDao.getPlanTasks(1, 3, null, "0").size();
+			caozuocount = mDao.getPlanTasks(2, 3, null, "0").size();
+			qiangxiucount = mDao.getPlanTasks(3, 3, null, "0").size();
+		} else {
+			zuoyecount = mDao.getPlanTasks(1, 3, getUserId(), "0").size();
+			caozuocount = mDao.getPlanTasks(2, 3, getUserId(), "0").size();
+			qiangxiucount = mDao.getPlanTasks(3, 3, getUserId(), "0").size();
+		}
+
+		badgeView1.setText("" + zuoyecount);
+		badgeView2.setText("" + caozuocount);
+		badgeView3.setText("" + qiangxiucount);
 	}
 
 	@Override
@@ -134,6 +165,7 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 
 		case R.id.caozuoLayout:
 			// Utils.showToast(MainContent.this, "tab2");
+
 			contentPager.setCurrentItem(1);
 			caozuo.setTextColor(getResources().getColor(R.color.bluegreen));
 			zuoye.setTextColor(getResources().getColor(R.color.deepgray));

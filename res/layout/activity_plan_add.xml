@@ -23,7 +23,9 @@
                 android:layout_marginLeft="10dp"
                 android:text="天气："
                 android:textColor="@color/black"
-                android:textSize="17dip" />
+                android:textSize="17dip" 
+                
+                />
 
             <RadioGroup
                 android:id="@+id/radioGroup1"

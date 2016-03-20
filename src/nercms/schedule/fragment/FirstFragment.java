@@ -2,6 +2,7 @@ package nercms.schedule.fragment;
 
 
 import nercms.schedule.R;
+import nercms.schedule.activity.MainContent;
 import nercms.schedule.activity.TaskList;
 import android.content.Context;
 import android.content.Intent;
@@ -27,6 +28,7 @@ public class FirstFragment extends Fragment implements OnClickListener{
 	private Button bt_completedTask;
 	private Button bt_cancelledTask;
 	private Button mNewTask;
+	private com.jauker.widget.BadgeView badge;
 	
 	public FirstFragment(Context context, int count) {
 		this.context = context;
@@ -50,7 +52,9 @@ public void onCreate(Bundle savedInstanceState) {
 		bt_completedTask = (Button) view.findViewById(R.id.tab01_bt_finishedtask);
 		bt_cancelledTask = (Button) view.findViewById(R.id.tab01_bt_cancelledtask);
 		LinearLayout layout = (LinearLayout) view.findViewById(R.id.newtasklayout);
-		com.jauker.widget.BadgeView badge = new com.jauker.widget.BadgeView(context);
+		badge = new com.jauker.widget.BadgeView(context);
+		
+		
 		badge.setText(mcount + "");
 		badge.setTargetView(mNewTask);
 		
@@ -64,7 +68,12 @@ public void onCreate(Bundle savedInstanceState) {
 	}
 	
 	
-	
+	@Override
+	public void onResume() {
+		super.onResume();
+		MainContent activity = (MainContent) getActivity();
+		badge.setText(activity.zuoyecount + "");
+	}
 
 	@Override
 	public void onClick(View v) {
