@@ -7,16 +7,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import nercms.schedule.R;
+import nercms.schedule.activity.BaseActivity;
+import nercms.schedule.activity.XianChangAdd;
 
 public class XianChangAddAdapter extends BaseAdapter {
 	Context mContext;
 	String[] ss;
 	int[] hasContent;
 	int[] contentCount;
-	
-
+	boolean isAdmin;
 
 	/**
 	 * 需要修改是否有内容的标志位
@@ -41,7 +43,7 @@ public class XianChangAddAdapter extends BaseAdapter {
 	 * @param hasContent
 	 *            标记每一项是否有内容，1：有，0：没有
 	 */
-	public XianChangAddAdapter(Context c, int type, int[] num) {
+	public XianChangAddAdapter(Context c, int type, int[] num, boolean isAdmin) {
 		this.mContext = c;
 		if (type == 1) {
 			ss = c.getResources().getStringArray(R.array.zuoyexianchang_si_data);
@@ -54,12 +56,13 @@ public class XianChangAddAdapter extends BaseAdapter {
 		// 初始化
 		for (int i = 0; i < hasContent.length; i++)
 			this.hasContent[i] = 0;
-		
+
 		contentCount = num;
+		this.isAdmin = isAdmin;
 	}
-	
-	public XianChangAddAdapter(){
-		
+
+	public XianChangAddAdapter() {
+
 	}
 
 	@Override
@@ -88,27 +91,35 @@ public class XianChangAddAdapter extends BaseAdapter {
 			holder.video = ((ImageButton) convertView.findViewById(R.id.video));
 			holder.photo = (ImageButton) convertView.findViewById(R.id.photo);
 			holder.radio = (ImageButton) convertView.findViewById(R.id.radio);
+			holder.im1 = (ImageView) convertView.findViewById(R.id.imageView1);
 			convertView.setTag(holder);
 		} else {
 			holder = (Holder) convertView.getTag();
 		}
-		
-		
-		if (contentCount != null){
-			if (contentCount[position] == 0){
+
+		if (contentCount != null) {
+			if (contentCount[position] == 0) {
 				holder.textView.setText(ss[position]);
 			} else {
-				holder.textView.setText(ss[position] +"    " +"( " +contentCount[position] +" )");
+				holder.textView
+						.setText(ss[position] + "    " + "( " + contentCount[position] + " )");
 			}
-			
+
 		} else {
 			holder.textView.setText(ss[position]);
 		}
-		
-		if (hasContent[position] == 1){
+
+		if (hasContent[position] == 1) {
 			holder.textView.setTextColor(Color.RED);
 		} else {
 			holder.textView.setTextColor(Color.BLACK);
+		}
+
+		if (isAdmin) {
+			if (contentCount[position] == 0) {
+				holder.textView.setTextColor(Color.GRAY);
+				holder.im1.setVisibility(View.GONE);
+			}
 		}
 		return convertView;
 	}
@@ -116,8 +127,7 @@ public class XianChangAddAdapter extends BaseAdapter {
 	class Holder {
 		TextView textView;
 		ImageButton video, radio, photo;
+		ImageView im1;
 	}
-	
-
 
 }

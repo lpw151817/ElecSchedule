@@ -52,6 +52,8 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 			switch (msg.what) {
 			// 被叫方收到调度请求回调
 			case GID.MSG_INCOMING_CALL:
+				if (surfaceView.getVisibility() == View.GONE)
+					surfaceView.setVisibility(View.VISIBLE);
 				Toast.makeText(ScheduleActivity.this, "收到调度邀请 " + (String) (msg.obj),
 						Toast.LENGTH_SHORT).show();
 				changeVisibility(View.GONE, bt1, bt2, bt4);
@@ -84,6 +86,7 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 		self_id = getUserId();
 
 		surfaceView = (SurfaceView) findViewById(R.id.videorenderview);
+		surfaceView.setVisibility(View.GONE);
 		MediaInstance.instance().api_start(getApplicationContext(), server_ip, server_port, self_id,
 				encrypt_info);// MediaInstance.instance().api_start(this,server_ip,server_port,self_id,
 								// encrypt_info);
@@ -124,6 +127,8 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 			// 呼叫
 			if (!TextUtils.isEmpty(videoId) && selectedPeople != null
 					&& selectedPeople.size() > 1) {
+				if (surfaceView.getVisibility() == View.GONE)
+					surfaceView.setVisibility(View.VISIBLE);
 				changeVisibility(View.GONE, bt1, bt2);
 				changeVisibility(View.VISIBLE, bt4);
 				ArrayList<String> ids = new ArrayList<String>();
@@ -139,12 +144,16 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 			break;
 		case R.id.button3:
 			// 接听
+			if (surfaceView.getVisibility() == View.GONE)
+				surfaceView.setVisibility(View.VISIBLE);
 			changeVisibility(View.VISIBLE, bt4);
 			changeVisibility(View.GONE, bt1, bt2, bt3);
 			MediaInstance.instance().api_accept_schedule_invite();
 			break;
 		case R.id.button4:
 			// 挂断
+			if (surfaceView.getVisibility() == View.GONE)
+				surfaceView.setVisibility(View.VISIBLE);
 			changeVisibility(View.GONE, bt4);
 			changeVisibility(View.VISIBLE, bt1, bt2);
 			MediaInstance.instance().api_shutdown_schedule();

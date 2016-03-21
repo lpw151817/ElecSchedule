@@ -68,7 +68,7 @@ public class Push {
 	MqttResponse response;
 
 	public void ini() {
-		Log.e("mqtt ini", "ini()");
+		Log.e("mqtt ini", SERVER_URL + "/" + PORT);
 		// ini handler
 		iniHandler();
 		// ini uid
@@ -80,20 +80,17 @@ public class Push {
 			@Override
 			public int onMessageArrivedFunc(String client_id, String tag, int msg_len, String msg,
 					int msg_qos, int duplicate_count) {
-				Log.v(TAG, msg);
-				// TODO 进行到达消息的处理
+				Log.v("onMessageArrivedFunc...", msg);
+				// 进行到达消息的处理
 				try {
-
 					WebRequestManager manager = new WebRequestManager(AppApplication.getInstance(),
 							c);
-
 					Gson gson = new Gson();
 					response = gson.fromJson(msg, MqttResponse.class);
 
 					if (response != null) {
 						// 进行数据更新
 						manager.loginUpdate(c);
-
 					}
 				} catch (Exception e) {
 					Log.e(TAG, "response.getType() 解析错误");
@@ -124,6 +121,7 @@ public class Push {
 
 			@Override
 			public void handleMessage(Message msg) {
+				Log.e("handleMessage>>>>>>>>>>>", msg.toString() + "....." + msg.what);
 				Class target = null;
 				Bundle b = null;
 				b = new Bundle();
@@ -156,6 +154,8 @@ public class Push {
 				case Constants.LOGIN_UPDATE_SAVE_FAIL:
 					break;
 				}
+
+				// if (target != null)
 				showNotification(Push.this.c, target, b, content, "调度系统", content);
 			}
 		};

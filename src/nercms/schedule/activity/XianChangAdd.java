@@ -81,16 +81,16 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 	// 整个List
 	List<List<Map<String, Object>>> mList = new ArrayList<List<Map<String, Object>>>();
-	
-	//存放每个条目中被上传了的附件
+
+	// 存放每个条目中被上传了的附件
 	List<List<Map<String, Object>>> mUploadList = new ArrayList<List<Map<String, Object>>>();
-	
-	//存放对应条目中上传的附件
-	List<Map<String, Object>> mUploadUrl = new ArrayList<Map<String,Object>>();
-	
-	List<Map<String, Object>> mVideoAttach = new ArrayList<Map<String,Object>>();
-	
-	//存放每個條目裡面的附件的數目
+
+	// 存放对应条目中上传的附件
+	List<Map<String, Object>> mUploadUrl = new ArrayList<Map<String, Object>>();
+
+	List<Map<String, Object>> mVideoAttach = new ArrayList<Map<String, Object>>();
+
+	// 存放每個條目裡面的附件的數目
 	private int[] mContentCount;
 
 	public static boolean hasContent = false;// 用来标志条目里面是否有内容来决定XianChangUpload中loadAttachment方法是否执行
@@ -103,7 +103,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 	WebRequestManager requestManager;
 	boolean isContinueTask;
 	PlanTaskDao planTaskDao;
-	//  附件列表，用于显示
+	// 附件列表，用于显示
 	List<tb_task_attachment> atts;
 	/*
 	 * 每一个条目都有一个upload界面，每个upload界面用mediaIndex来标记附件在附件集中的位置，
@@ -118,7 +118,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 	private int[] counts;// 为从网络上下载的附件设置下标index
 	boolean isClickShangchuanfujian = false;
 	boolean hasUpload = false;
-	
+
 	private String videopath;
 
 	@Override
@@ -143,7 +143,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 			break;
 		}
 
-		if (isAdmin()){
+		if (isAdmin()) {
 			findViewById(R.id.bottom).setVisibility(View.GONE);
 			findViewById(R.id.jieshurenwu).setVisibility(View.GONE);
 		}
@@ -151,7 +151,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 		bt_jieshurenwu = (Button) findViewById(R.id.jieshurenwu);
 		bt_jieshurenwu.setOnClickListener(new OnClickListener() {
 
-			//TODO 结束任务，要每个条目里面都有内容才能结束
+			// TODO 结束任务，要每个条目里面都有内容才能结束
 			@Override
 			public void onClick(View v) {
 				if (planTaskDao == null)
@@ -160,14 +160,15 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 					showLongToast("任务已结束");
 				} else {
 					if (!hasUpload) {
-						
-						if (isfull()){
-						
+
+						if (isfull()) {
+
 							fileCount = getFileCount();// 获取文件的个数，上传完后finish当前页免
-							// Log.e("TAG", "xianChangAdd fileCount : "+ fileCount);
+							// Log.e("TAG", "xianChangAdd fileCount : "+
+							// fileCount);
 							isClickShangchuanfujian = false;
 							attachmentUploadRequest();// 上传附件
-						
+
 						} else {
 							Utils.showToast(XianChangAdd.this, "必须每一项都有附件才能接受");
 						}
@@ -179,29 +180,29 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 			}
 
 		});
-		
+
 		bt_video = (Button) findViewById(R.id.shangchuanfujian);
 		bt_video = (Button) findViewById(R.id.video);
-//		bt_video.setOnClickListener(new OnClickListener() {
-//
-//			@Override
-//			public void onClick(View v) {
-//				if (getFileCount() < 1) {
-//					showShortToast("请选择附件");
-//				} else {
-//					if (hasUpload) {
-//						showLongToast("附件已上传");
-//					} else {
-//						fileCount = getFileCount();// 获取文件的个数，上传完后finish当前页免
-//						// Log.e("TAG", "xianChangAdd fileCount : "+ fileCount);
-//						isClickShangchuanfujian = true;
-//						attachmentUploadRequest();// 上传附件
-//					}
-//				}
-//			}
-//		});
-		
-		//上传视频附件
+		// bt_video.setOnClickListener(new OnClickListener() {
+		//
+		// @Override
+		// public void onClick(View v) {
+		// if (getFileCount() < 1) {
+		// showShortToast("请选择附件");
+		// } else {
+		// if (hasUpload) {
+		// showLongToast("附件已上传");
+		// } else {
+		// fileCount = getFileCount();// 获取文件的个数，上传完后finish当前页免
+		// // Log.e("TAG", "xianChangAdd fileCount : "+ fileCount);
+		// isClickShangchuanfujian = true;
+		// attachmentUploadRequest();// 上传附件
+		// }
+		// }
+		// }
+		// });
+
+		// 上传视频附件
 		bt_video.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -224,14 +225,11 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 		tv_time = (TextView) findViewById(R.id.time);
 
-		
 		mContentCount = new int[getItemCount(XianChangAdd.this)];
-		
+
 		mListView = (ListView) findViewById(R.id.listview);
-		xianChangAddAdapter = new XianChangAddAdapter(this, enterType, mContentCount);
+		xianChangAddAdapter = new XianChangAddAdapter(this, enterType, mContentCount,isAdmin());
 		mListView.setAdapter(xianChangAddAdapter);
-		
-		
 
 		// myMediaIndexs = new int[6];
 		myMediaIndexs = new int[xianChangAddAdapter.getCount()];
@@ -244,7 +242,6 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 			List<Map<String, Object>> mItem = new ArrayList<Map<String, Object>>();
 			mUploadList.add(mItem);
 		}
-		
 
 		// mPath.add((String) getIntent().getCharSequenceExtra("path"));
 		if (!isContinueTask) {// 不是从继续任务plantask这个页面跳过了
@@ -369,6 +366,10 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				if (mList.get(position).size() == 0) {
+					showLongToast("没有附件信息查看");
+					return;
+				}
 				Intent intent = new Intent(XianChangAdd.this, XianChangUpload.class);
 				intent.putExtra("tid", tid);
 				if (from.equals("XianChangUpload")) {
@@ -388,22 +389,22 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 				} else {
 					setMediaIndex();
 					intent.putExtra("myMediaIndex", myMediaIndexs[position]);
-					
-//					if (flag == position) {
-//						myMediaIndexs[flag] = 1;
-//						intent.putExtra("myMediaIndex", myMediaIndexs[position]);
-//					} else {
-//						intent.putExtra("myMediaIndex", myMediaIndexs[position]);
-//					}
+
+					// if (flag == position) {
+					// myMediaIndexs[flag] = 1;
+					// intent.putExtra("myMediaIndex", myMediaIndexs[position]);
+					// } else {
+					// intent.putExtra("myMediaIndex", myMediaIndexs[position]);
+					// }
 				}
 
 				for (List<Map<String, Object>> ma : mList) {
 					for (Map<String, Object> mm : ma) {
-						if (mm != null){
+						if (mm != null) {
 							String attachmentFilePath = (String) mm.get("path");
 							mFileName.add(attachmentFilePath);
 						}
-						
+
 					}
 				}
 
@@ -422,50 +423,50 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 				// return;//目的是不让iscontinueTask置为false
 				// }
 
-					
-					intent.putExtra("mUploadUrl", (Serializable)mUploadList.get(position));
+				intent.putExtra("mUploadUrl", (Serializable) mUploadList.get(position));
 				intent.putExtra("url", (Serializable) mList.get(position));
 				intent.putExtra("position", position);// 把被点击的条目的位置传递进去，这样在接收的时候就知道该该改变哪个list的内容
-				XianChangAdd.this.startActivityForResult(intent, LocalConstant.START_XIANCHANGUPLOAD);
+				XianChangAdd.this.startActivityForResult(intent,
+						LocalConstant.START_XIANCHANGUPLOAD);
 			}
 		});
 
 		initHandler();
 
 	}
-	
+
 	protected boolean isfull() {
 		int flag = 0;
-		//判断每个条目是否都有内容
-		for (int i = 0; i < mContentCount.length; i++){
-			if (mContentCount[i] == 0){
+		// 判断每个条目是否都有内容
+		for (int i = 0; i < mContentCount.length; i++) {
+			if (mContentCount[i] == 0) {
 				flag = 1;
 				break;
 			}
 		}
-		
-		if (flag == 1){
+
+		if (flag == 1) {
 			return false;
-		}else {
+		} else {
 			return true;
 		}
-		
+
 	}
 
-	private void setMediaIndex(){
-		for (int i = 0; i < mList.size(); i ++){
-			int count = 0; 
-			for (int j = 0;  j < mList.get(i).size(); j++){
-				if (mList.get(i).get(j) != null || mList.get(i).get(j) == null){
-					count ++;
+	private void setMediaIndex() {
+		for (int i = 0; i < mList.size(); i++) {
+			int count = 0;
+			for (int j = 0; j < mList.get(i).size(); j++) {
+				if (mList.get(i).get(j) != null || mList.get(i).get(j) == null) {
+					count++;
 				}
 			}
 			myMediaIndexs[i] = count;
 		}
 	}
 
-	private int  getItemCount(Context c) {
-		String []ss = null;
+	private int getItemCount(Context c) {
+		String[] ss = null;
 		if (enterType == 1) {
 			ss = c.getResources().getStringArray(R.array.zuoyexianchang_si_data);
 		} else if (enterType == 2) {
@@ -473,7 +474,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 		} else if (enterType == 3) {
 			ss = c.getResources().getStringArray(R.array.guzhangjinji_si_data);
 		}
-		
+
 		return ss.length;
 	}
 
@@ -510,13 +511,13 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 	@Override
 	protected void onResume() {
 		super.onResume();
-//TODO
-		//遍历mList获取每个条目的数目
-		for (int i = 0; i < mList.size(); i ++){
-			int count = 0; 
-			for (int j = 0;  j < mList.get(i).size(); j++){
-				if (mList.get(i).get(j) != null){
-					count ++;
+		// TODO
+		// 遍历mList获取每个条目的数目
+		for (int i = 0; i < mList.size(); i++) {
+			int count = 0;
+			for (int j = 0; j < mList.get(i).size(); j++) {
+				if (mList.get(i).get(j) != null) {
+					count++;
 				}
 			}
 			mContentCount[i] = count;
@@ -527,7 +528,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 	String from = "";
 	int mediaIndex;
-	private Map<String, Object> mVideo;//存放录制的视频信息
+	private Map<String, Object> mVideo;// 存放录制的视频信息
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -539,14 +540,14 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 				mediaIndex = data.getIntExtra("mediaIndex", 0);
 				mContent = (List<Map<String, Object>>) data.getSerializableExtra("url");
 				mList.set(index, mContent);// 改变在Upload里面对应被更改的内容
-				
+
 				mUploadUrl = (List<Map<String, Object>>) data.getSerializableExtra("mUploadUrl");
 				mUploadList.set(index, mUploadUrl);
 				myMediaIndexs[index] = mediaIndex;
 			}
 			break;
-		
-			//TODO 录像
+
+		// TODO 录像
 		case LocalConstant.CAPTURE_VIDEO_REQUEST_CODE:
 			if (resultCode == RESULT_OK) {
 				Log.i("TAG", "拍摄完成，resultCode=" + requestCode);
@@ -556,8 +557,8 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 				Bitmap videoThumbnailBitmap = Utils.getVideoThumbnail(videopath, 400, 400,
 						MediaStore.Images.Thumbnails.MINI_KIND);
 
-//				uri4 = Uri.fromFile(file);
-//				mediaID4 = mediaIndex++;
+				// uri4 = Uri.fromFile(file);
+				// mediaID4 = mediaIndex++;
 
 				String videoName = videopath.substring(videopath.lastIndexOf(File.separator) + 1);
 				System.out.println("videoName: " + videoName);
@@ -567,7 +568,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 				mMap.put("type", "video");
 				mMap.put("path", videopath);
 				mMap.put("from", "XianChangUpload");
-//				mMap.put("index", mediaID4 + "");// 传递附件的下标
+				// mMap.put("index", mediaID4 + "");// 传递附件的下标
 
 				Map<Integer, Map<String, String>> mContent = new HashMap<Integer, Map<String, String>>();
 				mContent.put(0, mMap);
@@ -576,24 +577,20 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 			}
 			break;
-			
+
 		case LocalConstant.SHOWXIANCHANG_ATTACHMENT:
-			if (resultCode == RESULT_OK){
-				mVideo = (Map<String, Object>) data
-						.getSerializableExtra("path");
-				
-			bt_video.setText("录像 (1)");
-			bt_video.setClickable(false);
+			if (resultCode == RESULT_OK) {
+				mVideo = (Map<String, Object>) data.getSerializableExtra("path");
+
+				bt_video.setText("录像 (1)");
+				bt_video.setClickable(false);
 			}
-			
+
 			break;
 
 		default:
 			break;
 		}
-		
-		
-
 
 	}
 
@@ -645,10 +642,10 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 					}
 				}
 			}
-			//上传视频
-			new HttpUploadTask(new TextView(this), this)
-			.execute((String) mVideo.get("path"), uploadUrl);
-			
+			// 上传视频
+			new HttpUploadTask(new TextView(this), this).execute((String) mVideo.get("path"),
+					uploadUrl);
+
 		}
 
 	}
@@ -872,7 +869,5 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 	private String path2FileName(String path) {
 		return path.substring(path.lastIndexOf(File.separator) + 1);
 	}
-	
-	
 
 }

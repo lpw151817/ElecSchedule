@@ -40,7 +40,7 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:background="@drawable/btn_style_green"
-            android:text="设置"
+            android:text="人员"
             android:textColor="#ffffff" />
 
         <Button

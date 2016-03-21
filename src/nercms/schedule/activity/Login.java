@@ -17,6 +17,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
@@ -158,17 +159,6 @@ public class Login extends BaseActivity {
 					MySharedPreference.save(Login.this, MySharedPreference.USER_IC,
 							Generate_md5.generate_md5(inputPassword));
 
-					// //TODO MQTT
-					// // // 新建线程去进行MQTT连接
-					// // new Thread(new Runnable() {
-					// // @Override
-					// // public void run() {
-					// // Looper.prepare();
-					// Push.PERSON_ID = getUserId();
-					// Push.get_instance(Login.this).ini();
-					// // }
-					// // }).start();
-
 					webRequestManager.loginUpdate(Login.this);
 
 					// 写日志
@@ -214,6 +204,21 @@ public class Login extends BaseActivity {
 				case Constants.LOGIN_UPDATE_SUCCESS:
 					dismissProgressDialog();
 					showLog_v("更新完成《《《《《《《《《《《《《《《");
+					
+					// MQTT
+					// 新建线程去进行MQTT连接
+					new Thread(new Runnable() {
+						@Override
+						public void run() {
+							Looper.prepare();
+							Push.PERSON_ID = getUserId();
+							Push.get_instance(Login.this).ini();
+
+							Push.get_instance(Login.this)
+									.pushMsgToTag("nercms/schedule/m_" + getUserId(), "123123", 1);
+						}
+					}).start();
+					
 					// Intent intent = new Intent(Login.this, Main.class);
 					Intent intent = new Intent(Login.this, MainContent.class);
 					Login.this.startActivity(intent);

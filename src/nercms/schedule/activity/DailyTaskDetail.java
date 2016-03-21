@@ -60,7 +60,7 @@ public class DailyTaskDetail extends BaseActivity {
 		planTask2 = planTask.getPlanTask(tid);
 		orgDao = new OrgDao(this);
 
-		iniActionBar(true, null, "日常任务详情（作业现场）");
+		iniActionBar(true, null, "任务详情");
 		initView();
 	}
 	private void initView() {

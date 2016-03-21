@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.TextView;
 import android.wxapp.service.elec.dao.PlanTaskDao;
 import android.wxapp.service.elec.dao.TaskInsDao;
 import android.wxapp.service.elec.model.bean.table.tb_task_info;
@@ -31,6 +32,9 @@ public class TaskSelectorActivity extends BaseActivity implements OnClickListene
 		tid = getIntent().getStringExtra("tid");
 		info = dao.getPlanTask(tid);
 		iniActionBar(true, null, info.getName());
+
+		if (isAdmin())
+			((TextView) findViewById(R.id.rwxq)).setText("查看现场信息");
 
 		findViewById(R.id.shangchuanxianchangxinxi).setOnClickListener(this);
 		findViewById(R.id.jiaohuxinxi).setOnClickListener(this);
@@ -65,7 +69,7 @@ public class TaskSelectorActivity extends BaseActivity implements OnClickListene
 			}
 			break;
 		case R.id.renwuxiangqing:
-//			intent.setClass(TaskSelectorActivity.this, PlanAdd.class);
+			// intent.setClass(TaskSelectorActivity.this, PlanAdd.class);
 			intent.setClass(TaskSelectorActivity.this, DailyTaskDetail.class);
 			intent.putExtra("enterType", 0);
 			intent.putExtra("tid", tid);
