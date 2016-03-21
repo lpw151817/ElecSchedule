@@ -4,33 +4,45 @@ import java.io.File;
 
 import nercms.schedule.R;
 import nercms.schedule.view.AudioRecorder;
-import nercms.schedule.view.RecordButton;
-import nercms.schedule.view.RecordButton.AudioFinishRecorderListener;
-import nercms.schedule.view.RecordButton.AudioStartRecorderListener;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import nercms.schedule.view.RecordButton.RecordListener;
+import nercms.schedule.view.RecordStrategy;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.SystemClock;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.ImageView;
+import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
-public class RecordActivity extends BaseActivity {
+public class RecordActivity extends BaseActivity implements OnClickListener {
 
-	RecordButton mRecord;
 	ImageView mImage;
 
 	// 录音的路径
 	private String audiopath;
 
 	private boolean isShow = false;
+	private Button mStart;
+	private Button mStop;
+	
+    private static final int MIN_RECORD_TIME = 1; // 最短录音时间，单位秒
+    private static final int RECORD_OFF = 0; // 不在录音
+    private static final int RECORD_ON = 1; // 正在录音
+ 
+    private RecordStrategy mAudioRecorder;
+    private Thread mRecordThread;
+    private RecordListener listener;
+ 
+    private int recordState = 0; // 录音状态
+    private float recodeTime = 0.0f; // 录音时长，如果录音时间太短则录音失败
+    private boolean isCanceled = false; // 是否取消录音
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,47 +54,33 @@ public class RecordActivity extends BaseActivity {
 		com.actionbarsherlock.app.ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 
-		mRecord = (RecordButton) findViewById(R.id.btn_record);
 		mImage = (ImageView) findViewById(R.id.img_record);
 
-		mRecord.setAudioRecord(new AudioRecorder());
-		mRecord.setAudioFinishRecorderListener(new AudioFinishRecorderListener() {
+		mStart = (Button) findViewById(R.id.btn_record);
+		mStop = (Button) findViewById(R.id.stop_record);
+		
+		cho = (Chronometer) findViewById(R.id.chro);
+		cho.setFormat("%s");
+		
+		mStart.setOnClickListener(this);
+		mStop.setOnClickListener(this);
+		
+		mAudioRecorder = new AudioRecorder();
+
+		
+		mImage.setOnClickListener(new OnClickListener() {
 
 			@Override
-			public void onFinished(String filePath) {
-				Log.e("TAG", "回调成功");
-				mImage.setVisibility(View.VISIBLE);
+			public void onClick(View arg0) {
 
-				isShow = true;
-				invalidateOptionsMenu();
-				mImage.setOnClickListener(new OnClickListener() {
+				audiopath = AudioRecorder.path;
+				File file = new File(audiopath);
+				Uri uri = Uri.fromFile(file);
+				Intent intent1 = new Intent(Intent.ACTION_MAIN);
+				intent1.setAction(Intent.ACTION_DEFAULT);
+				intent1.setDataAndType(uri, "audio/*");
+				startActivity(intent1);
 
-					@Override
-					public void onClick(View arg0) {
-
-						audiopath = AudioRecorder.path;
-						File file = new File(audiopath);
-						Uri uri = Uri.fromFile(file);
-						Intent intent1 = new Intent(Intent.ACTION_MAIN);
-						intent1.setAction(Intent.ACTION_DEFAULT);
-						intent1.setDataAndType(uri, "audio/*");
-						startActivity(intent1);
-
-					}
-				});
-
-			}
-		});
-
-		mRecord.setAudioStartRecorderListener(new AudioStartRecorderListener() {
-
-			@Override
-			public void onStart() {
-				isShow = false;
-				mImage.setVisibility(View.INVISIBLE);
-
-				// 更新操作栏菜单
-				invalidateOptionsMenu();
 			}
 		});
 	}
@@ -133,5 +131,99 @@ public class RecordActivity extends BaseActivity {
 
 		return super.onPrepareOptionsMenu(menu);
 	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.btn_record:
+			 if (recordState != RECORD_ON) {
+	                if (mAudioRecorder != null) {
+	                    mAudioRecorder.ready();
+	                    recordState = RECORD_ON;
+	                    mAudioRecorder.start();
+	                    callRecordTimeThread();
+	                    
+	                    showWarnToast("开始录音");
+	                    
+	                    isShow = false;
+	    				mImage.setVisibility(View.INVISIBLE);
+
+	    				// 更新操作栏菜单
+	    				invalidateOptionsMenu();
+	    				
+	    				cho.setBase(SystemClock.elapsedRealtime());
+	    				cho.start();
+	                }
+	                
+	            }
+			break;
+
+		case R.id.stop_record:
+			 if (recordState == RECORD_ON) {
+	                recordState = RECORD_OFF;
+	                mAudioRecorder.stop();
+	                mRecordThread.interrupt();
+	                    if (recodeTime < MIN_RECORD_TIME) {
+	                        showWarnToast("时间太短  录音失败");
+	                        mAudioRecorder.deleteOldFile();
+	                    } 
+//	                    else {
+//	                    	if (mListener!=null) {// 并且callbackActivity，保存录音
+//	            				
+//	        					mListener.onFinished(mAudioRecorder.getFilePath());
+//	        				}
+	                    	
+//	                }
+	                    
+	                    mImage.setVisibility(View.VISIBLE);
+
+	    				isShow = true;
+	    				invalidateOptionsMenu();
+	                    showWarnToast("录音结束"); 
+	                    
+	                    cho.stop();
+	            }
+			break;
+
+		default:
+			break;
+		}
+	}
+	
+	 // 录音时间太短时Toast显示
+    private void showWarnToast(String toastText) {
+    	
+    	Toast.makeText(RecordActivity.this, toastText, Toast.LENGTH_SHORT).show();
+    }
+ 
+    // 开启录音计时线程
+    private void callRecordTimeThread() {
+        mRecordThread = new Thread(recordThread);
+        mRecordThread.start();
+    }
+ 
+ 
+    // 录音线程
+    private Runnable recordThread = new Runnable() {
+ 
+        @Override
+        public void run() {
+            recodeTime = 0.0f;
+            while (recordState == RECORD_ON) {
+                {
+                    try {
+                        Thread.sleep(100);
+                        recodeTime += 0.1;
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    };
+
+	private Chronometer cho;
+ 
+ 
 
 }

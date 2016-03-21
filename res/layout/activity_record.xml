@@ -16,12 +16,50 @@
         android:src="@drawable/record"
         android:visibility="invisible" />
 
-    <nercms.schedule.view.RecordButton
+    <Chronometer
+        android:id="@+id/chro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginRight="10dp"
+        android:textColor="#ffffff" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btn_record"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/btn_style_green"
+            android:textColor="#ffffff" 
+            android:text="开始录音"
+            />
+        
+        <Button
+            android:id="@+id/stop_record"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/btn_style_green"
+            android:textColor="#ffffff" 
+            android:text="停止录音"
+            />
+    </LinearLayout>
+
+    <!--
+         <nercms.schedule.view.RecordButton
         android:id="@+id/btn_record"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_margin="10dp"
         android:background="@drawable/button_red_normal"
         android:textColor="#ffffff" />
+    -->
 
 </LinearLayout>
