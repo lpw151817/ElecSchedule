@@ -88,6 +88,8 @@ public class Login extends BaseActivity {
 
 		// 默认显示上次登录的用户ID
 		etUserName.setText(MySharedPreference.get(Login.this, MySharedPreference.USER_NAME, ""));
+		// TODO 此处仅供测试使用
+		etPassword.setText(MySharedPreference.get(Login.this, MySharedPreference.USER_NAME, ""));
 
 		// 如果用户名为空，则聚焦用户名，否则聚焦密码
 		if (TextUtils.isEmpty(etUserName.getText().toString())) {
@@ -204,7 +206,7 @@ public class Login extends BaseActivity {
 				case Constants.LOGIN_UPDATE_SUCCESS:
 					dismissProgressDialog();
 					showLog_v("更新完成《《《《《《《《《《《《《《《");
-					
+
 					// MQTT
 					// 新建线程去进行MQTT连接
 					new Thread(new Runnable() {
@@ -218,7 +220,7 @@ public class Login extends BaseActivity {
 									.pushMsgToTag("nercms/schedule/m_" + getUserId(), "123123", 1);
 						}
 					}).start();
-					
+
 					// Intent intent = new Intent(Login.this, Main.class);
 					Intent intent = new Intent(Login.this, MainContent.class);
 					Login.this.startActivity(intent);

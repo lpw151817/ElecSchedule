@@ -105,8 +105,7 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		caoZuoLayout.setOnClickListener(this);
 		qiangXiuLayout.setOnClickListener(this);
 
-		FragmentPagerAdapter madapter = new FragmentPagerAdapter(
-				getSupportFragmentManager()) {
+		FragmentPagerAdapter madapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
 
 			@Override
 			public int getCount() {
@@ -233,11 +232,15 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 
 	protected boolean isAdmin() {
 		OrgDao dao = new OrgDao(this);
-		if (dao.getPerson(getUserId()).getType() != null) {
-			return dao.getPerson(getUserId()).getType().equals("0");
-		} else {
-			return dao.getPerson(getUserId()).getName().contains("管理员")
-					|| dao.getPerson(getUserId()).getName().contains("领导");
+		try {
+			if (dao.getPerson(getUserId()).getType() != null) {
+				return dao.getPerson(getUserId()).getType().equals("0");
+			} else {
+				return dao.getPerson(getUserId()).getName().contains("管理员")
+						|| dao.getPerson(getUserId()).getName().contains("领导");
+			}
+		} catch (Exception e) {
+			return false;
 		}
 
 	}

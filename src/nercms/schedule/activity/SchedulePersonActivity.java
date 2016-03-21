@@ -1,6 +1,7 @@
 package nercms.schedule.activity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.actionbarsherlock.view.MenuItem;
@@ -11,6 +12,7 @@ import android.text.TextUtils;
 import android.widget.ListView;
 import android.wxapp.service.elec.dao.Org;
 import android.wxapp.service.elec.dao.OrgDao;
+import android.wxapp.service.elec.model.bean.table.TB_SYS_Person;
 import nercms.schedule.R;
 import nercms.schedule.adapter.SchedulePersonAdapter;
 
@@ -19,10 +21,10 @@ public class SchedulePersonActivity extends BaseActivity {
 	ListView listView;
 
 	OrgDao dao;
-	List<Org> data;
+	List<Org> data = new ArrayList<Org>();
 	SchedulePersonAdapter adapter;
 	// 调度人数最大值
-	private final int MAX_USER = 4;
+	private final int MAX_USER = 2;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +35,12 @@ public class SchedulePersonActivity extends BaseActivity {
 		listView = (ListView) findViewById(R.id.listview);
 
 		dao = new OrgDao(this);
-		data = dao.getAllPersons();
+		data.add(new Org("p" + getUserId(), "", dao.getPerson(getUserId()).getName()));
+		if (isAdmin())
+			data.addAll(dao.convert(dao.getPersons("0")));
+		else
+			data.addAll(dao.convert(dao.getPersons("1")));
+
 		adapter = new SchedulePersonAdapter(this, data);
 		listView.setAdapter(adapter);
 

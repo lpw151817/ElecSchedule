@@ -60,6 +60,14 @@ public class TaskList extends BaseActivity {
 		planTaskDao = new PlanTaskDao(this);
 
 		bt_rjhlr = (Button) findViewById(R.id.rijihualuru);
+		listView = (ListView) findViewById(R.id.task_list);
+
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
 		// 当当前登录用户非管理员，则不能录入计划
 		if (!isAdmin()) {
 			bt_rjhlr.setVisibility(View.GONE);
@@ -79,7 +87,6 @@ public class TaskList extends BaseActivity {
 
 		}
 
-		listView = (ListView) findViewById(R.id.task_list);
 		listView.setAdapter(new XianchangAdapter(this, enterType, data));
 
 		listView.setOnItemClickListener(new OnItemClickListener() {

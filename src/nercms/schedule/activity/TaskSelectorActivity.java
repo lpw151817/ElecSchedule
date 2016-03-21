@@ -1,17 +1,25 @@
 package nercms.schedule.activity;
 
 import com.actionbarsherlock.view.MenuItem;
+import com.baidu.location.b.h;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
+import android.wxapp.service.AppApplication;
 import android.wxapp.service.elec.dao.PlanTaskDao;
 import android.wxapp.service.elec.dao.TaskInsDao;
+import android.wxapp.service.elec.model.StartTaskResponse;
 import android.wxapp.service.elec.model.bean.table.tb_task_info;
+import android.wxapp.service.elec.request.Constants;
+import android.wxapp.service.elec.request.WebRequestManager;
+import android.wxapp.service.handler.MessageHandlerManager;
 import nercms.schedule.R;
 import nercms.schedule.R.id;
 import nercms.schedule.R.layout;
@@ -22,14 +30,23 @@ public class TaskSelectorActivity extends BaseActivity implements OnClickListene
 	tb_task_info info;
 	String tid;
 
+	WebRequestManager manager;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_task_selector);
 
+		tid = getIntent().getStringExtra("tid");
+
+		if (!isAdmin()) {
+			manager = new WebRequestManager(AppApplication.getInstance(), this);
+			iniHandler();
+			manager.startTask(this, tid, System.currentTimeMillis() + "");
+		}
+
 		dao = new PlanTaskDao(this);
 
-		tid = getIntent().getStringExtra("tid");
 		info = dao.getPlanTask(tid);
 		iniActionBar(true, null, info.getName());
 
@@ -39,6 +56,43 @@ public class TaskSelectorActivity extends BaseActivity implements OnClickListene
 		findViewById(R.id.shangchuanxianchangxinxi).setOnClickListener(this);
 		findViewById(R.id.jiaohuxinxi).setOnClickListener(this);
 		findViewById(R.id.renwuxiangqing).setOnClickListener(this);
+	}
+
+	Handler handler;
+
+	private void iniHandler() {
+		handler = new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				switch (msg.what) {
+				case Constants.START_TASK_SUCCESS:
+					showLog_e("任务开始成功");
+					break;
+
+				case Constants.START_TASK_SAVE_FAIL:
+				case Constants.START_TASK_FAIL:
+					showLog_e("任务开始失败");
+					break;
+				}
+			}
+		};
+		MessageHandlerManager.getInstance().register(handler, Constants.START_TASK_SUCCESS,
+				StartTaskResponse.class.getName());
+		MessageHandlerManager.getInstance().register(handler, Constants.START_TASK_SAVE_FAIL,
+				StartTaskResponse.class.getName());
+		MessageHandlerManager.getInstance().register(handler, Constants.START_TASK_FAIL,
+				StartTaskResponse.class.getName());
+	}
+
+	@Override
+	protected void onDestroy() {
+		MessageHandlerManager.getInstance().unregister(Constants.START_TASK_SUCCESS,
+				StartTaskResponse.class.getName());
+		MessageHandlerManager.getInstance().unregister(Constants.START_TASK_SAVE_FAIL,
+				StartTaskResponse.class.getName());
+		MessageHandlerManager.getInstance().unregister(Constants.START_TASK_FAIL,
+				StartTaskResponse.class.getName());
+		super.onDestroy();
 	}
 
 	@Override
