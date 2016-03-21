@@ -38,16 +38,17 @@ public class TaskSelectorActivity extends BaseActivity implements OnClickListene
 		setContentView(R.layout.activity_task_selector);
 
 		tid = getIntent().getStringExtra("tid");
+		dao = new PlanTaskDao(this);
+		info = dao.getPlanTask(tid);
 
 		if (!isAdmin()) {
-			manager = new WebRequestManager(AppApplication.getInstance(), this);
-			iniHandler();
-			manager.startTask(this, tid, System.currentTimeMillis() + "");
+			if (TextUtils.isEmpty(info.getStart_time())) {
+				manager = new WebRequestManager(AppApplication.getInstance(), this);
+				iniHandler();
+				manager.startTask(this, tid, System.currentTimeMillis() + "");
+			}
 		}
 
-		dao = new PlanTaskDao(this);
-
-		info = dao.getPlanTask(tid);
 		iniActionBar(true, null, info.getName());
 
 		if (isAdmin())
