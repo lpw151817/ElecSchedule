@@ -254,7 +254,6 @@
         </activity>
         <activity
             android:name=".activity.RecordActivity"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" >
         </activity>
