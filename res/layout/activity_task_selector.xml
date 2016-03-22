@@ -17,6 +17,7 @@
         android:orientation="horizontal" >
 
         <LinearLayout
+            android:id="@+id/shangchuanxianchangxinxi"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -24,11 +25,12 @@
             android:orientation="vertical" >
 
             <ImageButton
-                android:id="@+id/shangchuanxianchangxinxi"
+                
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:background="#00ffffff"
+                android:clickable="false"
                 android:src="@drawable/icon_chakan" />
 
             <TextView
@@ -47,6 +49,7 @@
             android:background="#E7E8E5" />
 
         <LinearLayout
+            android:id="@+id/jiaohuxinxi"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -54,7 +57,7 @@
             android:orientation="vertical" >
 
             <ImageButton
-                android:id="@+id/jiaohuxinxi"
+                android:clickable="false"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -76,6 +79,7 @@
             android:background="#E7E8E5" />
 
         <LinearLayout
+            android:id="@+id/renwuxiangqing"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -83,7 +87,7 @@
             android:orientation="vertical" >
 
             <ImageButton
-                android:id="@+id/renwuxiangqing"
+                android:clickable="false"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"

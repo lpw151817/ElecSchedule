@@ -17,7 +17,9 @@ import nercms.schedule.utils.MyGPS;
 import nercms.schedule.utils.MyLocationListener.ReceiveGPS;
 import nercms.schedule.utils.Utils;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -122,7 +124,6 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 	private String videopath;
 	boolean isEnd = false;
-	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -165,26 +166,56 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 					showLongToast("任务已结束");
 				} else {
 
-						if (isfull()) {
+					if (isfull()) {
 
-							fileCount = getFileCount();// 获取文件的个数，上传完后finish当前页免
-							// Log.e("TAG", "xianChangAdd fileCount : "+
-							// fileCount);
-							isClickShangchuanfujian = false;
-							attachmentUploadRequest();// 上传附件
+						fileCount = getFileCount();// 获取文件的个数，上传完后finish当前页免
+						// Log.e("TAG", "xianChangAdd fileCount : "+
+						// fileCount);
+						isClickShangchuanfujian = false;
+						attachmentUploadRequest();// 上传附件
 
-							isEnd = true;
-							requestManager.endTask(XianChangAdd.this, tid,
-									System.currentTimeMillis() + "");
-						} else {
-							Utils.showToast(XianChangAdd.this, "必须每一项都有附件才能接受");
-						}
+						isEnd = true;
+
+						AlertDialog.Builder builder = new AlertDialog.Builder(
+								XianChangAdd.this).setMessage("是否结束任务");
+						builder.setPositiveButton("是",
+								new DialogInterface.OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										// TODO Auto-generated method stub
+										requestManager.endTask(
+												XianChangAdd.this, tid,
+												System.currentTimeMillis() + "");
+										bt_jieshurenwu
+												.setVisibility(View.INVISIBLE);
+										bt_video.setVisibility(View.INVISIBLE);
+									}
+								});
+
+						builder.setNegativeButton("否",
+								new DialogInterface.OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+
+									}
+								});
+
+						AlertDialog dialog = builder.create();
+						dialog.show();
+
+					} else {
+						Utils.showToast(XianChangAdd.this, "必须每一项都有附件才能接受");
+					}
 				}
 			}
 
 		});
 
-//		bt_video = (Button) findViewById(R.id.shangchuanfujian);
+		// bt_video = (Button) findViewById(R.id.shangchuanfujian);
 		bt_video = (Button) findViewById(R.id.video);
 		// bt_video.setOnClickListener(new OnClickListener() {
 		//
@@ -228,7 +259,6 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 		});
 
 		tv_time = (TextView) findViewById(R.id.time);
-		
 
 		mContentCount = new int[getItemCount(XianChangAdd.this)];
 
@@ -379,8 +409,8 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 					mList.get(4).add(mMap1);
 					mUploadList.get(4).add(mMap1);
 				}
-				
-				if (standard.equals("standard")){
+
+				if (standard.equals("standard")) {
 					mVideo = mMap1;
 					bt_video.setText("录像（1）");
 					bt_video.setClickable(false);
@@ -450,7 +480,6 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 				// if (enterFlag == true){
 				// return;//目的是不让iscontinueTask置为false
 				// }
-				
 
 				intent.putExtra("mUploadUrl",
 						(Serializable) mUploadList.get(position));
@@ -470,7 +499,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 		int flag = 0;
 		// 判断每个条目是否都有内容
 		for (int i = 0; i < mContentCount.length; i++) {
-			if (mContentCount[i] == 0 || mVideo == null) {
+			if (mContentCount[i] == 0) {
 				flag = 1;
 				break;
 			}
@@ -671,15 +700,12 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 		if (getFileCount() < 1) {
 			showLongToast("请选择附件上传");
 		} else {
-			
-			if (mVideo == null){
-				showShortToast("请先录像");
-				return;
-			}
-			// 上传视频
-			new HttpUploadTask(new TextView(this), this).execute(
-					(String) mVideo.get("path"), uploadUrl);
 
+			if (mVideo.size() != 0) {
+				// 上传视频
+				new HttpUploadTask(new TextView(this), this).execute(
+						(String) mVideo.get("path"), uploadUrl);
+			}
 		}
 
 	}
@@ -693,186 +719,179 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 				switch (msg.what) {
 				case Constant.FILE_UPLOAD_SUCCESS:// 当所有的附件都上传完了之后finish当前页面
-					
 
-						Toast.makeText(XianChangAdd.this, "上传成功",
-								Toast.LENGTH_SHORT).show();
-						// 请求http接口
-						List<TaskAttachment> attachment = new ArrayList<TaskAttachment>();
-							StringBuilder standard = new StringBuilder(
-									"standard");
+					Toast.makeText(XianChangAdd.this, "上传成功",
+							Toast.LENGTH_SHORT).show();
+					// 请求http接口
+					List<TaskAttachment> attachment = new ArrayList<TaskAttachment>();
+					StringBuilder standard = new StringBuilder("standard");
 
-							List<Attachments> sublist = new ArrayList<Attachments>();
-							String server = android.wxapp.service.elec.request.Contants.HFS_URL;
-								Map<String, Object> attItem = mVideo;
+					List<Attachments> sublist = new ArrayList<Attachments>();
+					String server = android.wxapp.service.elec.request.Contants.HFS_URL;
+					Map<String, Object> attItem = mVideo;
 
-								if (attItem == null) {
-									return;
-								}
+					if (attItem == null) {
+						return;
+					}
 
-								String filePath = (String) attItem.get("path");
-								String type = Utils.judgeFileLeixin(filePath);
-								if (type != null) {
+					String filePath = (String) attItem.get("path");
+					String type = Utils.judgeFileLeixin(filePath);
+					if (type != null) {
 
-									MyGPS myGPS = (MyGPS) attItem.get("gps");
-									// 参数修改
-									GPS gps = new GPS(getUserId(),
-											Utils.formatDateMs(System
-													.currentTimeMillis()),
-											myGPS.getLongitude() + "",
-											myGPS.getLatitude() + "", "",
-											myGPS.getRadius() + "",
-											myGPS.getAltitude() + "",
-											myGPS.getSpeed() + "",
-											Utils.formatDateMs(System
-													.currentTimeMillis()),
-											myGPS.getCoorType(), "");
+						MyGPS myGPS = (MyGPS) attItem.get("gps");
+						// 参数修改
+						GPS gps = new GPS(getUserId(),
+								Utils.formatDateMs(System.currentTimeMillis()),
+								myGPS.getLongitude() + "", myGPS.getLatitude()
+										+ "", "", myGPS.getRadius() + "",
+								myGPS.getAltitude() + "",
+								myGPS.getSpeed() + "",
+								Utils.formatDateMs(System.currentTimeMillis()),
+								myGPS.getCoorType(), "");
 
-									String md5 = Utils.getFileMD5(new File(
-											filePath));
-									Attachments att = new Attachments(type,
-											server + File.separator
-													+ path2FileName(filePath),
-											(String) attItem.get("time"), gps,
-											md5);
-									sublist.add(att);
+						String md5 = Utils.getFileMD5(new File(filePath));
+						Attachments att = new Attachments(type, server
+								+ File.separator + path2FileName(filePath),
+								(String) attItem.get("time"), gps, md5);
+						sublist.add(att);
 
-								}
-							TaskAttachment item = new TaskAttachment(
-									standard.toString(), sublist);
-							attachment.add(item);
+					}
+					TaskAttachment item = new TaskAttachment(
+							standard.toString(), sublist);
+					attachment.add(item);
 
-						requestManager.uploadTaskAttachment(XianChangAdd.this,
-								tid, enterType + "", attachment);
+					requestManager.uploadTaskAttachment(XianChangAdd.this, tid,
+							enterType + "", attachment);
 
-
-//					fileCount--;
-//					Log.i("TAG", "count : " + fileCount);
-//					if (fileCount == 0) {
-//
-//						Toast.makeText(XianChangAdd.this, "上传成功",
-//								Toast.LENGTH_SHORT).show();
-//						// 请求http接口
-//						List<TaskAttachment> attachment = new ArrayList<TaskAttachment>();
-//						for (int i = 0; i < mList.size(); i++) {
-//							StringBuilder standard = new StringBuilder(
-//									"standard");
-//							// 作业现场
-//							if (enterType == 1) {
-//								switch (i) {
-//								// 工作票
-//								case 0:
-//									standard.append("01");
-//									break;
-//								case 1:
-//									standard.append("02");
-//									break;
-//								case 2:
-//									standard.append("03");
-//									break;
-//								case 3:
-//									standard.append("04");
-//									break;
-//								case 4:
-//									standard.append("05");
-//									break;
-//								case 5:
-//									standard.append("06");
-//									break;
-//								}
-//							}
-//							// 操作现场
-//							else if (enterType == 2) {
-//								switch (i) {
-//								case 0:
-//									standard.append("07");
-//									break;
-//								case 1:
-//									standard.append("08");
-//									break;
-//								case 2:
-//									standard.append("09");
-//									break;
-//								case 3:
-//									standard.append("10");
-//									break;
-//								case 4:
-//									standard.append("11");
-//									break;
-//								}
-//							}
-//							// 故障抢修
-//							else if (enterType == 3) {
-//								switch (i) {
-//								case 0:
-//									standard.append("01");
-//									break;
-//								case 1:
-//									standard.append("02");
-//									break;
-//								case 2:
-//									standard.append("03");
-//									break;
-//								case 3:
-//									standard.append("04");
-//									break;
-//								case 4:
-//									standard.append("05");
-//									break;
-//								case 5:
-//									standard.append("06");
-//									break;
-//								}
-//							}
-//
-//							List<Attachments> sublist = new ArrayList<Attachments>();
-//							String server = android.wxapp.service.elec.request.Contants.HFS_URL;
-//							for (int j = 0; j < mList.get(i).size(); j++) {
-//								Map<String, Object> attItem = mList.get(i).get(
-//										j);
-//
-//								if (attItem == null) {
-//									return;
-//								}
-//
-//								String filePath = (String) attItem.get("path");
-//								String type = Utils.judgeFileLeixin(filePath);
-//								if (type != null) {
-//
-//									MyGPS myGPS = (MyGPS) attItem.get("gps");
-//									// 参数修改
-//									GPS gps = new GPS(getUserId(),
-//											Utils.formatDateMs(System
-//													.currentTimeMillis()),
-//											myGPS.getLongitude() + "",
-//											myGPS.getLatitude() + "", "",
-//											myGPS.getRadius() + "",
-//											myGPS.getAltitude() + "",
-//											myGPS.getSpeed() + "",
-//											Utils.formatDateMs(System
-//													.currentTimeMillis()),
-//											myGPS.getCoorType(), "");
-//
-//									String md5 = Utils.getFileMD5(new File(
-//											filePath));
-//									Attachments att = new Attachments(type,
-//											server + File.separator
-//													+ path2FileName(filePath),
-//											(String) attItem.get("time"), gps,
-//											md5);
-//									sublist.add(att);
-//
-//								}
-//							}
-//							TaskAttachment item = new TaskAttachment(
-//									standard.toString(), sublist);
-//							attachment.add(item);
-//						}
-//
-//						requestManager.uploadTaskAttachment(XianChangAdd.this,
-//								tid, enterType + "", attachment);
-//
-//					}
+					// fileCount--;
+					// Log.i("TAG", "count : " + fileCount);
+					// if (fileCount == 0) {
+					//
+					// Toast.makeText(XianChangAdd.this, "上传成功",
+					// Toast.LENGTH_SHORT).show();
+					// // 请求http接口
+					// List<TaskAttachment> attachment = new
+					// ArrayList<TaskAttachment>();
+					// for (int i = 0; i < mList.size(); i++) {
+					// StringBuilder standard = new StringBuilder(
+					// "standard");
+					// // 作业现场
+					// if (enterType == 1) {
+					// switch (i) {
+					// // 工作票
+					// case 0:
+					// standard.append("01");
+					// break;
+					// case 1:
+					// standard.append("02");
+					// break;
+					// case 2:
+					// standard.append("03");
+					// break;
+					// case 3:
+					// standard.append("04");
+					// break;
+					// case 4:
+					// standard.append("05");
+					// break;
+					// case 5:
+					// standard.append("06");
+					// break;
+					// }
+					// }
+					// // 操作现场
+					// else if (enterType == 2) {
+					// switch (i) {
+					// case 0:
+					// standard.append("07");
+					// break;
+					// case 1:
+					// standard.append("08");
+					// break;
+					// case 2:
+					// standard.append("09");
+					// break;
+					// case 3:
+					// standard.append("10");
+					// break;
+					// case 4:
+					// standard.append("11");
+					// break;
+					// }
+					// }
+					// // 故障抢修
+					// else if (enterType == 3) {
+					// switch (i) {
+					// case 0:
+					// standard.append("01");
+					// break;
+					// case 1:
+					// standard.append("02");
+					// break;
+					// case 2:
+					// standard.append("03");
+					// break;
+					// case 3:
+					// standard.append("04");
+					// break;
+					// case 4:
+					// standard.append("05");
+					// break;
+					// case 5:
+					// standard.append("06");
+					// break;
+					// }
+					// }
+					//
+					// List<Attachments> sublist = new ArrayList<Attachments>();
+					// String server =
+					// android.wxapp.service.elec.request.Contants.HFS_URL;
+					// for (int j = 0; j < mList.get(i).size(); j++) {
+					// Map<String, Object> attItem = mList.get(i).get(
+					// j);
+					//
+					// if (attItem == null) {
+					// return;
+					// }
+					//
+					// String filePath = (String) attItem.get("path");
+					// String type = Utils.judgeFileLeixin(filePath);
+					// if (type != null) {
+					//
+					// MyGPS myGPS = (MyGPS) attItem.get("gps");
+					// // 参数修改
+					// GPS gps = new GPS(getUserId(),
+					// Utils.formatDateMs(System
+					// .currentTimeMillis()),
+					// myGPS.getLongitude() + "",
+					// myGPS.getLatitude() + "", "",
+					// myGPS.getRadius() + "",
+					// myGPS.getAltitude() + "",
+					// myGPS.getSpeed() + "",
+					// Utils.formatDateMs(System
+					// .currentTimeMillis()),
+					// myGPS.getCoorType(), "");
+					//
+					// String md5 = Utils.getFileMD5(new File(
+					// filePath));
+					// Attachments att = new Attachments(type,
+					// server + File.separator
+					// + path2FileName(filePath),
+					// (String) attItem.get("time"), gps,
+					// md5);
+					// sublist.add(att);
+					//
+					// }
+					// }
+					// TaskAttachment item = new TaskAttachment(
+					// standard.toString(), sublist);
+					// attachment.add(item);
+					// }
+					//
+					// requestManager.uploadTaskAttachment(XianChangAdd.this,
+					// tid, enterType + "", attachment);
+					//
+					// }
 
 					break;
 				case Constant.FILE_UPLOAD_FAIL:
@@ -881,17 +900,17 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 					break;
 
 				case Constants.UPLOAD_TASK_ATT_SUCCESS:
-					if (isEnd){
+					if (isEnd) {
 						requestManager.endTask(XianChangAdd.this, tid,
-								System.currentTimeMillis() + "");	
+								System.currentTimeMillis() + "");
 					}
-//					hasUpload = true;
-//					if (!isClickShangchuanfujian) {
-//						requestManager.endTask(XianChangAdd.this, tid,
-//								System.currentTimeMillis() + "");
-//					} else {
-//						bt_video.setVisibility(View.GONE);
-//					}
+					// hasUpload = true;
+					// if (!isClickShangchuanfujian) {
+					// requestManager.endTask(XianChangAdd.this, tid,
+					// System.currentTimeMillis() + "");
+					// } else {
+					// bt_video.setVisibility(View.GONE);
+					// }
 					break;
 				case Constants.END_TASK_SUCCESS:
 					showLongToast("任务已结束");

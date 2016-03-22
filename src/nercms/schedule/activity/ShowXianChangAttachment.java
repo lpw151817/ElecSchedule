@@ -255,7 +255,7 @@ public class ShowXianChangAttachment extends BaseActivity implements OnClickList
 
 		case R.id.iv_attach:
 			if (type.equals("audio")) {
-				File file = new File(audioPath);
+				File file = new File(filePath);
 				Uri uri = Uri.fromFile(file);
 				Intent intent1 = new Intent(Intent.ACTION_MAIN);
 				intent1.setAction(Intent.ACTION_DEFAULT);

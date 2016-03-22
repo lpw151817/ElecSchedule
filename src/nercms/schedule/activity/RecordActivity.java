@@ -9,6 +9,8 @@ import nercms.schedule.view.RecordStrategy;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.SystemClock;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -85,6 +87,25 @@ public class RecordActivity extends BaseActivity implements OnClickListener {
 
 			}
 		});
+		
+		handler = new Handler(){
+			@Override
+			public void handleMessage(Message msg) {
+				super.handleMessage(msg);
+				 mAudioRecorder.stop();
+	                mRecordThread.interrupt();
+	                
+	               mImage.setVisibility(View.VISIBLE);
+
+				isShow = true;
+				invalidateOptionsMenu();
+//                showWarnToast("达到最大录音时长，录音结束"); 
+//                Toast.makeText(RecordActivity.this, "达到最大录音时长，录音结束", Toast.LENGTH_SHORT).show();
+                cho.stop();
+                
+                mStop.setVisibility(View.INVISIBLE);
+			}
+		};
 	}
 
 	@Override
@@ -155,6 +176,8 @@ public class RecordActivity extends BaseActivity implements OnClickListener {
 	    				
 	    				cho.setBase(SystemClock.elapsedRealtime());
 	    				cho.start();
+	    				
+	    				mStart.setVisibility(View.INVISIBLE);
 	                }
 	                
 	            }
@@ -184,6 +207,8 @@ public class RecordActivity extends BaseActivity implements OnClickListener {
 	                    showWarnToast("录音结束"); 
 	                    
 	                    cho.stop();
+	                    
+	                    mStop.setVisibility(View.INVISIBLE);
 	            }
 			break;
 
@@ -216,6 +241,10 @@ public class RecordActivity extends BaseActivity implements OnClickListener {
                     try {
                         Thread.sleep(100);
                         recodeTime += 0.1;
+                        
+                        if (recodeTime > MAX_TIME ){
+                        	handler.sendEmptyMessage(0);
+                        }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -225,6 +254,8 @@ public class RecordActivity extends BaseActivity implements OnClickListener {
     };
 
 	private Chronometer cho;
+
+	private Handler handler;
  
  
 
