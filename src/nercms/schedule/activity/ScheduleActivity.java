@@ -49,10 +49,10 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 		@Override
 		public void handleMessage(Message msg) {
 
-			// 将页面调至前台
-			Intent intent = new Intent(getApplicationContext(), ScheduleActivity.class);
-			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-			getApplicationContext().startActivity(intent);
+//			// 将页面调至前台
+//			Intent intent = new Intent(getApplicationContext(), ScheduleActivity.class);
+//			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//			getApplicationContext().startActivity(intent);
 
 			super.handleMessage(msg);
 			switch (msg.what) {
@@ -195,8 +195,10 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 
 	@Override
 	public void finish() {
-		// super.finish();
-		moveTaskToBack(true); // 设置该activity永不过期，即不执行onDestroy()
+		 super.finish();
+		 MediaInstance.instance().api_shutdown_schedule();
+		 MediaInstance.instance().api_shutdown();
+//		moveTaskToBack(true); // 设置该activity永不过期，即不执行onDestroy()
 	}
 
 	private void changeVisibility(int visable, View... vs) {

@@ -188,14 +188,14 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		if (isAdmin()) {
 			MenuItem item2 = menu.add(0, 3, 0, "日计划录入");
-			item2.setIcon(android.R.drawable.ic_menu_add);
+			item2.setIcon(R.drawable.icon_shulu);
 			item2.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);// 总是作为Action项显示
 		}
 		// 子菜单 ：发起任务，消息，会议，视频直播，智能调度，添加客户
 		SubMenu addMenu = menu.addSubMenu("add item");
-		addMenu.add(0, 1, 1, "视频调度").setIcon(R.drawable.ofm_meeting_icon);
+		addMenu.add(0, 1, 1, "视频调度").setIcon(R.drawable.iconfont_video);
 		// addMenu.add(0, 2, 1, "修改密码").setIcon(R.drawable.ofm_meeting_icon);
-		addMenu.add(0, -1, 1, "通知").setIcon(R.drawable.ofm_meeting_icon);
+		addMenu.add(0, -1, 1, "通知").setIcon(R.drawable.iconfont_tongzhi);
 
 		MenuItem addItem = addMenu.getItem();
 		addItem.setIcon(R.drawable.ic_action_overflow);
@@ -238,7 +238,7 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		OrgDao dao = new OrgDao(this);
 		try {
 			if (dao.getPerson(getUserId()).getType() != null) {
-				return dao.getPerson(getUserId()).getType().equals("0");
+				return dao.getPerson(getUserId()).getType().equals("1");
 			} else {
 				return dao.getPerson(getUserId()).getName().contains("管理员")
 						|| dao.getPerson(getUserId()).getName().contains("领导");
