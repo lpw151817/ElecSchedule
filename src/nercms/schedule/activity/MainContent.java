@@ -218,7 +218,11 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 			// TODO 修改密码
 			break;
 		case 1:
-			startActivity(ScheduleActivity.class);
+			// startActivity(ScheduleActivity.class);
+			// 将页面调至前台
+			Intent intent2 = new Intent(getApplicationContext(), ScheduleActivity.class);
+			intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+			getApplicationContext().startActivity(intent2);
 			break;
 		case 3:
 			// 添加日计划

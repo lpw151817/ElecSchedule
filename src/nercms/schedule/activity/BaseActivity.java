@@ -25,7 +25,7 @@ public class BaseActivity extends SherlockActivity {
 		OrgDao dao = new OrgDao(this);
 		try {
 			if (dao.getPerson(getUserId()).getType() != null) {
-				return dao.getPerson(getUserId()).getType().equals("0");
+				return dao.getPerson(getUserId()).getType().equals("1");
 			} else {
 				return dao.getPerson(getUserId()).getName().contains("管理员")
 						|| dao.getPerson(getUserId()).getName().contains("领导");

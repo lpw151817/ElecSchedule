@@ -48,6 +48,12 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 		// 回调处理
 		@Override
 		public void handleMessage(Message msg) {
+
+			// 将页面调至前台
+			Intent intent = new Intent(getApplicationContext(), ScheduleActivity.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+			getApplicationContext().startActivity(intent);
+
 			super.handleMessage(msg);
 			switch (msg.what) {
 			// 被叫方收到调度请求回调
@@ -80,7 +86,7 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_schedule);
-
+		showLog_e("Oncreate");
 		iniActionBar(true, null, "指挥调度");
 
 		self_id = getUserId();
@@ -103,6 +109,10 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 		bt4 = (Button) findViewById(R.id.button4);
 		bt4.setOnClickListener(this);
 		bt4.setVisibility(View.GONE);
+		 
+		Intent intent = new Intent(ScheduleActivity.this, MainContent.class);
+		startActivity(intent);
+		moveTaskToBack(true);
 	}
 
 	@Override
@@ -185,8 +195,8 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 
 	@Override
 	public void finish() {
-		super.finish();
-		MediaInstance.instance().api_shutdown();
+		// super.finish();
+		moveTaskToBack(true); // 设置该activity永不过期，即不执行onDestroy()
 	}
 
 	private void changeVisibility(int visable, View... vs) {

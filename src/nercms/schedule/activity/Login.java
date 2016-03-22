@@ -10,6 +10,9 @@ import com.nercms.Push;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -29,13 +32,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.wxapp.service.AppApplication;
+import android.wxapp.service.elec.dao.TaskInsDao;
 import android.wxapp.service.elec.model.LoginResponse;
 import android.wxapp.service.elec.model.NormalServerResponse;
 import android.wxapp.service.elec.model.UpdateResponse;
 import android.wxapp.service.elec.request.Constants;
 import android.wxapp.service.elec.request.WebRequestManager;
 import android.wxapp.service.handler.MessageHandlerManager;
-
+import android.wxapp.service.jerry.model.mqtt.MqttResponse;
 import android.wxapp.service.util.MySharedPreference;
 import nercms.schedule.R;
 import nercms.schedule.utils.MyLog;
@@ -197,6 +201,7 @@ public class Login extends BaseActivity {
 						showLongToast("无法更新数据，请检查是否与服务器连接正常");
 						dismissProgressDialog();
 						// Intent intent = new Intent(Login.this, Main.class);
+						
 						Intent intent = new Intent(Login.this, MainContent.class);
 						Login.this.startActivity(intent);
 						Login.this.finish();
@@ -214,15 +219,17 @@ public class Login extends BaseActivity {
 						public void run() {
 							Looper.prepare();
 							Push.PERSON_ID = getUserId();
-							Push.get_instance(Login.this).ini();
+							Push.get_instance(AppApplication.getInstance()).ini();
 
-							Push.get_instance(Login.this)
-									.pushMsgToTag("nercms/schedule/m_" + getUserId(), "123123", 1);
+							// Push.get_instance(Login.this)
+							// .pushMsgToTag("nercms/schedule/m_" + getUserId(),
+							// "123123", 1);
 						}
 					}).start();
 
 					// Intent intent = new Intent(Login.this, Main.class);
-					Intent intent = new Intent(Login.this, MainContent.class);
+//					Intent intent = new Intent(Login.this, MainContent.class);
+					Intent intent = new Intent(Login.this, ScheduleActivity.class);
 					Login.this.startActivity(intent);
 					Login.this.finish();
 					break;
@@ -234,6 +241,38 @@ public class Login extends BaseActivity {
 				default:
 					Log.e("LoginActivity", msg.what + "<<<<未处理");
 					break;
+
+				case Constants.MQTT_UPDATE_SUCCESS:
+					MqttResponse response = (MqttResponse) msg.obj;
+					Class target = null;
+					Bundle b = null;
+					b = new Bundle();
+					String content = "您有新的";
+					target = TaskSelectorActivity.class;
+					if (response != null) {
+						if (response.getType().equals("1")) {
+							// 开始和结束任务推送给领导
+							b.putInt("enterType", 0);
+							b.putString("tid", response.getId());
+							content += "任务";
+						} else if (response.getType().equals("2")) {
+							// 新建指令时进行推送给任务负责人
+							b.putString("tid", new TaskInsDao(AppApplication.getInstance())
+									.getTaskId(response.getId()));
+							content += "消息";
+						} else if (response.getType().equals("3")) {
+							// 上传附件后，推送给应上岗到位领导，如果没有就不推送
+							b.putInt("enterType", 0);
+							b.putString("tid", response.getId());
+							content += "任务附件";
+						}
+					}
+					showNotification(AppApplication.getInstance(), target, b, content, "调度系统",
+							content);
+					break;
+				case Constants.MQTT_UPDATE_FAIL:
+					break;
+
 				}
 
 			}
@@ -396,6 +435,12 @@ public class Login extends BaseActivity {
 	}
 
 	@Override
+	protected void onPause() {
+		super.onPause();
+
+	}
+
+	@Override
 	protected void onDestroy() {
 		Log.v("Login", "onDestroy,注册Handler");
 		super.onDestroy();
@@ -410,10 +455,17 @@ public class Login extends BaseActivity {
 				UpdateResponse.class.getName());
 		MessageHandlerManager.getInstance().unregister(Constants.LOGIN_UPDATE_FAIL,
 				UpdateResponse.class.getName());
+
 	}
 
 	// 注册Handler
 	private void registHandler() {
+
+		MessageHandlerManager.getInstance().register(handler, Constants.MQTT_UPDATE_SUCCESS,
+				UpdateResponse.class.getName());
+		MessageHandlerManager.getInstance().register(handler, Constants.MQTT_UPDATE_FAIL,
+				UpdateResponse.class.getName());
+
 		MessageHandlerManager.getInstance().register(handler, Constants.LOGIN_SUCCESS,
 				LoginResponse.class.getName());
 		MessageHandlerManager.getInstance().register(handler, Constants.LOGIN_FAIL,
@@ -425,5 +477,27 @@ public class Login extends BaseActivity {
 				UpdateResponse.class.getName());
 		MessageHandlerManager.getInstance().register(handler, Constants.LOGIN_UPDATE_FAIL,
 				UpdateResponse.class.getName());
+	}
+
+	private void showNotification(Context c, Class<?> target, Bundle b, String trick, String title,
+			String content) {
+		NotificationManager nm = (NotificationManager) c
+				.getSystemService(Context.NOTIFICATION_SERVICE);
+		Notification n = new Notification(R.drawable.ic_launcher, trick,
+				System.currentTimeMillis());
+		n.flags = Notification.FLAG_AUTO_CANCEL;
+		n.defaults = Notification.DEFAULT_ALL;
+		long[] vibrate = { 0, 100, 200, 300 };
+		n.vibrate = vibrate;
+		Intent i = new Intent(c, target);
+		if (b != null)
+			i.putExtras(b);
+		i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+		// PendingIntent
+		PendingIntent contentIntent = PendingIntent.getActivity(c, R.string.app_name, i,
+				PendingIntent.FLAG_UPDATE_CURRENT);
+
+		n.setLatestEventInfo(c, title, content, contentIntent);
+		nm.notify(R.string.app_name, n);
 	}
 }

@@ -1,6 +1,7 @@
 package com.nercms;
 
 import com.google.gson.Gson;
+import com.nercms.schedule.network.MQTT;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -9,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.wxapp.service.AppApplication;
@@ -22,6 +24,7 @@ import android.wxapp.service.util.MySharedPreference;
 import nercms.schedule.R;
 import nercms.schedule.activity.NewTask;
 import nercms.schedule.activity.PlanAdd;
+import nercms.schedule.activity.TaskSelectorActivity;
 
 /*
  * 使用方法：
@@ -65,12 +68,12 @@ public class Push {
 		return _unique_instance;
 	}
 
-	MqttResponse response;
+	// MqttResponse response;
 
 	public void ini() {
 		Log.e("mqtt ini", SERVER_URL + "/" + PORT);
-		// ini handler
-		iniHandler();
+		// if (handler == null)
+		// iniHandler();
 		// ini uid
 		PERSON_ID = getUserId();
 		// clientid为m_开头
@@ -83,15 +86,17 @@ public class Push {
 				Log.v("onMessageArrivedFunc...", msg);
 				// 进行到达消息的处理
 				try {
+
 					WebRequestManager manager = new WebRequestManager(AppApplication.getInstance(),
 							c);
 					Gson gson = new Gson();
-					response = gson.fromJson(msg, MqttResponse.class);
+					MqttResponse response = gson.fromJson(msg, MqttResponse.class);
 
 					if (response != null) {
 						// 进行数据更新
-						manager.loginUpdate(c);
+						manager.mqttUpdate(c, response);
 					}
+
 				} catch (Exception e) {
 					Log.e(TAG, "response.getType() 解析错误");
 					e.printStackTrace();
@@ -114,59 +119,69 @@ public class Push {
 		addTag(TOPIC_HEADER + "m_" + PERSON_ID, QOS);
 	}
 
-	Handler handler;
-
-	private void iniHandler() {
-		handler = new Handler() {
-
-			@Override
-			public void handleMessage(Message msg) {
-				Log.e("handleMessage>>>>>>>>>>>", msg.toString() + "....." + msg.what);
-				Class target = null;
-				Bundle b = null;
-				b = new Bundle();
-				String content = "您有新的";
-
-				switch (msg.what) {
-				case Constants.LOGIN_UPDATE_SUCCESS:
-					if (response != null) {
-						if (response.getType().equals("1")) {
-							// 开始和结束任务推送给领导
-							b.putInt("enterType", 0);
-							b.putString("tid", response.getId());
-							target = PlanAdd.class;
-							content += "任务";
-						} else if (response.getType().equals("2")) {
-							// 新建指令时进行推送给任务负责人
-							target = NewTask.class;
-							b.putString("taskInsId", response.getId());
-							content += "指令";
-						} else if (response.getType().equals("3")) {
-							// 上传附件后，推送给应上岗到位领导，如果没有就不推送
-							b.putInt("enterType", 0);
-							b.putString("tid", response.getId());
-							target = PlanAdd.class;
-							content += "任务附件";
-						}
-					}
-					break;
-				case Constants.LOGIN_UPDATE_FAIL:
-				case Constants.LOGIN_UPDATE_SAVE_FAIL:
-					break;
-				}
-
-				// if (target != null)
-				showNotification(Push.this.c, target, b, content, "调度系统", content);
-			}
-		};
-
-		MessageHandlerManager.getInstance().register(handler, Constants.LOGIN_UPDATE_SUCCESS,
-				UpdateResponse.class.getName());
-		MessageHandlerManager.getInstance().register(handler, Constants.LOGIN_UPDATE_SAVE_FAIL,
-				UpdateResponse.class.getName());
-		MessageHandlerManager.getInstance().register(handler, Constants.LOGIN_UPDATE_FAIL,
-				UpdateResponse.class.getName());
-	}
+	// Handler handler;
+	//
+	// private void iniHandler() {
+	// handler = new Handler() {
+	//
+	// @Override
+	// public void handleMessage(Message msg) {
+	//
+	// Log.e("handleMessage>>>>>>>>>>>", msg.toString() + "....." + msg.what);
+	// Class target = null;
+	// Bundle b = null;
+	// b = new Bundle();
+	// String content = "您有新的";
+	//
+	// switch (msg.what) {
+	// case Constants.MQTT_UPDATE_SUCCESS:
+	// if (response != null) {
+	// if (response.getType().equals("1")) {
+	// // 开始和结束任务推送给领导
+	// b.putInt("enterType", 0);
+	// b.putString("tid", response.getId());
+	// target = TaskSelectorActivity.class;
+	// content += "任务";
+	// } else if (response.getType().equals("2")) {
+	// // 新建指令时进行推送给任务负责人
+	// target = NewTask.class;
+	// b.putString("taskInsId", response.getId());
+	// content += "消息";
+	// } else if (response.getType().equals("3")) {
+	// // 上传附件后，推送给应上岗到位领导，如果没有就不推送
+	// b.putInt("enterType", 0);
+	// b.putString("tid", response.getId());
+	// target = TaskSelectorActivity.class;
+	// content += "任务附件";
+	// }
+	// }
+	// break;
+	// case Constants.MQTT_UPDATE_FAIL:
+	// break;
+	// }
+	//
+	// // if (target != null)
+	// showNotification(Push.this.c, target, b, content, "调度系统", content);
+	// }
+	// };
+	//
+	// if (!MessageHandlerManager.getInstance().hasRegister(handler,
+	// Constants.MQTT_UPDATE_SUCCESS,
+	// UpdateResponse.class.getName())) {
+	// MessageHandlerManager.getInstance().register(handler,
+	// Constants.MQTT_UPDATE_SUCCESS,
+	// UpdateResponse.class.getName());
+	// Log.e("Push", "MQTT_UPDATE_SUCCESS");
+	// }
+	// if (!MessageHandlerManager.getInstance().hasRegister(handler,
+	// Constants.MQTT_UPDATE_FAIL,
+	// UpdateResponse.class.getName())) {
+	// MessageHandlerManager.getInstance().register(handler,
+	// Constants.MQTT_UPDATE_FAIL,
+	// UpdateResponse.class.getName());
+	// Log.e("Push", "MQTT_UPDATE_FAIL");
+	// }
+	// }
 
 	protected String getUserId() {
 		return MySharedPreference.get(c, MySharedPreference.USER_ID, null);
@@ -188,7 +203,7 @@ public class Push {
 
 	static {
 		try {
-			System.loadLibrary("push"); // call .so
+			// System.loadLibrary("push"); // call .so
 		} catch (UnsatisfiedLinkError e) {
 			System.out.println("load lib push failed.");
 		}
