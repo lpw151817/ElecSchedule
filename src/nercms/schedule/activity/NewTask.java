@@ -195,7 +195,7 @@ public class NewTask extends BaseActivity {
 		// 需要从上一个界面中传入
 		taskInsId = getIntent().getExtras().getString("taskInsId");
 		if (!TextUtils.isEmpty(taskInsId)) {
-			tb_task_instructions data = dao.getTaskIns(taskInsId);
+			tb_task_instructions data = dao.getTaskIns(taskInsId, "0");
 			mContentInput.setText(data.getContent());
 			Utils.setEditTextUnEditable(mContentInput);
 			mReceiverInput.setText(new OrgDao(this).getPerson(data.getSend_id()).getName());
@@ -375,8 +375,8 @@ public class NewTask extends BaseActivity {
 								mContentInput.getText().toString(), attachments, "0");
 					else {
 						List<Node> receivers = new ArrayList<Node>();
-						receivers.add(
-								new Node("p" + dao.getTaskIns(taskInsId).getSend_id(), "", ""));
+						receivers.add(new Node("p" + dao.getTaskIns(taskInsId, "0").getSend_id(),
+								"", ""));
 						manager.createInsRequest(NewTask.this, receivers, taskInsId,
 								mContentInput.getText().toString(), attachments, "0");
 					}

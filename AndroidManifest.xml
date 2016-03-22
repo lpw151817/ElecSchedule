@@ -111,8 +111,10 @@
 
         <activity
             android:name=".activity.Login"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" >
-             <intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -125,85 +127,109 @@
         </activity>
         <activity
             android:name=".activity.Main"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" >
         </activity>
         <activity
             android:name=".activity.MainContent"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" >
         </activity>
         <activity
             android:name=".activity.Profile"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" >
         </activity>
         <activity
             android:name=".activity.TaskList"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" />
         <activity
             android:name=".activity.TaskDetail"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" />
         <activity
             android:name=".activity.TaskAdd"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" />
         <activity
             android:name=".activity.ChatDetail"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" />
         <activity
             android:name=".activity.ContactDetail"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" />
         <activity
             android:name=".activity.OrgSelect"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" />
         <activity
             android:name=".activity.CustomerDetail"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" />
         <activity
             android:name=".activity.ContactSelect"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" />
         <activity
             android:name=".activity.ContactAdd"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" />
         <activity
             android:name=".activity.PhoneDetail"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" />
         <activity
             android:name=".activity.MeetingDetail"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" />
         <activity
             android:name=".activity.MeetingAdd"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" />
         <activity
             android:name=".activity.VoiceCall"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" />
         <activity
             android:name=".activity.VoiceMeeting"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" />
         <activity
             android:name=".activity.Setting"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" />
         <activity
             android:name=".activity.SearchActivity"
             android:label="@string/title_activity_search"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" >
         </activity>
         <activity
             android:name=".activity.PlanAdd"
             android:label="@string/title_activity_plan_add"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" >
         </activity>
         <!-- 注册服务 -->
@@ -228,12 +254,13 @@
         </activity>
         <activity
             android:name=".activity.RecordActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" >
-           
         </activity>
         <activity
             android:name=".activity.ShowDownLoad"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" >
         </activity>
@@ -241,28 +268,33 @@
             android:name=".activity.XianChangSi"
             android:label="@string/title_activity_xian_chang_si"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" >
         </activity>
         <activity
             android:name=".activity.XianChangAdd"
             android:label="@string/title_activity_xian_chang_add"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" >
         </activity>
         <activity
             android:name=".activity.MeiRiJiHua"
             android:label="@string/title_activity_mei_ri_ji_hua"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" >
         </activity>
         <activity
             android:name=".activity.XianChangUpload"
             android:label="@string/title_activity_xian_chang_upload"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" >
         </activity>
         <activity
             android:name=".activity.ShowXianChangAttachment"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" >
         </activity>
@@ -276,29 +308,41 @@
         <activity
             android:name=".activity.ScheduleActivity"
             android:label="@string/title_activity_schedule"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" >
         </activity>
         <activity
             android:name=".activity.SchedulePersonActivity"
             android:label="@string/title_activity_schedule_person"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" >
         </activity>
         <activity
             android:name=".activity.ZhilingActivity"
             android:label="@string/title_activity_zhiling"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" >
         </activity>
         <activity
             android:name="nercms.schedule.activity.TaskSelectorActivity"
             android:label="@string/title_activity_task_selector"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" >
         </activity>
         <activity
             android:name="nercms.schedule.activity.Notification"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" >
         </activity>
         <activity
             android:name="nercms.schedule.activity.DailyTaskDetail"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" >
         </activity>
     </application>

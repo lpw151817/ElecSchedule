@@ -201,7 +201,7 @@ public class Login extends BaseActivity {
 						showLongToast("无法更新数据，请检查是否与服务器连接正常");
 						dismissProgressDialog();
 						// Intent intent = new Intent(Login.this, Main.class);
-						
+
 						Intent intent = new Intent(Login.this, MainContent.class);
 						Login.this.startActivity(intent);
 						Login.this.finish();
@@ -228,8 +228,9 @@ public class Login extends BaseActivity {
 					}).start();
 
 					// Intent intent = new Intent(Login.this, Main.class);
-//					Intent intent = new Intent(Login.this, MainContent.class);
-					Intent intent = new Intent(Login.this, ScheduleActivity.class);
+					Intent intent = new Intent(Login.this, MainContent.class);
+					// Intent intent = new Intent(Login.this,
+					// ScheduleActivity.class);
 					Login.this.startActivity(intent);
 					Login.this.finish();
 					break;
@@ -267,7 +268,7 @@ public class Login extends BaseActivity {
 							content += "任务附件";
 						}
 					}
-					showNotification(AppApplication.getInstance(), target, b, content, "调度系统",
+					showNotification(AppApplication.getInstance(), target, b, content, "江陵县云检系统",
 							content);
 					break;
 				case Constants.MQTT_UPDATE_FAIL:

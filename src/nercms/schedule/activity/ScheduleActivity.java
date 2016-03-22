@@ -110,9 +110,9 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 		bt4.setOnClickListener(this);
 		bt4.setVisibility(View.GONE);
 		 
-		Intent intent = new Intent(ScheduleActivity.this, MainContent.class);
-		startActivity(intent);
-		moveTaskToBack(true);
+//		Intent intent = new Intent(ScheduleActivity.this, MainContent.class);
+//		startActivity(intent);
+//		moveTaskToBack(true);
 	}
 
 	@Override
