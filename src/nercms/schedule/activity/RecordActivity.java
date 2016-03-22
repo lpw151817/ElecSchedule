@@ -43,6 +43,8 @@ public class RecordActivity extends BaseActivity implements OnClickListener {
     private int recordState = 0; // 录音状态
     private float recodeTime = 0.0f; // 录音时长，如果录音时间太短则录音失败
     private boolean isCanceled = false; // 是否取消录音
+    
+    private final float  MAX_TIME = 60.0f;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

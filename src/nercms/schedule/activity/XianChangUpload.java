@@ -13,10 +13,12 @@ import java.util.Map;
 
 import nercms.schedule.R;
 import nercms.schedule.utils.LocalConstant;
+import nercms.schedule.utils.MyGPS;
 import nercms.schedule.utils.Utils;
 import nercms.schedule.view.FixedGridLayout;
 import nercms.schedule.view.PlayVideo;
 import nercms.schedule.view.RoundAngleImageView;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
@@ -30,6 +32,8 @@ import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
@@ -48,7 +52,18 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.wxapp.service.AppApplication;
 import android.wxapp.service.elec.dao.PlanTaskDao;
+import android.wxapp.service.elec.model.StartTaskResponse;
+import android.wxapp.service.elec.model.UploadTaskAttachmentResponse;
+import android.wxapp.service.elec.model.bean.Attachments;
+import android.wxapp.service.elec.model.bean.GPS;
+import android.wxapp.service.elec.model.bean.TaskAttachment;
+import android.wxapp.service.elec.request.Constants;
+import android.wxapp.service.elec.request.WebRequestManager;
+import android.wxapp.service.handler.MessageHandlerManager;
+import android.wxapp.service.jerry.model.normal.NormalServerResponse;
+import android.wxapp.service.util.Constant;
 import android.wxapp.service.util.HttpUploadTask;
 
 /*
@@ -143,16 +158,22 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 	private Context c;
 
 	String tid;
+	
+	WebRequestManager requestManager;
+	int enterType;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_xian_chang_upload);
+		
+		requestManager = new WebRequestManager(AppApplication.getInstance(),
+				this);
 
 		iniActionBar(true, null, null);
 
 		tid = getIntent().getStringExtra("tid");
-
+		enterType = getIntent().getIntExtra("enterType", -1);
 		c = XianChangUpload.this;
 
 		bt_select = (Button) findViewById(R.id.select);
@@ -164,7 +185,6 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 			bt_shangchuangAttach.setVisibility(View.GONE);
 		}
 
-		// bt_upload = (Button) findViewById(R.id.upload);
 
 		WindowManager wm = (WindowManager) this
 				.getSystemService(Context.WINDOW_SERVICE);
@@ -201,6 +221,8 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		bt_select.setOnClickListener(this);
 		bt_shangchuangAttach.setOnClickListener(this);
 
+		position = getIntent().getIntExtra("position", -1);
+		initHandler();
 	}
 
 	@Override
@@ -373,7 +395,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 			}
 			
 			
-			
+			mUnUploadFileCount  = mUnUploadUrl.size();
 			//上传
 			for (Map<String, Object> map : mUnUploadUrl) {
 				if (map != null) {
@@ -1418,6 +1440,241 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		bitmap = ThumbnailUtils.extractThumbnail(bitmap, width, height,
 				ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
 		return bitmap;
+	}
+	
+	Handler handler;
+
+	private int mUnUploadFileCount = 0;//记录为上传的附件数目
+
+	private int position;
+	
+	
+	@SuppressLint("HandlerLeak")
+	private void initHandler() {
+		handler = new Handler() {
+
+			@Override
+			public void handleMessage(Message msg) {
+
+				switch (msg.what) {
+				case Constant.FILE_UPLOAD_SUCCESS:// 当所有的附件都上传完了之后finish当前页面
+
+					mUnUploadFileCount--;
+					Log.i("TAG", "count : " + mUnUploadFileCount);
+					if (mUnUploadFileCount == 0) {
+
+						Toast.makeText(XianChangUpload.this, "上传成功",
+								Toast.LENGTH_SHORT).show();
+						// 请求http接口
+						List<TaskAttachment> attachment = new ArrayList<TaskAttachment>();
+//						for (int i = 0; i < mUnUploadUrl.size(); i++) {
+							StringBuilder standard = new StringBuilder(
+									"standard");
+							// 作业现场
+							if (enterType == 1) {
+								switch (position) {
+								// 工作票
+								case 0:
+									standard.append("01");
+									break;
+								case 1:
+									standard.append("02");
+									break;
+								case 2:
+									standard.append("03");
+									break;
+								case 3:
+									standard.append("04");
+									break;
+								case 4:
+									standard.append("05");
+									break;
+								case 5:
+									standard.append("06");
+									break;
+								}
+							}
+							// 操作现场
+							else if (enterType == 2) {
+								switch (position) {
+								case 0:
+									standard.append("07");
+									break;
+								case 1:
+									standard.append("08");
+									break;
+								case 2:
+									standard.append("09");
+									break;
+								case 3:
+									standard.append("10");
+									break;
+								case 4:
+									standard.append("11");
+									break;
+								}
+							}
+							// 故障抢修
+							else if (enterType == 3) {
+								switch (position) {
+								case 0:
+									standard.append("01");
+									break;
+								case 1:
+									standard.append("02");
+									break;
+								case 2:
+									standard.append("03");
+									break;
+								case 3:
+									standard.append("04");
+									break;
+								case 4:
+									standard.append("05");
+									break;
+								case 5:
+									standard.append("06");
+									break;
+								}
+							}
+
+							List<Attachments> sublist = new ArrayList<Attachments>();
+							String server = android.wxapp.service.elec.request.Contants.HFS_URL;
+							for (int j = 0; j < mUnUploadUrl.size(); j++) {
+								Map<String, Object> attItem = mUnUploadUrl.get(j);
+										
+
+								if (attItem == null) {
+									return;
+								}
+
+								String filePath = (String) attItem.get("path");
+								String type = Utils.judgeFileLeixin(filePath);
+								if (type != null) {
+
+									MyGPS myGPS = (MyGPS) attItem.get("gps");
+									// 参数修改
+									GPS gps = new GPS(getUserId(),
+											Utils.formatDateMs(System
+													.currentTimeMillis()),
+											myGPS.getLongitude() + "",
+											myGPS.getLatitude() + "", "",
+											myGPS.getRadius() + "",
+											myGPS.getAltitude() + "",
+											myGPS.getSpeed() + "",
+											Utils.formatDateMs(System
+													.currentTimeMillis()),
+											myGPS.getCoorType(), "");
+
+									// String md5 = DigestUtils
+									// .md5Hex(new FileInputStream(new
+									// File(filePath)));
+									String md5 = Utils.getFileMD5(new File(
+											filePath));
+									Attachments att = new Attachments(type,
+											server + File.separator
+													+ path2FileName(filePath),
+											(String) attItem.get("time"), gps,
+											md5);
+									sublist.add(att);
+
+								}
+							}
+							TaskAttachment item = new TaskAttachment(
+									standard.toString(), sublist);
+							attachment.add(item);
+
+						requestManager.uploadTaskAttachment(XianChangUpload.this,
+								tid, enterType + "", attachment);
+
+					}
+
+					break;
+				case Constant.FILE_UPLOAD_FAIL:
+					Toast.makeText(XianChangUpload.this, "上传失败",
+							Toast.LENGTH_SHORT).show();
+					break;
+
+				case Constants.UPLOAD_TASK_ATT_SUCCESS:
+					break;
+				case Constants.END_TASK_SUCCESS:
+					showLongToast("任务已结束");
+					break;
+
+				case Constants.UPLOAD_TASK_ATT_SAVE_FAIL:
+				case Constants.UPLOAD_TASK_ATT_FAIL:
+				case Constants.END_TASK_FAIL:
+				case Constants.END_TASK_SAVE_FAIL:
+					if (msg.obj != null) {
+						showAlterDialog("上传失败",
+								((NormalServerResponse) msg.obj).getEc(),
+								R.drawable.login_error_icon, "确定", null);
+					} else {
+						showAlterDialog("上传失败", "请检查是否与服务器连接正常",
+								R.drawable.login_error_icon, "确定", null);
+					}
+					break;
+				default:
+					break;
+				}
+			}
+
+		};
+
+		MessageHandlerManager.getInstance().register(handler,
+				Constant.FILE_UPLOAD_FAIL, "XianChangUpload");
+		MessageHandlerManager.getInstance().register(handler,
+				Constant.FILE_UPLOAD_SUCCESS, "XianChangUpload");
+
+		MessageHandlerManager.getInstance().register(handler,
+				Constants.UPLOAD_TASK_ATT_SUCCESS,
+				UploadTaskAttachmentResponse.class.getName());
+		MessageHandlerManager.getInstance().register(handler,
+				Constants.UPLOAD_TASK_ATT_SAVE_FAIL,
+				UploadTaskAttachmentResponse.class.getName());
+		MessageHandlerManager.getInstance().register(handler,
+				Constants.UPLOAD_TASK_ATT_FAIL,
+				UploadTaskAttachmentResponse.class.getName());
+
+		MessageHandlerManager.getInstance().register(handler,
+				Constants.END_TASK_SUCCESS, StartTaskResponse.class.getName());
+		MessageHandlerManager.getInstance().register(handler,
+				Constants.END_TASK_FAIL, StartTaskResponse.class.getName());
+		MessageHandlerManager.getInstance()
+				.register(handler, Constants.END_TASK_SAVE_FAIL,
+						StartTaskResponse.class.getName());
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+
+		MessageHandlerManager.getInstance().unregister(
+				Constant.FILE_UPLOAD_FAIL, "XianChangUpload");
+		MessageHandlerManager.getInstance().unregister(
+				Constant.FILE_UPLOAD_SUCCESS, "XianChangUpload");
+
+		MessageHandlerManager.getInstance().unregister(
+				Constants.UPLOAD_TASK_ATT_SUCCESS,
+				UploadTaskAttachmentResponse.class.getName());
+		MessageHandlerManager.getInstance().unregister(
+				Constants.UPLOAD_TASK_ATT_SAVE_FAIL,
+				UploadTaskAttachmentResponse.class.getName());
+		MessageHandlerManager.getInstance().unregister(
+				Constants.UPLOAD_TASK_ATT_FAIL,
+				UploadTaskAttachmentResponse.class.getName());
+
+		MessageHandlerManager.getInstance().unregister(
+				Constants.END_TASK_SUCCESS, StartTaskResponse.class.getName());
+		MessageHandlerManager.getInstance().unregister(Constants.END_TASK_FAIL,
+				StartTaskResponse.class.getName());
+		MessageHandlerManager.getInstance()
+				.unregister(Constants.END_TASK_SAVE_FAIL,
+						StartTaskResponse.class.getName());
+	}
+	
+	private String path2FileName(String path) {
+		return path.substring(path.lastIndexOf(File.separator) + 1);
 	}
 
 }
