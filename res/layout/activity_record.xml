@@ -48,6 +48,7 @@
             android:layout_margin="10dp"
             android:background="@drawable/btn_style_green"
             android:textColor="#ffffff" 
+            android:visibility="gone"
             android:text="停止录音"
             />
     </LinearLayout>

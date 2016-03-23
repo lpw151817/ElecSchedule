@@ -18,11 +18,11 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class SecondFragment extends Fragment  implements OnClickListener{
+public class SecondFragment extends Fragment implements OnClickListener {
 	private View view;
 	Context context;
 	int mcount = 0;
-	
+
 	private Button bt_delayedTask;
 	private Button bt_performingTask;
 	private Button bt_completedTask;
@@ -33,12 +33,15 @@ public class SecondFragment extends Fragment  implements OnClickListener{
 
 	public SecondFragment(Context context, int count) {
 		this.context = context;
-		mcount  = count;
+		mcount = count;
+	}
+
+	public SecondFragment() {
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater,
-			 ViewGroup container,  Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 		view = inflater.inflate(R.layout.tab02, container, false);
 		mNewTask2 = (Button) view.findViewById(R.id.tab02_bt_newtask);
 		bt_delayedTask = (Button) view.findViewById(R.id.tab02_bt_delaytask);
@@ -46,11 +49,11 @@ public class SecondFragment extends Fragment  implements OnClickListener{
 		bt_completedTask = (Button) view.findViewById(R.id.tab02_bt_finishedtask);
 		bt_cancelledTask = (Button) view.findViewById(R.id.tab02_bt_cancelledtask);
 		LinearLayout layout = (LinearLayout) view.findViewById(R.id.newtasklayout);
-		
+
 		badge = new com.jauker.widget.BadgeView(context);
 		badge.setText(mcount + "");
 		badge.setTargetView(mNewTask2);
-		
+
 		mNewTask2.setOnClickListener(this);
 		bt_delayedTask.setOnClickListener(this);
 		bt_performingTask.setOnClickListener(this);
@@ -58,7 +61,7 @@ public class SecondFragment extends Fragment  implements OnClickListener{
 		bt_cancelledTask.setOnClickListener(this);
 		return view;
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -69,7 +72,7 @@ public class SecondFragment extends Fragment  implements OnClickListener{
 	@Override
 	public void onClick(View v) {
 		Intent intent = new Intent(context, TaskList.class);
-//		 0,新的任务；1,执行中；2,延误；3,完成；4,取消任务。 null则不查询此字段
+		// 0,新的任务；1,执行中；2,延误；3,完成；4,取消任务。 null则不查询此字段
 		switch (v.getId()) {
 		case R.id.tab02_bt_newtask:
 			intent.putExtra("enterType", 2);
@@ -82,19 +85,19 @@ public class SecondFragment extends Fragment  implements OnClickListener{
 			intent.putExtra("statue", "2");
 			startActivity(intent);
 			break;
-			
+
 		case R.id.tab02_bt_performtask:
 			intent.putExtra("enterType", 2);
 			intent.putExtra("statue", "1");
 			startActivity(intent);
 			break;
-			
+
 		case R.id.tab02_bt_finishedtask:
 			intent.putExtra("enterType", 2);
 			intent.putExtra("statue", "3");
 			startActivity(intent);
 			break;
-			
+
 		case R.id.tab02_bt_cancelledtask:
 			intent.putExtra("enterType", 2);
 			intent.putExtra("statue", "4");
@@ -105,7 +108,5 @@ public class SecondFragment extends Fragment  implements OnClickListener{
 			break;
 		}
 	}
-	
-	
-	
+
 }

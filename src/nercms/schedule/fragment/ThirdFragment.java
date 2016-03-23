@@ -1,6 +1,5 @@
 package nercms.schedule.fragment;
 
-
 import nercms.schedule.R;
 import nercms.schedule.activity.MainContent;
 import nercms.schedule.activity.TaskList;
@@ -15,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-public class ThirdFragment extends Fragment implements OnClickListener{
+public class ThirdFragment extends Fragment implements OnClickListener {
 	private View view;
 	Context context;
 	int mcount = 0;
@@ -25,15 +24,18 @@ public class ThirdFragment extends Fragment implements OnClickListener{
 	private Button bt_completedTask;
 	private Button bt_cancelledTask;
 	private com.jauker.widget.BadgeView badge;
-	
+
 	public ThirdFragment(Context context, int count) {
 		this.context = context;
 		mcount = count;
 	}
 
+	public ThirdFragment() {
+	}
+
 	@Override
-	public View onCreateView(LayoutInflater inflater,
-			 ViewGroup container,  Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 		view = inflater.inflate(R.layout.tab03, container, false);
 		mNewTask = (Button) view.findViewById(R.id.tab03_bt_newtask);
 		bt_delayedTask = (Button) view.findViewById(R.id.tab03_bt_delaytask);
@@ -41,12 +43,11 @@ public class ThirdFragment extends Fragment implements OnClickListener{
 		bt_completedTask = (Button) view.findViewById(R.id.tab03_bt_finishedtask);
 		bt_cancelledTask = (Button) view.findViewById(R.id.tab03_bt_cancelledtask);
 		LinearLayout layout = (LinearLayout) view.findViewById(R.id.newtasklayout);
-		
-		badge = new com.jauker.widget.BadgeView(
-				context);
+
+		badge = new com.jauker.widget.BadgeView(context);
 		badge.setText(mcount + "");
 		badge.setTargetView(mNewTask);
-		
+
 		mNewTask.setOnClickListener(this);
 		bt_delayedTask.setOnClickListener(this);
 		bt_performingTask.setOnClickListener(this);
@@ -54,7 +55,7 @@ public class ThirdFragment extends Fragment implements OnClickListener{
 		bt_cancelledTask.setOnClickListener(this);
 		return view;
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -65,7 +66,7 @@ public class ThirdFragment extends Fragment implements OnClickListener{
 	@Override
 	public void onClick(View v) {
 		Intent intent = new Intent(context, TaskList.class);
-//		 0,新的任务；1,执行中；2,延误；3,完成；4,取消任务。 null则不查询此字段
+		// 0,新的任务；1,执行中；2,延误；3,完成；4,取消任务。 null则不查询此字段
 		switch (v.getId()) {
 		case R.id.tab03_bt_newtask:
 			intent.putExtra("enterType", 3);
@@ -78,19 +79,19 @@ public class ThirdFragment extends Fragment implements OnClickListener{
 			intent.putExtra("statue", "2");
 			startActivity(intent);
 			break;
-			
+
 		case R.id.tab03_bt_performtask:
 			intent.putExtra("enterType", 3);
 			intent.putExtra("statue", "1");
 			startActivity(intent);
 			break;
-			
+
 		case R.id.tab03_bt_finishedtask:
 			intent.putExtra("enterType", 3);
 			intent.putExtra("statue", "3");
 			startActivity(intent);
 			break;
-			
+
 		case R.id.tab03_bt_cancelledtask:
 			intent.putExtra("enterType", 3);
 			intent.putExtra("statue", "4");
@@ -100,6 +101,6 @@ public class ThirdFragment extends Fragment implements OnClickListener{
 		default:
 			break;
 		}
-		
+
 	}
 }
