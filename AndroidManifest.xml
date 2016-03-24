@@ -300,12 +300,14 @@
         <activity
             android:name=".activity.ScheduleActivity"
             android:label="@string/title_activity_schedule"
+            android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" >
         </activity>
         <activity
             android:name=".activity.SchedulePersonActivity"
             android:label="@string/title_activity_schedule_person"
+            android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" >
         </activity>

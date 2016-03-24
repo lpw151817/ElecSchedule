@@ -312,6 +312,10 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 						+ File.separator + mediaName;
 
 				File file = new File(filePath);
+
+				if (!file.getParentFile().exists())
+					file.mkdirs();
+
 				if (!file.exists()) {// 文件有缓存，就不需要下载了
 					new HttpDownloadTask(XianChangAdd.this).execute(downUrl,
 							"/nercms-Schedule/DownloadAttachments/", mediaName);// 将附件下载下来
@@ -450,7 +454,8 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 				if (mFileName.size() != 0) {
 					File attachmentFile = new File(mFileName.get(mFileName.size() - 1));
-
+					if (!attachmentFile.getParentFile().exists())
+						attachmentFile.mkdirs();
 					if (!attachmentFile.exists()) {
 						Toast.makeText(XianChangAdd.this, "附件正在下载", Toast.LENGTH_SHORT).show();
 						// enterFlag = true;

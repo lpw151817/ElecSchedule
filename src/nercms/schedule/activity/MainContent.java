@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.nercms.schedule.ui.MediaInstance;
+
 import nercms.schedule.R;
 import nercms.schedule.fragment.FirstFragment;
 import nercms.schedule.fragment.SecondFragment;
@@ -16,6 +18,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -220,9 +223,12 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		case 1:
 			// startActivity(ScheduleActivity.class);
 			// 将页面调至前台
-			Intent intent2 = new Intent(getApplicationContext(), ScheduleActivity.class);
-			intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-			getApplicationContext().startActivity(intent2);
+			// Intent intent2 = new Intent(getApplicationContext(),
+			// ScheduleActivity.class);
+			// intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+			// Intent.FLAG_ACTIVITY_SINGLE_TOP);
+			// getApplicationContext().startActivity(intent2);
+			ScheduleActivity.wakeUp(MainContent.this, null);
 			break;
 		case 3:
 			// 添加日计划
@@ -264,4 +270,14 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 	protected void startActivity(Class<?> targetActivity) {
 		startActivity(null, targetActivity);
 	}
+
+	@Override
+	public void onBackPressed() {
+		Log.e("Demo", "api shutdown");
+		MediaInstance.instance().api_shutdown();
+		super.onBackPressed();
+//		finish();
+		System.exit(0);
+	}
+	
 }

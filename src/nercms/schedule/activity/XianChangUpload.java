@@ -416,6 +416,8 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 			mImagePath = NewTask.fileFolder + File.separator + getFileDate() + ".jpg";
 			// 根据文件地址创建文件
 			File imagefile = new File(mImagePath);
+			if (!imagefile.getParentFile().exists())
+				imagefile.mkdirs();
 			if (imagefile.exists()) {
 				imagefile.delete();
 			}
@@ -435,6 +437,8 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 			fileName = getFileDate();
 			videopath = NewTask.fileFolder + "/" + fileName + ".mp4";
 			File file = new File(videopath);
+			if (!file.getParentFile().exists())
+				file.mkdirs();
 			if (file.exists()) {
 				file.delete();
 			}
@@ -847,6 +851,8 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 						mFilePath = (String) map.get("path");
 
 						File mfile = new File(mFilePath);
+						if (!mfile.getParentFile().exists())
+							mfile.mkdirs();
 						if (mfile.exists()) {// 针对的是从网络上下载附件的时候，没有下载完成，就点击进入，会显示不了附件
 							// mFilePath = (String)
 							// getIntent().getCharSequenceExtra("path");

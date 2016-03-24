@@ -200,10 +200,11 @@ public class Login extends BaseActivity {
 					} else {
 						showLongToast("无法更新数据，请检查是否与服务器连接正常");
 						dismissProgressDialog();
-						// Intent intent = new Intent(Login.this, Main.class);
 
-						Intent intent = new Intent(Login.this, MainContent.class);
-						Login.this.startActivity(intent);
+						// Intent intent = new Intent(Login.this,
+						// MainContent.class);
+						// Login.this.startActivity(intent);
+						ScheduleActivity.wakeUp(Login.this, null);
 						Login.this.finish();
 					}
 					break;
@@ -227,11 +228,11 @@ public class Login extends BaseActivity {
 						}
 					}).start();
 
-					// Intent intent = new Intent(Login.this, Main.class);
-					Intent intent = new Intent(Login.this, MainContent.class);
 					// Intent intent = new Intent(Login.this,
-					// ScheduleActivity.class);
-					Login.this.startActivity(intent);
+					// MainContent.class);
+					// Login.this.startActivity(intent);
+
+					ScheduleActivity.wakeUp(Login.this, null);
 					Login.this.finish();
 					break;
 
