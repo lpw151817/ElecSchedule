@@ -21,8 +21,8 @@
 			android:layout_gravity="center"
 			android:gravity="center"
 			android:background="#00ff0000"
-			android:layout_width="288px"
-			android:layout_height="352px"
+			android:layout_width="250dp"
+			android:layout_height="350dp"
 			android:layout_marginBottom="2px"
 			android:layout_marginTop="2px"
 			android:visibility="visible">
@@ -32,8 +32,8 @@
 			android:layout_gravity="center"
 			android:gravity="center"
 			android:background="#00ff0000"
-			android:layout_width="288px"
-			android:layout_height="352px"
+			android:layout_width="250dp"
+			android:layout_height="350dp"
 			android:layout_marginBottom="2px"
 			android:layout_marginTop="2px"
 			android:visibility="visible">

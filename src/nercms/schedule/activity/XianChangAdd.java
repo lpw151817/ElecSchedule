@@ -166,37 +166,41 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 					if (isfull()) {
 
-						AlertDialog.Builder builder = new AlertDialog.Builder(XianChangAdd.this)
-								.setMessage("是否结束任务");
-						builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
+						if (mVideo.size() == 0) {
+							requestManager.endTask(XianChangAdd.this, tid,
+									System.currentTimeMillis() + "");
+						} else {
+							AlertDialog.Builder builder = new AlertDialog.Builder(XianChangAdd.this)
+									.setMessage("是否结束任务");
+							builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
 
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
 
-								fileCount = getFileCount();// 获取文件的个数，上传完后finish当前页免
-								// Log.e("TAG", "xianChangAdd fileCount : "+
-								// fileCount);
-								isClickShangchuanfujian = false;
-								attachmentUploadRequest();// 上传附件
+									fileCount = getFileCount();// 获取文件的个数，上传完后finish当前页免
+									// Log.e("TAG", "xianChangAdd fileCount : "+
+									// fileCount);
+									isClickShangchuanfujian = false;
+									attachmentUploadRequest();// 上传附件
 
-								isEnd = true;
+									isEnd = true;
 
-							}
-						});
+								}
+							});
 
-						builder.setNegativeButton("否", new DialogInterface.OnClickListener() {
+							builder.setNegativeButton("否", new DialogInterface.OnClickListener() {
 
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
 
-							}
-						});
+								}
+							});
 
-						AlertDialog dialog = builder.create();
-						dialog.show();
-
+							AlertDialog dialog = builder.create();
+							dialog.show();
+						}
 					} else {
-						Utils.showToast(XianChangAdd.this, "必须每一项都有附件才能接受");
+						Utils.showToast(XianChangAdd.this, "必须每一项都有附件才能结束");
 					}
 				}
 			}

@@ -276,8 +276,8 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		Log.e("Demo", "api shutdown");
 		MediaInstance.instance().api_shutdown();
 		super.onBackPressed();
-//		finish();
+		// finish();
 		System.exit(0);
 	}
-	
+
 }

@@ -83,7 +83,7 @@ public class Push {
 			@Override
 			public int onMessageArrivedFunc(String client_id, String tag, int msg_len, String msg,
 					int msg_qos, int duplicate_count) {
-				Log.v("onMessageArrivedFunc...", msg);
+				Log.v(TAG, msg);
 				// 进行到达消息的处理
 				try {
 

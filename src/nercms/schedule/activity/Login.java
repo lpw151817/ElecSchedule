@@ -233,7 +233,7 @@ public class Login extends BaseActivity {
 					// Login.this.startActivity(intent);
 
 					ScheduleActivity.wakeUp(Login.this, null);
-					Login.this.finish();
+//					Login.this.finish();
 					break;
 
 				case Constants.LOGIN_UPDATE_SAVE_FAIL:
@@ -501,5 +501,10 @@ public class Login extends BaseActivity {
 
 		n.setLatestEventInfo(c, title, content, contentIntent);
 		nm.notify(R.string.app_name, n);
+	}
+	
+	@Override
+	public void finish() {
+//		super.finish();
 	}
 }

@@ -15,6 +15,7 @@ import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore.Audio.Media;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.SurfaceView;
@@ -77,10 +78,12 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 				changeVisibility(View.VISIBLE, bt1, bt2);
 				changeVisibility(View.GONE, bt3, bt4);
 				Toast.makeText(ScheduleActivity.this, "调度结束", Toast.LENGTH_SHORT).show();
+				onBackPressed();
 				break;
 
 			case GID.MSG_RECV_CANCEL:
 				Toast.makeText(ScheduleActivity.this, "主叫方放弃调度", Toast.LENGTH_SHORT).show();
+				onBackPressed();
 				break;
 
 			default:
@@ -115,6 +118,7 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 		// surfaceView.setVisibility(View.GONE);
 		MediaInstance.instance().api_start(getApplicationContext(), server_ip_wan, server_ip_lan,
 				true, server_port, self_id, encrypt_info);
+		MediaInstance.instance().api_set_video_render_scale(2.8f);
 		MediaInstance.instance().api_set_msg_callback(this);
 		MediaInstance.instance().api_set_video_view(video_render_view, video_capture_view);
 
@@ -140,7 +144,7 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 	public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			finish();
+			onBackPressed();
 			break;
 		}
 		return super.onOptionsItemSelected(item);
@@ -190,6 +194,7 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 			changeVisibility(View.GONE, bt4);
 			changeVisibility(View.VISIBLE, bt1, bt2);
 			MediaInstance.instance().api_shutdown_schedule();
+			onBackPressed();
 			break;
 		}
 		refresh_view();
@@ -259,48 +264,31 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 
 		MediaInstance.instance().api_set_msg_callback(this);
 		MediaInstance.instance().api_set_video_view(video_render_view, video_capture_view);// layout_inflater.inflate(R.layout.videorender,
-		// null));
+																							// null));
 
 		if (true == GD.is_in_schedule()) {
 			if (false == GD._i_am_video_source) {
 				Log.v("Demo", "not video source");
 				video_capture_view.getHolder().setFormat(PixelFormat.TRANSPARENT);
 				video_capture_view.setZOrderOnTop(false);
+				video_capture_view.setZOrderMediaOverlay(false);
 				video_render_view.setZOrderOnTop(true);
 				video_render_view.setZOrderMediaOverlay(true);
 			} else {
 				Log.v("Demo", "video source");
 				video_render_view.getHolder().setFormat(PixelFormat.TRANSPARENT);
 				video_render_view.setZOrderOnTop(false);
+				video_render_view.setZOrderMediaOverlay(false);
 				video_capture_view.setZOrderOnTop(true);
 				video_capture_view.setZOrderMediaOverlay(true);
 			}
+		} else {
+			video_render_view.setZOrderOnTop(false);
+			video_render_view.setZOrderMediaOverlay(false);
+			video_capture_view.setZOrderOnTop(true);
+			video_capture_view.setZOrderMediaOverlay(true);
 		}
 	}
-	// private void refresh_view() {
-	// video_render_view = (SurfaceView) findViewById(R.id.videorenderview);
-	// video_capture_view = (SurfaceView) findViewById(R.id.videocaptureview);
-	//
-	// MediaInstance.instance().api_set_msg_callback(this);
-	// MediaInstance.instance().api_set_video_view(video_render_view,
-	// video_capture_view);// layout_inflater.inflate(R.layout.videorender,
-	// // null));
-	//
-	// // video_render_view.setZOrderMediaOverlay(true);
-	// video_capture_view.setZOrderMediaOverlay(true);
-	//
-	// if (true == GD.is_in_schedule()) {
-	// if (false == GD._i_am_video_source) {
-	// Log.v("Demo", "not video source");
-	// video_render_view.setZOrderMediaOverlay(true);
-	// video_capture_view.getHolder().setFormat(PixelFormat.TRANSPARENT);
-	// } else {
-	// Log.v("Demo", "video source");
-	// video_capture_view.setZOrderMediaOverlay(true);
-	// video_render_view.getHolder().setFormat(PixelFormat.TRANSPARENT);
-	// }
-	// }
-	// }
 
 	@Override
 	public void onBackPressed() {
