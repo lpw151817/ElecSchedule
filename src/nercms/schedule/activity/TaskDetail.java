@@ -687,18 +687,18 @@ public class TaskDetail extends BaseActivity {
 
 	@Override
 	protected void onDestroy() {
-		MessageHandlerManager.getInstance().unregister(Constant.FILE_DOWNLOAD_SUCCESS,
-				"TaskDetail");
-		MessageHandlerManager.getInstance().unregister(Constant.END_TASK_REQUEST_SUCCESS,
-				"TaskDetail");
-		MessageHandlerManager.getInstance().unregister(Constant.MODIFY_TASK_REQUEST_SUCCESS,
-				"TaskDetail");
-		MessageHandlerManager.getInstance().unregister(Constant.END_TASK_REQUEST_SUCCESS,
-				Contants.METHOD_AFFAIRS_END_TASK);
-		MessageHandlerManager.getInstance().unregister(Constant.QUERY_TASK_INFO_REQUEST_SUCCESS,
-				Contants.METHOD_AFFAIRS_QUERY_INFO);
-		MessageHandlerManager.getInstance().unregister(Constant.QUERY_TASK_INFO_REQUEST_FAIL,
-				Contants.METHOD_AFFAIRS_QUERY_INFO);
+//		MessageHandlerManager.getInstance().unregister(Constant.FILE_DOWNLOAD_SUCCESS,
+//				"TaskDetail");
+//		MessageHandlerManager.getInstance().unregister(Constant.END_TASK_REQUEST_SUCCESS,
+//				"TaskDetail");
+//		MessageHandlerManager.getInstance().unregister(Constant.MODIFY_TASK_REQUEST_SUCCESS,
+//				"TaskDetail");
+//		MessageHandlerManager.getInstance().unregister(Constant.END_TASK_REQUEST_SUCCESS,
+//				Contants.METHOD_AFFAIRS_END_TASK);
+//		MessageHandlerManager.getInstance().unregister(Constant.QUERY_TASK_INFO_REQUEST_SUCCESS,
+//				Contants.METHOD_AFFAIRS_QUERY_INFO);
+//		MessageHandlerManager.getInstance().unregister(Constant.QUERY_TASK_INFO_REQUEST_FAIL,
+//				Contants.METHOD_AFFAIRS_QUERY_INFO);
 		freeBitmap();
 		super.onDestroy();
 	}

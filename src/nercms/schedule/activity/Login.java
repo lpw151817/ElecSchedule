@@ -6,6 +6,7 @@ import com.Generate_md5;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.SubMenu;
+import com.nercms.MQTT;
 import com.nercms.Push;
 
 import android.annotation.SuppressLint;
@@ -37,6 +38,7 @@ import android.wxapp.service.elec.model.LoginResponse;
 import android.wxapp.service.elec.model.NormalServerResponse;
 import android.wxapp.service.elec.model.UpdateResponse;
 import android.wxapp.service.elec.request.Constants;
+import android.wxapp.service.elec.request.Contants;
 import android.wxapp.service.elec.request.WebRequestManager;
 import android.wxapp.service.handler.MessageHandlerManager;
 import android.wxapp.service.jerry.model.mqtt.MqttResponse;
@@ -213,27 +215,32 @@ public class Login extends BaseActivity {
 					dismissProgressDialog();
 					showLog_v("更新完成《《《《《《《《《《《《《《《");
 
-					// MQTT
-					// 新建线程去进行MQTT连接
-					new Thread(new Runnable() {
-						@Override
-						public void run() {
-							Looper.prepare();
-							Push.PERSON_ID = getUserId();
-							Push.get_instance(AppApplication.getInstance()).ini();
+					MQTT.SERVER_URL = "tcp://" + Contants.MQTT_SERVER + ":" + Contants.MQTT_PORT;
+					MQTT.CLIENT_ID = "m_" + getUserId();
+					MQTT.get_instance().publish_message(
+							MQTT.SUBSCRIBE_TOPIC_PREFIX + "m_" + getUserId(), "This is test", 1);
 
-							// Push.get_instance(Login.this)
-							// .pushMsgToTag("nercms/schedule/m_" + getUserId(),
-							// "123123", 1);
-						}
-					}).start();
+					// // MQTT
+					// // 新建线程去进行MQTT连接
+					// new Thread(new Runnable() {
+					// @Override
+					// public void run() {
+					// Looper.prepare();
+					// Push.PERSON_ID = getUserId();
+					// Push.get_instance(AppApplication.getInstance()).ini();
+
+					// Push.get_instance(Login.this)
+					// .pushMsgToTag("nercms/schedule/m_" + getUserId(),
+					// "123123", 1);
+					// }
+					// }).start();
 
 					// Intent intent = new Intent(Login.this,
 					// MainContent.class);
 					// Login.this.startActivity(intent);
 
 					ScheduleActivity.wakeUp(Login.this, null);
-//					Login.this.finish();
+					// Login.this.finish();
 					break;
 
 				case Constants.LOGIN_UPDATE_SAVE_FAIL:
@@ -249,24 +256,34 @@ public class Login extends BaseActivity {
 					Class target = null;
 					Bundle b = null;
 					b = new Bundle();
-					String content = "您有新的";
+					String content = "";
 					target = TaskSelectorActivity.class;
 					if (response != null) {
 						if (response.getType().equals("1")) {
 							// 开始和结束任务推送给领导
 							b.putInt("enterType", 0);
 							b.putString("tid", response.getId());
-							content += "任务";
+							content += "您有新的任务";
 						} else if (response.getType().equals("2")) {
 							// 新建指令时进行推送给任务负责人
 							b.putString("tid", new TaskInsDao(AppApplication.getInstance())
 									.getTaskId(response.getId()));
-							content += "消息";
+							content += "您有新的消息";
 						} else if (response.getType().equals("3")) {
 							// 上传附件后，推送给应上岗到位领导，如果没有就不推送
 							b.putInt("enterType", 0);
 							b.putString("tid", response.getId());
-							content += "任务附件";
+							content += "您有新的任务附件";
+						} else if (response.getType().equals("4")) {
+							// 上传附件后，推送给应上岗到位领导，如果没有就不推送
+							b.putInt("enterType", 0);
+							b.putString("tid", response.getId());
+							content += "任务已开始";
+						} else if (response.getType().equals("5")) {
+							// 上传附件后，推送给应上岗到位领导，如果没有就不推送
+							b.putInt("enterType", 0);
+							b.putString("tid", response.getId());
+							content += "任务已结束";
 						}
 					}
 					showNotification(AppApplication.getInstance(), target, b, content, "江陵县云检系统",
@@ -279,6 +296,7 @@ public class Login extends BaseActivity {
 
 			}
 		};
+		MQTT.handler = handler;
 		// 注册Handler
 		registHandler();
 	}
@@ -446,27 +464,29 @@ public class Login extends BaseActivity {
 	protected void onDestroy() {
 		Log.v("Login", "onDestroy,注册Handler");
 		super.onDestroy();
-		MessageHandlerManager.getInstance().unregister(Constants.LOGIN_SUCCESS,
-				LoginResponse.class.getName());
-		MessageHandlerManager.getInstance().unregister(Constants.LOGIN_FAIL,
-				LoginResponse.class.getName());
-
-		MessageHandlerManager.getInstance().unregister(Constants.LOGIN_UPDATE_SUCCESS,
-				UpdateResponse.class.getName());
-		MessageHandlerManager.getInstance().unregister(Constants.LOGIN_UPDATE_SAVE_FAIL,
-				UpdateResponse.class.getName());
-		MessageHandlerManager.getInstance().unregister(Constants.LOGIN_UPDATE_FAIL,
-				UpdateResponse.class.getName());
+		// MessageHandlerManager.getInstance().unregister(Constants.LOGIN_SUCCESS,
+		// LoginResponse.class.getName());
+		// MessageHandlerManager.getInstance().unregister(Constants.LOGIN_FAIL,
+		// LoginResponse.class.getName());
+		//
+		// MessageHandlerManager.getInstance().unregister(Constants.LOGIN_UPDATE_SUCCESS,
+		// UpdateResponse.class.getName());
+		// MessageHandlerManager.getInstance().unregister(Constants.LOGIN_UPDATE_SAVE_FAIL,
+		// UpdateResponse.class.getName());
+		// MessageHandlerManager.getInstance().unregister(Constants.LOGIN_UPDATE_FAIL,
+		// UpdateResponse.class.getName());
 
 	}
 
 	// 注册Handler
 	private void registHandler() {
 
-		MessageHandlerManager.getInstance().register(handler, Constants.MQTT_UPDATE_SUCCESS,
-				UpdateResponse.class.getName());
-		MessageHandlerManager.getInstance().register(handler, Constants.MQTT_UPDATE_FAIL,
-				UpdateResponse.class.getName());
+		// MessageHandlerManager.getInstance().register(handler,
+		// Constants.MQTT_UPDATE_SUCCESS,
+		// UpdateResponse.class.getName());
+		// MessageHandlerManager.getInstance().register(handler,
+		// Constants.MQTT_UPDATE_FAIL,
+		// UpdateResponse.class.getName());
 
 		MessageHandlerManager.getInstance().register(handler, Constants.LOGIN_SUCCESS,
 				LoginResponse.class.getName());
@@ -502,9 +522,5 @@ public class Login extends BaseActivity {
 		n.setLatestEventInfo(c, title, content, contentIntent);
 		nm.notify(R.string.app_name, n);
 	}
-	
-	@Override
-	public void finish() {
-//		super.finish();
-	}
+
 }

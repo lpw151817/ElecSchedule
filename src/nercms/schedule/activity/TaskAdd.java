@@ -1461,13 +1461,13 @@ public class TaskAdd extends BaseActivity {
 
 	@Override
 	protected void onDestroy() {
-		// 注销handler
-		MessageHandlerManager.getInstance().unregister(Constant.CREATE_AFFAIR_REQUEST_SUCCESS,
-				Contants.METHOD_AFFAIRS_ADDAFFAIR);
-		MessageHandlerManager.getInstance().unregister(Constant.CREATE_AFFAIR_REQUEST_FAIL,
-				Contants.METHOD_AFFAIRS_ADDAFFAIR);
-		MessageHandlerManager.getInstance().unregister(Constant.FILE_UPLOAD_FAIL, "TaskAdd");
-		MessageHandlerManager.getInstance().unregister(Constant.FILE_UPLOAD_SUCCESS, "TaskAdd");
+//		// 注销handler
+//		MessageHandlerManager.getInstance().unregister(Constant.CREATE_AFFAIR_REQUEST_SUCCESS,
+//				Contants.METHOD_AFFAIRS_ADDAFFAIR);
+//		MessageHandlerManager.getInstance().unregister(Constant.CREATE_AFFAIR_REQUEST_FAIL,
+//				Contants.METHOD_AFFAIRS_ADDAFFAIR);
+//		MessageHandlerManager.getInstance().unregister(Constant.FILE_UPLOAD_FAIL, "TaskAdd");
+//		MessageHandlerManager.getInstance().unregister(Constant.FILE_UPLOAD_SUCCESS, "TaskAdd");
 
 		System.out.println("TaskAdd OnDestroy");
 		// 回收图片内存

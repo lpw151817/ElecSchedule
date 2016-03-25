@@ -1569,32 +1569,62 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 				StartTaskResponse.class.getName());
 	}
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-
-		MessageHandlerManager.getInstance().unregister(Constant.FILE_UPLOAD_FAIL,
-				"XianChangUpload");
-		MessageHandlerManager.getInstance().unregister(Constant.FILE_UPLOAD_SUCCESS,
-				"XianChangUpload");
-
-		MessageHandlerManager.getInstance().unregister(Constants.UPLOAD_TASK_ATT_SUCCESS,
-				UploadTaskAttachmentResponse.class.getName());
-		MessageHandlerManager.getInstance().unregister(Constants.UPLOAD_TASK_ATT_SAVE_FAIL,
-				UploadTaskAttachmentResponse.class.getName());
-		MessageHandlerManager.getInstance().unregister(Constants.UPLOAD_TASK_ATT_FAIL,
-				UploadTaskAttachmentResponse.class.getName());
-
-		MessageHandlerManager.getInstance().unregister(Constants.END_TASK_SUCCESS,
-				StartTaskResponse.class.getName());
-		MessageHandlerManager.getInstance().unregister(Constants.END_TASK_FAIL,
-				StartTaskResponse.class.getName());
-		MessageHandlerManager.getInstance().unregister(Constants.END_TASK_SAVE_FAIL,
-				StartTaskResponse.class.getName());
-	}
-
 	private String path2FileName(String path) {
 		return path.substring(path.lastIndexOf(File.separator) + 1);
 	}
 
+	@Override
+	protected void onRestart() {
+		Log.v("Demo", getClass().getSimpleName() + "onRestart");
+		super.onRestart();
+	}
+
+	@Override
+	protected void onStart() {
+		Log.v("Demo", getClass().getSimpleName() + "onStart");
+		super.onStart();
+	}
+
+	@Override
+	protected void onResume() {
+		Log.v("Demo", getClass().getSimpleName() + "onResume");
+		super.onResume();
+	}
+
+	@Override
+	protected void onPause() {
+		Log.v("Demo", getClass().getSimpleName() + "onPause");
+		super.onPause();
+//		MessageHandlerManager.getInstance().unregister(Constant.FILE_UPLOAD_FAIL,
+//				"XianChangUpload");
+//		MessageHandlerManager.getInstance().unregister(Constant.FILE_UPLOAD_SUCCESS,
+//				"XianChangUpload");
+//
+//		MessageHandlerManager.getInstance().unregister(Constants.UPLOAD_TASK_ATT_SUCCESS,
+//				UploadTaskAttachmentResponse.class.getName());
+//		MessageHandlerManager.getInstance().unregister(Constants.UPLOAD_TASK_ATT_SAVE_FAIL,
+//				UploadTaskAttachmentResponse.class.getName());
+//		MessageHandlerManager.getInstance().unregister(Constants.UPLOAD_TASK_ATT_FAIL,
+//				UploadTaskAttachmentResponse.class.getName());
+//
+//		MessageHandlerManager.getInstance().unregister(Constants.END_TASK_SUCCESS,
+//				StartTaskResponse.class.getName());
+//		MessageHandlerManager.getInstance().unregister(Constants.END_TASK_FAIL,
+//				StartTaskResponse.class.getName());
+//		MessageHandlerManager.getInstance().unregister(Constants.END_TASK_SAVE_FAIL,
+//				StartTaskResponse.class.getName());
+	}
+
+	@Override
+	protected void onStop() {
+		Log.v("Demo", getClass().getSimpleName() + "onStop");
+		super.onStop();
+	}
+
+	@Override
+	protected void onDestroy() {
+		Log.v("Demo", getClass().getSimpleName() + "onDestroy");
+		super.onDestroy();
+
+	}
 }

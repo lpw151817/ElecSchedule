@@ -26,7 +26,7 @@
                 android:layout_height="wrap_content"
                 android:clickable="false"
                 android:text="作业现场"
-                android:textColor="#0E5D50"
+                android:textColor="@color/orange"
                 android:textSize="17sp" />
         </LinearLayout>
 

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.actionbarsherlock.view.MenuItem;
+import com.baidu.location.b.f;
 
 import nercms.schedule.R;
 import nercms.schedule.adapter.XianChangAddAdapter;
@@ -161,44 +162,44 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 				if (planTaskDao == null)
 					planTaskDao = new PlanTaskDao(XianChangAdd.this);
 				if (!TextUtils.isEmpty(planTaskDao.getPlanTask(tid).getEnd_time())) {
-					showLongToast("任务已结束");
+					showShortToast("任务已结束");
+					findViewById(R.id.bottom).setVisibility(View.GONE);
 				} else {
-
 					if (isfull()) {
+						AlertDialog.Builder builder = new AlertDialog.Builder(XianChangAdd.this)
+								.setMessage("是否结束任务");
+						builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
 
-						if (mVideo.size() == 0) {
-							requestManager.endTask(XianChangAdd.this, tid,
-									System.currentTimeMillis() + "");
-						} else {
-							AlertDialog.Builder builder = new AlertDialog.Builder(XianChangAdd.this)
-									.setMessage("是否结束任务");
-							builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
-
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-
-									fileCount = getFileCount();// 获取文件的个数，上传完后finish当前页免
-									// Log.e("TAG", "xianChangAdd fileCount : "+
-									// fileCount);
-									isClickShangchuanfujian = false;
-									attachmentUploadRequest();// 上传附件
-
-									isEnd = true;
-
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								// 如果没有录像直接结束
+								if (mVideo.size() == 0) {
+									Log.v("Demo", "XianChangAdd : " + handler.toString());
+									requestManager.endTask(XianChangAdd.this, tid,
+											System.currentTimeMillis() + "");
 								}
-							});
+								fileCount = getFileCount();// 获取文件的个数，上传完后finish当前页免
+								// Log.e("TAG", "xianChangAdd fileCount : "+
+								// fileCount);
+								isClickShangchuanfujian = false;
+								attachmentUploadRequest();// 上传附件
 
-							builder.setNegativeButton("否", new DialogInterface.OnClickListener() {
+								isEnd = true;
 
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
+							}
+						});
 
-								}
-							});
+						builder.setNegativeButton("否", new DialogInterface.OnClickListener() {
 
-							AlertDialog dialog = builder.create();
-							dialog.show();
-						}
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+
+							}
+						});
+
+						AlertDialog dialog = builder.create();
+						dialog.show();
+
 					} else {
 						Utils.showToast(XianChangAdd.this, "必须每一项都有附件才能结束");
 					}
@@ -320,7 +321,9 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 				if (!file.getParentFile().exists())
 					file.mkdirs();
 
-				if (!file.exists()) {// 文件有缓存，就不需要下载了
+				// 如果文件未存在，或者文件已存在但无法执行或者读取，则重新下载
+				if (!file.exists() || (file.exists()
+						&& (!file.canExecute() || !file.canRead() || !file.canWrite()))) {
 					new HttpDownloadTask(XianChangAdd.this).execute(downUrl,
 							"/nercms-Schedule/DownloadAttachments/", mediaName);// 将附件下载下来
 				}
@@ -558,24 +561,6 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 		return content;
 	}
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-		// TODO
-		// 遍历mList获取每个条目的数目
-		for (int i = 0; i < mList.size(); i++) {
-			int count = 0;
-			for (int j = 0; j < mList.get(i).size(); j++) {
-				if (mList.get(i).get(j) != null) {
-					count++;
-				}
-			}
-			mContentCount[i] = count;
-		}
-		xianChangAddAdapter.notifyDataSetChanged();
-		changeTextColor();// 重新出现的时候字体更改 因为oncreate只执行一次
-	}
-
 	String from = "";
 	int mediaIndex;
 	private Map<String, Object> mVideo = new HashMap<String, Object>();// 存放录制的视频信息
@@ -597,7 +582,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 			}
 			break;
 
-		// TODO 录像
+		// 录像
 		case LocalConstant.CAPTURE_VIDEO_REQUEST_CODE:
 			if (resultCode == RESULT_OK) {
 				Log.i("TAG", "拍摄完成，resultCode=" + requestCode);
@@ -890,7 +875,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 					// }
 					break;
 				case Constants.END_TASK_SUCCESS:
-					showLongToast("任务已结束");
+					showShortToast("任务已结束");
 					findViewById(R.id.bottom).setVisibility(View.GONE);
 					break;
 
@@ -913,6 +898,53 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 		};
 
+	}
+
+	@Override
+	public void onReceiveGPS(MyGPS gps) {
+
+	}
+
+	@Override
+	protected void onDestroy() {
+		Log.v("Demo", getClass().getSimpleName() + "onDestroy");
+		super.onDestroy();
+
+	}
+
+	private String path2FileName(String path) {
+		return path.substring(path.lastIndexOf(File.separator) + 1);
+	}
+
+	@Override
+	protected void onRestart() {
+		Log.v("Demo", getClass().getSimpleName() + "onRestart");
+		super.onRestart();
+	}
+
+	@Override
+	protected void onStart() {
+		Log.v("Demo", getClass().getSimpleName() + "onStart");
+		super.onStart();
+	}
+
+	@Override
+	protected void onResume() {
+		Log.v("Demo", getClass().getSimpleName() + "onResume");
+		super.onResume();
+		// 遍历mList获取每个条目的数目
+		for (int i = 0; i < mList.size(); i++) {
+			int count = 0;
+			for (int j = 0; j < mList.get(i).size(); j++) {
+				if (mList.get(i).get(j) != null) {
+					count++;
+				}
+			}
+			mContentCount[i] = count;
+		}
+		xianChangAddAdapter.notifyDataSetChanged();
+		changeTextColor();// 重新出现的时候字体更改 因为oncreate只执行一次
+
 		MessageHandlerManager.getInstance().register(handler, Constant.FILE_UPLOAD_FAIL,
 				"XianChangAdd");
 		MessageHandlerManager.getInstance().register(handler, Constant.FILE_UPLOAD_SUCCESS,
@@ -934,35 +966,34 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 	}
 
 	@Override
-	public void onReceiveGPS(MyGPS gps) {
+	protected void onPause() {
+		Log.v("Demo", getClass().getSimpleName() + "onPause");
+		super.onPause();
 
+		// MessageHandlerManager.getInstance().unregister(Constant.FILE_UPLOAD_FAIL,
+		// "XianChangAdd");
+		// MessageHandlerManager.getInstance().unregister(Constant.FILE_UPLOAD_SUCCESS,
+		// "XianChangAdd");
+		//
+		// MessageHandlerManager.getInstance().unregister(Constants.UPLOAD_TASK_ATT_SUCCESS,
+		// UploadTaskAttachmentResponse.class.getName());
+		// MessageHandlerManager.getInstance().unregister(Constants.UPLOAD_TASK_ATT_SAVE_FAIL,
+		// UploadTaskAttachmentResponse.class.getName());
+		// MessageHandlerManager.getInstance().unregister(Constants.UPLOAD_TASK_ATT_FAIL,
+		// UploadTaskAttachmentResponse.class.getName());
+		//
+		// MessageHandlerManager.getInstance().unregister(Constants.END_TASK_SUCCESS,
+		// StartTaskResponse.class.getName());
+		// MessageHandlerManager.getInstance().unregister(Constants.END_TASK_FAIL,
+		// StartTaskResponse.class.getName());
+		// MessageHandlerManager.getInstance().unregister(Constants.END_TASK_SAVE_FAIL,
+		// StartTaskResponse.class.getName());
 	}
 
 	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-
-		MessageHandlerManager.getInstance().unregister(Constant.FILE_UPLOAD_FAIL, "XianChangAdd");
-		MessageHandlerManager.getInstance().unregister(Constant.FILE_UPLOAD_SUCCESS,
-				"XianChangAdd");
-
-		MessageHandlerManager.getInstance().unregister(Constants.UPLOAD_TASK_ATT_SUCCESS,
-				UploadTaskAttachmentResponse.class.getName());
-		MessageHandlerManager.getInstance().unregister(Constants.UPLOAD_TASK_ATT_SAVE_FAIL,
-				UploadTaskAttachmentResponse.class.getName());
-		MessageHandlerManager.getInstance().unregister(Constants.UPLOAD_TASK_ATT_FAIL,
-				UploadTaskAttachmentResponse.class.getName());
-
-		MessageHandlerManager.getInstance().unregister(Constants.END_TASK_SUCCESS,
-				StartTaskResponse.class.getName());
-		MessageHandlerManager.getInstance().unregister(Constants.END_TASK_FAIL,
-				StartTaskResponse.class.getName());
-		MessageHandlerManager.getInstance().unregister(Constants.END_TASK_SAVE_FAIL,
-				StartTaskResponse.class.getName());
-	}
-
-	private String path2FileName(String path) {
-		return path.substring(path.lastIndexOf(File.separator) + 1);
+	protected void onStop() {
+		Log.v("Demo", getClass().getSimpleName() + "onStop");
+		super.onStop();
 	}
 
 }

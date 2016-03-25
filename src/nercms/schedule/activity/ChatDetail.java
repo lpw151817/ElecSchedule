@@ -478,12 +478,12 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 		// "ChatDetail");
 		// MessageHandlerManager.getInstance().unregister(Constant.SAVE_FEEDBACK_SUCCESS,
 		// "ChatDetail");
-		MessageHandlerManager.getInstance().unregister(Constants.CREATE_INS_SUCCESS,
-				CreateInsResponse.class.getName());
-		MessageHandlerManager.getInstance().unregister(Constants.CREATE_INS_SAVE_FAIL,
-				CreateInsResponse.class.getName());
-		MessageHandlerManager.getInstance().unregister(Constants.CREATE_INS_FAIL,
-				CreateInsResponse.class.getName());
+//		MessageHandlerManager.getInstance().unregister(Constants.CREATE_INS_SUCCESS,
+//				CreateInsResponse.class.getName());
+//		MessageHandlerManager.getInstance().unregister(Constants.CREATE_INS_SAVE_FAIL,
+//				CreateInsResponse.class.getName());
+//		MessageHandlerManager.getInstance().unregister(Constants.CREATE_INS_FAIL,
+//				CreateInsResponse.class.getName());
 
 		System.out.println("ChatDetail onDestroy");
 		// ªÿ ’Õº∆¨ƒ⁄¥Ê

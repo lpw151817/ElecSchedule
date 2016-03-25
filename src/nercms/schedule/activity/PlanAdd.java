@@ -597,6 +597,7 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 	private boolean checkMustInput() {
 		return !TextUtils.isEmpty(xmmc.getText().toString())
 				&& !TextUtils.isEmpty(zygznr.getText().toString())
+				&& !TextUtils.isEmpty(ysgdwld.getText().toString())
 				&& !TextUtils.isEmpty(gzfzr.getText().toString())
 				&& !TextUtils.isEmpty(jhkssj.getText().toString())
 				&& !TextUtils.isEmpty(jhjssj.getText().toString())

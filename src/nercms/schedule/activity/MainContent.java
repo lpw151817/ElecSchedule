@@ -160,7 +160,7 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		case R.id.zuoyeLayout:
 			// Utils.showToast(MainContent.this, "tab1");
 			contentPager.setCurrentItem(0);
-			zuoye.setTextColor(getResources().getColor(R.color.bluegreen));
+			zuoye.setTextColor(getResources().getColor(R.color.orange));
 			caozuo.setTextColor(getResources().getColor(R.color.deepgray));
 			qiangxiu.setTextColor(getResources().getColor(R.color.deepgray));
 			break;
@@ -169,7 +169,7 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 			// Utils.showToast(MainContent.this, "tab2");
 
 			contentPager.setCurrentItem(1);
-			caozuo.setTextColor(getResources().getColor(R.color.bluegreen));
+			caozuo.setTextColor(getResources().getColor(R.color.orange));
 			zuoye.setTextColor(getResources().getColor(R.color.deepgray));
 			qiangxiu.setTextColor(getResources().getColor(R.color.deepgray));
 			break;
@@ -177,7 +177,7 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		case R.id.qiangxiuLayout:
 			// Utils.showToast(MainContent.this, "tab2");
 			contentPager.setCurrentItem(2);
-			qiangxiu.setTextColor(getResources().getColor(R.color.bluegreen));
+			qiangxiu.setTextColor(getResources().getColor(R.color.orange));
 			zuoye.setTextColor(getResources().getColor(R.color.deepgray));
 			caozuo.setTextColor(getResources().getColor(R.color.deepgray));
 			break;

@@ -87,12 +87,12 @@ public class TaskSelectorActivity extends BaseActivity implements OnClickListene
 
 	@Override
 	protected void onDestroy() {
-		MessageHandlerManager.getInstance().unregister(Constants.START_TASK_SUCCESS,
-				StartTaskResponse.class.getName());
-		MessageHandlerManager.getInstance().unregister(Constants.START_TASK_SAVE_FAIL,
-				StartTaskResponse.class.getName());
-		MessageHandlerManager.getInstance().unregister(Constants.START_TASK_FAIL,
-				StartTaskResponse.class.getName());
+//		MessageHandlerManager.getInstance().unregister(Constants.START_TASK_SUCCESS,
+//				StartTaskResponse.class.getName());
+//		MessageHandlerManager.getInstance().unregister(Constants.START_TASK_SAVE_FAIL,
+//				StartTaskResponse.class.getName());
+//		MessageHandlerManager.getInstance().unregister(Constants.START_TASK_FAIL,
+//				StartTaskResponse.class.getName());
 		super.onDestroy();
 	}
 
