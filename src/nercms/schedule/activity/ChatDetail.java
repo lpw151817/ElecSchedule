@@ -6,6 +6,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -66,6 +71,7 @@ import nercms.schedule.utils.Utils;
  */
 public class ChatDetail extends BaseActivity implements OnClickListener {
 
+	private static final int UPDATE_LIST = 151;
 	private Button mBtnSend;// 发送按钮
 	private EditText mEditTextContent;// 消息编辑域
 	private ListView mListView;
@@ -82,6 +88,9 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 	private DAOFactory daoFactory = DAOFactory.getInstance();
 	private FeedbackListAdapter fbAdapter = null;
 	private List<tb_task_instructions> fbList = new ArrayList<tb_task_instructions>();
+	private List<tb_task_instructions> newList = new ArrayList<tb_task_instructions>();
+	private List<tb_task_instructions> tempList = new ArrayList<tb_task_instructions>();
+	
 
 	private String msgID;
 	private PersonDao personDao;
@@ -113,6 +122,8 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 	// 任务状态：2-已完成任务，限制反馈编辑发送，仅供查看
 	private int taskStatus;
 	private RelativeLayout operationLayout;
+	private int delayedTime = 1000;//1s
+	
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -121,14 +132,16 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 		this.groupDao = new GroupDao(this);
 
 		// 启动activity时不自动弹出软键盘
-		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+		getWindow().setSoftInputMode(
+				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		iniActionBar(true, null, "交互信息");
 		initView();
 		initHandler();
 
 		// 2014-5-27 WeiHao
 
-		webRequestManager = new WebRequestManager(AppApplication.getInstance(), ChatDetail.this);
+		webRequestManager = new WebRequestManager(AppApplication.getInstance(),
+				ChatDetail.this);
 
 		userID = getUserId();
 
@@ -139,7 +152,30 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 		if (taskStatus == 2) {
 			operationLayout.setVisibility(View.GONE);
 		}
+		
+		
+		//TODO 
+		Runnable thread = new Runnable() {
+			
+			@Override
+			public void run() {
+				if (msgDao == null)
+					msgDao = new TaskInsDao(ChatDetail.this);
+
+				tempList = msgDao.getMsg(taskID);
+				Message msg = new Message();
+				msg.obj = tempList;
+				msg.what = UPDATE_LIST;
+				handler.sendMessage(msg);
+			}
+		};
+
+		scheduler = Executors
+				.newScheduledThreadPool(1);
+		scheduler.scheduleAtFixedRate(thread, 100, delayedTime, TimeUnit.MILLISECONDS);  
+
 	}
+	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -398,8 +434,8 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 	private void sendFeedback() {
 		String contString = mEditTextContent.getText().toString();
 		if (!contString.isEmpty()) { // 文本反馈
-			tempMsg = new tb_task_instructions("", taskID, contString, getUserId(),
-					System.currentTimeMillis() + "", "1");
+			tempMsg = new tb_task_instructions("", taskID, contString,
+					getUserId(), System.currentTimeMillis() + "", "1");
 
 			// 发送到服务器
 			sendFb(tempMsg);
@@ -412,12 +448,14 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 
 	private void sendFb(tb_task_instructions data) {
 		// uid 为接收人员id
-		webRequestManager.createInsRequest(this, msgDao.getMsgReceivers(taskID), data.getTask_id(),
+		webRequestManager.createInsRequest(this,
+				msgDao.getMsgReceivers(taskID), data.getTask_id(),
 				data.getContent(), null, "1");
 
 	}
 
 	tb_task_instructions tempMsg;
+	private ScheduledExecutorService scheduler;
 
 	@SuppressLint("HandlerLeak")
 	private void initHandler() {
@@ -435,20 +473,61 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 					fbAdapter.notifyDataSetChanged();
 					mEditTextContent.setText("");
 					mListView.setSelection(mListView.getCount() - 1);
-					Toast.makeText(ChatDetail.this, "发送消息成功", Toast.LENGTH_SHORT).show();
+					Toast.makeText(ChatDetail.this, "发送消息成功",
+							Toast.LENGTH_SHORT).show();
 
 					break;
 				case Constants.CREATE_INS_SAVE_FAIL:
 				case Constants.CREATE_INS_FAIL:
 					if (handlerMsg.obj != null) {
-						showShortToast("发布失败:" + ((NormalServerResponse) handlerMsg.obj).getEc());
+						showShortToast("发布失败:"
+								+ ((NormalServerResponse) handlerMsg.obj)
+										.getEc());
 					} else {
 						showShortToast("发布失败,请检查是否与服务器连接正常");
 					}
 					break;
+					
+				case UPDATE_LIST:
+//					List<tb_task_instructions> fbList
+					
+					newList = (List<tb_task_instructions>) handlerMsg.obj;
+					
+					if (newList.size() != 0){
+						
+						if (fbList.size() == 0){//显示列表里面没有消息
+							for (tb_task_instructions ins : newList ){
+								fbList.add(ins);
+							}
+							
+							fbAdapter.notifyDataSetChanged();
+						} else {
+							tb_task_instructions task = fbList.get(fbList.size() - 1);
+							String time = task.getSend_time();
+							System.out.println("time : " + time);
+							for (tb_task_instructions ins : newList ){
+								String insTime = ins.getSend_time();
+								
+								
+								boolean isUp = isUpdate(time, insTime);
+								//如果time < insTime就更新数据
+								if (isUp){
+									fbList.add(ins);
+									fbAdapter.notifyDataSetChanged();
+									mListView.setSelection(fbList.size()-1);
+								}
+							}
+						}
+						
+					}
+					
+					
+					break;
 				}
 
 			}
+
+			
 
 		};
 
@@ -461,12 +540,28 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 		// MessageHandlerManager.getInstance().register(handler,
 		// Constant.SAVE_FEEDBACK_SUCCESS,
 		// "ChatDetail");
-		MessageHandlerManager.getInstance().register(handler, Constants.CREATE_INS_SUCCESS,
+		MessageHandlerManager.getInstance()
+				.register(handler, Constants.CREATE_INS_SUCCESS,
+						CreateInsResponse.class.getName());
+		MessageHandlerManager.getInstance().register(handler,
+				Constants.CREATE_INS_SAVE_FAIL,
 				CreateInsResponse.class.getName());
-		MessageHandlerManager.getInstance().register(handler, Constants.CREATE_INS_SAVE_FAIL,
-				CreateInsResponse.class.getName());
-		MessageHandlerManager.getInstance().register(handler, Constants.CREATE_INS_FAIL,
-				CreateInsResponse.class.getName());
+		MessageHandlerManager.getInstance().register(handler,
+				Constants.CREATE_INS_FAIL, CreateInsResponse.class.getName());
+	}
+	
+	private boolean isUpdate(String time, String insTime) {
+		// TODO Auto-generated method stub
+		
+
+		
+
+		if (time.compareTo(insTime)  < 0){//dat1在dat2之前
+			return true;
+		} else {
+			return false;
+		}
+		
 	}
 
 	@Override
@@ -478,12 +573,12 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 		// "ChatDetail");
 		// MessageHandlerManager.getInstance().unregister(Constant.SAVE_FEEDBACK_SUCCESS,
 		// "ChatDetail");
-//		MessageHandlerManager.getInstance().unregister(Constants.CREATE_INS_SUCCESS,
-//				CreateInsResponse.class.getName());
-//		MessageHandlerManager.getInstance().unregister(Constants.CREATE_INS_SAVE_FAIL,
-//				CreateInsResponse.class.getName());
-//		MessageHandlerManager.getInstance().unregister(Constants.CREATE_INS_FAIL,
-//				CreateInsResponse.class.getName());
+		// MessageHandlerManager.getInstance().unregister(Constants.CREATE_INS_SUCCESS,
+		// CreateInsResponse.class.getName());
+		// MessageHandlerManager.getInstance().unregister(Constants.CREATE_INS_SAVE_FAIL,
+		// CreateInsResponse.class.getName());
+		// MessageHandlerManager.getInstance().unregister(Constants.CREATE_INS_FAIL,
+		// CreateInsResponse.class.getName());
 
 		System.out.println("ChatDetail onDestroy");
 		// 回收图片内存
@@ -491,6 +586,7 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 			fbAdapter.freeBitmap();
 		}
 
+		scheduler.shutdownNow();
 		super.onDestroy();
 	}
 
@@ -504,7 +600,8 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 		String mins = String.valueOf(c.get(Calendar.MINUTE));
 
 		StringBuffer sbBuffer = new StringBuffer();
-		sbBuffer.append(year + "-" + month + "-" + day + " " + hour + ":" + mins);
+		sbBuffer.append(year + "-" + month + "-" + day + " " + hour + ":"
+				+ mins);
 
 		return sbBuffer.toString();
 	}
@@ -518,9 +615,9 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 		// 参考http://blog.sina.com.cn/s/blog_4e1e357d01012mkx.html
 		mEditTextContent.clearFocus();
 		// 隐藏软键盘
-		InputMethodManager mInputMethodManager = (InputMethodManager) getSystemService(
-				Context.INPUT_METHOD_SERVICE);
-		mInputMethodManager.hideSoftInputFromWindow(mEditTextContent.getWindowToken(), 0);
+		InputMethodManager mInputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		mInputMethodManager.hideSoftInputFromWindow(
+				mEditTextContent.getWindowToken(), 0);
 	}
 
 }
