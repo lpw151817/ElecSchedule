@@ -6,7 +6,9 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import com.google.gson.Gson;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 import android.wxapp.service.AppApplication;
 import android.wxapp.service.elec.model.UpdateResponse;
 import android.wxapp.service.elec.request.Constants;
@@ -142,6 +144,9 @@ public class MQTT {
 				}
 
 				if (true == _client.isConnected()) {
+					// Toast.makeText(AppApplication.getInstance().getContext(),
+					// "推送服务已连接",
+					// Toast.LENGTH_SHORT).show();
 					Log.v("MQTT", "mqtt connect " + _client.isConnected());
 
 					_client.subscribe(SUBSCRIBE_TOPIC_PREFIX + CLIENT_ID, SUBSCRIBE_QOS);
@@ -169,7 +174,9 @@ public class MQTT {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
+			// Toast.makeText(AppApplication.getInstance().getContext(),
+			// "推送服务已断开", Toast.LENGTH_SHORT)
+			// .show();
 			Log.v("MQTT", "mqtt disconnect " + _client.isConnected());
 		}
 	}

@@ -118,6 +118,8 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 		// surfaceView.setVisibility(View.GONE);
 		MediaInstance.instance().api_start(getApplicationContext(), server_ip_wan, server_ip_lan,
 				true, server_port, self_id, encrypt_info);
+//		MediaInstance.instance().api_start(getApplicationContext(), server_ip_wan, server_ip_lan,
+//				false, server_port, self_id, encrypt_info);
 		MediaInstance.instance().api_set_video_render_scale(2.8f);
 		MediaInstance.instance().api_set_msg_callback(this);
 		MediaInstance.instance().api_set_video_view(video_render_view, video_capture_view);
