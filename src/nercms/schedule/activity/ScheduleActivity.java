@@ -116,10 +116,15 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 		video_capture_view = (SurfaceView) findViewById(R.id.videocaptureview);
 
 		// surfaceView.setVisibility(View.GONE);
-		MediaInstance.instance().api_start(getApplicationContext(), server_ip_wan, server_ip_lan,
-				true, server_port, self_id, encrypt_info);
-//		MediaInstance.instance().api_start(getApplicationContext(), server_ip_wan, server_ip_lan,
-//				false, server_port, self_id, encrypt_info);
+
+		// 如果内外网ip不等，则设置参数为true
+		if (!server_ip_lan.equals(server_ip_wan))
+			MediaInstance.instance().api_start(getApplicationContext(), server_ip_wan,
+					server_ip_lan, true, server_port, self_id, encrypt_info);
+		else
+			MediaInstance.instance().api_start(getApplicationContext(), server_ip_wan,
+					server_ip_lan, false, server_port, self_id, encrypt_info);
+
 		MediaInstance.instance().api_set_video_render_scale(2.8f);
 		MediaInstance.instance().api_set_msg_callback(this);
 		MediaInstance.instance().api_set_video_view(video_render_view, video_capture_view);
@@ -239,6 +244,18 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 	}
 
 	@Override
+	protected void onRestart() {
+		Log.e("Demo", "MainContent:OnRestart");
+		super.onRestart();
+	}
+
+	@Override
+	protected void onStart() {
+		Log.e("Demo", "MainContent:OnStart");
+		super.onStart();
+	}
+
+	@Override
 	protected void onResume() {
 		Log.i("Demo", "MediaDemo::onResume()");
 		super.onResume();
@@ -257,6 +274,12 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 			}
 			videoId = intent.getStringExtra("videoId");
 			showLog_e(videoId);
+		} else {
+			Intent intent1 = new Intent(getApplicationContext(), MainContent.class);
+			intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			getApplicationContext().startActivity(intent1);
+
+			moveTaskToBack(true);
 		}
 	}
 

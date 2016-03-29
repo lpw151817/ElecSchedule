@@ -58,6 +58,7 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		Log.e("Demo", "MainContent:Oncreate");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_content);
 
@@ -132,6 +133,7 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 
 	@Override
 	protected void onResume() {
+		Log.e("Demo", "MainContent:OnResume");
 		super.onResume();
 		PlanTaskDao mDao;
 		mDao = new PlanTaskDao(this);
@@ -199,6 +201,7 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		addMenu.add(0, 1, 1, "视频调度").setIcon(R.drawable.iconfont_video);
 		// addMenu.add(0, 2, 1, "修改密码").setIcon(R.drawable.ofm_meeting_icon);
 		addMenu.add(0, -1, 1, "通知").setIcon(R.drawable.iconfont_tongzhi);
+		addMenu.add(0, 4, 1, "退出").setIcon(R.drawable.iconfont_tongzhi);
 
 		MenuItem addItem = addMenu.getItem();
 		addItem.setIcon(R.drawable.ic_action_overflow);
@@ -235,6 +238,13 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 			Intent intent = new Intent(MainContent.this, PlanAdd.class);
 			intent.putExtra("enterType", 1);
 			MainContent.this.startActivity(intent);
+			break;
+		case 4:
+			// 退出
+			Log.e("Demo", "api shutdown");
+			MediaInstance.instance().api_shutdown();
+			finish();
+			System.exit(0);
 			break;
 		}
 		return super.onOptionsItemSelected(item);
@@ -273,11 +283,20 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 
 	@Override
 	public void onBackPressed() {
-		Log.e("Demo", "api shutdown");
-		MediaInstance.instance().api_shutdown();
-		super.onBackPressed();
-		// finish();
-		System.exit(0);
+		Log.e("Demo", "MainContent:onBackPressed");
+		moveTaskToBack(true);
+	}
+
+	@Override
+	protected void onRestart() {
+		Log.e("Demo", "MainContent:OnRestart");
+		super.onRestart();
+	}
+
+	@Override
+	protected void onStart() {
+		Log.e("Demo", "MainContent:OnStart");
+		super.onStart();
 	}
 
 }
