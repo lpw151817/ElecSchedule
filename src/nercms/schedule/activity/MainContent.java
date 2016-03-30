@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import com.nercms.schedule.ui.MediaInstance;
 
@@ -15,6 +19,8 @@ import nercms.schedule.utils.Utils;
 import nercms.schedule.view.NoScrollViewPager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -33,6 +39,7 @@ import android.wxapp.service.util.MySharedPreference;
 
 public class MainContent extends FragmentActivity implements OnClickListener {
 
+	protected static final int UPDATE_CONTENT = 564;
 	int count;
 	int secondCount;
 	private NoScrollViewPager contentPager;
@@ -55,6 +62,9 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 	private com.jauker.widget.BadgeView badgeView1;
 	private com.jauker.widget.BadgeView badgeView2;
 	private com.jauker.widget.BadgeView badgeView3;
+	private ScheduledExecutorService service;
+	 int delayedTime = 1000;//延时1s
+	private Handler handler;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -129,31 +139,90 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		contentPager.setAdapter(madapter);
 		contentPager.setOffscreenPageLimit(3);
 
+		handler = new Handler(){
+			@Override
+			public void handleMessage(Message msg) {
+				super.handleMessage(msg);
+				if (msg.what == UPDATE_CONTENT) {
+					zuoyecount = ((Integer) msg.obj).intValue();
+					caozuocount = msg.arg1;
+					qiangxiucount  = msg.arg2;
+					badgeView1.setText("" + zuoyecount);
+					badgeView2.setText("" + caozuocount);
+					badgeView3.setText("" + qiangxiucount);
+					
+					System.out.println("zuoyecount : " +zuoyecount + " caozuocount : " + caozuocount);
+					mFirstFrag.getBadgeView1().setText("" + zuoyecount);
+					mSecondFrag.getBadgeView1().setText("" + zuoyecount);
+					mThirdFrag.getBadgeView1().setText("" + zuoyecount);
+				}
+				
+			}
+		};
 	}
 
+	
 	@Override
 	protected void onResume() {
 		Log.e("Demo", "MainContent:OnResume");
 		super.onResume();
-		PlanTaskDao mDao;
-		mDao = new PlanTaskDao(this);
-		/*
-		 * userid,如果是管理员就传入null,如果不是就getUserId在BaseActivity中，
-		 */
-		// dao.getPlanTasks(1, 3, "", 0).size();
-		if (isAdmin()) {
-			zuoyecount = mDao.getPlanTasks(1, 3, null, "0").size();
-			caozuocount = mDao.getPlanTasks(2, 3, null, "0").size();
-			qiangxiucount = mDao.getPlanTasks(3, 3, null, "0").size();
-		} else {
-			zuoyecount = mDao.getPlanTasks(1, 3, getUserId(), "0").size();
-			caozuocount = mDao.getPlanTasks(2, 3, getUserId(), "0").size();
-			qiangxiucount = mDao.getPlanTasks(3, 3, getUserId(), "0").size();
-		}
-
-		badgeView1.setText("" + zuoyecount);
-		badgeView2.setText("" + caozuocount);
-		badgeView3.setText("" + qiangxiucount);
+		
+		Runnable thread = new Runnable() {
+			
+			@Override
+			public void run() {
+				
+				if (dao  == null){
+					dao = new PlanTaskDao(MainContent.this);
+				}
+				
+				if (isAdmin()) {
+					zuoyecount = dao.getPlanTasks(1, 3, null, "0").size();
+					caozuocount = dao.getPlanTasks(2, 3, null, "0").size();
+					qiangxiucount = dao.getPlanTasks(3, 3, null, "0").size();
+				} else {
+					zuoyecount = dao.getPlanTasks(1, 3, getUserId(), "0").size();
+					caozuocount = dao.getPlanTasks(2, 3, getUserId(), "0").size();
+					qiangxiucount = dao.getPlanTasks(3, 3, getUserId(), "0").size();
+				}
+				
+				Message msg = new Message();
+				msg.what = UPDATE_CONTENT;
+				msg.obj = new Integer(zuoyecount);
+				msg.arg1 = caozuocount;
+				msg.arg2 = qiangxiucount;
+				handler.sendMessage(msg);
+			}
+		};
+		
+		service = Executors.newScheduledThreadPool(1);
+		service.scheduleAtFixedRate(thread, 100, delayedTime, TimeUnit.MILLISECONDS);
+		
+//		PlanTaskDao mDao;
+//		mDao = new PlanTaskDao(this);
+//		/*
+//		 * userid,如果是管理员就传入null,如果不是就getUserId在BaseActivity中，
+//		 */
+//		// dao.getPlanTasks(1, 3, "", 0).size();
+//		if (isAdmin()) {
+//			zuoyecount = mDao.getPlanTasks(1, 3, null, "0").size();
+//			caozuocount = mDao.getPlanTasks(2, 3, null, "0").size();
+//			qiangxiucount = mDao.getPlanTasks(3, 3, null, "0").size();
+//		} else {
+//			zuoyecount = mDao.getPlanTasks(1, 3, getUserId(), "0").size();
+//			caozuocount = mDao.getPlanTasks(2, 3, getUserId(), "0").size();
+//			qiangxiucount = mDao.getPlanTasks(3, 3, getUserId(), "0").size();
+//		}
+//
+//		badgeView1.setText("" + zuoyecount);
+//		badgeView2.setText("" + caozuocount);
+//		badgeView3.setText("" + qiangxiucount);
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		service.shutdownNow();
 	}
 
 	@Override

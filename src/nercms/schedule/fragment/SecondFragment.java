@@ -62,6 +62,10 @@ public class SecondFragment extends Fragment implements OnClickListener {
 		return view;
 	}
 
+	public com.jauker.widget.BadgeView getBadgeView1(){
+		return badge;
+	}
+	
 	@Override
 	public void onResume() {
 		super.onResume();

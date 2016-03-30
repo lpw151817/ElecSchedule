@@ -15,7 +15,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.readystatesoftware.viewbadger.BadgeView;
 
 public class FirstFragment extends Fragment implements OnClickListener {
 
@@ -65,6 +64,10 @@ public class FirstFragment extends Fragment implements OnClickListener {
 		bt_completedTask.setOnClickListener(this);
 		bt_cancelledTask.setOnClickListener(this);
 		return view;
+	}
+	
+	public com.jauker.widget.BadgeView getBadgeView1(){
+		return badge;
 	}
 
 	@Override

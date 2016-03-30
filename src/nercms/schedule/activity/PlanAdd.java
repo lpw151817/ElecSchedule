@@ -82,6 +82,8 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 	tb_task_info info;
 
 	OrgDao orgDao;
+	
+//	boolean flag = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -125,7 +127,8 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 					// CreatePlanTaskResponse r = (CreatePlanTaskResponse)
 					// msg.obj;
 					// startActivity(r.getTid());
-
+					
+					qrtj.setClickable(true);
 					PlanAdd.this.finish();
 					break;
 				case Constants.CREATE_TASK_FAIL:
@@ -145,7 +148,7 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 						e.printStackTrace();
 						showLongToast("请检查是否与服务器连接正常");
 					}
-
+					qrtj.setClickable(true);
 					break;
 
 				case Constants.START_TASK_SUCCESS:
@@ -678,6 +681,10 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 						sfxydb.isChecked(), special, ysgdwldList, sc.getText().toString(),
 						domain.toString(), sftd.isChecked(), cut_type.toString(), orgs,
 						rs.getText().toString(), bz.getText().toString());
+				
+//				flag = true;
+				qrtj.setClickable(false);
+				
 			} else {
 				showAlterDialog("错误", "请确认必填项填写完整!", R.drawable.login_error_icon, "确定", null);
 			}

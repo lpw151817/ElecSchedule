@@ -62,6 +62,10 @@ public class ThirdFragment extends Fragment implements OnClickListener {
 		MainContent activity = (MainContent) getActivity();
 		badge.setText(activity.qiangxiucount + "");
 	}
+	
+	public com.jauker.widget.BadgeView getBadgeView1(){
+		return badge;
+	}
 
 	@Override
 	public void onClick(View v) {
