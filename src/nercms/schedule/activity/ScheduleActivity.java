@@ -31,8 +31,8 @@ import nercms.schedule.R.layout;
 
 public class ScheduleActivity extends BaseActivity implements OnClickListener, OnMsgCallback {
 
-	private String server_ip_wan = Contants.SCHEDULE_SERVER_WAN;// 调度服务器IP
-	private String server_ip_lan = Contants.SCHEDULE_SERVER_LAN;
+	public static String server_ip_wan = Contants.SCHEDULE_SERVER_WAN;// 调度服务器IP
+	public static String server_ip_lan = Contants.SCHEDULE_SERVER_LAN;
 
 	// private String server_ip = "172.16.25.178";//调度服务器IP
 	// private String server_ip = "192.168.2.150";// 调度服务器IP
@@ -85,6 +85,9 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 				Toast.makeText(ScheduleActivity.this, "主叫方放弃调度", Toast.LENGTH_SHORT).show();
 				onBackPressed();
 				break;
+			case GID.MSG_PING_DELAY:
+				Toast.makeText(ScheduleActivity.this, "ping server delay: " + (Integer)(msg.obj), Toast.LENGTH_SHORT).show();
+				break;
 
 			default:
 				break;
@@ -128,6 +131,8 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 		MediaInstance.instance().api_set_video_render_scale(2.8f);
 		MediaInstance.instance().api_set_msg_callback(this);
 		MediaInstance.instance().api_set_video_view(video_render_view, video_capture_view);
+//		int ping_delay = MediaInstance.instance()
+//				.api_get_ping_delay(ScheduleActivity.server_ip_wan);
 
 		bt1 = (Button) findViewById(R.id.button1);
 		bt1.setOnClickListener(this);
@@ -225,7 +230,7 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 	}
 
 	@Override
-	public void on_msg_callback(int arg0, String arg1) {
+	public void on_msg_callback(int arg0, Object arg1) {
 		handler.sendMessage(handler.obtainMessage(arg0, arg1));
 	}
 
@@ -274,7 +279,7 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 			}
 			videoId = intent.getStringExtra("videoId");
 			showLog_e(videoId);
-		} else {
+		} else if (intent.getIntExtra("tag", -1) == 0) {
 			Intent intent1 = new Intent(getApplicationContext(), MainContent.class);
 			intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			getApplicationContext().startActivity(intent1);

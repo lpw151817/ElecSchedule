@@ -222,6 +222,12 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
 		service.shutdownNow();
 	}
 

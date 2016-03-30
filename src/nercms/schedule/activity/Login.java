@@ -206,7 +206,9 @@ public class Login extends BaseActivity {
 						// Intent intent = new Intent(Login.this,
 						// MainContent.class);
 						// Login.this.startActivity(intent);
-						ScheduleActivity.wakeUp(Login.this, null);
+						Bundle bundle = new Bundle();
+						bundle.putInt("tag", 0);
+						ScheduleActivity.wakeUp(Login.this, bundle);
 						Login.this.finish();
 					}
 					break;
@@ -238,8 +240,9 @@ public class Login extends BaseActivity {
 					// Intent intent = new Intent(Login.this,
 					// MainContent.class);
 					// Login.this.startActivity(intent);
-
-					ScheduleActivity.wakeUp(Login.this, null);
+					Bundle bundle = new Bundle();
+					bundle.putInt("tag", 0);
+					ScheduleActivity.wakeUp(Login.this, bundle);
 					// Login.this.finish();
 					break;
 
