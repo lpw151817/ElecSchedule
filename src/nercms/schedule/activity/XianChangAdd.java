@@ -293,7 +293,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 				v_bottom.setVisibility(View.GONE);
 			}
 
-			atts = planTaskDao.getPlanTaskAtt(tid);
+			atts = planTaskDao.getPlanTaskAtts(tid);
 
 			// atts.get(0).getStandard();
 			// atts每个任务原来的已经上传的附件列表，它的getStandard是返回的是附件所属的条目，
