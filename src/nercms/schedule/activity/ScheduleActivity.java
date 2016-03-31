@@ -31,6 +31,8 @@ import nercms.schedule.R.layout;
 
 public class ScheduleActivity extends BaseActivity implements OnClickListener, OnMsgCallback {
 
+	private int pingMax = 5000;
+
 	public static String server_ip_wan = Contants.SCHEDULE_SERVER_WAN;// 调度服务器IP
 	public static String server_ip_lan = Contants.SCHEDULE_SERVER_LAN;
 
@@ -59,13 +61,13 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 		// 回调处理
 		@Override
 		public void handleMessage(Message msg) {
-
-			wakeUp(getApplicationContext(), null);
+			Log.e("Push", "handleMessage:" + msg.what);
 
 			super.handleMessage(msg);
 			switch (msg.what) {
 			// 被叫方收到调度请求回调
 			case GID.MSG_INCOMING_CALL:
+				wakeUp(getApplicationContext(), null);
 				// if (surfaceView.getVisibility() == View.GONE)
 				// surfaceView.setVisibility(View.VISIBLE);
 				Toast.makeText(ScheduleActivity.this, "收到调度邀请 " + (String) (msg.obj),
@@ -75,6 +77,7 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 				break;
 			// 主叫方挂断，被叫方回调
 			case GID.MSG_HANG_UP:
+				wakeUp(getApplicationContext(), null);
 				changeVisibility(View.VISIBLE, bt1, bt2);
 				changeVisibility(View.GONE, bt3, bt4);
 				Toast.makeText(ScheduleActivity.this, "调度结束", Toast.LENGTH_SHORT).show();
@@ -82,11 +85,19 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 				break;
 
 			case GID.MSG_RECV_CANCEL:
+				wakeUp(getApplicationContext(), null);
 				Toast.makeText(ScheduleActivity.this, "主叫方放弃调度", Toast.LENGTH_SHORT).show();
 				onBackPressed();
 				break;
 			case GID.MSG_PING_DELAY:
-				Toast.makeText(ScheduleActivity.this, "ping server delay: " + (Integer)(msg.obj), Toast.LENGTH_SHORT).show();
+				Toast.makeText(ScheduleActivity.this, "ping server delay: " + (Integer) (msg.obj),
+						Toast.LENGTH_SHORT).show();
+				int ping = (Integer) (msg.obj);
+				if (ping == 0 || ping > pingMax) {
+					// 网络中断的时候停止上传
+				} else {
+					// 网络连接的时候开始上传
+				}
 				break;
 
 			default:
@@ -127,12 +138,12 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 		else
 			MediaInstance.instance().api_start(getApplicationContext(), server_ip_wan,
 					server_ip_lan, false, server_port, self_id, encrypt_info);
-
+		Log.e("Push", "MediaInstance.instance().api_start");
 		MediaInstance.instance().api_set_video_render_scale(2.8f);
 		MediaInstance.instance().api_set_msg_callback(this);
 		MediaInstance.instance().api_set_video_view(video_render_view, video_capture_view);
-//		int ping_delay = MediaInstance.instance()
-//				.api_get_ping_delay(ScheduleActivity.server_ip_wan);
+		// int ping_delay = MediaInstance.instance()
+		// .api_get_ping_delay(ScheduleActivity.server_ip_wan);
 
 		bt1 = (Button) findViewById(R.id.button1);
 		bt1.setOnClickListener(this);
