@@ -189,27 +189,29 @@ public class RecordActivity extends BaseActivity implements OnClickListener {
 				recordState = RECORD_OFF;
 				mAudioRecorder.stop();
 				mRecordThread.interrupt();
+				boolean flag = true;
 				if (recodeTime < MIN_RECORD_TIME) {
-					showWarnToast("Ê±¼äÌ«¶Ì  Â¼ÒôÊ§°Ü");
+					showWarnToast("Ê±¼äÌ«¶Ì  ÇëÖØÂ¼");
 					mAudioRecorder.deleteOldFile();
+					flag  = false;
+					cho.stop();
+					mStart.setVisibility(View.VISIBLE);
+					mStop.setVisibility(View.GONE);
+				} else {
+					flag = true;
 				}
-				// else {
-				// if (mListener!=null) {// ²¢ÇÒcallbackActivity£¬±£´æÂ¼Òô
-				//
-				// mListener.onFinished(mAudioRecorder.getFilePath());
-				// }
 
-				// }
-
-				mImage.setVisibility(View.VISIBLE);
-
-				isShow = true;
-				invalidateOptionsMenu();
-				showWarnToast("Â¼Òô½áÊø");
-
-				cho.stop();
-
-				mStop.setVisibility(View.GONE);
+				if (flag){
+					mImage.setVisibility(View.VISIBLE);
+	
+					isShow = true;
+					invalidateOptionsMenu();
+					showWarnToast("Â¼Òô½áÊø");
+	
+					cho.stop();
+	
+					mStop.setVisibility(View.GONE);
+				}
 			}
 			break;
 

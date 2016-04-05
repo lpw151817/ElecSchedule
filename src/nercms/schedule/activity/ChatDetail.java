@@ -90,7 +90,6 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 	private List<tb_task_instructions> fbList = new ArrayList<tb_task_instructions>();
 	private List<tb_task_instructions> newList = new ArrayList<tb_task_instructions>();
 	private List<tb_task_instructions> tempList = new ArrayList<tb_task_instructions>();
-	
 
 	private String msgID;
 	private PersonDao personDao;
@@ -122,8 +121,7 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 	// 任务状态：2-已完成任务，限制反馈编辑发送，仅供查看
 	private int taskStatus;
 	private RelativeLayout operationLayout;
-	private int delayedTime = 1000;//1s
-	
+	private int delayedTime = 1000;// 1s
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -152,11 +150,10 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 		if (taskStatus == 2) {
 			operationLayout.setVisibility(View.GONE);
 		}
-		
-		
-		//TODO 
+
+		// TODO
 		Runnable thread = new Runnable() {
-			
+
 			@Override
 			public void run() {
 				if (msgDao == null)
@@ -170,12 +167,11 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 			}
 		};
 
-		scheduler = Executors
-				.newScheduledThreadPool(1);
-		scheduler.scheduleAtFixedRate(thread, 100, delayedTime, TimeUnit.MILLISECONDS);  
+		scheduler = Executors.newScheduledThreadPool(1);
+		scheduler.scheduleAtFixedRate(thread, 100, delayedTime,
+				TimeUnit.MILLISECONDS);
 
 	}
-	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -487,47 +483,47 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 						showShortToast("发布失败,请检查是否与服务器连接正常");
 					}
 					break;
-					
+
 				case UPDATE_LIST:
-//					List<tb_task_instructions> fbList
-					
+					// List<tb_task_instructions> fbList
+
 					newList = (List<tb_task_instructions>) handlerMsg.obj;
-					
-					if (newList.size() != 0){
-						
-						if (fbList.size() == 0){//显示列表里面没有消息
-							for (tb_task_instructions ins : newList ){
+
+					if (newList.size() != 0) {
+
+						if (fbList.size() == 0) {// 显示列表里面没有消息
+							for (tb_task_instructions ins : newList) {
 								fbList.add(ins);
 							}
-							
+
 							fbAdapter.notifyDataSetChanged();
 						} else {
-							tb_task_instructions task = fbList.get(fbList.size() - 1);
+							tb_task_instructions task = fbList.get(fbList
+									.size() - 1);
 							String time = task.getSend_time();
 							System.out.println("time : " + time);
-							for (tb_task_instructions ins : newList ){
+							for (tb_task_instructions ins : newList) {
 								String insTime = ins.getSend_time();
-								
-								
+
 								boolean isUp = isUpdate(time, insTime);
-								//如果time < insTime就更新数据
-								if (isUp && (getUserId() != ins.getSend_id())){
-									fbList.add(ins);
-									fbAdapter.notifyDataSetChanged();
-									mListView.setSelection(fbList.size()-1);
+								// 如果time < insTime就更新数据
+								if (isUp) {
+									if ((!getUserId().equals(ins.getSend_id()))) {
+										fbList.add(ins);
+										fbAdapter.notifyDataSetChanged();
+										mListView
+												.setSelection(fbList.size() - 1);
+									}
 								}
 							}
 						}
-						
+
 					}
-					
-					
+
 					break;
 				}
 
 			}
-
-			
 
 		};
 
@@ -549,19 +545,16 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 		MessageHandlerManager.getInstance().register(handler,
 				Constants.CREATE_INS_FAIL, CreateInsResponse.class.getName());
 	}
-	
+
 	private boolean isUpdate(String time, String insTime) {
 		// TODO Auto-generated method stub
-		
 
-		
-
-		if (time.compareTo(insTime)  < 0){//dat1在dat2之前
+		if (time.compareTo(insTime) < 0) {// dat1在dat2之前
 			return true;
 		} else {
 			return false;
 		}
-		
+
 	}
 
 	@Override
