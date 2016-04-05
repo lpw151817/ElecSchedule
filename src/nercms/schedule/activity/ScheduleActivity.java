@@ -183,8 +183,8 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener,
 				break;
 
 			case Constants.UPLOAD_TASK_ATT_SUCCESS:
-				Toast.makeText(ScheduleActivity.this, "上传成功",
-						Toast.LENGTH_SHORT).show();
+//				Toast.makeText(ScheduleActivity.this, "上传成功",
+//						Toast.LENGTH_SHORT).show();
 				break;
 
 			}

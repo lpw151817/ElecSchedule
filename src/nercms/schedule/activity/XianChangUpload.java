@@ -507,7 +507,8 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 					boolean id = mDao.savePlanTaskAtt(null, tid, historygps, standard.toString(), type, name, time, md5, "0");
 //					long id = mDao.savePlanTaskAtt(null, tid, historygps, standard.toString(), type, url, (String) attItem.get("time"), md5, "0");
 					if (id){
-						Toast.makeText(XianChangUpload.this, "数据已存储", Toast.LENGTH_SHORT).show();
+						//这个实际上是数据存储到数据库里面了
+						Toast.makeText(XianChangUpload.this, "数据已上传", Toast.LENGTH_SHORT).show();
 					}
 				}
 			
@@ -1136,7 +1137,8 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		ImageButton deleteBtn = new ImageButton(this);
 		deleteBtn.setBackgroundResource(R.drawable.media_delete);
 
-		final RelativeLayout r1 = WrapImgView(MediaType, imageView, deleteBtn);
+//		final RelativeLayout r1 = WrapImgView(MediaType, imageView, deleteBtn);
+		final RelativeLayout r1 = WrapImgView(MediaType, imageView, null);//不显示删除按钮
 		r1.setId(mediaId);
 		Log.e("TAG", "r1.setMediaId : " + mediaId);
 
@@ -1181,7 +1183,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		lp2.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		lp2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 		// btn1 位于父 View 的顶部，在父 View 中水平居右
-		rl.addView(btn, lp2);
+//		rl.addView(btn, lp2);不显示delete
 
 		// WeiHao 媒体类型判断，显示水印
 		// ...

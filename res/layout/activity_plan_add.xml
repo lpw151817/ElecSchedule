@@ -765,6 +765,7 @@
                 android:background="@drawable/edit_text"
                 android:hint="请在此输入..."
                 android:numeric="integer"
+                android:maxLength="3"
                 android:singleLine="true"
                 android:textColor="@color/black" />
         </LinearLayout>
