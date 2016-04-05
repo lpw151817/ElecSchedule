@@ -82,8 +82,8 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 	tb_task_info info;
 
 	OrgDao orgDao;
-	
-//	boolean flag = false;
+
+	// boolean flag = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -127,7 +127,7 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 					// CreatePlanTaskResponse r = (CreatePlanTaskResponse)
 					// msg.obj;
 					// startActivity(r.getTid());
-					
+
 					qrtj.setClickable(true);
 					PlanAdd.this.finish();
 					break;
@@ -515,7 +515,7 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 				@Override
 				public boolean onTouch(View v, MotionEvent event) {
 					if (event.getAction() == MotionEvent.ACTION_UP) {
-						showDateTimePicker(jhkssj);
+						showDateTimePicker(jhkssj, false);
 					}
 					return true;
 				}
@@ -526,7 +526,7 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 				@Override
 				public boolean onTouch(View v, MotionEvent event) {
 					if (event.getAction() == MotionEvent.ACTION_UP) {
-						showDateTimePicker(jhjssj);
+						showDateTimePicker(jhjssj, true);
 					}
 					return true;
 				}
@@ -681,10 +681,10 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 						sfxydb.isChecked(), special, ysgdwldList, sc.getText().toString(),
 						domain.toString(), sftd.isChecked(), cut_type.toString(), orgs,
 						rs.getText().toString(), bz.getText().toString());
-				
-//				flag = true;
+
+				// flag = true;
 				qrtj.setClickable(false);
-				
+
 			} else {
 				showAlterDialog("错误", "请确认必填项填写完整!", R.drawable.login_error_icon, "确定", null);
 			}
@@ -757,7 +757,7 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 	private static int START_YEAR = 2016, END_YEAR = 2030;
 
 	// 选择截止时间 对年月日进行判断
-	private void showDateTimePicker(final EditText editText) {
+	private void showDateTimePicker(final EditText editText, final boolean isEnd) {
 		Calendar calendar = Calendar.getInstance();
 		int year = calendar.get(Calendar.YEAR);
 		int month = calendar.get(Calendar.MONTH);
@@ -887,15 +887,26 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 				try {
 					nowTime = df.parse(_nowTime);
 					selectTime = df.parse(currentSelectTime);
+
+					long mins = (selectTime.getTime() - nowTime.getTime()) / 6000;
+					if (mins < 3) {
+						Utils.showShortToast(PlanAdd.this, "选择时间小于当前时间，请重新选择");
+					} else {
+						if (isEnd) {
+							// 如果计划开始时间是早于计划结束时间的
+							if (df.parse(jhkssj.getText().toString()).before(selectTime)) {
+								editText.setText(currentSelectTime);
+								dialog.dismiss();
+							} else {
+								Utils.showShortToast(PlanAdd.this, "当前时间早于计划开始时间，请重新选择");
+							}
+						} else {
+							editText.setText(currentSelectTime);
+							dialog.dismiss();
+						}
+					}
 				} catch (ParseException e) {
 					e.printStackTrace();
-				}
-				long mins = (selectTime.getTime() - nowTime.getTime()) / 6000;
-				if (mins < 3) {
-					Utils.showShortToast(PlanAdd.this, "选择时间小于当前时间，请重新选择");
-				} else {
-					editText.setText(currentSelectTime);
-					dialog.dismiss();
 				}
 			}
 		});
