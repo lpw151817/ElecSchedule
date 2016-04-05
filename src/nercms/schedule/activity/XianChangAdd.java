@@ -116,7 +116,8 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 	 */
 	private int[] myMediaIndexs;
 
-	private String DownloadfileFolder = Environment.getExternalStorageDirectory().getPath()
+	private String DownloadfileFolder = Environment
+			.getExternalStorageDirectory().getPath()
 			+ "/nercms-Schedule/DownloadAttachments/";
 
 	private int[] counts;// 为从网络上下载的附件设置下标index
@@ -131,7 +132,8 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_xian_chang_add);
 
-		requestManager = new WebRequestManager(AppApplication.getInstance(), this);
+		requestManager = new WebRequestManager(AppApplication.getInstance(),
+				this);
 
 		enterType = getIntent().getIntExtra("enterType", -1);
 		tid = getIntent().getStringExtra("tid");
@@ -161,41 +163,50 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 			public void onClick(View v) {
 				if (planTaskDao == null)
 					planTaskDao = new PlanTaskDao(XianChangAdd.this);
-				if (!TextUtils.isEmpty(planTaskDao.getPlanTask(tid).getEnd_time())) {
+				if (!TextUtils.isEmpty(planTaskDao.getPlanTask(tid)
+						.getEnd_time())) {
 					showShortToast("任务已结束");
 					findViewById(R.id.bottom).setVisibility(View.GONE);
 				} else {
 					if (isfull()) {
-						AlertDialog.Builder builder = new AlertDialog.Builder(XianChangAdd.this)
-								.setMessage("是否结束任务");
-						builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(
+								XianChangAdd.this).setMessage("是否结束任务");
+						builder.setPositiveButton("是",
+								new DialogInterface.OnClickListener() {
 
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								// 如果没有录像直接结束
-								if (mVideo.size() == 0) {
-									Log.v("Demo", "XianChangAdd : " + handler.toString());
-									requestManager.endTask(XianChangAdd.this, tid,
-											System.currentTimeMillis() + "");
-								}
-								fileCount = getFileCount();// 获取文件的个数，上传完后finish当前页免
-								// Log.e("TAG", "xianChangAdd fileCount : "+
-								// fileCount);
-								isClickShangchuanfujian = false;
-								attachmentUploadRequest();// 上传附件
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										// 如果没有录像直接结束
+//										if (mVideo.size() == 0) {
+											Log.v("Demo", "XianChangAdd : "
+													+ handler.toString());
+											requestManager.endTask(
+													XianChangAdd.this, tid,
+													System.currentTimeMillis()
+															+ "");
+//										}
+										fileCount = getFileCount();// 获取文件的个数，上传完后finish当前页免
+										// Log.e("TAG",
+										// "xianChangAdd fileCount : "+
+										// fileCount);
+										isClickShangchuanfujian = false;
+//										attachmentUploadRequest();// 上传附件
 
-								isEnd = true;
+										isEnd = true;
 
-							}
-						});
+									}
+								});
 
-						builder.setNegativeButton("否", new DialogInterface.OnClickListener() {
+						builder.setNegativeButton("否",
+								new DialogInterface.OnClickListener() {
 
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
 
-							}
-						});
+									}
+								});
 
 						AlertDialog dialog = builder.create();
 						dialog.show();
@@ -246,7 +257,8 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 				}
 				Uri uri = Uri.fromFile(file);
 				intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-				startActivityForResult(intent, LocalConstant.CAPTURE_VIDEO_REQUEST_CODE);
+				startActivityForResult(intent,
+						LocalConstant.CAPTURE_VIDEO_REQUEST_CODE);
 			}
 		});
 
@@ -259,7 +271,8 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 		mContentCount = new int[getItemCount(XianChangAdd.this)];
 
 		mListView = (ListView) findViewById(R.id.listview);
-		xianChangAddAdapter = new XianChangAddAdapter(this, enterType, mContentCount, isAdmin());
+		xianChangAddAdapter = new XianChangAddAdapter(this, enterType,
+				mContentCount, isAdmin());
 		mListView.setAdapter(xianChangAddAdapter);
 
 		// myMediaIndexs = new int[6];
@@ -277,7 +290,9 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 		// mPath.add((String) getIntent().getCharSequenceExtra("path"));
 		if (!isContinueTask) {// 不是从继续任务plantask这个页面跳过了
 			flag = getIntent().getIntExtra("position", -1);
-			mList.get(flag).add((Map<String, Object>) getIntent().getSerializableExtra("path"));
+			mList.get(flag).add(
+					(Map<String, Object>) getIntent().getSerializableExtra(
+							"path"));
 
 			System.out.println("传递过来的位置信息flag :" + flag);
 		}
@@ -306,13 +321,16 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 				GpsDao gpsDao = new GpsDao(this);
 				GPS gps = gpsDao.getHistory(attachment.getHistorygps());// 从数据库中获取gps信息
-				MyGPS mGPS = new MyGPS(gps.getOllectionTime(), Double.valueOf(gps.getLongitude()),
-						Double.valueOf(gps.getLatitude()), Float.valueOf(gps.getAccuracy()),
-						Double.valueOf(gps.getHeight()), Float.valueOf(gps.getSpeed()),
-						gps.getCoordinate());
+				MyGPS mGPS = new MyGPS(gps.getOllectionTime(),
+						Double.valueOf(gps.getLongitude()), Double.valueOf(gps
+								.getLatitude()), Float.valueOf(gps
+								.getAccuracy()),
+						Double.valueOf(gps.getHeight()), Float.valueOf(gps
+								.getSpeed()), gps.getCoordinate());
 
 				String mediaName = attachment.getUrl();
-				String filePath = DownloadfileFolder + File.separator + mediaName;
+				String filePath = DownloadfileFolder + File.separator
+						+ mediaName;
 				String downUrl = android.wxapp.service.elec.request.Contants.HFS_URL
 						+ File.separator + mediaName;
 
@@ -322,8 +340,9 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 					file.mkdirs();
 
 				// 如果文件未存在，或者文件已存在但无法执行或者读取，则重新下载
-				if (!file.exists() || (file.exists()
-						&& (!file.canExecute() || !file.canRead() || !file.canWrite()))) {
+				if (!file.exists()
+						|| (file.exists() && (!file.canExecute()
+								|| !file.canRead() || !file.canWrite()))) {
 					new HttpDownloadTask(XianChangAdd.this).execute(downUrl,
 							"/nercms-Schedule/DownloadAttachments/", mediaName);// 将附件下载下来
 				}
@@ -420,14 +439,16 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 		mListView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
 				if (isAdmin()) {
 					if (mList.get(position).size() == 0) {
 						showLongToast("没有附件信息查看");
 						return;
 					}
 				}
-				Intent intent = new Intent(XianChangAdd.this, XianChangUpload.class);
+				Intent intent = new Intent(XianChangAdd.this,
+						XianChangUpload.class);
 				intent.putExtra("tid", tid);
 				if (from.equals("XianChangUpload")) {
 					intent.putExtra("mediaIndex", mediaIndex);
@@ -460,11 +481,13 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 				}
 
 				if (mFileName.size() != 0) {
-					File attachmentFile = new File(mFileName.get(mFileName.size() - 1));
+					File attachmentFile = new File(mFileName.get(mFileName
+							.size() - 1));
 					if (!attachmentFile.getParentFile().exists())
 						attachmentFile.mkdirs();
 					if (!attachmentFile.exists()) {
-						Toast.makeText(XianChangAdd.this, "附件正在下载", Toast.LENGTH_SHORT).show();
+						Toast.makeText(XianChangAdd.this, "附件正在下载",
+								Toast.LENGTH_SHORT).show();
 						// enterFlag = true;
 						return;
 					}
@@ -475,7 +498,8 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 				// return;//目的是不让iscontinueTask置为false
 				// }
 
-				intent.putExtra("mUploadUrl", (Serializable) mUploadList.get(position));
+				intent.putExtra("mUploadUrl",
+						(Serializable) mUploadList.get(position));
 				intent.putExtra("url", (Serializable) mList.get(position));
 				intent.putExtra("position", position);// 把被点击的条目的位置传递进去，这样在接收的时候就知道该该改变哪个list的内容
 				intent.putExtra("enterType", enterType);
@@ -521,9 +545,11 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 	private int getItemCount(Context c) {
 		String[] ss = null;
 		if (enterType == 1) {
-			ss = c.getResources().getStringArray(R.array.zuoyexianchang_si_data);
+			ss = c.getResources()
+					.getStringArray(R.array.zuoyexianchang_si_data);
 		} else if (enterType == 2) {
-			ss = c.getResources().getStringArray(R.array.caozuoxianchang_si_data);
+			ss = c.getResources().getStringArray(
+					R.array.caozuoxianchang_si_data);
 		} else if (enterType == 3) {
 			ss = c.getResources().getStringArray(R.array.guzhangjinji_si_data);
 		}
@@ -573,10 +599,12 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 				int index = data.getIntExtra("position", -1);
 				from = data.getStringExtra("from");
 				mediaIndex = data.getIntExtra("mediaIndex", 0);
-				mContent = (List<Map<String, Object>>) data.getSerializableExtra("url");
+				mContent = (List<Map<String, Object>>) data
+						.getSerializableExtra("url");
 				mList.set(index, mContent);// 改变在Upload里面对应被更改的内容
 
-				mUploadUrl = (List<Map<String, Object>>) data.getSerializableExtra("mUploadUrl");
+				mUploadUrl = (List<Map<String, Object>>) data
+						.getSerializableExtra("mUploadUrl");
 				mUploadList.set(index, mUploadUrl);
 				myMediaIndexs[index] = mediaIndex;
 			}
@@ -589,16 +617,19 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 				File file = new File(videopath);
 
-				Bitmap videoThumbnailBitmap = Utils.getVideoThumbnail(videopath, 400, 400,
+				Bitmap videoThumbnailBitmap = Utils.getVideoThumbnail(
+						videopath, 400, 400,
 						MediaStore.Images.Thumbnails.MINI_KIND);
 
 				// uri4 = Uri.fromFile(file);
 				// mediaID4 = mediaIndex++;
 
-				String videoName = videopath.substring(videopath.lastIndexOf(File.separator) + 1);
+				String videoName = videopath.substring(videopath
+						.lastIndexOf(File.separator) + 1);
 				System.out.println("videoName: " + videoName);
 
-				Intent intent = new Intent(XianChangAdd.this, ShowXianChangAttachment.class);
+				Intent intent = new Intent(XianChangAdd.this,
+						ShowXianChangAttachment.class);
 				Map<String, String> mMap = new HashMap<String, String>();
 				mMap.put("type", "video");
 				mMap.put("path", videopath);
@@ -608,17 +639,21 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 				Map<Integer, Map<String, String>> mContent = new HashMap<Integer, Map<String, String>>();
 				mContent.put(0, mMap);
 				intent.putExtra("address", (Serializable) mContent);
-				startActivityForResult(intent, LocalConstant.SHOWXIANCHANG_ATTACHMENT);
+				startActivityForResult(intent,
+						LocalConstant.SHOWXIANCHANG_ATTACHMENT);
 
 			}
 			break;
 
 		case LocalConstant.SHOWXIANCHANG_ATTACHMENT:
+			//TODO
 			if (resultCode == RESULT_OK) {
-				mVideo = (Map<String, Object>) data.getSerializableExtra("path");
+				mVideo = (Map<String, Object>) data
+						.getSerializableExtra("path");
 
 				bt_video.setText("录像 (1)");
 				bt_video.setClickable(false);
+				writeToDatabase(mVideo);
 			}
 
 			break;
@@ -628,6 +663,49 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 		}
 
 	}
+	
+	private void writeToDatabase(Map<String, Object> map){
+		PlanTaskDao mDao = new PlanTaskDao(XianChangAdd.this);
+	
+
+		StringBuilder standard = new StringBuilder("standard");
+		
+			Map<String, Object> attItem = map;
+
+			if (attItem == null) {
+				return;
+			}
+
+			String filePath = (String) attItem.get("path");
+			String type = Utils.judgeFileLeixin(filePath);
+			if (type != null) {
+
+				MyGPS myGPS = (MyGPS) attItem.get("gps");
+				
+				GpsDao mGpsDao = new GpsDao(XianChangAdd.this);
+				long gpsId = mGpsDao.saveHistory(null, getUserId(), Utils.formatDateMs(System.currentTimeMillis()),
+						myGPS.getLongitude() + "", myGPS.getLatitude() + "", "",
+						myGPS.getRadius() + "", myGPS.getAltitude() + "", myGPS.getSpeed() + "",
+						Utils.formatDateMs(System.currentTimeMillis()), myGPS.getCoorType(), "");
+				
+	
+				String historygps = Long.valueOf(gpsId).toString();
+
+				String md5 = Utils.getFileMD5(new File(filePath));
+				String url = ((String) map.get("path"));
+				String name = url.substring(url.lastIndexOf("/") + 1);
+				String time = Utils.parseDateInFormat((String) attItem.get("time"));
+				System.out.println("name: "+name + " time: "+time);
+				boolean id = mDao.savePlanTaskAtt(null, tid, historygps, standard.toString(), type, name, time, md5, "0");
+				if (id){
+					Toast.makeText(XianChangAdd.this, "数据已存储", Toast.LENGTH_SHORT).show();
+				}
+			}
+		
+		
+		
+
+}
 
 	// 改变list的颜色
 	private void changeTextColor() {
@@ -658,7 +736,8 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 	private void attachmentUploadRequest() {
 		if (!Utils.isNetworkAvailable(XianChangAdd.this)) {
-			Toast.makeText(XianChangAdd.this, "网络不可用", Toast.LENGTH_SHORT).show();
+			Toast.makeText(XianChangAdd.this, "网络不可用", Toast.LENGTH_SHORT)
+					.show();
 			return;
 		}
 		String uploadUrl = android.wxapp.service.elec.request.Contants.HFS_URL;
@@ -668,8 +747,8 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 			if (mVideo.size() != 0) {
 				// 上传视频
-				new HttpUploadTask(new TextView(this), this).execute((String) mVideo.get("path"),
-						uploadUrl);
+				new HttpUploadTask(new TextView(this), this, null).execute(
+						(String) mVideo.get("path"), uploadUrl);
 			}
 		}
 
@@ -685,7 +764,8 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 				switch (msg.what) {
 				case Constant.FILE_UPLOAD_SUCCESS:// 当所有的附件都上传完了之后finish当前页面
 
-					Toast.makeText(XianChangAdd.this, "上传成功", Toast.LENGTH_SHORT).show();
+					Toast.makeText(XianChangAdd.this, "上传成功",
+							Toast.LENGTH_SHORT).show();
 					// 请求http接口
 					List<TaskAttachment> attachment = new ArrayList<TaskAttachment>();
 					StringBuilder standard = new StringBuilder("standard");
@@ -706,24 +786,26 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 						// 参数修改
 						GPS gps = new GPS(getUserId(),
 								Utils.formatDateMs(System.currentTimeMillis()),
-								myGPS.getLongitude() + "", myGPS.getLatitude() + "", "",
-								myGPS.getRadius() + "", myGPS.getAltitude() + "",
+								myGPS.getLongitude() + "", myGPS.getLatitude()
+										+ "", "", myGPS.getRadius() + "",
+								myGPS.getAltitude() + "",
 								myGPS.getSpeed() + "",
-								Utils.formatDateMs(System.currentTimeMillis()), myGPS.getCoorType(),
-								"");
+								Utils.formatDateMs(System.currentTimeMillis()),
+								myGPS.getCoorType(), "");
 
 						String md5 = Utils.getFileMD5(new File(filePath));
-						Attachments att = new Attachments(type,
-								server + File.separator + path2FileName(filePath),
+						Attachments att = new Attachments(type, server
+								+ File.separator + path2FileName(filePath),
 								(String) attItem.get("time"), gps, md5);
 						sublist.add(att);
 
 					}
-					TaskAttachment item = new TaskAttachment(standard.toString(), sublist);
+					TaskAttachment item = new TaskAttachment(
+							standard.toString(), sublist);
 					attachment.add(item);
 
-					requestManager.uploadTaskAttachment(XianChangAdd.this, tid, enterType + "",
-							attachment);
+					requestManager.uploadTaskAttachment(XianChangAdd.this, tid,
+							enterType + "", attachment);
 
 					// fileCount--;
 					// Log.i("TAG", "count : " + fileCount);
@@ -857,7 +939,8 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 					break;
 				case Constant.FILE_UPLOAD_FAIL:
-					Toast.makeText(XianChangAdd.this, "上传失败", Toast.LENGTH_SHORT).show();
+					Toast.makeText(XianChangAdd.this, "上传失败",
+							Toast.LENGTH_SHORT).show();
 					break;
 
 				case Constants.UPLOAD_TASK_ATT_SUCCESS:
@@ -883,12 +966,14 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 				case Constants.UPLOAD_TASK_ATT_FAIL:
 				case Constants.END_TASK_FAIL:
 				case Constants.END_TASK_SAVE_FAIL:
+					Log.e("Demo", "Xianchang Add handler fail");
 					if (msg.obj != null) {
-						showAlterDialog("上传失败", ((NormalServerResponse) msg.obj).getEc(),
+						showAlterDialog("上传失败",
+								((NormalServerResponse) msg.obj).getEc(),
 								R.drawable.login_error_icon, "确定", null);
 					} else {
-						showAlterDialog("上传失败", "请检查是否与服务器连接正常", R.drawable.login_error_icon, "确定",
-								null);
+						showAlterDialog("上传失败", "请检查是否与服务器连接正常",
+								R.drawable.login_error_icon, "确定", null);
 					}
 					break;
 				default:
@@ -945,24 +1030,28 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 		xianChangAddAdapter.notifyDataSetChanged();
 		changeTextColor();// 重新出现的时候字体更改 因为oncreate只执行一次
 
-		MessageHandlerManager.getInstance().register(handler, Constant.FILE_UPLOAD_FAIL,
-				"XianChangAdd");
-		MessageHandlerManager.getInstance().register(handler, Constant.FILE_UPLOAD_SUCCESS,
-				"XianChangAdd");
+		MessageHandlerManager.getInstance().register(handler,
+				Constant.FILE_UPLOAD_FAIL, "XianChangAdd");
+		MessageHandlerManager.getInstance().register(handler,
+				Constant.FILE_UPLOAD_SUCCESS, "XianChangAdd");
 
-		MessageHandlerManager.getInstance().register(handler, Constants.UPLOAD_TASK_ATT_SUCCESS,
+		MessageHandlerManager.getInstance().register(handler,
+				Constants.UPLOAD_TASK_ATT_SUCCESS,
 				UploadTaskAttachmentResponse.class.getName());
-		MessageHandlerManager.getInstance().register(handler, Constants.UPLOAD_TASK_ATT_SAVE_FAIL,
+		MessageHandlerManager.getInstance().register(handler,
+				Constants.UPLOAD_TASK_ATT_SAVE_FAIL,
 				UploadTaskAttachmentResponse.class.getName());
-		MessageHandlerManager.getInstance().register(handler, Constants.UPLOAD_TASK_ATT_FAIL,
+		MessageHandlerManager.getInstance().register(handler,
+				Constants.UPLOAD_TASK_ATT_FAIL,
 				UploadTaskAttachmentResponse.class.getName());
 
-		MessageHandlerManager.getInstance().register(handler, Constants.END_TASK_SUCCESS,
-				StartTaskResponse.class.getName());
-		MessageHandlerManager.getInstance().register(handler, Constants.END_TASK_FAIL,
-				StartTaskResponse.class.getName());
-		MessageHandlerManager.getInstance().register(handler, Constants.END_TASK_SAVE_FAIL,
-				StartTaskResponse.class.getName());
+		MessageHandlerManager.getInstance().register(handler,
+				Constants.END_TASK_SUCCESS, StartTaskResponse.class.getName());
+		MessageHandlerManager.getInstance().register(handler,
+				Constants.END_TASK_FAIL, StartTaskResponse.class.getName());
+		MessageHandlerManager.getInstance()
+				.register(handler, Constants.END_TASK_SAVE_FAIL,
+						StartTaskResponse.class.getName());
 	}
 
 	@Override
@@ -970,24 +1059,28 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 		Log.v("Demo", getClass().getSimpleName() + "onPause");
 		super.onPause();
 
-		// MessageHandlerManager.getInstance().unregister(Constant.FILE_UPLOAD_FAIL,
-		// "XianChangAdd");
-		// MessageHandlerManager.getInstance().unregister(Constant.FILE_UPLOAD_SUCCESS,
-		// "XianChangAdd");
-		//
-		// MessageHandlerManager.getInstance().unregister(Constants.UPLOAD_TASK_ATT_SUCCESS,
-		// UploadTaskAttachmentResponse.class.getName());
-		// MessageHandlerManager.getInstance().unregister(Constants.UPLOAD_TASK_ATT_SAVE_FAIL,
-		// UploadTaskAttachmentResponse.class.getName());
-		// MessageHandlerManager.getInstance().unregister(Constants.UPLOAD_TASK_ATT_FAIL,
-		// UploadTaskAttachmentResponse.class.getName());
-		//
-		// MessageHandlerManager.getInstance().unregister(Constants.END_TASK_SUCCESS,
-		// StartTaskResponse.class.getName());
-		// MessageHandlerManager.getInstance().unregister(Constants.END_TASK_FAIL,
-		// StartTaskResponse.class.getName());
-		// MessageHandlerManager.getInstance().unregister(Constants.END_TASK_SAVE_FAIL,
-		// StartTaskResponse.class.getName());
+		MessageHandlerManager.getInstance().unregister(
+				Constant.FILE_UPLOAD_FAIL, "XianChangAdd");
+		MessageHandlerManager.getInstance().unregister(
+				Constant.FILE_UPLOAD_SUCCESS, "XianChangAdd");
+
+		MessageHandlerManager.getInstance().unregister(
+				Constants.UPLOAD_TASK_ATT_SUCCESS,
+				UploadTaskAttachmentResponse.class.getName());
+		MessageHandlerManager.getInstance().unregister(
+				Constants.UPLOAD_TASK_ATT_SAVE_FAIL,
+				UploadTaskAttachmentResponse.class.getName());
+		MessageHandlerManager.getInstance().unregister(
+				Constants.UPLOAD_TASK_ATT_FAIL,
+				UploadTaskAttachmentResponse.class.getName());
+
+		MessageHandlerManager.getInstance().unregister(
+				Constants.END_TASK_SUCCESS, StartTaskResponse.class.getName());
+		MessageHandlerManager.getInstance().unregister(Constants.END_TASK_FAIL,
+				StartTaskResponse.class.getName());
+		MessageHandlerManager.getInstance()
+				.unregister(Constants.END_TASK_SAVE_FAIL,
+						StartTaskResponse.class.getName());
 	}
 
 	@Override

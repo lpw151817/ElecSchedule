@@ -326,7 +326,7 @@ public class NewTask extends BaseActivity {
 
 			System.out.println("mediaPath : " + mediaPath);
 			// ¿ªÆôÉÏ´«
-			new HttpUploadTask(mProgress, this).execute(mediaPath, uploadUrl);
+			new HttpUploadTask(mProgress, this,null).execute(mediaPath, uploadUrl);
 		}
 		//
 		// System.out.println("filename :"+fileNameList.toString());

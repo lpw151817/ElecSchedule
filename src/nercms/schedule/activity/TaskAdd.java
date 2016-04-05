@@ -648,7 +648,7 @@ public class TaskAdd extends BaseActivity {
 			String mediaPath = media.getMediaUrl();// 媒体文件的本地路径，用户附件上传时
 			String uploadUrl = android.wxapp.service.elec.request.Contants.HFS_URL;
 			// 开启上传
-			new HttpUploadTask(tvUploadStatus, this).execute(mediaPath, uploadUrl);
+			new HttpUploadTask(tvUploadStatus, this,null).execute(mediaPath, uploadUrl);
 		}
 	}
 

@@ -511,7 +511,7 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 								
 								boolean isUp = isUpdate(time, insTime);
 								//如果time < insTime就更新数据
-								if (isUp){
+								if (isUp && (getUserId() != ins.getSend_id())){
 									fbList.add(ins);
 									fbAdapter.notifyDataSetChanged();
 									mListView.setSelection(fbList.size()-1);

@@ -53,6 +53,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.wxapp.service.AppApplication;
+import android.wxapp.service.elec.dao.GpsDao;
 import android.wxapp.service.elec.dao.PlanTaskDao;
 import android.wxapp.service.elec.model.StartTaskResponse;
 import android.wxapp.service.elec.model.UploadTaskAttachmentResponse;
@@ -324,10 +325,195 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 			if (fileCount < 1) {
 				showShortToast("请选择附件");
 			} else {
-				attachmentUploadRequest();// 上传附件
+//				attachmentUploadRequest();// 上传附件
+				//TODO 将附件写入数据库
+				attachmentToDatabase();
 			}
 			break;
 		}
+	}
+	
+	private void attachmentToDatabase(){
+		if (getFileCount() < 1) {
+			showLongToast("请选择附件上传");
+		} else {
+
+			// 避免重复上传
+			mUnUploadUrl.clear();
+			// TODO 将mUrl-mUploadList = mUnploadList
+
+			List<String> mUrlPath = new ArrayList<String>();
+			List<String> mUrlUploadPath = new ArrayList<String>();
+			List<String> mUrlUnUploadPath = new ArrayList<String>();
+
+			// 打印出多余的数据
+			for (Map<String, Object> ma : mUrl) {
+				if (ma != null) {
+					mUrlPath.add((String) ma.get("path"));
+				}
+			}
+
+			for (Map<String, Object> md : mUploadUrl) {
+				mUrlUploadPath.add((String) md.get("path"));
+			}
+
+			for (String path : mUrlPath) {
+				if (!mUrlUploadPath.contains(path)) {
+					mUrlUnUploadPath.add(path);
+					Log.e("TAG", "-------------------");
+					Log.e("TAG", path);
+
+					for (Map<String, Object> ma : mUrl) {
+						if (ma != null) {
+							String maPath = (String) ma.get("path");
+							if (maPath.equals(path)) {
+								mUnUploadUrl.add(ma);
+							}
+						}
+					}
+				}
+			}
+
+			mUnUploadFileCount = mUnUploadUrl.size();
+			// 将附件写入数据库
+			for (Map<String, Object> map : mUnUploadUrl) {
+				if (map != null) {
+					if (map.get("path") != null) {
+						Log.e("TAG", "上传的路径 : " + map.get("path"));
+						mUploadUrl.add(map);
+//						new HttpUploadTask(new TextView(this), this)
+//								.execute((String) map.get("path"), uploadUrl);
+						
+						writeToDatabase(map);
+					}
+				}
+			}
+
+		}
+	}
+	
+	private void writeToDatabase(Map<String, Object> map){
+			PlanTaskDao mDao = new PlanTaskDao(XianChangUpload.this);
+		
+
+			StringBuilder standard = new StringBuilder("standard");
+			// 作业现场
+			if (enterType == 1) {
+				switch (position) {
+				// 工作票
+				case 0:
+					standard.append("01");
+					break;
+				case 1:
+					standard.append("02");
+					break;
+				case 2:
+					standard.append("03");
+					break;
+				case 3:
+					standard.append("04");
+					break;
+				case 4:
+					standard.append("05");
+					break;
+				case 5:
+					standard.append("06");
+					break;
+				}
+			}
+			// 操作现场
+			else if (enterType == 2) {
+				switch (position) {
+				case 0:
+					standard.append("07");
+					break;
+				case 1:
+					standard.append("08");
+					break;
+				case 2:
+					standard.append("09");
+					break;
+				case 3:
+					standard.append("10");
+					break;
+				case 4:
+					standard.append("11");
+					break;
+				}
+			}
+			// 故障抢修
+			else if (enterType == 3) {
+				switch (position) {
+				case 0:
+					standard.append("01");
+					break;
+				case 1:
+					standard.append("02");
+					break;
+				case 2:
+					standard.append("03");
+					break;
+				case 3:
+					standard.append("04");
+					break;
+				case 4:
+					standard.append("05");
+					break;
+				case 5:
+					standard.append("06");
+					break;
+				}
+			}
+
+			List<Attachments> sublist = new ArrayList<Attachments>();
+			String server = android.wxapp.service.elec.request.Contants.HFS_URL;
+				Map<String, Object> attItem = map;
+
+				if (attItem == null) {
+					return;
+				}
+
+				String filePath = (String) attItem.get("path");
+				String type = Utils.judgeFileLeixin(filePath);
+				if (type != null) {
+
+					MyGPS myGPS = (MyGPS) attItem.get("gps");
+//					// 参数修改
+//					GPS gps = new GPS(getUserId(),
+//							Utils.formatDateMs(System.currentTimeMillis()),
+//							myGPS.getLongitude() + "", myGPS.getLatitude() + "", "",
+//							myGPS.getRadius() + "", myGPS.getAltitude() + "",
+//							myGPS.getSpeed() + "",
+//							Utils.formatDateMs(System.currentTimeMillis()),
+//							myGPS.getCoorType(), "");
+					
+					GpsDao mGpsDao = new GpsDao(XianChangUpload.this);
+					long gpsId = mGpsDao.saveHistory(null, getUserId(), Utils.formatDateMs(System.currentTimeMillis()),
+							myGPS.getLongitude() + "", myGPS.getLatitude() + "", "",
+							myGPS.getRadius() + "", myGPS.getAltitude() + "", myGPS.getSpeed() + "",
+							Utils.formatDateMs(System.currentTimeMillis()), myGPS.getCoorType(), "");
+					
+		
+					String historygps = Long.valueOf(gpsId).toString();
+
+					// String md5 = DigestUtils
+					// .md5Hex(new FileInputStream(new
+					// File(filePath)));
+					String md5 = Utils.getFileMD5(new File(filePath));
+					String url = ((String) map.get("path"));
+					String name = url.substring(url.lastIndexOf("/") + 1);
+					String time = Utils.parseDateInFormat((String) attItem.get("time"));
+					System.out.println("name: "+name + " time: "+time);
+					boolean id = mDao.savePlanTaskAtt(null, tid, historygps, standard.toString(), type, name, time, md5, "0");
+//					long id = mDao.savePlanTaskAtt(null, tid, historygps, standard.toString(), type, url, (String) attItem.get("time"), md5, "0");
+					if (id){
+						Toast.makeText(XianChangUpload.this, "数据已存储", Toast.LENGTH_SHORT).show();
+					}
+				}
+			
+			
+			
+
 	}
 
 	private void attachmentUploadRequest() {
@@ -383,7 +569,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 					if (map.get("path") != null) {
 						Log.e("TAG", "上传的路径 : " + map.get("path"));
 						mUploadUrl.add(map);
-						new HttpUploadTask(new TextView(this), this)
+						new HttpUploadTask(new TextView(this), this,null)
 								.execute((String) map.get("path"), uploadUrl);
 					}
 				}

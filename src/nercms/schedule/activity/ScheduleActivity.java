@@ -1,35 +1,56 @@
 package nercms.schedule.activity;
 
+import java.io.Externalizable;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-import com.nercms.schedule.misc.GD;
-import com.nercms.schedule.misc.GID;
-import com.nercms.schedule.ui.MediaInstance;
-import com.nercms.schedule.ui.OnMsgCallback;
-
-import android.R.integer;
+import nercms.schedule.R;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.MediaStore.Audio.Media;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.wxapp.service.AppApplication;
+import android.wxapp.service.elec.dao.GpsDao;
 import android.wxapp.service.elec.dao.Org;
-import android.wxapp.service.elec.request.*;
-import nercms.schedule.R;
-import nercms.schedule.R.id;
-import nercms.schedule.R.layout;
+import android.wxapp.service.elec.dao.PlanTaskDao;
+import android.wxapp.service.elec.model.UploadTaskAttachmentResponse;
+import android.wxapp.service.elec.model.bean.Attachments;
+import android.wxapp.service.elec.model.bean.TaskAttachment;
+import android.wxapp.service.elec.model.bean.table.tb_task_attachment;
+import android.wxapp.service.elec.model.bean.table.tb_task_info;
+import android.wxapp.service.elec.request.Constants;
+import android.wxapp.service.elec.request.Contants;
+import android.wxapp.service.elec.request.WebRequestManager;
+import android.wxapp.service.handler.MessageHandlerManager;
+import android.wxapp.service.util.Constant;
+import android.wxapp.service.util.HttpUploadTask;
 
-public class ScheduleActivity extends BaseActivity implements OnClickListener, OnMsgCallback {
+import com.nercms.schedule.misc.GD;
+import com.nercms.schedule.misc.GID;
+import com.nercms.schedule.ui.MediaInstance;
+import com.nercms.schedule.ui.OnMsgCallback;
+
+public class ScheduleActivity extends BaseActivity implements OnClickListener,
+		OnMsgCallback {
+
+	private boolean isScheduleOpen = false;
+
+	protected static final int UPLOAD = 0;
 
 	private int pingMax = 5000;
 
@@ -57,11 +78,16 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 	// 视频源
 	private String videoId;
 
+	protected long delayedTime = 10000;// 延时10s
+	private ScheduledExecutorService scheduler = Executors
+			.newScheduledThreadPool(1);
+	WebRequestManager requestManager;
 	private Handler handler = new Handler() {
+
 		// 回调处理
 		@Override
 		public void handleMessage(Message msg) {
-			Log.e("Push", "handleMessage:" + msg.what);
+			Log.e("Demo", "handleMessage:" + msg.what);
 
 			super.handleMessage(msg);
 			switch (msg.what) {
@@ -70,8 +96,9 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 				wakeUp(getApplicationContext(), null);
 				// if (surfaceView.getVisibility() == View.GONE)
 				// surfaceView.setVisibility(View.VISIBLE);
-				Toast.makeText(ScheduleActivity.this, "收到调度邀请 " + (String) (msg.obj),
-						Toast.LENGTH_SHORT).show();
+				Toast.makeText(ScheduleActivity.this,
+						"收到调度邀请 " + (String) (msg.obj), Toast.LENGTH_SHORT)
+						.show();
 				changeVisibility(View.GONE, bt1, bt2, bt4);
 				changeVisibility(View.VISIBLE, bt3);
 				break;
@@ -80,29 +107,119 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 				wakeUp(getApplicationContext(), null);
 				changeVisibility(View.VISIBLE, bt1, bt2);
 				changeVisibility(View.GONE, bt3, bt4);
-				Toast.makeText(ScheduleActivity.this, "调度结束", Toast.LENGTH_SHORT).show();
+				Toast.makeText(ScheduleActivity.this, "调度结束",
+						Toast.LENGTH_SHORT).show();
 				onBackPressed();
 				break;
 
 			case GID.MSG_RECV_CANCEL:
 				wakeUp(getApplicationContext(), null);
-				Toast.makeText(ScheduleActivity.this, "主叫方放弃调度", Toast.LENGTH_SHORT).show();
+				Toast.makeText(ScheduleActivity.this, "主叫方放弃调度",
+						Toast.LENGTH_SHORT).show();
 				onBackPressed();
 				break;
 			case GID.MSG_PING_DELAY:
-				Toast.makeText(ScheduleActivity.this, "ping server delay: " + (Integer) (msg.obj),
-						Toast.LENGTH_SHORT).show();
+				// Toast.makeText(ScheduleActivity.this, "ping server delay: " +
+				// (Integer) (msg.obj),
+				// Toast.LENGTH_SHORT).show();
+				Log.e("Demo", "Ping Msg:" + (Integer) (msg.obj));
 				int ping = (Integer) (msg.obj);
 				if (ping == 0 || ping > pingMax) {
-					// 网络中断的时候停止上传
+					// TODO 网络中断的时候停止上传
+					scheduler.shutdownNow();
+					isScheduleOpen = false;
+					Log.d("TAG", "网络中断的时候停止上传");
 				} else {
-					// 网络连接的时候开始上传
+					// TODO 网络连接的时候开始上传
+					// 线程不要重复创建
+
+					// 获取所有未上传的附件，将为上传的附件上传，上传之后将他们的status标志位设置为2，即已经上传
+
+					if (!isScheduleOpen) {
+						Log.d("Demo", "打开线程");
+						scheduler.scheduleAtFixedRate(command, 100,
+								delayedTime, TimeUnit.MILLISECONDS);
+						isScheduleOpen = true;
+					}
+					Log.d("Demo", "网络连接的时候开始上传");
 				}
 				break;
 
-			default:
+			case Constant.FILE_UPLOAD_SUCCESS:
+//				Log.e("TAG", "HHH");
+				tb_task_attachment planTaskAtts2 = (tb_task_attachment) msg.obj;
+//				Toast.makeText(ScheduleActivity.this, "上传成功",
+//						Toast.LENGTH_SHORT).show();
+
+				GpsDao gpsDao = new GpsDao(ScheduleActivity.this);
+				PlanTaskDao pDao = new PlanTaskDao(ScheduleActivity.this);
+
+				// for (tb_task_attachment task_attachment : planTaskAtts2) {
+
+				List<Attachments> sublist = new ArrayList<Attachments>();
+				List<TaskAttachment> attachment = new ArrayList<TaskAttachment>();
+				Attachments att = new Attachments(planTaskAtts2.getType(),
+						android.wxapp.service.elec.request.Contants.HFS_URL
+								+ File.separator + planTaskAtts2.getUrl(),
+						planTaskAtts2.getUpload_time(),
+						gpsDao.getHistory(planTaskAtts2.getHistorygps()),
+						planTaskAtts2.getMd5());
+				sublist.add(att);
+				TaskAttachment item = new TaskAttachment(
+						planTaskAtts2.getStandard(), sublist);
+				attachment.add(item);
+
+				tb_task_info planTask = pDao.getPlanTask(planTaskAtts2
+						.getTask_id());
+				requestManager.uploadTaskAttachment(ScheduleActivity.this,
+						planTaskAtts2.getTask_id(),
+						planTask.getCategory() + "", attachment);
+				// }
+
 				break;
+			case Constant.FILE_UPLOAD_FAIL:
+				Toast.makeText(ScheduleActivity.this, "上传失败",
+						Toast.LENGTH_SHORT).show();
+				break;
+
+			case Constants.UPLOAD_TASK_ATT_SUCCESS:
+				Toast.makeText(ScheduleActivity.this, "上传成功",
+						Toast.LENGTH_SHORT).show();
+				break;
+
 			}
+		}
+	};
+
+	private PlanTaskDao pDao = new PlanTaskDao(ScheduleActivity.this);
+
+	Runnable command = new Runnable() {
+		@Override
+		public void run() {
+			if (pDao == null)
+				pDao = new PlanTaskDao(ScheduleActivity.this);
+			List<tb_task_attachment> planTaskAtts = pDao.getPlanTaskAtts(null,
+					null, "0");
+			Log.d("TAG", planTaskAtts.toString());
+
+			if (planTaskAtts.size() != 0) {
+				registHandler();
+				for (tb_task_attachment uploadAtt : planTaskAtts) {
+					String prefix = Environment.getExternalStorageDirectory()
+							.getAbsolutePath() + "/TestRecord/";
+					String fileName = uploadAtt.getUrl();
+					String uploadUrl = android.wxapp.service.elec.request.Contants.HFS_URL;
+					new HttpUploadTask(new TextView(ScheduleActivity.this),
+							ScheduleActivity.this, uploadAtt).execute(prefix
+							+ fileName, uploadUrl);
+				}
+
+				// Message msg = new Message();
+				// msg.obj = planTaskAtts;
+				// msg.what = Constant.FILE_UPLOAD_SUCCESS;
+				// handler.sendMessage(msg);
+			}
+
 		}
 	};
 
@@ -111,7 +228,8 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 		Intent intent = new Intent(c, ScheduleActivity.class);
 		if (b != null)
 			intent.putExtras(b);
-		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+				| Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		c.startActivity(intent);
 	}
 
@@ -124,6 +242,9 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 
 		self_id = getUserId();
 
+		requestManager = new WebRequestManager(AppApplication.getInstance(),
+				this);
+
 		showLog_e(server_ip_wan + ":" + server_port);
 
 		video_render_view = (SurfaceView) findViewById(R.id.videorenderview);
@@ -133,15 +254,18 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 
 		// 如果内外网ip不等，则设置参数为true
 		if (!server_ip_lan.equals(server_ip_wan))
-			MediaInstance.instance().api_start(getApplicationContext(), server_ip_wan,
-					server_ip_lan, true, server_port, self_id, encrypt_info);
+			MediaInstance.instance().api_start(getApplicationContext(),
+					server_ip_wan, server_ip_lan, true, server_port, self_id,
+					encrypt_info);
 		else
-			MediaInstance.instance().api_start(getApplicationContext(), server_ip_wan,
-					server_ip_lan, false, server_port, self_id, encrypt_info);
+			MediaInstance.instance().api_start(getApplicationContext(),
+					server_ip_wan, server_ip_lan, false, server_port, self_id,
+					encrypt_info);
 		Log.e("Push", "MediaInstance.instance().api_start");
 		MediaInstance.instance().api_set_video_render_scale(2.8f);
 		MediaInstance.instance().api_set_msg_callback(this);
-		MediaInstance.instance().api_set_video_view(video_render_view, video_capture_view);
+		MediaInstance.instance().api_set_video_view(video_render_view,
+				video_capture_view);
 		// int ping_delay = MediaInstance.instance()
 		// .api_get_ping_delay(ScheduleActivity.server_ip_wan);
 
@@ -164,7 +288,8 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item) {
+	public boolean onOptionsItemSelected(
+			com.actionbarsherlock.view.MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			onBackPressed();
@@ -178,7 +303,8 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 		switch (v.getId()) {
 		case R.id.button1:
 			// 调度
-			Intent intent = new Intent(ScheduleActivity.this, SchedulePersonActivity.class);
+			Intent intent = new Intent(ScheduleActivity.this,
+					SchedulePersonActivity.class);
 			// intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			// ScheduleActivity.this.startActivityForResult(intent, 999);
 			ScheduleActivity.this.startActivity(intent);
@@ -228,7 +354,8 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 		if (resultCode == RESULT_OK) {
 			switch (requestCode) {
 			case 999:
-				selectedPeople = (List<Org>) data.getSerializableExtra("people");
+				selectedPeople = (List<Org>) data
+						.getSerializableExtra("people");
 				for (Org org : selectedPeople) {
 					showLog_e(org.getId().substring(1));
 				}
@@ -291,7 +418,8 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 			videoId = intent.getStringExtra("videoId");
 			showLog_e(videoId);
 		} else if (intent.getIntExtra("tag", -1) == 0) {
-			Intent intent1 = new Intent(getApplicationContext(), MainContent.class);
+			Intent intent1 = new Intent(getApplicationContext(),
+					MainContent.class);
 			intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			getApplicationContext().startActivity(intent1);
 
@@ -304,20 +432,23 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 		video_capture_view = (SurfaceView) findViewById(R.id.videocaptureview);
 
 		MediaInstance.instance().api_set_msg_callback(this);
-		MediaInstance.instance().api_set_video_view(video_render_view, video_capture_view);// layout_inflater.inflate(R.layout.videorender,
-																							// null));
+		MediaInstance.instance().api_set_video_view(video_render_view,
+				video_capture_view);// layout_inflater.inflate(R.layout.videorender,
+									// null));
 
 		if (true == GD.is_in_schedule()) {
 			if (false == GD._i_am_video_source) {
 				Log.v("Demo", "not video source");
-				video_capture_view.getHolder().setFormat(PixelFormat.TRANSPARENT);
+				video_capture_view.getHolder().setFormat(
+						PixelFormat.TRANSPARENT);
 				video_capture_view.setZOrderOnTop(false);
 				video_capture_view.setZOrderMediaOverlay(false);
 				video_render_view.setZOrderOnTop(true);
 				video_render_view.setZOrderMediaOverlay(true);
 			} else {
 				Log.v("Demo", "video source");
-				video_render_view.getHolder().setFormat(PixelFormat.TRANSPARENT);
+				video_render_view.getHolder()
+						.setFormat(PixelFormat.TRANSPARENT);
 				video_render_view.setZOrderOnTop(false);
 				video_render_view.setZOrderMediaOverlay(false);
 				video_capture_view.setZOrderOnTop(true);
@@ -335,11 +466,22 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 	public void onBackPressed() {
 		Log.i("Demo", "MediaDemo::onBackPressed()");
 		if (true == GD.is_in_schedule()) {
-			Toast.makeText(ScheduleActivity.this, "请关闭调度后再返回", Toast.LENGTH_SHORT).show();
+			Toast.makeText(ScheduleActivity.this, "请关闭调度后再返回",
+					Toast.LENGTH_SHORT).show();
 			return;
 		}
 		super.onBackPressed();
 
 	}
 
+	private void registHandler() {
+		MessageHandlerManager.getInstance().register(handler,
+				Constant.FILE_UPLOAD_SUCCESS, getClass().getSimpleName());
+		MessageHandlerManager.getInstance().register(handler,
+				Constant.FILE_UPLOAD_FAIL, getClass().getSimpleName());
+		MessageHandlerManager.getInstance().register(handler,
+				Constants.UPLOAD_TASK_ATT_SUCCESS,
+				UploadTaskAttachmentResponse.class.getName());
+
+	}
 }

@@ -275,7 +275,7 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		SubMenu addMenu = menu.addSubMenu("add item");
 		addMenu.add(0, 1, 1, "视频调度").setIcon(R.drawable.iconfont_video);
 		// addMenu.add(0, 2, 1, "修改密码").setIcon(R.drawable.ofm_meeting_icon);
-		addMenu.add(0, -1, 1, "通知").setIcon(R.drawable.iconfont_tongzhi);
+//		addMenu.add(0, -1, 1, "通知").setIcon(R.drawable.iconfont_tongzhi);
 		addMenu.add(0, 4, 1, "退出").setIcon(R.drawable.iconfont_tongzhi);
 
 		MenuItem addItem = addMenu.getItem();
