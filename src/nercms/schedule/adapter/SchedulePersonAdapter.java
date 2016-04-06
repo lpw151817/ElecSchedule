@@ -81,11 +81,11 @@ public class SchedulePersonAdapter extends BaseAdapter {
 						selectedVideo = data.get(position).getId();
 						isSelected = true;
 					} else {
-						Toast.makeText(c, "只能选一个视频源", Toast.LENGTH_LONG).show();
+						Toast.makeText(c, "只能选一个视频源", Toast.LENGTH_SHORT).show();
 						buttonView.setChecked(false);
 					}
 				} else {
-					Toast.makeText(c, "请选择已勾选的人作为视频源", Toast.LENGTH_LONG).show();
+					Toast.makeText(c, "请选择已勾选的人作为视频源", Toast.LENGTH_SHORT).show();
 					buttonView.setChecked(false);
 				}
 			}

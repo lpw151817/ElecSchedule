@@ -200,7 +200,7 @@ public class Login extends BaseActivity {
 						showAlterDialog("登录失败", ((NormalServerResponse) msg.obj).getEc(),
 								R.drawable.login_error_icon, "确定", null);
 					} else {
-						showLongToast("无法更新数据，请检查是否与服务器连接正常");
+						showLongToast("网络中断，请检查是否与服务器连接正常");
 						dismissProgressDialog();
 
 						// Intent intent = new Intent(Login.this,

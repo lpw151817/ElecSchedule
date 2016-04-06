@@ -238,7 +238,7 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener,
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_schedule);
 		Log.i("Demo", "MediaDemo::onCreate()");
-		iniActionBar(true, null, "指挥调度");
+		iniActionBar(true, null, "视频调度");
 
 		self_id = getUserId();
 

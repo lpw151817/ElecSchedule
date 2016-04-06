@@ -65,11 +65,11 @@ public class SchedulePersonActivity extends BaseActivity {
 		case 1:
 			String videoSource = adapter.getSelectedVideo();
 			if (TextUtils.isEmpty(videoSource)) {
-				showLongToast("请选择视频源");
+				showShortToast("请选择视频源");
 			} else if (adapter.getSelectedPeople().size() < 2) {
-				showLongToast("请选择多个用户");
+				showShortToast("请选择多个用户");
 			} else if (adapter.getSelectedPeople().size() > MAX_USER) {
-				showLongToast("最多只能选择" + MAX_USER + "个用户");
+				showShortToast("最多只能选择" + MAX_USER + "个用户");
 			} else {
 				if (adapter.getSelectedPeople()
 						.contains(new Org(adapter.getSelectedVideo(), "", ""))) {
@@ -83,7 +83,7 @@ public class SchedulePersonActivity extends BaseActivity {
 					ScheduleActivity.wakeUp(getApplicationContext(), bundle);
 					finish();
 				} else {
-					showLongToast("请选择已勾选的人作为视频源");
+					showShortToast("请选择已勾选的人作为视频源");
 				}
 			}
 			break;
