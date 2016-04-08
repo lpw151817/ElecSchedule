@@ -17,6 +17,7 @@ import nercms.schedule.utils.LocalConstant;
 import nercms.schedule.utils.MyGPS;
 import nercms.schedule.utils.MyLocationListener.ReceiveGPS;
 import nercms.schedule.utils.Utils;
+import nercms.schedule.view.PlayVideo;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -126,6 +127,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 	private String videopath;
 	boolean isEnd = false;
+	boolean isShowAlertDialog = true;// 防止重复显示AlertDialog
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -153,6 +155,39 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 		if (isAdmin()) {
 			findViewById(R.id.bottom).setVisibility(View.GONE);
 			findViewById(R.id.jieshurenwu).setVisibility(View.GONE);
+
+			PlanTaskDao pDao = new PlanTaskDao(XianChangAdd.this);
+			List<tb_task_attachment> planTask = pDao.getPlanTaskAtts(tid);
+
+			// boolean flag = false;
+			for (final tb_task_attachment tb_task_attachment : planTask) {
+				String standard = tb_task_attachment.getStandard();
+
+				if (standard.equals("standard")) {
+
+					// 有视频就显示播放视频的button,点击button播放视频
+					Button playVideo = (Button) findViewById(R.id.playvideo);
+					playVideo.setVisibility(View.VISIBLE);
+					playVideo.setOnClickListener(new OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							// TODO 播放视频
+							Intent videoIntent = new Intent(XianChangAdd.this,
+									PlayVideo.class);
+							videoIntent.putExtra("path",
+									tb_task_attachment.getUrl());
+							startActivity(videoIntent);
+							// flag = true;
+						}
+					});
+				}
+			}
+
+			// if (!flag){
+			// Utils.showShortToast(XianChangAdd.this, "当前没有录像");
+			// }
+
 		}
 
 		bt_jieshurenwu = (Button) findViewById(R.id.jieshurenwu);
@@ -178,20 +213,19 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 									public void onClick(DialogInterface dialog,
 											int which) {
 										// 如果没有录像直接结束
-//										if (mVideo.size() == 0) {
-											Log.v("Demo", "XianChangAdd : "
-													+ handler.toString());
-											requestManager.endTask(
-													XianChangAdd.this, tid,
-													System.currentTimeMillis()
-															+ "");
-//										}
+										// if (mVideo.size() == 0) {
+										Log.v("Demo", "XianChangAdd : "
+												+ handler.toString());
+										requestManager.endTask(
+												XianChangAdd.this, tid,
+												System.currentTimeMillis() + "");
+										// }
 										fileCount = getFileCount();// 获取文件的个数，上传完后finish当前页免
 										// Log.e("TAG",
 										// "xianChangAdd fileCount : "+
 										// fileCount);
 										isClickShangchuanfujian = false;
-//										attachmentUploadRequest();// 上传附件
+										// attachmentUploadRequest();// 上传附件
 
 										isEnd = true;
 
@@ -341,7 +375,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 				// 如果文件未存在，或者文件已存在但无法执行或者读取，则重新下载
 				if (!file.exists()
-						|| (file.exists() && (!file.canExecute()
+						|| !(file.exists() && (!file.canExecute()
 								|| !file.canRead() || !file.canWrite()))) {
 					new HttpDownloadTask(XianChangAdd.this).execute(downUrl,
 							"/nercms-Schedule/DownloadAttachments/", mediaName);// 将附件下载下来
@@ -646,7 +680,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 			break;
 
 		case LocalConstant.SHOWXIANCHANG_ATTACHMENT:
-			//TODO
+			// TODO
 			if (resultCode == RESULT_OK) {
 				mVideo = (Map<String, Object>) data
 						.getSerializableExtra("path");
@@ -663,49 +697,47 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 		}
 
 	}
-	
-	private void writeToDatabase(Map<String, Object> map){
+
+	private void writeToDatabase(Map<String, Object> map) {
 		PlanTaskDao mDao = new PlanTaskDao(XianChangAdd.this);
-	
 
 		StringBuilder standard = new StringBuilder("standard");
-		
-			Map<String, Object> attItem = map;
 
-			if (attItem == null) {
-				return;
+		Map<String, Object> attItem = map;
+
+		if (attItem == null) {
+			return;
+		}
+
+		String filePath = (String) attItem.get("path");
+		String type = Utils.judgeFileLeixin(filePath);
+		if (type != null) {
+
+			MyGPS myGPS = (MyGPS) attItem.get("gps");
+
+			GpsDao mGpsDao = new GpsDao(XianChangAdd.this);
+			long gpsId = mGpsDao.saveHistory(null, getUserId(),
+					System.currentTimeMillis() + "", myGPS.getLongitude() + "",
+					myGPS.getLatitude() + "", "", myGPS.getRadius() + "",
+					myGPS.getAltitude() + "", myGPS.getSpeed() + "",
+					System.currentTimeMillis() + "", myGPS.getCoorType(), "");
+
+			String historygps = Long.valueOf(gpsId).toString();
+
+			String md5 = Utils.getFileMD5(new File(filePath));
+			String url = ((String) map.get("path"));
+			String name = url.substring(url.lastIndexOf("/") + 1);
+			String time = Utils.parseDateInFormat((String) attItem.get("time"));
+			System.out.println("name: " + name + " time: " + time);
+			boolean id = mDao.savePlanTaskAtt(null, tid, historygps,
+					standard.toString(), type, name, time, md5, "0");
+			if (id) {
+				Toast.makeText(XianChangAdd.this, "录像已上传", Toast.LENGTH_SHORT)
+						.show();
 			}
+		}
 
-			String filePath = (String) attItem.get("path");
-			String type = Utils.judgeFileLeixin(filePath);
-			if (type != null) {
-
-				MyGPS myGPS = (MyGPS) attItem.get("gps");
-				
-				GpsDao mGpsDao = new GpsDao(XianChangAdd.this);
-				long gpsId = mGpsDao.saveHistory(null, getUserId(), Utils.formatDateMs(System.currentTimeMillis()),
-						myGPS.getLongitude() + "", myGPS.getLatitude() + "", "",
-						myGPS.getRadius() + "", myGPS.getAltitude() + "", myGPS.getSpeed() + "",
-						Utils.formatDateMs(System.currentTimeMillis()), myGPS.getCoorType(), "");
-				
-	
-				String historygps = Long.valueOf(gpsId).toString();
-
-				String md5 = Utils.getFileMD5(new File(filePath));
-				String url = ((String) map.get("path"));
-				String name = url.substring(url.lastIndexOf("/") + 1);
-				String time = Utils.parseDateInFormat((String) attItem.get("time"));
-				System.out.println("name: "+name + " time: "+time);
-				boolean id = mDao.savePlanTaskAtt(null, tid, historygps, standard.toString(), type, name, time, md5, "0");
-				if (id){
-					Toast.makeText(XianChangAdd.this, "数据已存储", Toast.LENGTH_SHORT).show();
-				}
-			}
-		
-		
-		
-
-}
+	}
 
 	// 改变list的颜色
 	private void changeTextColor() {
@@ -972,8 +1004,11 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 								((NormalServerResponse) msg.obj).getEc(),
 								R.drawable.login_error_icon, "确定", null);
 					} else {
-						showAlterDialog("上传失败", "请检查是否与服务器连接正常",
-								R.drawable.login_error_icon, "确定", null);
+						if (isShowAlertDialog) {
+							showAlterDialog("上传失败", "请检查是否与服务器连接正常",
+									R.drawable.login_error_icon, "确定", null);
+							isShowAlertDialog = false;
+						}
 					}
 					break;
 				default:

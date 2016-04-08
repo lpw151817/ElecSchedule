@@ -11,14 +11,17 @@
         android:id="@+id/listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/bottom" >
+        android:layout_above="@+id/bottom"
+        >
     </ListView>
+
+    
 
     <LinearLayout
         android:id="@+id/bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/time"
+        android:layout_above="@+id/playvideo"
         android:orientation="vertical" >
 
         <Button
@@ -42,6 +45,17 @@
             android:textColor="#ffffff" />
     </LinearLayout>
 
+    <Button
+        android:id="@+id/playvideo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/time"
+        android:layout_margin="5dp"
+        android:layout_weight="1"
+        android:background="@drawable/btn_style_green"
+        android:text="播放录像"
+        android:textColor="#ffffff"
+        android:visibility="gone" />
     <TextView
         android:id="@+id/time"
         android:layout_width="wrap_content"

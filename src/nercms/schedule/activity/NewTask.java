@@ -94,8 +94,11 @@ public class NewTask extends BaseActivity {
 	ImageButton mVideo;
 
 	// video
+//	public static String fileFolder = Environment.getExternalStorageDirectory().getPath()
+//			+ "/TestRecord";
+	
 	public static String fileFolder = Environment.getExternalStorageDirectory().getPath()
-			+ "/TestRecord";
+			+ "/nercms-Schedule/DownloadAttachments/";
 	private String DownloadfileFolder = Environment.getExternalStorageDirectory().getPath()
 			+ "/nercms-Schedule/DownloadAttachments/";
 

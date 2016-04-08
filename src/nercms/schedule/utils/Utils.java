@@ -17,6 +17,7 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -47,6 +48,7 @@ public class Utils {
 		mToast.setText(msg);
 		mToast.show();
 	}
+	
 
 	public static void setEditTextUnEditable(EditText et) {
 		et.setFocusable(false);

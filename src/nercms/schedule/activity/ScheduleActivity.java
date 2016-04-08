@@ -137,8 +137,11 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener,
 
 					if (!isScheduleOpen) {
 						Log.d("Demo", "打开线程");
-						scheduler.scheduleAtFixedRate(command, 100,
+						scheduler.scheduleAtFixedRate(command, 0,
 								delayedTime, TimeUnit.MILLISECONDS);
+						
+//						scheduler.scheduleAtFixedRate(command2, 500,
+//								delayedTime, TimeUnit.MILLISECONDS);
 						isScheduleOpen = true;
 					}
 					Log.d("Demo", "网络连接的时候开始上传");
@@ -146,13 +149,19 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener,
 				break;
 
 			case Constant.FILE_UPLOAD_SUCCESS:
+						
+				
 //				Log.e("TAG", "HHH");
 				tb_task_attachment planTaskAtts2 = (tb_task_attachment) msg.obj;
 //				Toast.makeText(ScheduleActivity.this, "上传成功",
 //						Toast.LENGTH_SHORT).show();
-
+				pDao.changeTaskAttachmentStatus(planTaskAtts2.getTask_id(), "1");
+				
+				
 				GpsDao gpsDao = new GpsDao(ScheduleActivity.this);
 				PlanTaskDao pDao = new PlanTaskDao(ScheduleActivity.this);
+			
+				
 
 				// for (tb_task_attachment task_attachment : planTaskAtts2) {
 
@@ -183,8 +192,8 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener,
 				break;
 
 			case Constants.UPLOAD_TASK_ATT_SUCCESS:
-//				Toast.makeText(ScheduleActivity.this, "上传成功",
-//						Toast.LENGTH_SHORT).show();
+				Toast.makeText(ScheduleActivity.this, "上传成功",
+						Toast.LENGTH_SHORT).show();
 				break;
 
 			}
@@ -205,8 +214,7 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener,
 			if (planTaskAtts.size() != 0) {
 				registHandler();
 				for (tb_task_attachment uploadAtt : planTaskAtts) {
-					String prefix = Environment.getExternalStorageDirectory()
-							.getAbsolutePath() + "/TestRecord/";
+					String prefix = NewTask.fileFolder;
 					String fileName = uploadAtt.getUrl();
 					String uploadUrl = android.wxapp.service.elec.request.Contants.HFS_URL;
 					new HttpUploadTask(new TextView(ScheduleActivity.this),
@@ -214,14 +222,37 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener,
 							+ fileName, uploadUrl);
 				}
 
-				// Message msg = new Message();
-				// msg.obj = planTaskAtts;
-				// msg.what = Constant.FILE_UPLOAD_SUCCESS;
-				// handler.sendMessage(msg);
+				
 			}
 
 		}
 	};
+	
+//	Runnable command2 = new Runnable() {
+//		@Override
+//		public void run() {
+//			if (pDao == null)
+//				pDao = new PlanTaskDao(ScheduleActivity.this);
+//			List<tb_task_attachment> planTaskAtts = pDao.getPlanTaskAtts(null,
+//					null, "1");
+//			Log.d("TAG", planTaskAtts.toString());
+//
+//			if (planTaskAtts.size() != 0) {
+//				registHandler();
+//				for (tb_task_attachment uploadAtt : planTaskAtts) {
+//					String prefix = NewTask.fileFolder;
+//					String fileName = uploadAtt.getUrl();
+//					String uploadUrl = android.wxapp.service.elec.request.Contants.HFS_URL;
+//					new HttpUploadTask(new TextView(ScheduleActivity.this),
+//							ScheduleActivity.this, uploadAtt).execute(prefix
+//							+ fileName, uploadUrl);
+//				}
+//
+//				
+//			}
+//
+//		}
+//	};
 
 	public static void wakeUp(Context c, Bundle b) {
 		// 将页面调至前台
@@ -234,7 +265,7 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener,
 	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) { 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_schedule);
 		Log.i("Demo", "MediaDemo::onCreate()");
