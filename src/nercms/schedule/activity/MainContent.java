@@ -15,6 +15,7 @@ import nercms.schedule.R;
 import nercms.schedule.fragment.FirstFragment;
 import nercms.schedule.fragment.SecondFragment;
 import nercms.schedule.fragment.ThirdFragment;
+import nercms.schedule.utils.HeartBeat;
 import nercms.schedule.utils.Utils;
 import nercms.schedule.view.NoScrollViewPager;
 import android.content.Intent;
@@ -71,6 +72,8 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		Log.e("Demo", "MainContent:Oncreate");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_content);
+		
+		HeartBeat.start(getApplicationContext());
 
 		dao = new PlanTaskDao(this);
 		/*
