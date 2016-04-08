@@ -9,6 +9,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import nercms.schedule.R;
+import nercms.schedule.utils.AttachmentUpload;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
@@ -79,9 +80,9 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener,
 	private String videoId;
 
 	protected long delayedTime = 10000;// 延时10s
-	private ScheduledExecutorService scheduler = Executors
-			.newScheduledThreadPool(1);
-	WebRequestManager requestManager;
+//	private ScheduledExecutorService scheduler = Executors
+//			.newScheduledThreadPool(1);
+//	WebRequestManager requestManager;
 	private Handler handler = new Handler() {
 
 		// 回调处理
@@ -126,22 +127,20 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener,
 				int ping = (Integer) (msg.obj);
 				if (ping == 0 || ping > pingMax) {
 					// TODO 网络中断的时候停止上传
-					scheduler.shutdownNow();
+//					scheduler.shutdownNow();
+					AttachmentUpload.stop(ScheduleActivity.this);
 					isScheduleOpen = false;
 					Log.d("TAG", "网络中断的时候停止上传");
 				} else {
 					// TODO 网络连接的时候开始上传
 					// 线程不要重复创建
 
-					// 获取所有未上传的附件，将为上传的附件上传，上传之后将他们的status标志位设置为2，即已经上传
 
 					if (!isScheduleOpen) {
-						Log.d("Demo", "打开线程");
-						scheduler.scheduleAtFixedRate(command, 0,
-								delayedTime, TimeUnit.MILLISECONDS);
-						
-//						scheduler.scheduleAtFixedRate(command2, 500,
-//								delayedTime, TimeUnit.MILLISECONDS);
+						Log.d("JAMES", "打开线程");
+
+						AttachmentUpload.start(ScheduleActivity.this);
+
 						isScheduleOpen = true;
 					}
 					Log.d("Demo", "网络连接的时候开始上传");
@@ -151,6 +150,7 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener,
 			case Constant.FILE_UPLOAD_SUCCESS:
 						
 				
+				/*
 //				Log.e("TAG", "HHH");
 				tb_task_attachment planTaskAtts2 = (tb_task_attachment) msg.obj;
 //				Toast.makeText(ScheduleActivity.this, "上传成功",
@@ -163,7 +163,7 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener,
 			
 				
 
-				// for (tb_task_attachment task_attachment : planTaskAtts2) {
+
 
 				List<Attachments> sublist = new ArrayList<Attachments>();
 				List<TaskAttachment> attachment = new ArrayList<TaskAttachment>();
@@ -183,8 +183,8 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener,
 				requestManager.uploadTaskAttachment(ScheduleActivity.this,
 						planTaskAtts2.getTask_id(),
 						planTask.getCategory() + "", attachment);
-				// }
-
+				
+*/
 				break;
 			case Constant.FILE_UPLOAD_FAIL:
 				Toast.makeText(ScheduleActivity.this, "上传失败",
@@ -195,12 +195,13 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener,
 				Toast.makeText(ScheduleActivity.this, "上传成功",
 						Toast.LENGTH_SHORT).show();
 				break;
+				
 
 			}
 		}
 	};
 
-	private PlanTaskDao pDao = new PlanTaskDao(ScheduleActivity.this);
+	/*private PlanTaskDao pDao = new PlanTaskDao(ScheduleActivity.this);
 
 	Runnable command = new Runnable() {
 		@Override
@@ -228,31 +229,7 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener,
 		}
 	};
 	
-//	Runnable command2 = new Runnable() {
-//		@Override
-//		public void run() {
-//			if (pDao == null)
-//				pDao = new PlanTaskDao(ScheduleActivity.this);
-//			List<tb_task_attachment> planTaskAtts = pDao.getPlanTaskAtts(null,
-//					null, "1");
-//			Log.d("TAG", planTaskAtts.toString());
-//
-//			if (planTaskAtts.size() != 0) {
-//				registHandler();
-//				for (tb_task_attachment uploadAtt : planTaskAtts) {
-//					String prefix = NewTask.fileFolder;
-//					String fileName = uploadAtt.getUrl();
-//					String uploadUrl = android.wxapp.service.elec.request.Contants.HFS_URL;
-//					new HttpUploadTask(new TextView(ScheduleActivity.this),
-//							ScheduleActivity.this, uploadAtt).execute(prefix
-//							+ fileName, uploadUrl);
-//				}
-//
-//				
-//			}
-//
-//		}
-//	};
+*/
 
 	public static void wakeUp(Context c, Bundle b) {
 		// 将页面调至前台
@@ -273,8 +250,8 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener,
 
 		self_id = getUserId();
 
-		requestManager = new WebRequestManager(AppApplication.getInstance(),
-				this);
+//		requestManager = new WebRequestManager(AppApplication.getInstance(),
+//				this);
 
 		showLog_e(server_ip_wan + ":" + server_port);
 

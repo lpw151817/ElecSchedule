@@ -217,7 +217,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		bt_shangchuangAttach.setOnClickListener(this);
 
 		position = getIntent().getIntExtra("position", -1);
-		initHandler();
+//		initHandler();
 	}
 
 	@Override
@@ -517,7 +517,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 	}
 
-	private void attachmentUploadRequest() {
+	/*private void attachmentUploadRequest() {
 		if (!Utils.isNetworkAvailable(XianChangUpload.this)) {
 			Toast.makeText(XianChangUpload.this, "网络不可用", Toast.LENGTH_SHORT).show();
 			return;
@@ -579,7 +579,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		}
 
 	}
-
+*/
 	private int getFileCount() {
 		int fileCount = 0;
 		for (int i = 0; i < mUrl.size(); i++) {
@@ -1134,26 +1134,26 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		final ImageView imageView = CreateImgView(this, thumbnail, IMG_WIDTH, IMG_HEIGHT);
 		setImageviewListener(uri, imageView, MediaType, mediaId);
 
-		ImageButton deleteBtn = new ImageButton(this);
-		deleteBtn.setBackgroundResource(R.drawable.media_delete);
+/*		ImageButton deleteBtn = new ImageButton(this);
+		deleteBtn.setBackgroundResource(R.drawable.media_delete);*/
 
 //		final RelativeLayout r1 = WrapImgView(MediaType, imageView, deleteBtn);
 		final RelativeLayout r1 = WrapImgView(MediaType, imageView, null);//不显示删除按钮
 		r1.setId(mediaId);
 		Log.e("TAG", "r1.setMediaId : " + mediaId);
 
-		deleteBtn.setOnClickListener(new OnClickListener() {
+		/*deleteBtn.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
 				// 显示删除对话框
 				showDeleteMediaDialog(r1, MediaType);
 			}
-		});
+		});*/
 
 		// 将图片添加入图片列表
 		viewContainer.addView(r1);
-		if (isAdmin())
-			deleteBtn.setVisibility(View.GONE);
+		/*if (isAdmin())
+			deleteBtn.setVisibility(View.GONE);*/
 
 	}
 
@@ -1349,7 +1349,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		imageDialog.show();
 	}
 
-	private void showDeleteMediaDialog(final RelativeLayout rl, final int MediaType) {
+	/*private void showDeleteMediaDialog(final RelativeLayout rl, final int MediaType) {
 		String text = "";
 
 		if (MediaType == NewTask.TYPE_AUDIO) {
@@ -1481,7 +1481,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		});
 		// 显示对话框
 		builder.create().show();
-	}
+	}*/
 
 	public Bitmap getBitmapFromUri(final Uri uri) {
 		ContentResolver cr = this.getContentResolver();
@@ -1572,167 +1572,167 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		return bitmap;
 	}
 
-	Handler handler;
+//	Handler handler;
 
 	private int mUnUploadFileCount = 0;// 记录为上传的附件数目
 
 	private int position;
 
-	@SuppressLint("HandlerLeak")
+	/*@SuppressLint("HandlerLeak")
 	private void initHandler() {
 		handler = new Handler() {
 //该页面没有不进行附件的上传
 			@Override
 			public void handleMessage(Message msg) {
 
-//				switch (msg.what) {
-//				case Constant.FILE_UPLOAD_SUCCESS:// 当所有的附件都上传完了之后finish当前页面
-//
-//					mUnUploadFileCount--;
-//					Log.i("TAG", "count : " + mUnUploadFileCount);
-//					if (mUnUploadFileCount == 0) {
-//
-//						Toast.makeText(XianChangUpload.this, "上传成功", Toast.LENGTH_SHORT).show();
-//						// 请求http接口
-//						List<TaskAttachment> attachment = new ArrayList<TaskAttachment>();
-//						// for (int i = 0; i < mUnUploadUrl.size(); i++) {
-//						StringBuilder standard = new StringBuilder("standard");
-//						// 作业现场
-//						if (enterType == 1) {
-//							switch (position) {
-//							// 工作票
-//							case 0:
-//								standard.append("01");
-//								break;
-//							case 1:
-//								standard.append("02");
-//								break;
-//							case 2:
-//								standard.append("03");
-//								break;
-//							case 3:
-//								standard.append("04");
-//								break;
-//							case 4:
-//								standard.append("05");
-//								break;
-//							case 5:
-//								standard.append("06");
-//								break;
-//							}
-//						}
-//						// 操作现场
-//						else if (enterType == 2) {
-//							switch (position) {
-//							case 0:
-//								standard.append("07");
-//								break;
-//							case 1:
-//								standard.append("08");
-//								break;
-//							case 2:
-//								standard.append("09");
-//								break;
-//							case 3:
-//								standard.append("10");
-//								break;
-//							case 4:
-//								standard.append("11");
-//								break;
-//							}
-//						}
-//						// 故障抢修
-//						else if (enterType == 3) {
-//							switch (position) {
-//							case 0:
-//								standard.append("01");
-//								break;
-//							case 1:
-//								standard.append("02");
-//								break;
-//							case 2:
-//								standard.append("03");
-//								break;
-//							case 3:
-//								standard.append("04");
-//								break;
-//							case 4:
-//								standard.append("05");
-//								break;
-//							case 5:
-//								standard.append("06");
-//								break;
-//							}
-//						}
-//
-//						List<Attachments> sublist = new ArrayList<Attachments>();
-//						String server = android.wxapp.service.elec.request.Contants.HFS_URL;
-//						for (int j = 0; j < mUnUploadUrl.size(); j++) {
-//							Map<String, Object> attItem = mUnUploadUrl.get(j);
-//
-//							if (attItem == null) {
-//								return;
-//							}
-//
-//							String filePath = (String) attItem.get("path");
-//							String type = Utils.judgeFileLeixin(filePath);
-//							if (type != null) {
-//
-//								MyGPS myGPS = (MyGPS) attItem.get("gps");
-//								// 参数修改
-//								GPS gps = new GPS(getUserId(),
-//										Utils.formatDateMs(System.currentTimeMillis()),
-//										myGPS.getLongitude() + "", myGPS.getLatitude() + "", "",
-//										myGPS.getRadius() + "", myGPS.getAltitude() + "",
-//										myGPS.getSpeed() + "",
-//										Utils.formatDateMs(System.currentTimeMillis()),
-//										myGPS.getCoorType(), "");
-//
-//								// String md5 = DigestUtils
-//								// .md5Hex(new FileInputStream(new
-//								// File(filePath)));
-//								String md5 = Utils.getFileMD5(new File(filePath));
-//								Attachments att = new Attachments(type,
-//										server + File.separator + path2FileName(filePath),
-//										(String) attItem.get("time"), gps, md5);
-//								sublist.add(att);
-//
-//							}
-//						}
-//						TaskAttachment item = new TaskAttachment(standard.toString(), sublist);
-//						attachment.add(item);
-//
-//						requestManager.uploadTaskAttachment(XianChangUpload.this, tid,
-//								enterType + "", attachment);
-//
-//					}
-//
-//					break;
-//				case Constant.FILE_UPLOAD_FAIL:
-//					Toast.makeText(XianChangUpload.this, "上传失败", Toast.LENGTH_SHORT).show();
-//					break;
-//
-//				case Constants.UPLOAD_TASK_ATT_SUCCESS:
-//					break;
-//				case Constants.END_TASK_SUCCESS:
-//					showLongToast("任务已结束");
-//					break;
-//
-//				case Constants.UPLOAD_TASK_ATT_SAVE_FAIL:
-//				case Constants.UPLOAD_TASK_ATT_FAIL:
-//				case Constants.END_TASK_FAIL:
-//				case Constants.END_TASK_SAVE_FAIL:
-//					if (msg.obj != null) {
-//						showAlterDialog("上传失败", ((NormalServerResponse) msg.obj).getEc(),
-//								R.drawable.login_error_icon, "确定", null);
-//					} else {
-//						showAlterDialog("上传失败", "请检查是否与服务器连接正常", R.drawable.login_error_icon, "确定",
-//								null);
-//					}
-//					break;
-//				default:
-//					break;
-//				}
+				switch (msg.what) {
+				case Constant.FILE_UPLOAD_SUCCESS:// 当所有的附件都上传完了之后finish当前页面
+
+					mUnUploadFileCount--;
+					Log.i("TAG", "count : " + mUnUploadFileCount);
+					if (mUnUploadFileCount == 0) {
+
+						Toast.makeText(XianChangUpload.this, "上传成功", Toast.LENGTH_SHORT).show();
+						// 请求http接口
+						List<TaskAttachment> attachment = new ArrayList<TaskAttachment>();
+						// for (int i = 0; i < mUnUploadUrl.size(); i++) {
+						StringBuilder standard = new StringBuilder("standard");
+						// 作业现场
+						if (enterType == 1) {
+							switch (position) {
+							// 工作票
+							case 0:
+								standard.append("01");
+								break;
+							case 1:
+								standard.append("02");
+								break;
+							case 2:
+								standard.append("03");
+								break;
+							case 3:
+								standard.append("04");
+								break;
+							case 4:
+								standard.append("05");
+								break;
+							case 5:
+								standard.append("06");
+								break;
+							}
+						}
+						// 操作现场
+						else if (enterType == 2) {
+							switch (position) {
+							case 0:
+								standard.append("07");
+								break;
+							case 1:
+								standard.append("08");
+								break;
+							case 2:
+								standard.append("09");
+								break;
+							case 3:
+								standard.append("10");
+								break;
+							case 4:
+								standard.append("11");
+								break;
+							}
+						}
+						// 故障抢修
+						else if (enterType == 3) {
+							switch (position) {
+							case 0:
+								standard.append("01");
+								break;
+							case 1:
+								standard.append("02");
+								break;
+							case 2:
+								standard.append("03");
+								break;
+							case 3:
+								standard.append("04");
+								break;
+							case 4:
+								standard.append("05");
+								break;
+							case 5:
+								standard.append("06");
+								break;
+							}
+						}
+
+						List<Attachments> sublist = new ArrayList<Attachments>();
+						String server = android.wxapp.service.elec.request.Contants.HFS_URL;
+						for (int j = 0; j < mUnUploadUrl.size(); j++) {
+							Map<String, Object> attItem = mUnUploadUrl.get(j);
+
+							if (attItem == null) {
+								return;
+							}
+
+							String filePath = (String) attItem.get("path");
+							String type = Utils.judgeFileLeixin(filePath);
+							if (type != null) {
+
+								MyGPS myGPS = (MyGPS) attItem.get("gps");
+								// 参数修改
+								GPS gps = new GPS(getUserId(),
+										Utils.formatDateMs(System.currentTimeMillis()),
+										myGPS.getLongitude() + "", myGPS.getLatitude() + "", "",
+										myGPS.getRadius() + "", myGPS.getAltitude() + "",
+										myGPS.getSpeed() + "",
+										Utils.formatDateMs(System.currentTimeMillis()),
+										myGPS.getCoorType(), "");
+
+								// String md5 = DigestUtils
+								// .md5Hex(new FileInputStream(new
+								// File(filePath)));
+								String md5 = Utils.getFileMD5(new File(filePath));
+								Attachments att = new Attachments(type,
+										server + File.separator + path2FileName(filePath),
+										(String) attItem.get("time"), gps, md5);
+								sublist.add(att);
+
+							}
+						}
+						TaskAttachment item = new TaskAttachment(standard.toString(), sublist);
+						attachment.add(item);
+
+						requestManager.uploadTaskAttachment(XianChangUpload.this, tid,
+								enterType + "", attachment);
+
+					}
+
+					break;
+				case Constant.FILE_UPLOAD_FAIL:
+					Toast.makeText(XianChangUpload.this, "上传失败", Toast.LENGTH_SHORT).show();
+					break;
+
+				case Constants.UPLOAD_TASK_ATT_SUCCESS:
+					break;
+				case Constants.END_TASK_SUCCESS:
+					showLongToast("任务已结束");
+					break;
+
+				case Constants.UPLOAD_TASK_ATT_SAVE_FAIL:
+				case Constants.UPLOAD_TASK_ATT_FAIL:
+				case Constants.END_TASK_FAIL:
+				case Constants.END_TASK_SAVE_FAIL:
+					if (msg.obj != null) {
+						showAlterDialog("上传失败", ((NormalServerResponse) msg.obj).getEc(),
+								R.drawable.login_error_icon, "确定", null);
+					} else {
+						showAlterDialog("上传失败", "请检查是否与服务器连接正常", R.drawable.login_error_icon, "确定",
+								null);
+					}
+					break;
+				default:
+					break;
+				}
 			}
 
 		};
@@ -1756,7 +1756,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		MessageHandlerManager.getInstance().register(handler, Constants.END_TASK_SAVE_FAIL,
 				StartTaskResponse.class.getName());
 	}
-
+*/
 	private String path2FileName(String path) {
 		return path.substring(path.lastIndexOf(File.separator) + 1);
 	}

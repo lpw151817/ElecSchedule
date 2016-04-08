@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import nercms.schedule.activity.NewTask;
+
 import android.media.MediaRecorder;
 import android.os.Environment;
 
@@ -12,7 +14,8 @@ public class AudioRecorder implements RecordStrategy {
 
 	private MediaRecorder recorder;
 	private String fileName;
-	private String fileFolder = Environment.getExternalStorageDirectory().getPath() + "/TestRecord";
+//	private String fileFolder = Environment.getExternalStorageDirectory().getPath() + "/TestRecord";
+	private String fileFolder = NewTask.fileFolder;
 
 	private boolean isRecording = false;
 
