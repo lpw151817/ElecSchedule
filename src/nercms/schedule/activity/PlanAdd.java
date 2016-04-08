@@ -889,7 +889,7 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 					selectTime = df.parse(currentSelectTime);
 
 					long mins = (selectTime.getTime() - nowTime.getTime()) / 6000;
-					if (mins < 3) {
+					if (mins < 0) {
 						Utils.showShortToast(PlanAdd.this, "选择时间小于当前时间，请重新选择");
 					} else {
 						if (isEnd) {
@@ -898,7 +898,7 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 								editText.setText(currentSelectTime);
 								dialog.dismiss();
 							} else {
-								Utils.showShortToast(PlanAdd.this, "当前时间早于计划开始时间，请重新选择");
+								Utils.showShortToast(PlanAdd.this, "计划结束时间应迟于计划开始时间，请重新选择");
 							}
 						} else {
 							editText.setText(currentSelectTime);

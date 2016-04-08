@@ -10,15 +10,17 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.wxapp.service.AppApplication;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.imooc.treeview.utils.Node;
 import com.imooc.treeview.utils.adapter.TreeListViewAdapter;
 
 public class PersonSelectAdapter<T> extends TreeListViewAdapter<T> {
-
+	final int MAX_SELECT = 1;
 	List<Node> selected = new ArrayList<Node>();
 
 	public interface DataChanged {
@@ -109,9 +111,14 @@ public class PersonSelectAdapter<T> extends TreeListViewAdapter<T> {
 			holder.mCb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 				@Override
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-					if (isChecked)
-						selected.add(node);
-					else
+					if (isChecked) {
+						if (selected.size() == MAX_SELECT) {
+							Toast.makeText(AppApplication.getInstance().getApplicationContext(),
+									"最多只能选择" + MAX_SELECT + "个", Toast.LENGTH_SHORT).show();
+							buttonView.setChecked(false);
+						} else
+							selected.add(node);
+					} else
 						selected.remove(node);
 					if (changed != null)
 						changed.onChanged(selected.size());

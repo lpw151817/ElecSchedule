@@ -64,7 +64,7 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 	private com.jauker.widget.BadgeView badgeView2;
 	private com.jauker.widget.BadgeView badgeView3;
 	private ScheduledExecutorService service;
-	 int delayedTime = 1000;//延时1s
+	int delayedTime = 1000;// 延时1s
 	private Handler handler;
 
 	@Override
@@ -72,7 +72,7 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		Log.e("Demo", "MainContent:Oncreate");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_content);
-		
+
 		HeartBeat.start(getApplicationContext());
 
 		dao = new PlanTaskDao(this);
@@ -142,43 +142,43 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		contentPager.setAdapter(madapter);
 		contentPager.setOffscreenPageLimit(3);
 
-		handler = new Handler(){
+		handler = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
 				super.handleMessage(msg);
 				if (msg.what == UPDATE_CONTENT) {
 					zuoyecount = ((Integer) msg.obj).intValue();
 					caozuocount = msg.arg1;
-					qiangxiucount  = msg.arg2;
+					qiangxiucount = msg.arg2;
 					badgeView1.setText("" + zuoyecount);
 					badgeView2.setText("" + caozuocount);
 					badgeView3.setText("" + qiangxiucount);
-					
-					System.out.println("zuoyecount : " +zuoyecount + " caozuocount : " + caozuocount);
+
+					System.out.println(
+							"zuoyecount : " + zuoyecount + " caozuocount : " + caozuocount);
 					mFirstFrag.getBadgeView1().setText("" + zuoyecount);
 					mSecondFrag.getBadgeView1().setText("" + zuoyecount);
 					mThirdFrag.getBadgeView1().setText("" + zuoyecount);
 				}
-				
+
 			}
 		};
 	}
 
-	
 	@Override
 	protected void onResume() {
 		Log.e("Demo", "MainContent:OnResume");
 		super.onResume();
-		
+
 		Runnable thread = new Runnable() {
-			
+
 			@Override
 			public void run() {
-				
-				if (dao  == null){
+
+				if (dao == null) {
 					dao = new PlanTaskDao(MainContent.this);
 				}
-				
+
 				if (isAdmin()) {
 					zuoyecount = dao.getPlanTasks(1, 3, null, "0").size();
 					caozuocount = dao.getPlanTasks(2, 3, null, "0").size();
@@ -188,7 +188,7 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 					caozuocount = dao.getPlanTasks(2, 3, getUserId(), "0").size();
 					qiangxiucount = dao.getPlanTasks(3, 3, getUserId(), "0").size();
 				}
-				
+
 				Message msg = new Message();
 				msg.what = UPDATE_CONTENT;
 				msg.obj = new Integer(zuoyecount);
@@ -197,37 +197,37 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 				handler.sendMessage(msg);
 			}
 		};
-		
+
 		service = Executors.newScheduledThreadPool(1);
 		service.scheduleAtFixedRate(thread, 100, delayedTime, TimeUnit.MILLISECONDS);
-		
-//		PlanTaskDao mDao;
-//		mDao = new PlanTaskDao(this);
-//		/*
-//		 * userid,如果是管理员就传入null,如果不是就getUserId在BaseActivity中，
-//		 */
-//		// dao.getPlanTasks(1, 3, "", 0).size();
-//		if (isAdmin()) {
-//			zuoyecount = mDao.getPlanTasks(1, 3, null, "0").size();
-//			caozuocount = mDao.getPlanTasks(2, 3, null, "0").size();
-//			qiangxiucount = mDao.getPlanTasks(3, 3, null, "0").size();
-//		} else {
-//			zuoyecount = mDao.getPlanTasks(1, 3, getUserId(), "0").size();
-//			caozuocount = mDao.getPlanTasks(2, 3, getUserId(), "0").size();
-//			qiangxiucount = mDao.getPlanTasks(3, 3, getUserId(), "0").size();
-//		}
-//
-//		badgeView1.setText("" + zuoyecount);
-//		badgeView2.setText("" + caozuocount);
-//		badgeView3.setText("" + qiangxiucount);
+
+		// PlanTaskDao mDao;
+		// mDao = new PlanTaskDao(this);
+		// /*
+		// * userid,如果是管理员就传入null,如果不是就getUserId在BaseActivity中，
+		// */
+		// // dao.getPlanTasks(1, 3, "", 0).size();
+		// if (isAdmin()) {
+		// zuoyecount = mDao.getPlanTasks(1, 3, null, "0").size();
+		// caozuocount = mDao.getPlanTasks(2, 3, null, "0").size();
+		// qiangxiucount = mDao.getPlanTasks(3, 3, null, "0").size();
+		// } else {
+		// zuoyecount = mDao.getPlanTasks(1, 3, getUserId(), "0").size();
+		// caozuocount = mDao.getPlanTasks(2, 3, getUserId(), "0").size();
+		// qiangxiucount = mDao.getPlanTasks(3, 3, getUserId(), "0").size();
+		// }
+		//
+		// badgeView1.setText("" + zuoyecount);
+		// badgeView2.setText("" + caozuocount);
+		// badgeView3.setText("" + qiangxiucount);
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		
+
 	}
-	
+
 	@Override
 	protected void onPause() {
 		super.onPause();
@@ -278,7 +278,7 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		SubMenu addMenu = menu.addSubMenu("add item");
 		addMenu.add(0, 1, 1, "视频调度").setIcon(R.drawable.iconfont_video);
 		// addMenu.add(0, 2, 1, "修改密码").setIcon(R.drawable.ofm_meeting_icon);
-//		addMenu.add(0, -1, 1, "通知").setIcon(R.drawable.iconfont_tongzhi);
+		// addMenu.add(0, -1, 1, "通知").setIcon(R.drawable.iconfont_tongzhi);
 		addMenu.add(0, 4, 1, "退出").setIcon(R.drawable.iconfont_tongzhi);
 
 		MenuItem addItem = addMenu.getItem();
@@ -320,6 +320,7 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		case 4:
 			// 退出
 			Log.e("Demo", "api shutdown");
+			HeartBeat.stop(getApplicationContext());
 			MediaInstance.instance().api_shutdown();
 			finish();
 			System.exit(0);

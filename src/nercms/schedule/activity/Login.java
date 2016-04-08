@@ -287,6 +287,11 @@ public class Login extends BaseActivity {
 							b.putInt("enterType", 0);
 							b.putString("tid", response.getId());
 							content += "任务已结束";
+						} else if (response.getType().equals("6")) {
+							// 修改后的任务
+							b.putInt("enterType", 0);
+							b.putString("tid", response.getId());
+							content += "任务已被修改，请查看";
 						}
 					}
 					showNotification(AppApplication.getInstance(), target, b, content, "江陵县云检系统",
