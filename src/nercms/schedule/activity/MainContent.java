@@ -157,8 +157,8 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 					System.out.println(
 							"zuoyecount : " + zuoyecount + " caozuocount : " + caozuocount);
 					mFirstFrag.getBadgeView1().setText("" + zuoyecount);
-					mSecondFrag.getBadgeView1().setText("" + zuoyecount);
-					mThirdFrag.getBadgeView1().setText("" + zuoyecount);
+					mSecondFrag.getBadgeView1().setText("" + caozuocount);
+					mThirdFrag.getBadgeView1().setText("" + qiangxiucount);
 				}
 
 			}

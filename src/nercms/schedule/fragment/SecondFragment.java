@@ -17,6 +17,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.wxapp.service.AppApplication;
 
 public class SecondFragment extends Fragment implements OnClickListener {
 	private View view;
@@ -50,7 +51,8 @@ public class SecondFragment extends Fragment implements OnClickListener {
 		bt_cancelledTask = (Button) view.findViewById(R.id.tab02_bt_cancelledtask);
 		LinearLayout layout = (LinearLayout) view.findViewById(R.id.newtasklayout);
 
-		badge = new com.jauker.widget.BadgeView(context);
+//		badge = new com.jauker.widget.BadgeView(context);
+		badge = new com.jauker.widget.BadgeView(AppApplication.getInstance().getApplicationContext());
 		badge.setText(mcount + "");
 		badge.setTargetView(mNewTask2);
 
