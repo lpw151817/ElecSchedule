@@ -175,9 +175,25 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 							// TODO 播放视频
 							Intent videoIntent = new Intent(XianChangAdd.this,
 									PlayVideo.class);
-							videoIntent.putExtra("path",
-									tb_task_attachment.getUrl());
-							startActivity(videoIntent);
+							
+							String path = NewTask.fileFolder + tb_task_attachment.getUrl();
+							
+							File file = new File(path);
+							if (!file.getParentFile().exists())
+								file.mkdirs();
+
+							// 如果文件未存在，或者文件已存在但无法执行或者读取，则重新下载
+							if (!file.exists()
+									|| !(file.exists() && (!file.canExecute()
+											|| !file.canRead() || !file.canWrite()))) {
+								Toast.makeText(XianChangAdd.this, "视频正在下载中，请稍后", Toast.LENGTH_SHORT).show();
+								
+							}else {
+							
+								videoIntent.putExtra("path",
+										path);
+								startActivity(videoIntent);
+							}
 							// flag = true;
 						}
 					});
@@ -732,7 +748,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 			boolean id = mDao.savePlanTaskAtt(null, tid, historygps,
 					standard.toString(), type, name, time, md5, "0");
 			if (id) {
-				Toast.makeText(XianChangAdd.this, "录像已上传", Toast.LENGTH_SHORT)
+				Toast.makeText(XianChangAdd.this, "录像已存储，正在上传中", Toast.LENGTH_SHORT)
 						.show();
 			}
 		}
