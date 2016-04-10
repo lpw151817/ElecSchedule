@@ -32,12 +32,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
 import android.webkit.URLUtil;
 import android.widget.Toast;
 import android.wxapp.service.elec.dao.GpsDao;
 import android.wxapp.service.elec.dao.PlanTaskDao;
 import android.wxapp.service.elec.model.UploadTaskAttachmentRequest;
+import android.wxapp.service.elec.model.UploadTaskAttachmentResponse;
 import android.wxapp.service.elec.model.bean.Attachments;
 import android.wxapp.service.elec.model.bean.TaskAttachment;
 import android.wxapp.service.elec.model.bean.table.tb_task_attachment;
@@ -54,8 +56,12 @@ public class AttachmentUpload {
 
 	private static Context _ctx = null;
 
-	public static void start(Context context) {
+	private static Handler _handler = null;
+
+	public static void start(Context context, Handler handler) {
+		// public static void start(Context context) {
 		_ctx = context;
+		_handler = handler;
 
 		Thread attachment_upload_thread = new Thread() {
 			@Override
@@ -74,8 +80,8 @@ public class AttachmentUpload {
 		};
 
 		_network_status_service = Executors.newScheduledThreadPool(1);
-		_network_status_service.scheduleAtFixedRate(attachment_upload_thread, 100, 100,
-				TimeUnit.MILLISECONDS);
+		_network_status_service.scheduleAtFixedRate(attachment_upload_thread,
+				100, 100, TimeUnit.MILLISECONDS);
 	}
 
 	public static void stop(Context context) {
@@ -87,8 +93,9 @@ public class AttachmentUpload {
 	private static void upload_attachement() {
 		// 查询数据库
 		// 查最早一个未上传的附件
-		_query_result = AttachmentDatabase.instance(_ctx).query(
-				"select * from tb_task_attachment where status = '0' or status = '1' order by id asc limit 1;");
+		_query_result = AttachmentDatabase
+				.instance(_ctx)
+				.query("select * from tb_task_attachment where status = '0' or status = '1' order by id asc limit 1;");
 
 		if (null == _query_result)
 			return;
@@ -117,7 +124,8 @@ public class AttachmentUpload {
 		String status = _query_result.get("status_0");
 
 		// 时戳过长（如7天以上）则不必处理
-		if (7 * 24 * 3600 * 1000 <= Long.parseLong(upload_time) - System.currentTimeMillis())
+		if (7 * 24 * 3600 * 1000 <= Long.parseLong(upload_time)
+				- System.currentTimeMillis())
 			return;
 
 		if (true == status.equalsIgnoreCase("0")) {
@@ -125,8 +133,8 @@ public class AttachmentUpload {
 			boolean ret = false;// 上传成功与否
 			// ...
 
-			tb_task_attachment uploadAtt = new tb_task_attachment(id, task_id, historygps, standard,
-					type, url, upload_time, md5, status);
+			tb_task_attachment uploadAtt = new tb_task_attachment(id, task_id,
+					historygps, standard, type, url, upload_time, md5, status);
 			String prefix = NewTask.fileFolder;
 			String fileName = uploadAtt.getUrl();
 			String uploadUrl = android.wxapp.service.elec.request.Contants.HFS_URL;
@@ -152,7 +160,8 @@ public class AttachmentUpload {
 
 			if (true == ret) {
 				AttachmentDatabase.instance(_ctx).execute(
-						"update tb_task_attachment set status='1' where id = '" + id + "';");
+						"update tb_task_attachment set status='1' where id = '"
+								+ id + "';");
 				status = "1";
 			}
 		}
@@ -169,30 +178,55 @@ public class AttachmentUpload {
 			List<Attachments> sublist = new ArrayList<Attachments>();
 			List<TaskAttachment> attachment = new ArrayList<TaskAttachment>();
 			Attachments att = new Attachments(type,
-					android.wxapp.service.elec.request.Contants.HFS_URL + File.separator + url,
-					upload_time, gpsDao.getHistory(historygps), md5);
+					android.wxapp.service.elec.request.Contants.HFS_URL
+							+ File.separator + url, upload_time,
+					gpsDao.getHistory(historygps), md5);
 			sublist.add(att);
 			TaskAttachment item = new TaskAttachment(standard, sublist);
 			attachment.add(item);
 
-			UploadTaskAttachmentRequest ctr = new UploadTaskAttachmentRequest(getUserId(_ctx),
-					getUserIc(_ctx), task_id, type, attachment);
+			UploadTaskAttachmentRequest ctr = new UploadTaskAttachmentRequest(
+					getUserId(_ctx), getUserIc(_ctx), task_id, type, attachment);
 
 			Log.d("JAMES", ctr.toString());
 
 			json_request = parase2Json(ctr);
-			boolean ret = upload_attachment_http_request(json_request);// 通知成功与否
+			Object[] result = upload_attachment_http_request(json_request);// 通知成功与否;
+			boolean ret = (Boolean) result[0];
 
 			if (true == ret) {
+
 				AttachmentDatabase.instance(_ctx).execute(
-						"update tb_task_attachment set status='2' where id = '" + id + "';");
+						"update tb_task_attachment set status='2' where id = '"
+								+ id + "';");
+
+				UploadTaskAttachmentResponse response = (UploadTaskAttachmentResponse) result[1];
+				AttachmentDatabase.instance(_ctx).execute(
+						"update tb_gps_history set id='"
+								+ response.getGpss().get(0).getId()
+								+ "' where id = '" + historygps + "';");
+				AttachmentDatabase.instance(_ctx).execute(
+						"update tb_task_attachment set id='"
+								+ response.getAttachments().get(0).getId()
+								+ "',historygps='"
+								+ response.getGpss().get(0).getId()
+								+ "' where id = '" + id + "';");
+
 				status = "2";
-				Toast.makeText(_ctx, "上传成功", Toast.LENGTH_SHORT).show();
+
+				_handler.post(new Runnable() {
+
+					@Override
+					public void run() {
+
+						Toast.makeText(_ctx, "上传成功", Toast.LENGTH_SHORT).show();
+					}
+				});
 			}
 		}
 	}
 
-	private static boolean upload_attachment_http_request(String json_request) {
+	private static Object[] upload_attachment_http_request(String json_request) {
 		HttpClientOperation hco = new HttpClientOperation();
 
 		// List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -204,7 +238,8 @@ public class AttachmentUpload {
 
 		Map params = new HashMap<String, String>();
 		params.put(Contants.UPLOAD_TASK_ATTACHMENT_PARAM.substring(0,
-				Contants.UPLOAD_TASK_ATTACHMENT_PARAM.length() - 1), json_request);
+				Contants.UPLOAD_TASK_ATTACHMENT_PARAM.length() - 1),
+				json_request);
 
 		// 设置http连接的参数
 		hco.getHttpClient();
@@ -214,17 +249,27 @@ public class AttachmentUpload {
 		// String result = hco.doPost(Contants.SERVER_URL + Contants.MODEL_NAME
 		// + Contants.UPLOAD_TASK_ATTACHMENT_METHOD, params);
 		String result = hco.doGet(
-				Contants.SERVER_URL + Contants.MODEL_NAME + Contants.UPLOAD_TASK_ATTACHMENT_METHOD
-						.substring(0, Contants.UPLOAD_TASK_ATTACHMENT_METHOD.length() - 1),
-				params);
+				Contants.SERVER_URL
+						+ Contants.MODEL_NAME
+						+ Contants.UPLOAD_TASK_ATTACHMENT_METHOD
+								.substring(0,
+										Contants.UPLOAD_TASK_ATTACHMENT_METHOD
+												.length() - 1), params);
 
-		if (null == result || 0 == result.length() || result.equalsIgnoreCase("{}"))
-			return false;
+		Object[] rr = new Object[2];
 
-		if (false == result.contains("\"s\":\"0\""))
-			return false;
-
-		return true;
+		if (null == result || 0 == result.length()
+				|| result.equalsIgnoreCase("{}")) {
+			rr[0] = false;
+			return rr;
+		}
+		if (false == result.contains("\"s\":\"0\"")) {
+			rr[0] = false;
+			return rr;
+		}
+		rr[0] = true;
+		rr[1] = new Gson().fromJson(result, UploadTaskAttachmentResponse.class);
+		return rr;
 	}
 
 	private static String post(String pathToOurFile, String urlServer)
@@ -237,22 +282,24 @@ public class AttachmentUpload {
 
 		HttpClient httpclient = new DefaultHttpClient();
 		// 设置通信协议版本
-		httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
-				HttpVersion.HTTP_1_1);
+		httpclient.getParams().setParameter(
+				CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
 		HttpPost httppost = new HttpPost(urlServer);
 		File file = new File(pathToOurFile);
 
 		FileBody cbFile = new FileBody(file);
 
-		CustomMultipartEntity multipartContent = new CustomMultipartEntity(new ProgressListener() {
-			@Override
-			public void transferred(long num) {
-				// TODO Auto-generated method stub
-				// publishProgress((int) ((num / (float) totalSize) * 100));
-			}
+		CustomMultipartEntity multipartContent = new CustomMultipartEntity(
+				new ProgressListener() {
+					@Override
+					public void transferred(long num) {
+						// TODO Auto-generated method stub
+						// publishProgress((int) ((num / (float) totalSize) *
+						// 100));
+					}
 
-		});
+				});
 
 		multipartContent.addPart("data", cbFile);
 		// totalSize = multipartContent.getContentLength();
@@ -284,14 +331,17 @@ public class AttachmentUpload {
 	}
 
 	protected static String getUserIc(Context context) {
-		return MySharedPreference.get(context, MySharedPreference.USER_IC, null);
+		return MySharedPreference
+				.get(context, MySharedPreference.USER_IC, null);
 	}
 
-	protected static Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+	protected static Gson gson = new GsonBuilder().setDateFormat(
+			"yyyy-MM-dd HH:mm:ss").create();
 
 	protected static String parase2Json(Object o) {
 		String encode = URLEncoder.encode(gson.toJson(o));
-		Log.e("BaseRequest", (URLDecoder.decode(encode).equals(gson.toJson(o))) + "");
+		Log.e("BaseRequest", (URLDecoder.decode(encode).equals(gson.toJson(o)))
+				+ "");
 		return encode;
 	}
 

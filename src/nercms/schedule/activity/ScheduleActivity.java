@@ -1,12 +1,7 @@
 package nercms.schedule.activity;
 
-import java.io.Externalizable;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import nercms.schedule.R;
 import nercms.schedule.utils.AttachmentUpload;
@@ -14,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -23,23 +17,13 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.wxapp.service.AppApplication;
-import android.wxapp.service.elec.dao.GpsDao;
 import android.wxapp.service.elec.dao.Org;
-import android.wxapp.service.elec.dao.PlanTaskDao;
 import android.wxapp.service.elec.model.UploadTaskAttachmentResponse;
-import android.wxapp.service.elec.model.bean.Attachments;
-import android.wxapp.service.elec.model.bean.TaskAttachment;
-import android.wxapp.service.elec.model.bean.table.tb_task_attachment;
-import android.wxapp.service.elec.model.bean.table.tb_task_info;
 import android.wxapp.service.elec.request.Constants;
 import android.wxapp.service.elec.request.Contants;
-import android.wxapp.service.elec.request.WebRequestManager;
 import android.wxapp.service.handler.MessageHandlerManager;
 import android.wxapp.service.util.Constant;
-import android.wxapp.service.util.HttpUploadTask;
 
 import com.nercms.schedule.misc.GD;
 import com.nercms.schedule.misc.GID;
@@ -139,7 +123,8 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener,
 					if (!isScheduleOpen) {
 						Log.d("JAMES", "打开线程");
 
-						AttachmentUpload.start(ScheduleActivity.this);
+						AttachmentUpload.start(ScheduleActivity.this, handler);
+//						AttachmentUpload.start(ScheduleActivity.this);
 
 						isScheduleOpen = true;
 					}

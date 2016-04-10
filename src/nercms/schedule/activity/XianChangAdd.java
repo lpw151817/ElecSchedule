@@ -128,6 +128,8 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 	private String videopath;
 	boolean isEnd = false;
 	boolean isShowAlertDialog = true;// 防止重复显示AlertDialog
+	
+	boolean isExistVideo  = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -175,23 +177,27 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 							// TODO 播放视频
 							Intent videoIntent = new Intent(XianChangAdd.this,
 									PlayVideo.class);
-							
-							String path = NewTask.fileFolder + tb_task_attachment.getUrl();
-							
+
+							String path = NewTask.fileFolder
+									+ tb_task_attachment.getUrl();
+
 							File file = new File(path);
 							if (!file.getParentFile().exists())
-								file.mkdirs();
+								file.getParentFile().mkdirs();
 
 							// 如果文件未存在，或者文件已存在但无法执行或者读取，则重新下载
 							if (!file.exists()
-									|| !(file.exists() && (!file.canExecute()
-											|| !file.canRead() || !file.canWrite()))) {
-								Toast.makeText(XianChangAdd.this, "视频正在下载中，请稍后", Toast.LENGTH_SHORT).show();
-								
-							}else {
-							
-								videoIntent.putExtra("path",
-										path);
+									|| (file.exists() && (/*!file.canExecute()
+											||*/ !file.canRead() || !file.canWrite()))) {
+								if (file.exists())
+									file.delete();
+								Toast.makeText(XianChangAdd.this,
+										"视频正在下载中，请稍后", Toast.LENGTH_SHORT)
+										.show();
+
+							} else {
+
+								videoIntent.putExtra("path", path);
 								startActivity(videoIntent);
 							}
 							// flag = true;
@@ -293,22 +299,37 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 		// 上传视频附件
 		bt_video.setOnClickListener(new OnClickListener() {
 
+			//TODO
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent();
-				intent.setAction("android.media.action.VIDEO_CAPTURE");
-				intent.addCategory("android.intent.category.DEFAULT");
+				
+				if  (!isExistVideo){//不存在视频就录像
+				
+					Intent intent = new Intent();
+					intent.setAction("android.media.action.VIDEO_CAPTURE");
+					intent.addCategory("android.intent.category.DEFAULT");
+	
+					String fileName = Utils.getFileDate();
+					videopath = NewTask.fileFolder + "/" + fileName + ".mp4";
+					File file = new File(videopath);
+					if (file.exists()) {
+						file.delete();
+					}
+					Uri uri = Uri.fromFile(file);
+					intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+					startActivityForResult(intent,
+							LocalConstant.CAPTURE_VIDEO_REQUEST_CODE);
+				} else {//存在视频就播放
+					Intent videoIntent = new Intent(XianChangAdd.this,
+							PlayVideo.class);
 
-				String fileName = Utils.getFileDate();
-				videopath = NewTask.fileFolder + "/" + fileName + ".mp4";
-				File file = new File(videopath);
-				if (file.exists()) {
-					file.delete();
+					if (mVideo == null)return;
+					String path = (String) mVideo.get("path");
+
+
+						videoIntent.putExtra("path", path);
+						startActivity(videoIntent);
 				}
-				Uri uri = Uri.fromFile(file);
-				intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-				startActivityForResult(intent,
-						LocalConstant.CAPTURE_VIDEO_REQUEST_CODE);
 			}
 		});
 
@@ -387,12 +408,14 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 				File file = new File(filePath);
 
 				if (!file.getParentFile().exists())
-					file.mkdirs();
+					file.getParentFile().mkdirs();
 
 				// 如果文件未存在，或者文件已存在但无法执行或者读取，则重新下载
 				if (!file.exists()
-						|| !(file.exists() && (!file.canExecute()
-								|| !file.canRead() || !file.canWrite()))) {
+						|| (file.exists() && (/*!file.canExecute()
+								||*/ !file.canRead() || !file.canWrite()))) {
+					if (file.exists())
+						file.delete();
 					new HttpDownloadTask(XianChangAdd.this).execute(downUrl,
 							"/nercms-Schedule/DownloadAttachments/", mediaName);// 将附件下载下来
 				}
@@ -479,7 +502,8 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 				if (standard.equals("standard")) {
 					mVideo = mMap1;
 					bt_video.setText("录像（1）");
-					bt_video.setClickable(false);
+//					bt_video.setClickable(false);
+					isExistVideo=true;
 				}
 			}
 			System.out.println("XianChangAdd atts : " + atts.toString());
@@ -702,7 +726,8 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 						.getSerializableExtra("path");
 
 				bt_video.setText("录像 (1)");
-				bt_video.setClickable(false);
+//				bt_video.setClickable(false);
+				isExistVideo = true;
 				writeToDatabase(mVideo);
 			}
 
@@ -748,8 +773,8 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 			boolean id = mDao.savePlanTaskAtt(null, tid, historygps,
 					standard.toString(), type, name, time, md5, "0");
 			if (id) {
-				Toast.makeText(XianChangAdd.this, "录像已存储，正在上传中", Toast.LENGTH_SHORT)
-						.show();
+				Toast.makeText(XianChangAdd.this, "录像已存储，正在上传中",
+						Toast.LENGTH_SHORT).show();
 			}
 		}
 
