@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -85,8 +86,13 @@ public class SchedulePersonAdapter extends BaseAdapter {
 						buttonView.setChecked(false);
 					}
 				} else {
-					Toast.makeText(c, "请选择已勾选的人作为视频源", Toast.LENGTH_SHORT).show();
-					buttonView.setChecked(false);
+					if (isChecked) {
+						Toast.makeText(c, "请选择已勾选的人作为视频源", Toast.LENGTH_SHORT).show();
+						buttonView.setChecked(false);
+					}else {
+						selectedVideo = null;
+						isSelected = false;
+					}
 				}
 			}
 		});
