@@ -62,11 +62,13 @@ public class HeartBeat {
 			case Constants.HEART_BEAT_SUCCESS:
 				// 心跳成功
 				Log.v("HeartBeat", "success!");
+				AttachmentUpload._running = true;
 				break;
 
 			case Constants.HEART_BEAT_FAIL:
 				// 心跳失败
 				Log.v("HeartBeat", "fail!");
+				AttachmentUpload._running = false;
 				break;
 			}
 		};

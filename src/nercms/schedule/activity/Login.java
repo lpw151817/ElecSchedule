@@ -1,6 +1,7 @@
 package nercms.schedule.activity;
 
 import java.io.File;
+import java.util.Map;
 
 import com.Generate_md5;
 import com.actionbarsherlock.view.Menu;
@@ -60,8 +61,8 @@ public class Login extends BaseActivity {
 
 	private Button btnLogin;// 登录按钮
 
-	private String inputUserName = null;
-	private String inputPassword = null;
+	private static String inputUserName = null;
+	private static String inputPassword = null;
 
 	private Handler handler;
 
@@ -147,6 +148,7 @@ public class Login extends BaseActivity {
 
 	@SuppressLint("HandlerLeak")
 	private void initHandler() {
+		Log.v("Login", "regist handler");
 		handler = new Handler() {
 
 			@Override
@@ -155,6 +157,13 @@ public class Login extends BaseActivity {
 				switch (msg.what) {
 				// 登录成功
 				case Constants.LOGIN_SUCCESS:
+
+					// Log.v("Login", "handleMessage UserName: " + inputUserName
+					// + " "
+					// + inputUserName.hashCode());
+					// Log.v("Login", "handleMessage UserPsd: " + inputPassword
+					// + " "
+					// + inputPassword.hashCode());
 
 					// 接收用户ID
 					String userID = ((LoginResponse) msg.obj).getUid();
@@ -199,6 +208,7 @@ public class Login extends BaseActivity {
 						// R.drawable.login_error_icon, "确定", null);
 						showAlterDialog("登录失败", ((NormalServerResponse) msg.obj).getEc(),
 								R.drawable.login_error_icon, "确定", null);
+
 					} else {
 						showLongToast("网络中断，请检查是否与服务器连接正常");
 						dismissProgressDialog();
@@ -255,7 +265,8 @@ public class Login extends BaseActivity {
 					break;
 
 				case Constants.MQTT_UPDATE_SUCCESS:
-					MqttResponse response = (MqttResponse) msg.obj;
+					Map<Integer, Object> result = (Map<Integer, Object>) msg.obj;
+					MqttResponse response = (MqttResponse) result.get(1);
 					Class target = null;
 					Bundle b = null;
 					b = new Bundle();
@@ -294,8 +305,14 @@ public class Login extends BaseActivity {
 							content += "任务已被修改，请查看";
 						}
 					}
-					showNotification(AppApplication.getInstance(), target, b, content, "江陵县云检系统",
-							content);
+
+					if (TextUtils.isEmpty(b.getString("tid"))) {
+						// showLongToast("服务器无推送数据");
+						showShortToast("服务器无推送数据:\n" + (String) result.get(2));
+						showAlterDialog("服务器无推送数据:\n" + (String) result.get(2));
+					} else
+						showNotification(AppApplication.getInstance(), target, b, content,
+								"江陵县云检系统", content);
 					break;
 				case Constants.MQTT_UPDATE_FAIL:
 					break;
@@ -333,7 +350,9 @@ public class Login extends BaseActivity {
 		}
 
 		inputUserName = etUserName.getText().toString().trim();
+		Log.v("Login", "UserName: " + inputUserName + ":" + inputUserName.hashCode());
 		inputPassword = etPassword.getText().toString().trim();
+		Log.v("Login", "UserPsd: " + inputPassword + ":" + inputPassword.hashCode());
 
 		if (inputUserName == null || inputUserName.equals("") || inputPassword == null
 				|| inputPassword.equals("")) {
@@ -454,10 +473,15 @@ public class Login extends BaseActivity {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// 点击返回键
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			// 如果正在登录，取消登录
-			dismissProgressDialog();
-			AppApplication.getInstance().myQueue.cancelAll(this);
-			Utils.showShortToast(this, "取消登录");
+			if (MySharedPreference.get(Login.this, MySharedPreference.USER_NAME, "").isEmpty()) {
+				finish();
+				System.exit(0);
+			} else {
+				// 如果正在登录，取消登录
+				dismissProgressDialog();
+				AppApplication.getInstance().myQueue.cancelAll(this);
+				Utils.showShortToast(this, "取消登录");
+			}
 		}
 		return super.onKeyDown(keyCode, event);
 	}
@@ -465,7 +489,7 @@ public class Login extends BaseActivity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-
+		Log.v("Login", "OnPause");
 	}
 
 	@Override

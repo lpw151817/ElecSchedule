@@ -15,6 +15,7 @@ import nercms.schedule.R;
 import nercms.schedule.fragment.FirstFragment;
 import nercms.schedule.fragment.SecondFragment;
 import nercms.schedule.fragment.ThirdFragment;
+import nercms.schedule.utils.AttachmentUpload;
 import nercms.schedule.utils.HeartBeat;
 import nercms.schedule.utils.Utils;
 import nercms.schedule.view.NoScrollViewPager;
@@ -74,7 +75,9 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		setContentView(R.layout.main_content);
 
 		HeartBeat.start(getApplicationContext());
-
+		AttachmentUpload.instance().start(getApplicationContext());
+		
+		
 		dao = new PlanTaskDao(this);
 		/*
 		 * userid,如果是管理员就传入null,如果不是就getUserId在BaseActivity中，
@@ -321,6 +324,7 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 			// 退出
 			Log.e("Demo", "api shutdown");
 			HeartBeat.stop(getApplicationContext());
+			AttachmentUpload.instance().stop(getApplicationContext());
 			MediaInstance.instance().api_shutdown();
 			finish();
 			System.exit(0);

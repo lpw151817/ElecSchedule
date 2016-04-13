@@ -16,8 +16,11 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.wxapp.service.elec.dao.Org;
+import android.wxapp.service.elec.dao.OrgDao;
+import android.wxapp.service.jerry.model.person.OrgPersonInfo;
 import android.wxapp.service.util.MySharedPreference;
 import nercms.schedule.R;
+import nercms.schedule.fragment.Task;
 
 public class SchedulePersonAdapter extends BaseAdapter {
 	Context c;
@@ -25,6 +28,8 @@ public class SchedulePersonAdapter extends BaseAdapter {
 	boolean isSelected = false;
 	String selectedVideo;
 	List<Org> selectedPeople = new ArrayList<Org>();
+	OrgDao dao;
+	private final int MAX_USER = 2;
 
 	public List<Org> getSelectedPeople() {
 		return selectedPeople;
@@ -37,6 +42,7 @@ public class SchedulePersonAdapter extends BaseAdapter {
 	public SchedulePersonAdapter(Context c, List<Org> data) {
 		this.c = c;
 		this.data = data;
+		this.dao = new OrgDao(c);
 	}
 
 	@Override
@@ -89,7 +95,7 @@ public class SchedulePersonAdapter extends BaseAdapter {
 					if (isChecked) {
 						Toast.makeText(c, "请选择已勾选的人作为视频源", Toast.LENGTH_SHORT).show();
 						buttonView.setChecked(false);
-					}else {
+					} else {
 						selectedVideo = null;
 						isSelected = false;
 					}
@@ -101,10 +107,17 @@ public class SchedulePersonAdapter extends BaseAdapter {
 
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				if (!selectedPeople.contains(data.get(position)))
-					selectedPeople.add(data.get(position));
-				else
+				if (!selectedPeople.contains(data.get(position))) {
+					if (selectedPeople.size() < MAX_USER)
+						selectedPeople.add(data.get(position));
+					else {
+						Toast.makeText(c, "只能选择" + MAX_USER + "个人", Toast.LENGTH_SHORT).show();
+						buttonView.setChecked(false);
+					}
+				} else {
 					selectedPeople.remove(data.get(position));
+				}
+
 			}
 		});
 
@@ -130,7 +143,15 @@ public class SchedulePersonAdapter extends BaseAdapter {
 			if (selectedPeople.contains(data.get(position)))
 				selectedPeople.remove(data.get(position));
 		}
+
+		// 如果自己是现场负责人，则屏蔽掉领导的视频源按钮
+		if (!isAdmin(getUserId()) && isAdmin(data.get(position).getId().substring(1)))
+			holder.video.setVisibility(View.GONE);
+		else
+			holder.video.setVisibility(View.VISIBLE);
+
 		holder.name.setText(data.get(position).getTitle());
+
 		return convertView;
 	}
 
@@ -144,4 +165,16 @@ public class SchedulePersonAdapter extends BaseAdapter {
 		return MySharedPreference.get(c, MySharedPreference.USER_ID, null);
 	}
 
+	protected boolean isAdmin(String pid) {
+		try {
+			if (dao.getPerson(pid).getType() != null) {
+				return dao.getPerson(pid).getType().equals("1");
+			} else {
+				return dao.getPerson(pid).getName().contains("管理员")
+						|| dao.getPerson(pid).getName().contains("领导");
+			}
+		} catch (Exception e) {
+			return false;
+		}
+	}
 }

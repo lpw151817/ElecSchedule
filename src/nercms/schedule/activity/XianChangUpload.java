@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import nercms.schedule.R;
+import nercms.schedule.utils.AttachmentDatabase;
 import nercms.schedule.utils.LocalConstant;
 import nercms.schedule.utils.MyGPS;
 import nercms.schedule.utils.Utils;
@@ -217,7 +218,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		bt_shangchuangAttach.setOnClickListener(this);
 
 		position = getIntent().getIntExtra("position", -1);
-//		initHandler();
+		// initHandler();
 	}
 
 	@Override
@@ -325,15 +326,15 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 			if (fileCount < 1) {
 				showShortToast("请选择附件");
 			} else {
-//				attachmentUploadRequest();// 上传附件
-				//TODO 将附件写入数据库
+				// attachmentUploadRequest();// 上传附件
+				// TODO 将附件写入数据库
 				attachmentToDatabase();
 			}
 			break;
 		}
 	}
-	
-	private void attachmentToDatabase(){
+
+	private void attachmentToDatabase() {
 		if (getFileCount() < 1) {
 			showLongToast("请选择附件上传");
 		} else {
@@ -381,9 +382,9 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 					if (map.get("path") != null) {
 						Log.e("TAG", "上传的路径 : " + map.get("path"));
 						mUploadUrl.add(map);
-//						new HttpUploadTask(new TextView(this), this)
-//								.execute((String) map.get("path"), uploadUrl);
-						
+						// new HttpUploadTask(new TextView(this), this)
+						// .execute((String) map.get("path"), uploadUrl);
+
 						writeToDatabase(map);
 					}
 				}
@@ -391,195 +392,202 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 		}
 	}
-	
-	private void writeToDatabase(Map<String, Object> map){
-			PlanTaskDao mDao = new PlanTaskDao(XianChangUpload.this);
-		
 
-			StringBuilder standard = new StringBuilder("standard");
-			// 作业现场
-			if (enterType == 1) {
-				switch (position) {
-				// 工作票
-				case 0:
-					standard.append("01");
-					break;
-				case 1:
-					standard.append("02");
-					break;
-				case 2:
-					standard.append("03");
-					break;
-				case 3:
-					standard.append("04");
-					break;
-				case 4:
-					standard.append("05");
-					break;
-				case 5:
-					standard.append("06");
-					break;
-				}
+	private void writeToDatabase(Map<String, Object> map) {
+		PlanTaskDao mDao = new PlanTaskDao(XianChangUpload.this);
+
+		StringBuilder standard = new StringBuilder("standard");
+		// 作业现场
+		if (enterType == 1) {
+			switch (position) {
+			// 工作票
+			case 0:
+				standard.append("01");
+				break;
+			case 1:
+				standard.append("02");
+				break;
+			case 2:
+				standard.append("03");
+				break;
+			case 3:
+				standard.append("04");
+				break;
+			case 4:
+				standard.append("05");
+				break;
+			case 5:
+				standard.append("06");
+				break;
 			}
-			// 操作现场
-			else if (enterType == 2) {
-				switch (position) {
-				case 0:
-					standard.append("07");
-					break;
-				case 1:
-					standard.append("08");
-					break;
-				case 2:
-					standard.append("09");
-					break;
-				case 3:
-					standard.append("10");
-					break;
-				case 4:
-					standard.append("11");
-					break;
-				}
+		}
+		// 操作现场
+		else if (enterType == 2) {
+			switch (position) {
+			case 0:
+				standard.append("07");
+				break;
+			case 1:
+				standard.append("08");
+				break;
+			case 2:
+				standard.append("09");
+				break;
+			case 3:
+				standard.append("10");
+				break;
+			case 4:
+				standard.append("11");
+				break;
 			}
-			// 故障抢修
-			else if (enterType == 3) {
-				switch (position) {
-				case 0:
-					standard.append("01");
-					break;
-				case 1:
-					standard.append("02");
-					break;
-				case 2:
-					standard.append("03");
-					break;
-				case 3:
-					standard.append("04");
-					break;
-				case 4:
-					standard.append("05");
-					break;
-				case 5:
-					standard.append("06");
-					break;
-				}
+		}
+		// 故障抢修
+		else if (enterType == 3) {
+			switch (position) {
+			case 0:
+				standard.append("01");
+				break;
+			case 1:
+				standard.append("02");
+				break;
+			case 2:
+				standard.append("03");
+				break;
+			case 3:
+				standard.append("04");
+				break;
+			case 4:
+				standard.append("05");
+				break;
+			case 5:
+				standard.append("06");
+				break;
 			}
+		}
 
-			List<Attachments> sublist = new ArrayList<Attachments>();
-			String server = android.wxapp.service.elec.request.Contants.HFS_URL;
-				Map<String, Object> attItem = map;
+		List<Attachments> sublist = new ArrayList<Attachments>();
+		String server = android.wxapp.service.elec.request.Contants.HFS_URL;
+		Map<String, Object> attItem = map;
 
-				if (attItem == null) {
-					return;
-				}
-
-				String filePath = (String) attItem.get("path");
-				String type = Utils.judgeFileLeixin(filePath);
-				if (type != null) {
-
-					MyGPS myGPS = (MyGPS) attItem.get("gps");
-//					// 参数修改
-//					GPS gps = new GPS(getUserId(),
-//							Utils.formatDateMs(System.currentTimeMillis()),
-//							myGPS.getLongitude() + "", myGPS.getLatitude() + "", "",
-//							myGPS.getRadius() + "", myGPS.getAltitude() + "",
-//							myGPS.getSpeed() + "",
-//							Utils.formatDateMs(System.currentTimeMillis()),
-//							myGPS.getCoorType(), "");
-					
-					GpsDao mGpsDao = new GpsDao(XianChangUpload.this);
-					long gpsId = mGpsDao.saveHistory(null, getUserId(), System.currentTimeMillis()+"",
-							myGPS.getLongitude() + "", myGPS.getLatitude() + "", "",
-							myGPS.getRadius() + "", myGPS.getAltitude() + "", myGPS.getSpeed() + "",
-							System.currentTimeMillis()+"", myGPS.getCoorType(), "");
-					
-		
-					String historygps = Long.valueOf(gpsId).toString();
-
-					// String md5 = DigestUtils
-					// .md5Hex(new FileInputStream(new
-					// File(filePath)));
-					String md5 = Utils.getFileMD5(new File(filePath));
-					String url = ((String) map.get("path"));
-					String name = url.substring(url.lastIndexOf("/") + 1);
-					String time = Utils.parseDateInFormat((String) attItem.get("time"));
-					System.out.println("name: "+name + " time: "+time);
-					boolean id = mDao.savePlanTaskAtt(null, tid, historygps, standard.toString(), type, name, time, md5, "0");
-//					long id = mDao.savePlanTaskAtt(null, tid, historygps, standard.toString(), type, url, (String) attItem.get("time"), md5, "0");
-					if (id){
-						//这个实际上是数据存储到数据库里面了,实际的上传工作是在ScheduleActvity里面通过线程池在后台进行上传的
-						Toast.makeText(XianChangUpload.this, "数据已存储，正在上传", Toast.LENGTH_SHORT).show();
-					}
-				}
-			
-			
-			
-
-	}
-
-	/*private void attachmentUploadRequest() {
-		if (!Utils.isNetworkAvailable(XianChangUpload.this)) {
-			Toast.makeText(XianChangUpload.this, "网络不可用", Toast.LENGTH_SHORT).show();
+		if (attItem == null) {
 			return;
 		}
-		String uploadUrl = android.wxapp.service.elec.request.Contants.HFS_URL;
-		if (getFileCount() < 1) {
-			showLongToast("请选择附件上传");
-		} else {
 
-			// 避免重复上传
-			mUnUploadUrl.clear();
-			// TODO 将mUrl-mUploadList = mUnploadList
+		String filePath = (String) attItem.get("path");
+		String type = Utils.judgeFileLeixin(filePath);
+		if (type != null) {
 
-			List<String> mUrlPath = new ArrayList<String>();
-			List<String> mUrlUploadPath = new ArrayList<String>();
-			List<String> mUrlUnUploadPath = new ArrayList<String>();
+			MyGPS myGPS = (MyGPS) attItem.get("gps");
+			// // 参数修改
+			// GPS gps = new GPS(getUserId(),
+			// Utils.formatDateMs(System.currentTimeMillis()),
+			// myGPS.getLongitude() + "", myGPS.getLatitude() + "", "",
+			// myGPS.getRadius() + "", myGPS.getAltitude() + "",
+			// myGPS.getSpeed() + "",
+			// Utils.formatDateMs(System.currentTimeMillis()),
+			// myGPS.getCoorType(), "");
 
-			// 打印出多余的数据
-			for (Map<String, Object> ma : mUrl) {
-				if (ma != null) {
-					mUrlPath.add((String) ma.get("path"));
-				}
+			GpsDao mGpsDao = new GpsDao(XianChangUpload.this);
+			long gpsId = mGpsDao.saveHistory(null, getUserId(), System.currentTimeMillis() + "",
+					myGPS.getLongitude() + "", myGPS.getLatitude() + "", "", myGPS.getRadius() + "",
+					myGPS.getAltitude() + "", myGPS.getSpeed() + "",
+					System.currentTimeMillis() + "", myGPS.getCoorType(), "");
+
+			String historygps = Long.valueOf(gpsId).toString();
+
+			// String md5 = DigestUtils
+			// .md5Hex(new FileInputStream(new
+			// File(filePath)));
+			String md5 = Utils.getFileMD5(new File(filePath));
+			String url = ((String) map.get("path"));
+			String name = url.substring(url.lastIndexOf("/") + 1);
+			// String time =
+			// Utils.parseDateInFormat((String)attItem.get("time"));
+			String time = System.currentTimeMillis() + "";
+			System.out.println("name: " + name + " time: " + time);
+
+			HashMap<String, String> res = AttachmentDatabase.instance(c)
+					// 数据库中的url为文件名
+					.query("select * from tb_task_attachment where url = '" + name + "';");
+			if (null != res && 0 < Integer.parseInt(res.get("records_num"))) {
+				Log.v("login", "records_num " + res.get("records_num"));
+				return;
 			}
 
-			for (Map<String, Object> md : mUploadUrl) {
-				mUrlUploadPath.add((String) md.get("path"));
+			Map<String, String> _query_result = AttachmentDatabase.instance(XianChangUpload.this)
+					.query("select * from tb_task_attachment;");
+			for (int i = 0; i < Integer.parseInt(_query_result.get("records_num")); i++) {
+				Log.v("Att", "before:" + _query_result.get("id_" + i) + ":"
+						+ _query_result.get("url_" + i) + ":" + _query_result.get("status_" + i)
+						+ ":" + _query_result.get("md5_" + i) + ":"
+						+ _query_result.get("upload_time_" + i));
+			}
+			boolean id = mDao.savePlanTaskAtt(null, tid, historygps, standard.toString(), type,
+					name, time, md5, "0");
+
+			/////// Log所有附件
+			_query_result = AttachmentDatabase.instance(c)
+					.query("select * from tb_task_attachment;");
+			for (int i = 0; i < Integer.parseInt(_query_result.get("records_num")); i++) {
+				Log.v("Att", "after:" + _query_result.get("id_" + i) + ":"
+						+ _query_result.get("url_" + i) + ":" + _query_result.get("status_" + i)
+						+ ":" + _query_result.get("md5_" + i) + ":"
+						+ _query_result.get("upload_time_" + i));
 			}
 
-			for (String path : mUrlPath) {
-				if (!mUrlUploadPath.contains(path)) {
-					mUrlUnUploadPath.add(path);
-					Log.e("TAG", "-------------------");
-					Log.e("TAG", path);
-
-					for (Map<String, Object> ma : mUrl) {
-						if (ma != null) {
-							String maPath = (String) ma.get("path");
-							if (maPath.equals(path)) {
-								mUnUploadUrl.add(ma);
-							}
-						}
-					}
-				}
+			// long id = mDao.savePlanTaskAtt(null, tid, historygps,
+			// standard.toString(), type, url, (String) attItem.get("time"),
+			// md5, "0");
+			if (id) {
+//				if (!Utils.isNetworkAvailable(getApplicationContext())) {
+//					Toast.makeText(getApplicationContext(), "无网络，附件将在网络恢复后上传", Toast.LENGTH_SHORT)
+//							.show();
+//				} else
+					// 这个实际上是数据存储到数据库里面了,实际的上传工作是在ScheduleActvity里面通过线程池在后台进行上传的
+					Toast.makeText(XianChangUpload.this, "数据已存储，正在上传", Toast.LENGTH_SHORT).show();
 			}
-
-			mUnUploadFileCount = mUnUploadUrl.size();
-			// 上传
-			for (Map<String, Object> map : mUnUploadUrl) {
-				if (map != null) {
-					if (map.get("path") != null) {
-						Log.e("TAG", "上传的路径 : " + map.get("path"));
-						mUploadUrl.add(map);
-						new HttpUploadTask(new TextView(this), this,null)
-								.execute((String) map.get("path"), uploadUrl);
-					}
-				}
-			}
-
 		}
 
 	}
-*/
+
+	/*
+	 * private void attachmentUploadRequest() { if
+	 * (!Utils.isNetworkAvailable(XianChangUpload.this)) {
+	 * Toast.makeText(XianChangUpload.this, "网络不可用", Toast.LENGTH_SHORT).show();
+	 * return; } String uploadUrl =
+	 * android.wxapp.service.elec.request.Contants.HFS_URL; if (getFileCount() <
+	 * 1) { showLongToast("请选择附件上传"); } else {
+	 * 
+	 * // 避免重复上传 mUnUploadUrl.clear(); // TODO 将mUrl-mUploadList = mUnploadList
+	 * 
+	 * List<String> mUrlPath = new ArrayList<String>(); List<String>
+	 * mUrlUploadPath = new ArrayList<String>(); List<String> mUrlUnUploadPath =
+	 * new ArrayList<String>();
+	 * 
+	 * // 打印出多余的数据 for (Map<String, Object> ma : mUrl) { if (ma != null) {
+	 * mUrlPath.add((String) ma.get("path")); } }
+	 * 
+	 * for (Map<String, Object> md : mUploadUrl) { mUrlUploadPath.add((String)
+	 * md.get("path")); }
+	 * 
+	 * for (String path : mUrlPath) { if (!mUrlUploadPath.contains(path)) {
+	 * mUrlUnUploadPath.add(path); Log.e("TAG", "-------------------");
+	 * Log.e("TAG", path);
+	 * 
+	 * for (Map<String, Object> ma : mUrl) { if (ma != null) { String maPath =
+	 * (String) ma.get("path"); if (maPath.equals(path)) { mUnUploadUrl.add(ma);
+	 * } } } } }
+	 * 
+	 * mUnUploadFileCount = mUnUploadUrl.size(); // 上传 for (Map<String, Object>
+	 * map : mUnUploadUrl) { if (map != null) { if (map.get("path") != null) {
+	 * Log.e("TAG", "上传的路径 : " + map.get("path")); mUploadUrl.add(map); new
+	 * HttpUploadTask(new TextView(this), this,null) .execute((String)
+	 * map.get("path"), uploadUrl); } } }
+	 * 
+	 * }
+	 * 
+	 * }
+	 */
 	private int getFileCount() {
 		int fileCount = 0;
 		for (int i = 0; i < mUrl.size(); i++) {
@@ -1134,26 +1142,29 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		final ImageView imageView = CreateImgView(this, thumbnail, IMG_WIDTH, IMG_HEIGHT);
 		setImageviewListener(uri, imageView, MediaType, mediaId);
 
-/*		ImageButton deleteBtn = new ImageButton(this);
-		deleteBtn.setBackgroundResource(R.drawable.media_delete);*/
+		/*
+		 * ImageButton deleteBtn = new ImageButton(this);
+		 * deleteBtn.setBackgroundResource(R.drawable.media_delete);
+		 */
 
-//		final RelativeLayout r1 = WrapImgView(MediaType, imageView, deleteBtn);
-		final RelativeLayout r1 = WrapImgView(MediaType, imageView, null);//不显示删除按钮
+		// final RelativeLayout r1 = WrapImgView(MediaType, imageView,
+		// deleteBtn);
+		final RelativeLayout r1 = WrapImgView(MediaType, imageView, null);// 不显示删除按钮
 		r1.setId(mediaId);
 		Log.e("TAG", "r1.setMediaId : " + mediaId);
 
-		/*deleteBtn.setOnClickListener(new OnClickListener() {
-
-			public void onClick(View v) {
-				// 显示删除对话框
-				showDeleteMediaDialog(r1, MediaType);
-			}
-		});*/
+		/*
+		 * deleteBtn.setOnClickListener(new OnClickListener() {
+		 * 
+		 * public void onClick(View v) { // 显示删除对话框 showDeleteMediaDialog(r1,
+		 * MediaType); } });
+		 */
 
 		// 将图片添加入图片列表
 		viewContainer.addView(r1);
-		/*if (isAdmin())
-			deleteBtn.setVisibility(View.GONE);*/
+		/*
+		 * if (isAdmin()) deleteBtn.setVisibility(View.GONE);
+		 */
 
 	}
 
@@ -1183,7 +1194,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		lp2.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		lp2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 		// btn1 位于父 View 的顶部，在父 View 中水平居右
-//		rl.addView(btn, lp2);不显示delete
+		// rl.addView(btn, lp2);不显示delete
 
 		// WeiHao 媒体类型判断，显示水印
 		// ...
@@ -1349,139 +1360,91 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		imageDialog.show();
 	}
 
-	/*private void showDeleteMediaDialog(final RelativeLayout rl, final int MediaType) {
-		String text = "";
-
-		if (MediaType == NewTask.TYPE_AUDIO) {
-			text = "音频";
-		} else if (MediaType == NewTask.TYPE_VIDEO) {
-			text = "视频";
-		} else if (MediaType == NewTask.TYPE_IMAGE) {
-			text = "图片";
-		} else if (MediaType == NewTask.TYPE_SELECT_IMAGE) {
-			text = "图片";
-		}
-
-		AlertDialog.Builder builder = new Builder(this);
-		// 设置标题
-		builder.setTitle("提示");
-		// 设置显示内容
-		builder.setMessage("确定删除" + text + "？");
-		// 设置确定按钮
-		builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-
-				// 打开图库选择的图片不能被删除，其他的要被删除
-
-				if (MediaType == NewTask.TYPE_AUDIO) {
-					// 将图片从图片列表中删除
-					imageContainer.removeView(rl);
-
-					// 将手机中的媒体文件删除
-					Integer index = rl.getId();
-
-					System.out.println("应该移除的下标index : " + index);
-					System.out.println("从附件列表中移除前： " + mUrl.toString());
-					// mUrl.remove(index.intValue());//附件列表中移除，下次从List中进入的时候就不会显示了
-					mUrl.set(index.intValue(), null);
-					System.out.println("从附件列表中移除后： " + mUrl.toString());
-
-					// 删除原媒体文件（新）
-					if (index_originalPath_Map.containsKey(index)) {
-						String path = index_originalPath_Map.get(index);
-						index_originalPath_Map.remove(index);
-						Utils.deleteMedia(path);
-					}
-				} else if (MediaType == NewTask.TYPE_VIDEO) {
-					// 将视频从视频列表中删除
-					imageContainer.removeView(rl);
-
-					// 将手机中的媒体文件删除
-					Integer index = rl.getId();
-
-					System.out.println("应该移除的下标index : " + index);
-					System.out.println("从附件列表中移除前： " + mUrl.toString());
-					mUrl.set(index.intValue(), null);
-					System.out.println("从附件列表中移除后： " + mUrl.toString());
-
-					// 删除原媒体文件（新）
-					if (index_originalPath_Map.containsKey(index)) {
-						String path = index_originalPath_Map.get(index);
-						index_originalPath_Map.remove(index);
-						Utils.deleteMedia(path);
-					}
-				} else if (MediaType == NewTask.TYPE_IMAGE) {
-					// 将图片从图片列表中删除
-					imageContainer.removeView(rl);
-					// 将手机中的媒体文件删除
-					Integer index = rl.getId();
-
-					System.out.println("应该移除的下标index : " + index);
-					System.out.println("从附件列表中移除前： " + mUrl.toString());
-					mUrl.set(index.intValue(), null);
-
-					System.out.println("从附件列表中移除后： " + mUrl.toString());
-
-					// 删除原媒体文件（新）
-					// if (index_originalPath_Map.containsKey(index)) {
-					// String path = index_originalPath_Map.get(index);
-					// // System.out.println(path);
-					// index_originalPath_Map.remove(index);
-					// Utils.deleteMedia(path);
-					// }
-
-					// 删除缩略图
-					if (index_path_Map.containsKey(index)) {
-						String path = index_path_Map.get(index);
-						index_path_Map.remove(index);
-						Utils.deleteMedia(path);
-					}
-				} else if (MediaType == NewTask.TYPE_SELECT_IMAGE) {
-					// 将图片从图片列表中删除
-					imageContainer.removeView(rl);
-
-					// System.out.println("删除缩略图");
-					// 将手机中的媒体文件删除
-					Integer index = rl.getId();
-
-					System.out.println("应该移除的下标index : " + index);
-					System.out.println("从附件列表中移除前： " + mUrl.toString());
-					mUrl.set(index.intValue(), null);
-					System.out.println("从附件列表中移除后： " + mUrl.toString());
-
-					// 删除缩略图
-					if (index_path_Map.containsKey(index)) {
-						String path = index_path_Map.get(index);
-						index_path_Map.remove(index);
-						Utils.deleteMedia(path);
-					}
-				}
-
-				// 将手机中的媒体文件删除
-				// Integer index = rl.getId();
-
-				// WeiHao 媒体文件编号缩减，并判断是否已删空附件，如果已无附件，隐藏该控件
-				// if (--mediaIndex == 0) {
-				// showAttachLayout.setVisibility(View.GONE);
-				// }
-
-				// 对话框关闭
-				dialog.dismiss();
-			}
-		});
-
-		// 设置取消按钮
-		builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				// 对话框关闭
-				dialog.dismiss();
-				// 缩略图单击事件恢复
-				rl.setEnabled(true);
-			}
-		});
-		// 显示对话框
-		builder.create().show();
-	}*/
+	/*
+	 * private void showDeleteMediaDialog(final RelativeLayout rl, final int
+	 * MediaType) { String text = "";
+	 * 
+	 * if (MediaType == NewTask.TYPE_AUDIO) { text = "音频"; } else if (MediaType
+	 * == NewTask.TYPE_VIDEO) { text = "视频"; } else if (MediaType ==
+	 * NewTask.TYPE_IMAGE) { text = "图片"; } else if (MediaType ==
+	 * NewTask.TYPE_SELECT_IMAGE) { text = "图片"; }
+	 * 
+	 * AlertDialog.Builder builder = new Builder(this); // 设置标题
+	 * builder.setTitle("提示"); // 设置显示内容 builder.setMessage("确定删除" + text +
+	 * "？"); // 设置确定按钮 builder.setPositiveButton("确定", new
+	 * DialogInterface.OnClickListener() { public void onClick(DialogInterface
+	 * dialog, int which) {
+	 * 
+	 * // 打开图库选择的图片不能被删除，其他的要被删除
+	 * 
+	 * if (MediaType == NewTask.TYPE_AUDIO) { // 将图片从图片列表中删除
+	 * imageContainer.removeView(rl);
+	 * 
+	 * // 将手机中的媒体文件删除 Integer index = rl.getId();
+	 * 
+	 * System.out.println("应该移除的下标index : " + index); System.out.println(
+	 * "从附件列表中移除前： " + mUrl.toString()); //
+	 * mUrl.remove(index.intValue());//附件列表中移除，下次从List中进入的时候就不会显示了
+	 * mUrl.set(index.intValue(), null); System.out.println("从附件列表中移除后： " +
+	 * mUrl.toString());
+	 * 
+	 * // 删除原媒体文件（新） if (index_originalPath_Map.containsKey(index)) { String
+	 * path = index_originalPath_Map.get(index);
+	 * index_originalPath_Map.remove(index); Utils.deleteMedia(path); } } else
+	 * if (MediaType == NewTask.TYPE_VIDEO) { // 将视频从视频列表中删除
+	 * imageContainer.removeView(rl);
+	 * 
+	 * // 将手机中的媒体文件删除 Integer index = rl.getId();
+	 * 
+	 * System.out.println("应该移除的下标index : " + index); System.out.println(
+	 * "从附件列表中移除前： " + mUrl.toString()); mUrl.set(index.intValue(), null);
+	 * System.out.println("从附件列表中移除后： " + mUrl.toString());
+	 * 
+	 * // 删除原媒体文件（新） if (index_originalPath_Map.containsKey(index)) { String
+	 * path = index_originalPath_Map.get(index);
+	 * index_originalPath_Map.remove(index); Utils.deleteMedia(path); } } else
+	 * if (MediaType == NewTask.TYPE_IMAGE) { // 将图片从图片列表中删除
+	 * imageContainer.removeView(rl); // 将手机中的媒体文件删除 Integer index = rl.getId();
+	 * 
+	 * System.out.println("应该移除的下标index : " + index); System.out.println(
+	 * "从附件列表中移除前： " + mUrl.toString()); mUrl.set(index.intValue(), null);
+	 * 
+	 * System.out.println("从附件列表中移除后： " + mUrl.toString());
+	 * 
+	 * // 删除原媒体文件（新） // if (index_originalPath_Map.containsKey(index)) { //
+	 * String path = index_originalPath_Map.get(index); // //
+	 * System.out.println(path); // index_originalPath_Map.remove(index); //
+	 * Utils.deleteMedia(path); // }
+	 * 
+	 * // 删除缩略图 if (index_path_Map.containsKey(index)) { String path =
+	 * index_path_Map.get(index); index_path_Map.remove(index);
+	 * Utils.deleteMedia(path); } } else if (MediaType ==
+	 * NewTask.TYPE_SELECT_IMAGE) { // 将图片从图片列表中删除
+	 * imageContainer.removeView(rl);
+	 * 
+	 * // System.out.println("删除缩略图"); // 将手机中的媒体文件删除 Integer index =
+	 * rl.getId();
+	 * 
+	 * System.out.println("应该移除的下标index : " + index); System.out.println(
+	 * "从附件列表中移除前： " + mUrl.toString()); mUrl.set(index.intValue(), null);
+	 * System.out.println("从附件列表中移除后： " + mUrl.toString());
+	 * 
+	 * // 删除缩略图 if (index_path_Map.containsKey(index)) { String path =
+	 * index_path_Map.get(index); index_path_Map.remove(index);
+	 * Utils.deleteMedia(path); } }
+	 * 
+	 * // 将手机中的媒体文件删除 // Integer index = rl.getId();
+	 * 
+	 * // WeiHao 媒体文件编号缩减，并判断是否已删空附件，如果已无附件，隐藏该控件 // if (--mediaIndex == 0) { //
+	 * showAttachLayout.setVisibility(View.GONE); // }
+	 * 
+	 * // 对话框关闭 dialog.dismiss(); } });
+	 * 
+	 * // 设置取消按钮 builder.setNegativeButton("取消", new
+	 * DialogInterface.OnClickListener() { public void onClick(DialogInterface
+	 * dialog, int which) { // 对话框关闭 dialog.dismiss(); // 缩略图单击事件恢复
+	 * rl.setEnabled(true); } }); // 显示对话框 builder.create().show(); }
+	 */
 
 	public Bitmap getBitmapFromUri(final Uri uri) {
 		ContentResolver cr = this.getContentResolver();
@@ -1572,191 +1535,110 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		return bitmap;
 	}
 
-//	Handler handler;
+	// Handler handler;
 
 	private int mUnUploadFileCount = 0;// 记录为上传的附件数目
 
 	private int position;
 
-	/*@SuppressLint("HandlerLeak")
-	private void initHandler() {
-		handler = new Handler() {
-//该页面没有不进行附件的上传
-			@Override
-			public void handleMessage(Message msg) {
-
-				switch (msg.what) {
-				case Constant.FILE_UPLOAD_SUCCESS:// 当所有的附件都上传完了之后finish当前页面
-
-					mUnUploadFileCount--;
-					Log.i("TAG", "count : " + mUnUploadFileCount);
-					if (mUnUploadFileCount == 0) {
-
-						Toast.makeText(XianChangUpload.this, "上传成功", Toast.LENGTH_SHORT).show();
-						// 请求http接口
-						List<TaskAttachment> attachment = new ArrayList<TaskAttachment>();
-						// for (int i = 0; i < mUnUploadUrl.size(); i++) {
-						StringBuilder standard = new StringBuilder("standard");
-						// 作业现场
-						if (enterType == 1) {
-							switch (position) {
-							// 工作票
-							case 0:
-								standard.append("01");
-								break;
-							case 1:
-								standard.append("02");
-								break;
-							case 2:
-								standard.append("03");
-								break;
-							case 3:
-								standard.append("04");
-								break;
-							case 4:
-								standard.append("05");
-								break;
-							case 5:
-								standard.append("06");
-								break;
-							}
-						}
-						// 操作现场
-						else if (enterType == 2) {
-							switch (position) {
-							case 0:
-								standard.append("07");
-								break;
-							case 1:
-								standard.append("08");
-								break;
-							case 2:
-								standard.append("09");
-								break;
-							case 3:
-								standard.append("10");
-								break;
-							case 4:
-								standard.append("11");
-								break;
-							}
-						}
-						// 故障抢修
-						else if (enterType == 3) {
-							switch (position) {
-							case 0:
-								standard.append("01");
-								break;
-							case 1:
-								standard.append("02");
-								break;
-							case 2:
-								standard.append("03");
-								break;
-							case 3:
-								standard.append("04");
-								break;
-							case 4:
-								standard.append("05");
-								break;
-							case 5:
-								standard.append("06");
-								break;
-							}
-						}
-
-						List<Attachments> sublist = new ArrayList<Attachments>();
-						String server = android.wxapp.service.elec.request.Contants.HFS_URL;
-						for (int j = 0; j < mUnUploadUrl.size(); j++) {
-							Map<String, Object> attItem = mUnUploadUrl.get(j);
-
-							if (attItem == null) {
-								return;
-							}
-
-							String filePath = (String) attItem.get("path");
-							String type = Utils.judgeFileLeixin(filePath);
-							if (type != null) {
-
-								MyGPS myGPS = (MyGPS) attItem.get("gps");
-								// 参数修改
-								GPS gps = new GPS(getUserId(),
-										Utils.formatDateMs(System.currentTimeMillis()),
-										myGPS.getLongitude() + "", myGPS.getLatitude() + "", "",
-										myGPS.getRadius() + "", myGPS.getAltitude() + "",
-										myGPS.getSpeed() + "",
-										Utils.formatDateMs(System.currentTimeMillis()),
-										myGPS.getCoorType(), "");
-
-								// String md5 = DigestUtils
-								// .md5Hex(new FileInputStream(new
-								// File(filePath)));
-								String md5 = Utils.getFileMD5(new File(filePath));
-								Attachments att = new Attachments(type,
-										server + File.separator + path2FileName(filePath),
-										(String) attItem.get("time"), gps, md5);
-								sublist.add(att);
-
-							}
-						}
-						TaskAttachment item = new TaskAttachment(standard.toString(), sublist);
-						attachment.add(item);
-
-						requestManager.uploadTaskAttachment(XianChangUpload.this, tid,
-								enterType + "", attachment);
-
-					}
-
-					break;
-				case Constant.FILE_UPLOAD_FAIL:
-					Toast.makeText(XianChangUpload.this, "上传失败", Toast.LENGTH_SHORT).show();
-					break;
-
-				case Constants.UPLOAD_TASK_ATT_SUCCESS:
-					break;
-				case Constants.END_TASK_SUCCESS:
-					showLongToast("任务已结束");
-					break;
-
-				case Constants.UPLOAD_TASK_ATT_SAVE_FAIL:
-				case Constants.UPLOAD_TASK_ATT_FAIL:
-				case Constants.END_TASK_FAIL:
-				case Constants.END_TASK_SAVE_FAIL:
-					if (msg.obj != null) {
-						showAlterDialog("上传失败", ((NormalServerResponse) msg.obj).getEc(),
-								R.drawable.login_error_icon, "确定", null);
-					} else {
-						showAlterDialog("上传失败", "请检查是否与服务器连接正常", R.drawable.login_error_icon, "确定",
-								null);
-					}
-					break;
-				default:
-					break;
-				}
-			}
-
-		};
-
-		MessageHandlerManager.getInstance().register(handler, Constant.FILE_UPLOAD_FAIL,
-				"XianChangUpload");
-		MessageHandlerManager.getInstance().register(handler, Constant.FILE_UPLOAD_SUCCESS,
-				"XianChangUpload");
-
-		MessageHandlerManager.getInstance().register(handler, Constants.UPLOAD_TASK_ATT_SUCCESS,
-				UploadTaskAttachmentResponse.class.getName());
-		MessageHandlerManager.getInstance().register(handler, Constants.UPLOAD_TASK_ATT_SAVE_FAIL,
-				UploadTaskAttachmentResponse.class.getName());
-		MessageHandlerManager.getInstance().register(handler, Constants.UPLOAD_TASK_ATT_FAIL,
-				UploadTaskAttachmentResponse.class.getName());
-
-		MessageHandlerManager.getInstance().register(handler, Constants.END_TASK_SUCCESS,
-				StartTaskResponse.class.getName());
-		MessageHandlerManager.getInstance().register(handler, Constants.END_TASK_FAIL,
-				StartTaskResponse.class.getName());
-		MessageHandlerManager.getInstance().register(handler, Constants.END_TASK_SAVE_FAIL,
-				StartTaskResponse.class.getName());
-	}
-*/
+	/*
+	 * @SuppressLint("HandlerLeak") private void initHandler() { handler = new
+	 * Handler() { //该页面没有不进行附件的上传
+	 * 
+	 * @Override public void handleMessage(Message msg) {
+	 * 
+	 * switch (msg.what) { case Constant.FILE_UPLOAD_SUCCESS://
+	 * 当所有的附件都上传完了之后finish当前页面
+	 * 
+	 * mUnUploadFileCount--; Log.i("TAG", "count : " + mUnUploadFileCount); if
+	 * (mUnUploadFileCount == 0) {
+	 * 
+	 * Toast.makeText(XianChangUpload.this, "上传成功", Toast.LENGTH_SHORT).show();
+	 * // 请求http接口 List<TaskAttachment> attachment = new
+	 * ArrayList<TaskAttachment>(); // for (int i = 0; i < mUnUploadUrl.size();
+	 * i++) { StringBuilder standard = new StringBuilder("standard"); // 作业现场 if
+	 * (enterType == 1) { switch (position) { // 工作票 case 0:
+	 * standard.append("01"); break; case 1: standard.append("02"); break; case
+	 * 2: standard.append("03"); break; case 3: standard.append("04"); break;
+	 * case 4: standard.append("05"); break; case 5: standard.append("06");
+	 * break; } } // 操作现场 else if (enterType == 2) { switch (position) { case 0:
+	 * standard.append("07"); break; case 1: standard.append("08"); break; case
+	 * 2: standard.append("09"); break; case 3: standard.append("10"); break;
+	 * case 4: standard.append("11"); break; } } // 故障抢修 else if (enterType ==
+	 * 3) { switch (position) { case 0: standard.append("01"); break; case 1:
+	 * standard.append("02"); break; case 2: standard.append("03"); break; case
+	 * 3: standard.append("04"); break; case 4: standard.append("05"); break;
+	 * case 5: standard.append("06"); break; } }
+	 * 
+	 * List<Attachments> sublist = new ArrayList<Attachments>(); String server =
+	 * android.wxapp.service.elec.request.Contants.HFS_URL; for (int j = 0; j <
+	 * mUnUploadUrl.size(); j++) { Map<String, Object> attItem =
+	 * mUnUploadUrl.get(j);
+	 * 
+	 * if (attItem == null) { return; }
+	 * 
+	 * String filePath = (String) attItem.get("path"); String type =
+	 * Utils.judgeFileLeixin(filePath); if (type != null) {
+	 * 
+	 * MyGPS myGPS = (MyGPS) attItem.get("gps"); // 参数修改 GPS gps = new
+	 * GPS(getUserId(), Utils.formatDateMs(System.currentTimeMillis()),
+	 * myGPS.getLongitude() + "", myGPS.getLatitude() + "", "",
+	 * myGPS.getRadius() + "", myGPS.getAltitude() + "", myGPS.getSpeed() + "",
+	 * Utils.formatDateMs(System.currentTimeMillis()), myGPS.getCoorType(), "");
+	 * 
+	 * // String md5 = DigestUtils // .md5Hex(new FileInputStream(new //
+	 * File(filePath))); String md5 = Utils.getFileMD5(new File(filePath));
+	 * Attachments att = new Attachments(type, server + File.separator +
+	 * path2FileName(filePath), (String) attItem.get("time"), gps, md5);
+	 * sublist.add(att);
+	 * 
+	 * } } TaskAttachment item = new TaskAttachment(standard.toString(),
+	 * sublist); attachment.add(item);
+	 * 
+	 * requestManager.uploadTaskAttachment(XianChangUpload.this, tid, enterType
+	 * + "", attachment);
+	 * 
+	 * }
+	 * 
+	 * break; case Constant.FILE_UPLOAD_FAIL:
+	 * Toast.makeText(XianChangUpload.this, "上传失败", Toast.LENGTH_SHORT).show();
+	 * break;
+	 * 
+	 * case Constants.UPLOAD_TASK_ATT_SUCCESS: break; case
+	 * Constants.END_TASK_SUCCESS: showLongToast("任务已结束"); break;
+	 * 
+	 * case Constants.UPLOAD_TASK_ATT_SAVE_FAIL: case
+	 * Constants.UPLOAD_TASK_ATT_FAIL: case Constants.END_TASK_FAIL: case
+	 * Constants.END_TASK_SAVE_FAIL: if (msg.obj != null) {
+	 * showAlterDialog("上传失败", ((NormalServerResponse) msg.obj).getEc(),
+	 * R.drawable.login_error_icon, "确定", null); } else {
+	 * showAlterDialog("上传失败", "请检查是否与服务器连接正常", R.drawable.login_error_icon,
+	 * "确定", null); } break; default: break; } }
+	 * 
+	 * };
+	 * 
+	 * MessageHandlerManager.getInstance().register(handler,
+	 * Constant.FILE_UPLOAD_FAIL, "XianChangUpload");
+	 * MessageHandlerManager.getInstance().register(handler,
+	 * Constant.FILE_UPLOAD_SUCCESS, "XianChangUpload");
+	 * 
+	 * MessageHandlerManager.getInstance().register(handler,
+	 * Constants.UPLOAD_TASK_ATT_SUCCESS,
+	 * UploadTaskAttachmentResponse.class.getName());
+	 * MessageHandlerManager.getInstance().register(handler,
+	 * Constants.UPLOAD_TASK_ATT_SAVE_FAIL,
+	 * UploadTaskAttachmentResponse.class.getName());
+	 * MessageHandlerManager.getInstance().register(handler,
+	 * Constants.UPLOAD_TASK_ATT_FAIL,
+	 * UploadTaskAttachmentResponse.class.getName());
+	 * 
+	 * MessageHandlerManager.getInstance().register(handler,
+	 * Constants.END_TASK_SUCCESS, StartTaskResponse.class.getName());
+	 * MessageHandlerManager.getInstance().register(handler,
+	 * Constants.END_TASK_FAIL, StartTaskResponse.class.getName());
+	 * MessageHandlerManager.getInstance().register(handler,
+	 * Constants.END_TASK_SAVE_FAIL, StartTaskResponse.class.getName()); }
+	 */
 	private String path2FileName(String path) {
 		return path.substring(path.lastIndexOf(File.separator) + 1);
 	}
@@ -1783,24 +1665,24 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 	protected void onPause() {
 		Log.v("Demo", getClass().getSimpleName() + "onPause");
 		super.onPause();
-//		MessageHandlerManager.getInstance().unregister(Constant.FILE_UPLOAD_FAIL,
-//				"XianChangUpload");
-//		MessageHandlerManager.getInstance().unregister(Constant.FILE_UPLOAD_SUCCESS,
-//				"XianChangUpload");
-//
-//		MessageHandlerManager.getInstance().unregister(Constants.UPLOAD_TASK_ATT_SUCCESS,
-//				UploadTaskAttachmentResponse.class.getName());
-//		MessageHandlerManager.getInstance().unregister(Constants.UPLOAD_TASK_ATT_SAVE_FAIL,
-//				UploadTaskAttachmentResponse.class.getName());
-//		MessageHandlerManager.getInstance().unregister(Constants.UPLOAD_TASK_ATT_FAIL,
-//				UploadTaskAttachmentResponse.class.getName());
-//
-//		MessageHandlerManager.getInstance().unregister(Constants.END_TASK_SUCCESS,
-//				StartTaskResponse.class.getName());
-//		MessageHandlerManager.getInstance().unregister(Constants.END_TASK_FAIL,
-//				StartTaskResponse.class.getName());
-//		MessageHandlerManager.getInstance().unregister(Constants.END_TASK_SAVE_FAIL,
-//				StartTaskResponse.class.getName());
+		// MessageHandlerManager.getInstance().unregister(Constant.FILE_UPLOAD_FAIL,
+		// "XianChangUpload");
+		// MessageHandlerManager.getInstance().unregister(Constant.FILE_UPLOAD_SUCCESS,
+		// "XianChangUpload");
+		//
+		// MessageHandlerManager.getInstance().unregister(Constants.UPLOAD_TASK_ATT_SUCCESS,
+		// UploadTaskAttachmentResponse.class.getName());
+		// MessageHandlerManager.getInstance().unregister(Constants.UPLOAD_TASK_ATT_SAVE_FAIL,
+		// UploadTaskAttachmentResponse.class.getName());
+		// MessageHandlerManager.getInstance().unregister(Constants.UPLOAD_TASK_ATT_FAIL,
+		// UploadTaskAttachmentResponse.class.getName());
+		//
+		// MessageHandlerManager.getInstance().unregister(Constants.END_TASK_SUCCESS,
+		// StartTaskResponse.class.getName());
+		// MessageHandlerManager.getInstance().unregister(Constants.END_TASK_FAIL,
+		// StartTaskResponse.class.getName());
+		// MessageHandlerManager.getInstance().unregister(Constants.END_TASK_SAVE_FAIL,
+		// StartTaskResponse.class.getName());
 	}
 
 	@Override

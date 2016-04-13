@@ -130,16 +130,14 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 		this.groupDao = new GroupDao(this);
 
 		// 启动activity时不自动弹出软键盘
-		getWindow().setSoftInputMode(
-				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		iniActionBar(true, null, "交互信息");
 		initView();
 		initHandler();
 
 		// 2014-5-27 WeiHao
 
-		webRequestManager = new WebRequestManager(AppApplication.getInstance(),
-				ChatDetail.this);
+		webRequestManager = new WebRequestManager(AppApplication.getInstance(), ChatDetail.this);
 
 		userID = getUserId();
 
@@ -168,8 +166,7 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 		};
 
 		scheduler = Executors.newScheduledThreadPool(1);
-		scheduler.scheduleAtFixedRate(thread, 100, delayedTime,
-				TimeUnit.MILLISECONDS);
+		scheduler.scheduleAtFixedRate(thread, 100, delayedTime, TimeUnit.MILLISECONDS);
 
 	}
 
@@ -227,14 +224,20 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 		mListView.setSelection(mListView.getCount() - 1);
 	}
 
+	private long time_old = System.currentTimeMillis();
+
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btn_send:
-			if (mEditTextContent.getText().toString().length() > 0) {
-				sendFeedback();
+			if (System.currentTimeMillis() - time_old > 1000) {
+				if (mEditTextContent.getText().toString().length() > 0) {
+					sendFeedback();
+				} else {
+					showShortToast("请填写消息内容");
+				}
 			} else {
-				showShortToast("请填写消息内容");
+				showShortToast("连续两条消息不能小于1秒");
 			}
 			break;
 
@@ -430,8 +433,8 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 	private void sendFeedback() {
 		String contString = mEditTextContent.getText().toString();
 		if (!contString.isEmpty()) { // 文本反馈
-			tempMsg = new tb_task_instructions("", taskID, contString,
-					getUserId(), System.currentTimeMillis() + "", "1");
+			tempMsg = new tb_task_instructions("", taskID, contString, getUserId(),
+					System.currentTimeMillis() + "", "1");
 
 			// 发送到服务器
 			sendFb(tempMsg);
@@ -444,8 +447,7 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 
 	private void sendFb(tb_task_instructions data) {
 		// uid 为接收人员id
-		webRequestManager.createInsRequest(this,
-				msgDao.getMsgReceivers(taskID), data.getTask_id(),
+		webRequestManager.createInsRequest(this, msgDao.getMsgReceivers(taskID), data.getTask_id(),
 				data.getContent(), null, "1");
 
 	}
@@ -463,22 +465,20 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 				switch (handlerMsg.what) {
 
 				case Constants.CREATE_INS_SUCCESS:
+					time_old = System.currentTimeMillis();
 					// 刷新显示
 					hideInput();
 					fbList.add(tempMsg);
 					fbAdapter.notifyDataSetChanged();
 					mEditTextContent.setText("");
 					mListView.setSelection(mListView.getCount() - 1);
-					Toast.makeText(ChatDetail.this, "发送消息成功",
-							Toast.LENGTH_SHORT).show();
+					Toast.makeText(ChatDetail.this, "发送消息成功", Toast.LENGTH_SHORT).show();
 
 					break;
 				case Constants.CREATE_INS_SAVE_FAIL:
 				case Constants.CREATE_INS_FAIL:
 					if (handlerMsg.obj != null) {
-						showShortToast("发布失败:"
-								+ ((NormalServerResponse) handlerMsg.obj)
-										.getEc());
+						showShortToast("发布失败:" + ((NormalServerResponse) handlerMsg.obj).getEc());
 					} else {
 						showShortToast("发布失败,请检查是否与服务器连接正常");
 					}
@@ -498,8 +498,7 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 
 							fbAdapter.notifyDataSetChanged();
 						} else {
-							tb_task_instructions task = fbList.get(fbList
-									.size() - 1);
+							tb_task_instructions task = fbList.get(fbList.size() - 1);
 							String time = task.getSend_time();
 							System.out.println("time : " + time);
 							for (tb_task_instructions ins : newList) {
@@ -511,8 +510,7 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 									if ((!getUserId().equals(ins.getSend_id()))) {
 										fbList.add(ins);
 										fbAdapter.notifyDataSetChanged();
-										mListView
-												.setSelection(fbList.size() - 1);
+										mListView.setSelection(fbList.size() - 1);
 									}
 								}
 							}
@@ -536,14 +534,12 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 		// MessageHandlerManager.getInstance().register(handler,
 		// Constant.SAVE_FEEDBACK_SUCCESS,
 		// "ChatDetail");
-		MessageHandlerManager.getInstance()
-				.register(handler, Constants.CREATE_INS_SUCCESS,
-						CreateInsResponse.class.getName());
-		MessageHandlerManager.getInstance().register(handler,
-				Constants.CREATE_INS_SAVE_FAIL,
+		MessageHandlerManager.getInstance().register(handler, Constants.CREATE_INS_SUCCESS,
 				CreateInsResponse.class.getName());
-		MessageHandlerManager.getInstance().register(handler,
-				Constants.CREATE_INS_FAIL, CreateInsResponse.class.getName());
+		MessageHandlerManager.getInstance().register(handler, Constants.CREATE_INS_SAVE_FAIL,
+				CreateInsResponse.class.getName());
+		MessageHandlerManager.getInstance().register(handler, Constants.CREATE_INS_FAIL,
+				CreateInsResponse.class.getName());
 	}
 
 	private boolean isUpdate(String time, String insTime) {
@@ -593,8 +589,7 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 		String mins = String.valueOf(c.get(Calendar.MINUTE));
 
 		StringBuffer sbBuffer = new StringBuffer();
-		sbBuffer.append(year + "-" + month + "-" + day + " " + hour + ":"
-				+ mins);
+		sbBuffer.append(year + "-" + month + "-" + day + " " + hour + ":" + mins);
 
 		return sbBuffer.toString();
 	}
@@ -608,9 +603,9 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 		// 参考http://blog.sina.com.cn/s/blog_4e1e357d01012mkx.html
 		mEditTextContent.clearFocus();
 		// 隐藏软键盘
-		InputMethodManager mInputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-		mInputMethodManager.hideSoftInputFromWindow(
-				mEditTextContent.getWindowToken(), 0);
+		InputMethodManager mInputMethodManager = (InputMethodManager) getSystemService(
+				Context.INPUT_METHOD_SERVICE);
+		mInputMethodManager.hideSoftInputFromWindow(mEditTextContent.getWindowToken(), 0);
 	}
 
 }

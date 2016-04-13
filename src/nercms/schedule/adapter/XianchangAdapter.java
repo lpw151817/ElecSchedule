@@ -68,7 +68,13 @@ public class XianchangAdapter extends BaseAdapter {
 		}
 		holder.taskName.setText(data.get(position).getName());
 		holder.time.setText(Utils.formatDateMs(data.get(position).getCreator_time()));
-		holder.xcfzr.setText(dao.getPerson(data.get(position).getResponsibility_user()).getName());
+		try {
+			holder.xcfzr
+					.setText(dao.getPerson(data.get(position).getResponsibility_user()).getName());
+		} catch (Exception e) {
+			holder.xcfzr.setText("Пе");
+		}
+
 		return convertView;
 	}
 

@@ -167,7 +167,7 @@ public class ShowXianChangAttachment extends BaseActivity implements OnClickList
 		switch (id) {
 		case R.id.bt_ok:
 			if (!Utils.isNetworkAvailable(getApplicationContext()) || mGPS == null) {
-				Toast.makeText(getApplicationContext(), "无网络，无法获取GPS", Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), "无网络，附件将在网络恢复后上传", Toast.LENGTH_SHORT).show();
 				return;
 			}
 			Intent intent = new Intent();

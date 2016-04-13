@@ -83,24 +83,24 @@ public class Push {
 			@Override
 			public int onMessageArrivedFunc(String client_id, String tag, int msg_len, String msg,
 					int msg_qos, int duplicate_count) {
-				Log.v(TAG, msg);
-				// 进行到达消息的处理
-				try {
-
-					WebRequestManager manager = new WebRequestManager(AppApplication.getInstance(),
-							c);
-					Gson gson = new Gson();
-					MqttResponse response = gson.fromJson(msg, MqttResponse.class);
-
-					if (response != null) {
-						// 进行数据更新
-						manager.mqttUpdate(c, response);
-					}
-
-				} catch (Exception e) {
-					Log.e(TAG, "response.getType() 解析错误");
-					e.printStackTrace();
-				}
+//				Log.v(TAG, msg);
+//				// 进行到达消息的处理
+//				try {
+//
+//					WebRequestManager manager = new WebRequestManager(AppApplication.getInstance(),
+//							c);
+//					Gson gson = new Gson();
+//					MqttResponse response = gson.fromJson(msg, MqttResponse.class);
+//
+//					if (response != null) {
+//						// 进行数据更新
+//						manager.mqttUpdate(c, response);
+//					}
+//
+//				} catch (Exception e) {
+//					Log.e(TAG, "response.getType() 解析错误");
+//					e.printStackTrace();
+//				}
 				return 0;
 			}
 

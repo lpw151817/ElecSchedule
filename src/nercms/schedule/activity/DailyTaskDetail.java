@@ -85,7 +85,10 @@ public class DailyTaskDetail extends BaseActivity {
 		mPeople = (TextView) findViewById(R.id.tv_people);
 		mMemo = (TextView) findViewById(R.id.tv_memo);
 
-		mName.setText(planTask2.getName());
+		if (null == planTask2)
+			return;
+
+		mName.setText(TextUtils.isEmpty(planTask2.getName()) ? "空" : planTask2.getName());
 
 		if (!TextUtils.isEmpty(planTask2.getPower_cut_range()))
 			mStopRange.setText(planTask2.getPower_cut_range());
@@ -107,16 +110,22 @@ public class DailyTaskDetail extends BaseActivity {
 		else
 			mWorkManager.setHint("");
 
-		mStartTime.setText(Utils.formatDateMs(planTask2.getPlan_start_time()));
-		mStopTime.setText(Utils.formatDateMs(planTask2.getPlan_end_time()));
+		if (!TextUtils.isEmpty(planTask2.getPlan_start_time()))
+			mStartTime.setText(Utils.formatDateMs(planTask2.getPlan_start_time()));
 
-		String cut_type = planTask2.getCategory().substring(planTask2.getCategory().length() - 2);
-		if (cut_type.equals("02")) {
-			mType.setText("计划停电");
-		} else if (cut_type.equals("01")) {
-			mType.setText("临时停电");
-		} else if (cut_type.equals("03")) {
-			mType.setText("其它");
+		if (!TextUtils.isEmpty(planTask2.getPlan_end_time()))
+			mStopTime.setText(Utils.formatDateMs(planTask2.getPlan_end_time()));
+
+		String cut_type = planTask2.getCategory();
+		if (!TextUtils.isEmpty(cut_type)) {
+			cut_type = cut_type.substring(planTask2.getCategory().length() - 2);
+			if (cut_type.equals("02")) {
+				mType.setText("计划停电");
+			} else if (cut_type.equals("01")) {
+				mType.setText("临时停电");
+			} else if (cut_type.equals("03")) {
+				mType.setText("其它");
+			}
 		}
 
 		if (!TextUtils.isEmpty(planTask2.getIs_publish())) {
@@ -129,12 +138,13 @@ public class DailyTaskDetail extends BaseActivity {
 			mReport.setText("");
 
 		String special = planTask2.getSpecial();
-		if (special.equals("0")) {
-			mSpecialNeed.setText("T");
-			;
-		} else if (special.equals("1")) {
-			mSpecialNeed.setText("否");
-			;
+		if (!TextUtils.isEmpty(special)) {
+			if (special.equals("0")) {
+				mSpecialNeed.setText("T");
+				;
+			} else if (special.equals("1")) {
+				mSpecialNeed.setText("否");
+			}
 		}
 
 		if (!TextUtils.isEmpty(planTask2.getLeader())) {
@@ -149,21 +159,20 @@ public class DailyTaskDetail extends BaseActivity {
 		else
 			mThree.setHint("");
 
-		String domain = planTask2.getDomain().substring(planTask2.getDomain().length() - 2);
-		if (domain.equals("02")) {
-			mBelong.setText("地");
-			;
-		} else if (domain.equals("03")) {
-			mBelong.setText("配");
-			;
-		} else if (domain.equals("05")) {
-			mBelong.setText("其它");
-			;
-		} else if (domain.equals("01")) {
-			mBelong.setText("省");
-		} else if (domain.equals("04")) {
-			mBelong.setText("县");
-			;
+		String domain = planTask2.getDomain();
+		if (!TextUtils.isEmpty(domain)) {
+			domain = domain.substring(planTask2.getDomain().length() - 2);
+			if (domain.equals("02")) {
+				mBelong.setText("地");
+			} else if (domain.equals("03")) {
+				mBelong.setText("配");
+			} else if (domain.equals("05")) {
+				mBelong.setText("其它");
+			} else if (domain.equals("01")) {
+				mBelong.setText("省");
+			} else if (domain.equals("04")) {
+				mBelong.setText("县");
+			}
 		}
 
 		if (!TextUtils.isEmpty(planTask2.getIs_power_cut())) {
@@ -175,13 +184,16 @@ public class DailyTaskDetail extends BaseActivity {
 		} else
 			mStop.setText("");
 
-		String category = planTask2.getCut_type().substring(planTask2.getCut_type().length() - 2);
-		if (category.equals("01")) {
-			mStopType.setText("临时停电");
-		} else if (category.equals("02")) {
-			mStopType.setText("计划停电");
-		} else if (category.equals("03")) {
-			mStopType.setText("其他");
+		String category = planTask2.getCut_type();
+		if (!TextUtils.isEmpty(category)) {
+			category = category.substring(planTask2.getCut_type().length() - 2);
+			if (category.equals("01")) {
+				mStopType.setText("临时停电");
+			} else if (category.equals("02")) {
+				mStopType.setText("计划停电");
+			} else if (category.equals("03")) {
+				mStopType.setText("其他");
+			}
 		}
 
 		if (!TextUtils.isEmpty(planTask2.getImplement_org())) {
@@ -192,7 +204,8 @@ public class DailyTaskDetail extends BaseActivity {
 		} else
 			mCompany.setHint("");
 
-		mPeople.setText(planTask2.getNumber());
+		if (!TextUtils.isEmpty(planTask2.getNumber()))
+			mPeople.setText(planTask2.getNumber());
 
 		if (!TextUtils.isEmpty(planTask2.getRemark()))
 			mMemo.setText(planTask2.getRemark());
