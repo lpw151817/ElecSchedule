@@ -13,100 +13,105 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:gravity="center_vertical"
-        android:orientation="horizontal" >
+        android:orientation="vertical" >
 
         <LinearLayout
-            android:id="@+id/shangchuanxianchangxinxi"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical" >
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
 
-            <ImageButton
-                
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/jiaohuxinxi"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:background="#00ffffff"
-                android:clickable="false"
-                android:src="@drawable/icon_chakan" />
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical" >
 
-            <TextView
-                android:id="@+id/rwxq"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="5dp"
-                android:text="上传现场信息"
-                android:textColor="#A8A8A8" />
+                <ImageButton
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="5dp"
+                    android:background="#00ffffff"
+                    android:clickable="false"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/icon_chakan" />
+
+                <TextView
+                    android:id="@+id/rwxq"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="10dp"
+                    android:text="上传现场信息"
+                    android:textColor="#A8A8A8" />
+            </LinearLayout>
         </LinearLayout>
 
-        <ImageView
-            android:layout_width="2dp"
-            android:layout_height="match_parent"
-            android:background="#E7E8E5" />
-
         <LinearLayout
-            android:id="@+id/jiaohuxinxi"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical" >
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
 
-            <ImageButton
-                android:clickable="false"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/shangchuanxianchangxinxi"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:background="#00ffffff"
-                android:src="@drawable/icon_jiaohu" />
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical" >
 
-            <TextView
-                android:layout_width="wrap_content"
+                <ImageButton
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="5dp"
+                    android:background="#00ffffff"
+                    android:clickable="false"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/icon_jiaohu" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="10dp"
+                    android:text="交互信息"
+                    android:textColor="#A8A8A8" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/renwuxiangqing"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="5dp"
-                android:text="交互信息"
-                android:textColor="#A8A8A8" />
-        </LinearLayout>
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical" >
 
-        <ImageView
-            android:layout_width="2dp"
-            android:layout_height="match_parent"
-            android:background="#E7E8E5" />
+                <ImageButton
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="5dp"
+                    android:background="#00ffffff"
+                    android:clickable="false"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/icon_xiangqing" />
 
-        <LinearLayout
-            android:id="@+id/renwuxiangqing"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical" >
-
-            <ImageButton
-                android:clickable="false"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:background="#00ffffff"
-                android:src="@drawable/icon_xiangqing" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="5dp"
-                android:text="任务详情"
-                android:textColor="#A8A8A8" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="10dp"
+                    android:text="任务详情"
+                    android:textColor="#A8A8A8" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="#E7E8E5" />
 
 </LinearLayout>
