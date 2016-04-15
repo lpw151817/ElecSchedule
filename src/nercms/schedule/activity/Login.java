@@ -1,12 +1,17 @@
 package nercms.schedule.activity;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Map;
 
 import com.Generate_md5;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.SubMenu;
+import com.google.gson.Gson;
 import com.nercms.MQTT;
 import com.nercms.Push;
 
@@ -35,6 +40,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.wxapp.service.AppApplication;
 import android.wxapp.service.elec.dao.TaskInsDao;
+import android.wxapp.service.elec.model.ConfigBean;
 import android.wxapp.service.elec.model.LoginResponse;
 import android.wxapp.service.elec.model.NormalServerResponse;
 import android.wxapp.service.elec.model.UpdateResponse;
@@ -74,6 +80,91 @@ public class Login extends BaseActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);
+		///////////////////////////////////////////////////
+		File configFile = new File(Environment.getExternalStorageDirectory().getPath()
+				+ "/nercms-Schedule/config.json");
+		// 如果是第一次安装app，则写配置文件
+		if (MySharedPreference.get(this, MySharedPreference.USER_ID, null) == null) {
+			if (configFile.exists())
+				configFile.delete();
+			FileWriter writer = null;
+			try {
+				writer = new FileWriter(configFile);
+				ConfigBean bean = new ConfigBean(Contants.SERVER, Contants.PORT, Contants.HFS_PORT,
+						Contants.MQTT_PORT, Contants.SCHEDULE_SERVER_LAN, Contants.SCHEDULE_PORT);
+				writer.write(new Gson().toJson(bean));
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					if (writer != null)
+						writer.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		// 如果不是第一次启动，则读取配置文件
+		else {
+			// 如果配置文件存在，读取配置文件
+			if (configFile.exists()) {
+				FileReader reader;
+				try {
+					reader = new FileReader(configFile);
+					char[] buff = new char[1024];
+					int i = 0;
+					StringBuilder sb = new StringBuilder();
+					while ((i = reader.read(buff, 0, buff.length)) > 0) {
+						sb.append(String.valueOf(buff, 0, i));
+					}
+					ConfigBean bean = new Gson().fromJson(sb.toString(), ConfigBean.class);
+					Contants.PORT = bean.getPORT();
+					Contants.SERVER = bean.getSERVER();
+					Contants.HFS_PORT = bean.getHFS_PORT();
+					Contants.MQTT_PORT = bean.getMQTT_PORT();
+					Contants.SCHEDULE_SERVER_LAN = bean.getSCHEDULE_SERVER_LAN();
+					Contants.SCHEDULE_PORT = bean.getSCHEDULE_PORT();
+					Contants.HFS_SERVER = Contants.SERVER;
+					Contants.HFS_URL = "http://" + Contants.HFS_SERVER + ":" + Contants.HFS_PORT
+							+ "/ScheduleFileServer";
+					Contants.MQTT_SERVER = Contants.SERVER;
+					Contants.SCHEDULE_SERVER_WAN = Contants.SERVER;
+					Contants.SERVER_URL = "http://" + Contants.SERVER + ":" + Contants.PORT
+							+ File.separator;
+					Log.v("login", bean.toString());
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			// 如果不是第一次启动，但配置文件不存在，则重新写文件
+			else {
+				if (configFile.exists())
+					configFile.delete();
+				FileWriter writer = null;
+				try {
+					writer = new FileWriter(configFile);
+					ConfigBean bean = new ConfigBean(Contants.SERVER, Contants.PORT,
+							Contants.HFS_PORT, Contants.MQTT_PORT, Contants.SCHEDULE_SERVER_LAN,
+							Contants.SCHEDULE_PORT);
+					writer.write(new Gson().toJson(bean));
+				} catch (IOException e) {
+					e.printStackTrace();
+				} finally {
+					try {
+						if (writer != null)
+							writer.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+
+			}
+		}
+		//////////////////////////////////////////////////////
 
 		// // this is test
 		// initActionBar();
