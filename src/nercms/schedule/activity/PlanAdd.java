@@ -405,7 +405,7 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 				qrtj.setVisibility(View.GONE);
 
 				renwu.setVisibility(View.VISIBLE);
-				if (isAdmin()!=PERSON_TYPE.XIANCHANG) {
+				if (isAdmin() != PERSON_TYPE.XIANCHANG) {
 
 					renwu.setText("查看附件");
 					renwu.setOnClickListener(new OnClickListener() {
@@ -577,7 +577,7 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 	/**
 	 * 
 	 * @param from
-	 *            1:工作负责人, 2：领导
+	 *            1:工作负责人, 2：应上岗到位领导
 	 */
 	private void startPeopleSelect(int from) {
 		Intent intent = new Intent(PlanAdd.this, ContactSelect.class);

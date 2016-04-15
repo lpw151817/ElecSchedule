@@ -31,6 +31,7 @@ import android.wxapp.service.dao.GroupDao;
 import android.wxapp.service.dao.PersonDao;
 import android.wxapp.service.elec.dao.Org;
 import android.wxapp.service.elec.dao.OrgDao;
+import android.wxapp.service.elec.model.bean.table.TB_SYS_Person;
 import android.wxapp.service.handler.MessageHandlerManager;
 import android.wxapp.service.jerry.model.group.CreateGroupResponse;
 import android.wxapp.service.jerry.model.group.GroupUpdateQueryRequestIds;
@@ -97,7 +98,23 @@ public class ContactSelect extends BaseActivity implements DataChanged {
 
 		try {
 			List<Org> data = new ArrayList<Org>();
-			data = dao.getOrg2();
+
+			// data = dao.getOrg2();
+
+			data.addAll(dao.getAllOrgs());
+			// 选择工作负责人
+			if (type == 1) {
+				data.addAll(dao.convert(dao.getPersons("0")));
+			} else if (type == 2) {
+				if (isAdmin() == PERSON_TYPE.GUANLI)
+					data.addAll(dao.convert(dao.getPersons("1")));
+				else if (isAdmin() == PERSON_TYPE.LINGDAO) {
+					List<TB_SYS_Person> tmp = dao.getPersons("1");
+					tmp.addAll(dao.getPersons("2"));
+					data.addAll(dao.convert(tmp));
+				}
+			}
+
 			adapter = new PersonSelectAdapter<Org>(listView, this, data, 1, lsSelectedPod,
 					lsSelectedReceiver, entranceFlag, type);
 			listView.setAdapter(adapter);
