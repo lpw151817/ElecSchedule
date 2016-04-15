@@ -17,6 +17,8 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import nercms.schedule.activity.NewTask;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.res.Resources;
@@ -408,7 +410,8 @@ public class Utils {
 	 */
 	public static String getThumbnailDir() {
 		// 得到一个路径，内容是sdcard的附件缩略图路径
-		String path = Environment.getExternalStorageDirectory().getPath() + "/TestRecord/Thumbnail";
+//		String path = Environment.getExternalStorageDirectory().getPath() + "/TestRecord/Thumbnail";
+		String path = NewTask.fileThumbnail;
 		File filePath = new File(path);
 
 		if (!filePath.exists()) {

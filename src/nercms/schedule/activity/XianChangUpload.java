@@ -49,6 +49,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -286,37 +287,71 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 			int size = name.size();
 			final String[] array = (String[]) name.toArray(new String[size]);
-
-			AlertDialog.Builder builder = new AlertDialog.Builder(XianChangUpload.this);
-			builder.setTitle("选择附件类型").setItems(array, new DialogInterface.OnClickListener() {
-
-				@Override
-				public void onClick(DialogInterface arg0, int which) {
-					switch (which) {
-
-					case 0:
-
-						startAttachment(array[0]);
-						break;
-
-					case 1:
-
-						startAttachment(array[1]);
-						break;
-
-					case 2:
-						startAttachment(array[2]);
-
-						break;
-
-					default:
-						break;
+			
+			if (size == 1){//如果只需要拍照就直接拍，不用弹出dialog
+				startAttachment(array[0]);
+			} else {
+				
+				AlertDialog.Builder builder = new AlertDialog.Builder(XianChangUpload.this);
+				ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(XianChangUpload.this, R.layout.dialog_item, R.id.tv, array);
+				builder.setTitle("选择附件类型");
+				builder.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						switch (which) {
+						
+						case 0:
+							
+							startAttachment(array[0]);
+							break;
+							
+						case 1:
+							
+							startAttachment(array[1]);
+							break;
+							
+						case 2:
+							startAttachment(array[2]);
+							
+							break;
+							
+						default:
+							break;
+						}
 					}
-
-				}
-			});
-			AlertDialog dialog = builder.create();
-			dialog.show();
+				});
+//				builder.setTitle("选择附件类型").setItems(array, new DialogInterface.OnClickListener() {
+//					
+//					@Override
+//					public void onClick(DialogInterface arg0, int which) {
+//						switch (which) {
+//						
+//						case 0:
+//							
+//							startAttachment(array[0]);
+//							break;
+//							
+//						case 1:
+//							
+//							startAttachment(array[1]);
+//							break;
+//							
+//						case 2:
+//							startAttachment(array[2]);
+//							
+//							break;
+//							
+//						default:
+//							break;
+//						}
+//						
+//					}
+//				});
+				AlertDialog dialog = builder.create();
+				dialog.show();
+				
+			}
 
 			break;
 
@@ -376,6 +411,11 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 			}
 
 			mUnUploadFileCount = mUnUploadUrl.size();
+			
+			if (mUnUploadFileCount == 0){
+				Toast.makeText(XianChangUpload.this, "附件已经上传了，请选择新的附件上传", Toast.LENGTH_SHORT).show();
+			}
+			
 			// 将附件写入数据库
 			for (Map<String, Object> map : mUnUploadUrl) {
 				if (map != null) {
@@ -853,7 +893,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 						System.out.println("mediaID1 : " + mediaID1);
 
 						loadMedia(imageContainer, mediaID1, getThumbnailFromUri(uri1), uri1,
-								NewTask.TYPE_SELECT_IMAGE);
+								NewTask.TYPE_SELECT_IMAGE, selectimagepath);
 						// 存储mediaId与thumbnailUri的映射
 						index_path_Map.put(mediaID1, selectThumbnailUri);
 					} else if (fileType.equals("captureImage")) {
@@ -865,7 +905,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 						index_originalPath_Map.put(mediaID2, mImagePath);
 						System.out.println("mediaID2 : " + mediaID2);
 						loadMedia(imageContainer, mediaID2, getThumbnailFromUri(uri2), uri2,
-								NewTask.TYPE_IMAGE);
+								NewTask.TYPE_IMAGE, mImagePath);
 						// 存储mediaId与thumbnailUri的映射
 						index_path_Map.put(mediaID2, thumbnailUri);
 					} else if (fileType.equals("audio")) {
@@ -877,7 +917,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 								new Media(Utils.MEDIA_TYPE_AUDIO, captureAudioName, audiopath));
 						index_originalPath_Map.put(mediaID, audiopath);
 						loadMedia(imageContainer, mediaID, audioThumbnailBitmap, uri,
-								NewTask.TYPE_AUDIO);
+								NewTask.TYPE_AUDIO, audiopath);
 					} else if (fileType.equals("video")) {
 						int mediaID4 = Integer.valueOf(index);
 
@@ -887,7 +927,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 						// 存储文件的路径
 						index_originalPath_Map.put(mediaID4, videopath);
 						loadMedia(imageContainer, mediaID4, videoThumbnailBitmap, uri4,
-								NewTask.TYPE_VIDEO);
+								NewTask.TYPE_VIDEO, videopath);
 					}
 
 				}
@@ -896,10 +936,13 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 		case LocalConstant.CAPTURE_IMAGE_REQUEST_CODE:
 			if (resultCode == RESULT_OK) {
+				
+				Log.d("qq", "1 " +new Date(System.currentTimeMillis()));
+				
 				thumbnailUri = Utils.getThumbnailDir();
 				// 获取缩略图,根据原图创建缩略图, mImagePath是原图的地址
 				Utils.getThumbnail(mImagePath, thumbnailUri);
-
+				Log.d("qq", "2 "+new Date(System.currentTimeMillis()));
 				// // 根据图片生成bitmap对象
 				// Bitmap imageThumbnailBitmap =
 				// BitmapFactory.decodeFile(mImagePath);
@@ -922,7 +965,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 				mContent.put(0, mMap);
 				intent.putExtra("address", (Serializable) mContent);
 				startActivityForResult(intent, 321);
-
+				
 				// mediaList.add(new Media(Utils.MEDIA_TYPE_IMAGE,
 				// captureImageName, mImagePath));
 				// // 存储mediaId与imageOriginPath的映射
@@ -1043,7 +1086,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 						System.out.println("XianChangUpload url : " + map.get("path"));
 
-						mFilePath = (String) map.get("path");
+						mFilePath = (String) map.get("path");//文件的路径
 
 						File mfile = new File(mFilePath);
 						if (!mfile.getParentFile().exists())
@@ -1069,7 +1112,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 								// 存储mediaId与imageOriginPath的映射
 								index_originalPath_Map.put(mediaID2, mFilePath);
 								loadMedia(imageContainer, mediaID2, getThumbnailFromUri(uri2), uri2,
-										NewTask.TYPE_IMAGE);
+										NewTask.TYPE_IMAGE, mFilePath);
 
 								// 存储mediaId与thumbnailUri的映射
 								index_path_Map.put(mediaID2, thumbnailUri);
@@ -1094,7 +1137,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 								index_originalPath_Map.put(mediaID, mFilePath);
 								loadMedia(imageContainer, mediaID, AudioThumbnailBitmap, uri,
-										NewTask.TYPE_AUDIO);
+										NewTask.TYPE_AUDIO, mFilePath);
 							} else if (mFileName.contains(".mp4")) {
 								File file = new File(mFilePath);
 
@@ -1115,7 +1158,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 								// 存储文件的路径
 								index_originalPath_Map.put(mediaID, mFilePath);
 								loadMedia(imageContainer, mediaID, videoThumbnailBitmap, uri,
-										NewTask.TYPE_VIDEO);
+										NewTask.TYPE_VIDEO, mFilePath);
 							}
 
 						} else {
@@ -1131,7 +1174,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 	}
 
 	public void loadMedia(FixedGridLayout viewContainer, int mediaId, Bitmap thumbnail,
-			final Uri uri, final int MediaType) {
+			final Uri uri, final int MediaType, String newPath) {
 
 		// WeiHao 如果附件展示布局不可见，置未可见
 		if (showAttachLayout.getVisibility() == View.GONE) {
@@ -1140,7 +1183,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		// 将图片缩略图添加到缩略图列表，便于新建完成后回收
 		// bitmapList.add(thumbnail);
 		final ImageView imageView = CreateImgView(this, thumbnail, IMG_WIDTH, IMG_HEIGHT);
-		setImageviewListener(uri, imageView, MediaType, mediaId);
+		setImageviewListener(uri, imageView, MediaType, mediaId, newPath);
 
 		/*
 		 * ImageButton deleteBtn = new ImageButton(this);
@@ -1270,9 +1313,10 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 	 * 
 	 * @param uri
 	 * @param imageView
+	 * @param newPath是源文件的路径
 	 */
 	public void setImageviewListener(final Uri uri, final ImageView imageView, final int MediaType,
-			final int MediaId) {
+			final int MediaId, final String newPath) {
 		// 为图片设置触摸事件
 		imageView.setOnTouchListener(new OnTouchListener() {
 			public boolean onTouch(View v, MotionEvent event) {
@@ -1295,7 +1339,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 				switch (MediaType) {
 				case NewTask.TYPE_IMAGE:
 					// 点击显示大图
-					showImageDialog(imageView, uri);
+					showImageDialog(imageView, Uri.fromFile(new File(newPath)));
 					break;
 
 				case NewTask.TYPE_SELECT_IMAGE:
@@ -1333,32 +1377,47 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 	/** 显示大图对话框 */
 	private void showImageDialog(final ImageView imageView, final Uri uri) {
-		// 获取对话框布局并实例化
-		LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-		View view = inflater.inflate(R.layout.image_dialog, null);
-		// 构造对话框
-		imageDialog = new Dialog(this, R.style.imageDialog);
-		imageDialog.setContentView(view);
-		// 添加图片
-		ImageView dialogImageView = (ImageView) view.findViewById(R.id.imageImageView);
-		// 获取图片
-		final Bitmap pic = getBitmapFromUri(uri);
-		// 将图片缩略图加载到ImageView
-		dialogImageView.setImageBitmap(pic);
-		// 为图片设置单击事件
-		dialogImageView.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				imageDialog.dismiss();
-				imageDialog = null;
-				// 缩略图单击事件恢复
-				imageView.setEnabled(true);
-				// 回收图片
-				pic.recycle();
-			}
-		});
-		// 显示对话框
-		imageDialog.show();
+		String path = uri.toString();
+		String fileName = path.substring(path.lastIndexOf("/") + 1);
+		String filePath = NewTask.fileFolder + fileName;
+		Uri fileUri = Uri.fromFile(new File(filePath));
+		Intent intent = new Intent();
+		intent.setAction(Intent.ACTION_VIEW);
+		intent.setDataAndType(fileUri, "image/*");
+		startActivity(intent);
 	}
+	
+	
+//	private void showImageDialog(final ImageView imageView, final Uri uri) {
+//		
+//		
+//		
+//		// 获取对话框布局并实例化
+//		LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+//		View view = inflater.inflate(R.layout.image_dialog, null);
+//		// 构造对话框
+//		imageDialog = new Dialog(this, R.style.imageDialog);
+//		imageDialog.setContentView(view);
+//		// 添加图片
+//		ImageView dialogImageView = (ImageView) view.findViewById(R.id.imageImageView);
+//		// 获取图片
+//		final Bitmap pic = getBitmapFromUri(uri);
+//		// 将图片缩略图加载到ImageView
+//		dialogImageView.setImageBitmap(pic);
+//		// 为图片设置单击事件
+//		dialogImageView.setOnClickListener(new OnClickListener() {
+//			public void onClick(View v) {
+//				imageDialog.dismiss();
+//				imageDialog = null;
+//				// 缩略图单击事件恢复
+//				imageView.setEnabled(true);
+//				// 回收图片
+//				pic.recycle();
+//			}
+//		});
+//		// 显示对话框
+//		imageDialog.show();
+//	}
 
 	/*
 	 * private void showDeleteMediaDialog(final RelativeLayout rl, final int

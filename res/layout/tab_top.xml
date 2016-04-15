@@ -7,7 +7,7 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
         android:baselineAligned="true"
         android:gravity="center_vertical"
         android:orientation="horizontal" >
@@ -27,7 +27,7 @@
                 android:clickable="false"
                 android:text="作业现场"
                 android:textColor="@color/orange"
-                android:textSize="17sp" />
+                android:textSize="15sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:text="操作现场"
                 android:textColor="#838C96"
-                android:textSize="17sp" />
+                android:textSize="15sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -60,7 +60,23 @@
                 android:layout_height="wrap_content"
                 android:text="故障抢修现场"
                 android:textColor="#838C96"
-                android:textSize="17sp" />
+                android:textSize="15sp" />
+        </LinearLayout>
+        
+         <LinearLayout
+            android:id="@+id/leaderLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center" >
+
+            <TextView
+                android:id="@+id/leader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="领导"
+                android:textColor="#838C96"
+                android:textSize="15sp" />
         </LinearLayout>
     </LinearLayout>
 

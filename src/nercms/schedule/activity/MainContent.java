@@ -50,6 +50,7 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 	private FirstFragment mFirstFrag;
 	private SecondFragment mSecondFrag;
 	private ThirdFragment mThirdFrag;
+	private FourthFragment mFourthFrag;
 	public int zuoyecount;
 	public int caozuocount;
 	public int qiangxiucount;
@@ -57,9 +58,11 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 	private LinearLayout zuoYeLayout;
 	private LinearLayout caoZuoLayout;
 	private LinearLayout qiangXiuLayout;
+	private LinearLayout leaderLayout;
 	private TextView zuoye;
 	private TextView caozuo;
 	private TextView qiangxiu;
+	private TextView leader;
 	private PlanTaskDao dao;
 	private com.jauker.widget.BadgeView badgeView1;
 	private com.jauker.widget.BadgeView badgeView2;
@@ -98,32 +101,35 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		zuoYeLayout = (LinearLayout) findViewById(R.id.zuoyeLayout);
 		caoZuoLayout = (LinearLayout) findViewById(R.id.caozuoLayout);
 		qiangXiuLayout = (LinearLayout) findViewById(R.id.qiangxiuLayout);
+		leaderLayout = (LinearLayout) findViewById(R.id.leaderLayout);
+		
+		if (!isAdmin()){
+			leaderLayout.setVisibility(View.GONE);
+		}
 
 		zuoye = (TextView) findViewById(R.id.zuoye);
 		caozuo = (TextView) findViewById(R.id.caozuo);
 		qiangxiu = (TextView) findViewById(R.id.qiangxiu);
+		leader = (TextView) findViewById(R.id.leader);
 
 		mFirstFrag = new FirstFragment(MainContent.this, zuoyecount);
-
 		mSecondFrag = new SecondFragment(MainContent.this, caozuocount);
-
 		mThirdFrag = new ThirdFragment(MainContent.this, qiangxiucount);
+		mFourthFrag = new FourthFragment(MainContent.this);
 
 		badgeView1 = new com.jauker.widget.BadgeView(this);
-
 		zuoYeLayout.addView(badgeView1);
 
 		badgeView2 = new com.jauker.widget.BadgeView(this);
-
 		caoZuoLayout.addView(badgeView2);
 
 		badgeView3 = new com.jauker.widget.BadgeView(this);
-
 		qiangXiuLayout.addView(badgeView3);
 
 		zuoYeLayout.setOnClickListener(this);
 		caoZuoLayout.setOnClickListener(this);
 		qiangXiuLayout.setOnClickListener(this);
+		leaderLayout.setOnClickListener(this);
 
 		FragmentPagerAdapter madapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
 
@@ -142,8 +148,9 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		mLi.add(mFirstFrag);
 		mLi.add(mSecondFrag);
 		mLi.add(mThirdFrag);
+		mLi.add(mFourthFrag);
 		contentPager.setAdapter(madapter);
-		contentPager.setOffscreenPageLimit(3);
+		contentPager.setOffscreenPageLimit(4);
 
 		handler = new Handler() {
 			@Override
@@ -246,6 +253,7 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 			zuoye.setTextColor(getResources().getColor(R.color.orange));
 			caozuo.setTextColor(getResources().getColor(R.color.deepgray));
 			qiangxiu.setTextColor(getResources().getColor(R.color.deepgray));
+			leader.setTextColor(getResources().getColor(R.color.deepgray));
 			break;
 
 		case R.id.caozuoLayout:
@@ -255,6 +263,7 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 			caozuo.setTextColor(getResources().getColor(R.color.orange));
 			zuoye.setTextColor(getResources().getColor(R.color.deepgray));
 			qiangxiu.setTextColor(getResources().getColor(R.color.deepgray));
+			leader.setTextColor(getResources().getColor(R.color.deepgray));
 			break;
 
 		case R.id.qiangxiuLayout:
@@ -263,7 +272,15 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 			qiangxiu.setTextColor(getResources().getColor(R.color.orange));
 			zuoye.setTextColor(getResources().getColor(R.color.deepgray));
 			caozuo.setTextColor(getResources().getColor(R.color.deepgray));
+			leader.setTextColor(getResources().getColor(R.color.deepgray));
 			break;
+			
+		case R.id.leaderLayout:
+			contentPager.setCurrentItem(3);
+			qiangxiu.setTextColor(getResources().getColor(R.color.deepgray));
+			zuoye.setTextColor(getResources().getColor(R.color.deepgray));
+			caozuo.setTextColor(getResources().getColor(R.color.deepgray));
+			leader.setTextColor(getResources().getColor(R.color.orange));
 
 		default:
 			break;
