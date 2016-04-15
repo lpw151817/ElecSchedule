@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import nercms.schedule.R;
 import nercms.schedule.activity.BaseActivity;
+import nercms.schedule.activity.BaseActivity.PERSON_TYPE;
 import nercms.schedule.activity.XianChangAdd;
 
 public class XianChangAddAdapter extends BaseAdapter {
@@ -18,7 +19,7 @@ public class XianChangAddAdapter extends BaseAdapter {
 	String[] ss;
 	int[] hasContent;
 	int[] contentCount;
-	boolean isAdmin;
+	PERSON_TYPE isAdmin;
 
 	/**
 	 * 需要修改是否有内容的标志位
@@ -43,7 +44,7 @@ public class XianChangAddAdapter extends BaseAdapter {
 	 * @param hasContent
 	 *            标记每一项是否有内容，1：有，0：没有
 	 */
-	public XianChangAddAdapter(Context c, int type, int[] num, boolean isAdmin) {
+	public XianChangAddAdapter(Context c, int type, int[] num, PERSON_TYPE isAdmin) {
 		this.mContext = c;
 		if (type == 1) {
 			ss = c.getResources().getStringArray(R.array.zuoyexianchang_si_data);
@@ -115,7 +116,7 @@ public class XianChangAddAdapter extends BaseAdapter {
 			holder.textView.setTextColor(Color.BLACK);
 		}
 
-		if (isAdmin) {
+		if (isAdmin != PERSON_TYPE.XIANCHANG) {
 			if (contentCount[position] == 0) {
 				holder.textView.setTextColor(Color.GRAY);
 				holder.im1.setVisibility(View.GONE);

@@ -180,7 +180,8 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 		bt_select = (Button) findViewById(R.id.select);
 		bt_shangchuangAttach = (Button) findViewById(R.id.shangchuanfujian);
-		if (isAdmin() || !TextUtils.isEmpty(new PlanTaskDao(this).getPlanTask(tid).getEnd_time())) {
+		if (isAdmin() != PERSON_TYPE.XIANCHANG
+				|| !TextUtils.isEmpty(new PlanTaskDao(this).getPlanTask(tid).getEnd_time())) {
 			bt_select.setVisibility(View.GONE);
 			bt_shangchuangAttach.setVisibility(View.GONE);
 		}
@@ -287,70 +288,72 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 			int size = name.size();
 			final String[] array = (String[]) name.toArray(new String[size]);
-			
-			if (size == 1){//如果只需要拍照就直接拍，不用弹出dialog
+
+			if (size == 1) {// 如果只需要拍照就直接拍，不用弹出dialog
 				startAttachment(array[0]);
 			} else {
-				
+
 				AlertDialog.Builder builder = new AlertDialog.Builder(XianChangUpload.this);
-				ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(XianChangUpload.this, R.layout.dialog_item, R.id.tv, array);
+				ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(XianChangUpload.this,
+						R.layout.dialog_item, R.id.tv, array);
 				builder.setTitle("选择附件类型");
 				builder.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-					
+
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						switch (which) {
-						
+
 						case 0:
-							
+
 							startAttachment(array[0]);
 							break;
-							
+
 						case 1:
-							
+
 							startAttachment(array[1]);
 							break;
-							
+
 						case 2:
 							startAttachment(array[2]);
-							
+
 							break;
-							
+
 						default:
 							break;
 						}
 					}
 				});
-//				builder.setTitle("选择附件类型").setItems(array, new DialogInterface.OnClickListener() {
-//					
-//					@Override
-//					public void onClick(DialogInterface arg0, int which) {
-//						switch (which) {
-//						
-//						case 0:
-//							
-//							startAttachment(array[0]);
-//							break;
-//							
-//						case 1:
-//							
-//							startAttachment(array[1]);
-//							break;
-//							
-//						case 2:
-//							startAttachment(array[2]);
-//							
-//							break;
-//							
-//						default:
-//							break;
-//						}
-//						
-//					}
-//				});
+				// builder.setTitle("选择附件类型").setItems(array, new
+				// DialogInterface.OnClickListener() {
+				//
+				// @Override
+				// public void onClick(DialogInterface arg0, int which) {
+				// switch (which) {
+				//
+				// case 0:
+				//
+				// startAttachment(array[0]);
+				// break;
+				//
+				// case 1:
+				//
+				// startAttachment(array[1]);
+				// break;
+				//
+				// case 2:
+				// startAttachment(array[2]);
+				//
+				// break;
+				//
+				// default:
+				// break;
+				// }
+				//
+				// }
+				// });
 				AlertDialog dialog = builder.create();
 				dialog.show();
-				
+
 			}
 
 			break;
@@ -411,11 +414,12 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 			}
 
 			mUnUploadFileCount = mUnUploadUrl.size();
-			
-			if (mUnUploadFileCount == 0){
-				Toast.makeText(XianChangUpload.this, "附件已经上传了，请选择新的附件上传", Toast.LENGTH_SHORT).show();
+
+			if (mUnUploadFileCount == 0) {
+				Toast.makeText(XianChangUpload.this, "附件已经上传了，请选择新的附件上传", Toast.LENGTH_SHORT)
+						.show();
 			}
-			
+
 			// 将附件写入数据库
 			for (Map<String, Object> map : mUnUploadUrl) {
 				if (map != null) {
@@ -579,12 +583,13 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 			// standard.toString(), type, url, (String) attItem.get("time"),
 			// md5, "0");
 			if (id) {
-//				if (!Utils.isNetworkAvailable(getApplicationContext())) {
-//					Toast.makeText(getApplicationContext(), "无网络，附件将在网络恢复后上传", Toast.LENGTH_SHORT)
-//							.show();
-//				} else
-					// 这个实际上是数据存储到数据库里面了,实际的上传工作是在ScheduleActvity里面通过线程池在后台进行上传的
-					Toast.makeText(XianChangUpload.this, "数据已存储，正在上传", Toast.LENGTH_SHORT).show();
+				// if (!Utils.isNetworkAvailable(getApplicationContext())) {
+				// Toast.makeText(getApplicationContext(), "无网络，附件将在网络恢复后上传",
+				// Toast.LENGTH_SHORT)
+				// .show();
+				// } else
+				// 这个实际上是数据存储到数据库里面了,实际的上传工作是在ScheduleActvity里面通过线程池在后台进行上传的
+				Toast.makeText(XianChangUpload.this, "数据已存储，正在上传", Toast.LENGTH_SHORT).show();
 			}
 		}
 
@@ -936,13 +941,13 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 		case LocalConstant.CAPTURE_IMAGE_REQUEST_CODE:
 			if (resultCode == RESULT_OK) {
-				
-				Log.d("qq", "1 " +new Date(System.currentTimeMillis()));
-				
+
+				Log.d("qq", "1 " + new Date(System.currentTimeMillis()));
+
 				thumbnailUri = Utils.getThumbnailDir();
 				// 获取缩略图,根据原图创建缩略图, mImagePath是原图的地址
 				Utils.getThumbnail(mImagePath, thumbnailUri);
-				Log.d("qq", "2 "+new Date(System.currentTimeMillis()));
+				Log.d("qq", "2 " + new Date(System.currentTimeMillis()));
 				// // 根据图片生成bitmap对象
 				// Bitmap imageThumbnailBitmap =
 				// BitmapFactory.decodeFile(mImagePath);
@@ -965,7 +970,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 				mContent.put(0, mMap);
 				intent.putExtra("address", (Serializable) mContent);
 				startActivityForResult(intent, 321);
-				
+
 				// mediaList.add(new Media(Utils.MEDIA_TYPE_IMAGE,
 				// captureImageName, mImagePath));
 				// // 存储mediaId与imageOriginPath的映射
@@ -1086,7 +1091,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 						System.out.println("XianChangUpload url : " + map.get("path"));
 
-						mFilePath = (String) map.get("path");//文件的路径
+						mFilePath = (String) map.get("path");// 文件的路径
 
 						File mfile = new File(mFilePath);
 						if (!mfile.getParentFile().exists())
@@ -1386,38 +1391,39 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		intent.setDataAndType(fileUri, "image/*");
 		startActivity(intent);
 	}
-	
-	
-//	private void showImageDialog(final ImageView imageView, final Uri uri) {
-//		
-//		
-//		
-//		// 获取对话框布局并实例化
-//		LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-//		View view = inflater.inflate(R.layout.image_dialog, null);
-//		// 构造对话框
-//		imageDialog = new Dialog(this, R.style.imageDialog);
-//		imageDialog.setContentView(view);
-//		// 添加图片
-//		ImageView dialogImageView = (ImageView) view.findViewById(R.id.imageImageView);
-//		// 获取图片
-//		final Bitmap pic = getBitmapFromUri(uri);
-//		// 将图片缩略图加载到ImageView
-//		dialogImageView.setImageBitmap(pic);
-//		// 为图片设置单击事件
-//		dialogImageView.setOnClickListener(new OnClickListener() {
-//			public void onClick(View v) {
-//				imageDialog.dismiss();
-//				imageDialog = null;
-//				// 缩略图单击事件恢复
-//				imageView.setEnabled(true);
-//				// 回收图片
-//				pic.recycle();
-//			}
-//		});
-//		// 显示对话框
-//		imageDialog.show();
-//	}
+
+	// private void showImageDialog(final ImageView imageView, final Uri uri) {
+	//
+	//
+	//
+	// // 获取对话框布局并实例化
+	// LayoutInflater inflater = (LayoutInflater)
+	// getSystemService(LAYOUT_INFLATER_SERVICE);
+	// View view = inflater.inflate(R.layout.image_dialog, null);
+	// // 构造对话框
+	// imageDialog = new Dialog(this, R.style.imageDialog);
+	// imageDialog.setContentView(view);
+	// // 添加图片
+	// ImageView dialogImageView = (ImageView)
+	// view.findViewById(R.id.imageImageView);
+	// // 获取图片
+	// final Bitmap pic = getBitmapFromUri(uri);
+	// // 将图片缩略图加载到ImageView
+	// dialogImageView.setImageBitmap(pic);
+	// // 为图片设置单击事件
+	// dialogImageView.setOnClickListener(new OnClickListener() {
+	// public void onClick(View v) {
+	// imageDialog.dismiss();
+	// imageDialog = null;
+	// // 缩略图单击事件恢复
+	// imageView.setEnabled(true);
+	// // 回收图片
+	// pic.recycle();
+	// }
+	// });
+	// // 显示对话框
+	// imageDialog.show();
+	// }
 
 	/*
 	 * private void showDeleteMediaDialog(final RelativeLayout rl, final int

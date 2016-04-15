@@ -405,7 +405,7 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 				qrtj.setVisibility(View.GONE);
 
 				renwu.setVisibility(View.VISIBLE);
-				if (isAdmin()) {
+				if (isAdmin()!=PERSON_TYPE.XIANCHANG) {
 
 					renwu.setText("²é¿´¸½¼þ");
 					renwu.setOnClickListener(new OnClickListener() {

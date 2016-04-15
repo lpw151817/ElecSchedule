@@ -66,7 +66,7 @@ public class MeiRiJiHua extends BaseActivity
 		tv_time = (TextView) findViewById(R.id.time);
 		tv_time.setText(Utils.formatDateMs(System.currentTimeMillis()));
 
-		if (!isAdmin()) {
+		if (isAdmin() == PERSON_TYPE.XIANCHANG) {
 			adapter = new MeiRiJiHuaAdapter(this,
 					dao.getPlanTasks(enterType, 3, getUserId(), status), dao, this);
 		} else {

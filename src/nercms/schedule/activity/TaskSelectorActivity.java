@@ -41,7 +41,7 @@ public class TaskSelectorActivity extends BaseActivity implements OnClickListene
 		dao = new PlanTaskDao(this);
 		info = dao.getPlanTask(tid);
 
-		if (!isAdmin()) {
+		if (isAdmin() == PERSON_TYPE.XIANCHANG) {
 			if (TextUtils.isEmpty(info.getStart_time())) {
 				manager = new WebRequestManager(AppApplication.getInstance(), this);
 				iniHandler();
@@ -51,7 +51,7 @@ public class TaskSelectorActivity extends BaseActivity implements OnClickListene
 
 		iniActionBar(true, null, info.getName());
 
-		if (isAdmin())
+		if (isAdmin() != PERSON_TYPE.XIANCHANG)
 			((TextView) findViewById(R.id.rwxq)).setText("查看现场信息");
 
 		findViewById(R.id.shangchuanxianchangxinxi).setOnClickListener(this);
@@ -87,12 +87,12 @@ public class TaskSelectorActivity extends BaseActivity implements OnClickListene
 
 	@Override
 	protected void onDestroy() {
-//		MessageHandlerManager.getInstance().unregister(Constants.START_TASK_SUCCESS,
-//				StartTaskResponse.class.getName());
-//		MessageHandlerManager.getInstance().unregister(Constants.START_TASK_SAVE_FAIL,
-//				StartTaskResponse.class.getName());
-//		MessageHandlerManager.getInstance().unregister(Constants.START_TASK_FAIL,
-//				StartTaskResponse.class.getName());
+		// MessageHandlerManager.getInstance().unregister(Constants.START_TASK_SUCCESS,
+		// StartTaskResponse.class.getName());
+		// MessageHandlerManager.getInstance().unregister(Constants.START_TASK_SAVE_FAIL,
+		// StartTaskResponse.class.getName());
+		// MessageHandlerManager.getInstance().unregister(Constants.START_TASK_FAIL,
+		// StartTaskResponse.class.getName());
 		super.onDestroy();
 	}
 

@@ -21,17 +21,29 @@ import com.actionbarsherlock.app.SherlockActivity;
 public class BaseActivity extends SherlockActivity {
 	protected ProgressDialog mProgressDialog;
 
-	protected boolean isAdmin() {
+	public enum PERSON_TYPE {
+		XIANCHANG, GUANLI, LINGDAO
+	}
+
+	protected PERSON_TYPE isAdmin() {
 		OrgDao dao = new OrgDao(this);
 		try {
 			if (dao.getPerson(getUserId()).getType() != null) {
-				return dao.getPerson(getUserId()).getType().equals("1");
+				String type = dao.getPerson(getUserId()).getType();
+				switch (Integer.parseInt(type)) {
+				case 0:
+					return PERSON_TYPE.XIANCHANG;
+				case 1:
+					return PERSON_TYPE.GUANLI;
+				case 2:
+					return PERSON_TYPE.LINGDAO;
+				}
+				return null;
 			} else {
-				return dao.getPerson(getUserId()).getName().contains("管理员")
-						|| dao.getPerson(getUserId()).getName().contains("领导");
+				return null;
 			}
 		} catch (Exception e) {
-			return false;
+			return null;
 		}
 	}
 

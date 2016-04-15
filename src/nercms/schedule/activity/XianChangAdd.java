@@ -163,7 +163,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 		title.append(" - " + data.getName());
 		iniActionBar(true, null, title.toString());
 
-		if (isAdmin()) {
+		if (isAdmin() != PERSON_TYPE.XIANCHANG) {
 			findViewById(R.id.bottom).setVisibility(View.GONE);
 			findViewById(R.id.jieshurenwu).setVisibility(View.GONE);
 
@@ -504,7 +504,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				if (isAdmin()) {
+				if (isAdmin() != PERSON_TYPE.XIANCHANG) {
 					if (mList.get(position).size() == 0) {
 						showLongToast("没有附件信息查看");
 						return;
@@ -743,7 +743,8 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 			String md5 = Utils.getFileMD5(new File(filePath));
 			String url = ((String) map.get("path"));
 			String name = url.substring(url.lastIndexOf("/") + 1);
-//			String time = Utils.parseDateInFormat((String) attItem.get("time"));
+			// String time = Utils.parseDateInFormat((String)
+			// attItem.get("time"));
 			String time = System.currentTimeMillis() + "";
 			System.out.println("name: " + name + " time: " + time);
 
@@ -766,7 +767,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 			}
 			boolean id = mDao.savePlanTaskAtt(null, tid, historygps, standard.toString(), type,
 					name, time, md5, "0");
-			
+
 			_query_result = AttachmentDatabase.instance(XianChangAdd.this)
 					.query("select * from tb_task_attachment;");
 			for (int i = 0; i < Integer.parseInt(_query_result.get("records_num")); i++) {
@@ -776,10 +777,11 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 						+ _query_result.get("upload_time_" + i));
 			}
 			if (id) {
-//				if (!Utils.isNetworkAvailable(getApplicationContext())) {
-//					Toast.makeText(getApplicationContext(), "无网络，附件将在网络恢复后上传", Toast.LENGTH_SHORT)
-//							.show();
-//				} else
+				// if (!Utils.isNetworkAvailable(getApplicationContext())) {
+				// Toast.makeText(getApplicationContext(), "无网络，附件将在网络恢复后上传",
+				// Toast.LENGTH_SHORT)
+				// .show();
+				// } else
 				Toast.makeText(XianChangAdd.this, "录像已存储，正在上传中", Toast.LENGTH_SHORT).show();
 			}
 		}

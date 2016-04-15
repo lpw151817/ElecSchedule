@@ -36,7 +36,7 @@ public class SchedulePersonActivity extends BaseActivity {
 
 		dao = new OrgDao(this);
 		data.add(new Org("p" + getUserId(), "", dao.getPerson(getUserId()).getName()));
-		if (isAdmin())
+		if (isAdmin() != PERSON_TYPE.XIANCHANG)
 			data.addAll(dao.convert(dao.getPersons("0")));
 		else
 			data.addAll(dao.convert(dao.getPersons("1")));
@@ -73,13 +73,13 @@ public class SchedulePersonActivity extends BaseActivity {
 			} else {
 				if (adapter.getSelectedPeople()
 						.contains(new Org(adapter.getSelectedVideo(), "", ""))) {
-//					Intent intent = new Intent();
+					// Intent intent = new Intent();
 					Bundle bundle = new Bundle();
 					bundle.putSerializable("people", (Serializable) adapter.getSelectedPeople());
 					bundle.putString("videoId", videoSource.substring(1));
 					bundle.putInt("tag", 999);
-//					intent.putExtras(bundle);
-//					setResult(RESULT_OK, intent);
+					// intent.putExtras(bundle);
+					// setResult(RESULT_OK, intent);
 					ScheduleActivity.wakeUp(getApplicationContext(), bundle);
 					finish();
 				} else {

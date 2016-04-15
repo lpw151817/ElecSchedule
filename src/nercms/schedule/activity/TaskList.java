@@ -69,7 +69,7 @@ public class TaskList extends BaseActivity {
 		super.onResume();
 
 		// 当当前登录用户非管理员，则不能录入计划
-		if (!isAdmin()) {
+		if (isAdmin() == PERSON_TYPE.XIANCHANG) {
 			bt_rjhlr.setVisibility(View.GONE);
 			data = planTaskDao.getPlanTasks(enterType, 3, getUserId(), status);
 		} else {

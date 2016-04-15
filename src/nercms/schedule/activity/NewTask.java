@@ -94,9 +94,10 @@ public class NewTask extends BaseActivity {
 	ImageButton mVideo;
 
 	// video
-//	public static String fileFolder = Environment.getExternalStorageDirectory().getPath()
-//			+ "/TestRecord";
-	
+	// public static String fileFolder =
+	// Environment.getExternalStorageDirectory().getPath()
+	// + "/TestRecord";
+
 	public static String fileFolder = Environment.getExternalStorageDirectory().getPath()
 			+ "/nercms-Schedule/DownloadAttachments/";
 	private String DownloadfileFolder = Environment.getExternalStorageDirectory().getPath()
@@ -331,7 +332,7 @@ public class NewTask extends BaseActivity {
 
 			System.out.println("mediaPath : " + mediaPath);
 			// 开启上传
-			new HttpUploadTask(mProgress, this,null).execute(mediaPath, uploadUrl);
+			new HttpUploadTask(mProgress, this, null).execute(mediaPath, uploadUrl);
 		}
 		//
 		// System.out.println("filename :"+fileNameList.toString());
@@ -762,7 +763,7 @@ public class NewTask extends BaseActivity {
 
 		// 将图片添加入图片列表
 		viewContainer.addView(r1);
-		if (isAdmin())
+		if (isAdmin() != PERSON_TYPE.XIANCHANG)
 			deleteBtn.setVisibility(View.GONE);
 	}
 
