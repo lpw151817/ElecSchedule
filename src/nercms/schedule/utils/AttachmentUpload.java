@@ -132,8 +132,7 @@ public class AttachmentUpload {
 		};
 
 		_network_status_service = Executors.newScheduledThreadPool(1);
-		_network_status_service.scheduleAtFixedRate(attachment_upload_thread, 100, 100,
-				TimeUnit.MILLISECONDS);
+		_network_status_service.schedule(attachment_upload_thread, 100, TimeUnit.MILLISECONDS);
 	}
 
 	public void stop(Context context) {
@@ -215,7 +214,7 @@ public class AttachmentUpload {
 			if (true == ret) {
 				AttachmentDatabase.instance(_ctx).execute(
 						"update tb_task_attachment set status='1' where id = '" + id + "';");
-//				AttachmentDatabase.instance(_ctx).complete_transaction();
+				// AttachmentDatabase.instance(_ctx).complete_transaction();
 				status = "1";
 				Map<String, String> _query_result = AttachmentDatabase.instance(_ctx)
 						.query("select * from tb_task_attachment where id=" + id + ";");
@@ -265,7 +264,7 @@ public class AttachmentUpload {
 						.execute("update tb_task_attachment set id='"
 								+ response.getAttachments().get(0).getId() + "',historygps='"
 								+ response.getGpss().get(0).getId() + "' where id = '" + id + "';");
-//				AttachmentDatabase.instance(_ctx).complete_transaction();
+				// AttachmentDatabase.instance(_ctx).complete_transaction();
 
 				status = "2";
 
