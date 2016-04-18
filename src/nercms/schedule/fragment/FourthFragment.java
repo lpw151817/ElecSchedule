@@ -28,6 +28,9 @@ public class FourthFragment extends Fragment implements OnClickListener {
 
 	PlanTaskDao dao;
 
+	public FourthFragment() {
+	}
+
 	public FourthFragment(Context _ctx) {
 		context = _ctx;
 		if (null == dao)
