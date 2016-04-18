@@ -1,5 +1,6 @@
 package nercms.schedule.activity;
 
+import java.util.Date;
 import java.util.List;
 
 import com.actionbarsherlock.view.MenuItem;
@@ -24,13 +25,13 @@ import nercms.schedule.adapter.XianchangAdapter;
  * 6.10 FINAL
  * 
  * @author JerryLiu
- *
+ * 
  */
 public class TaskList extends BaseActivity {
 
 	ListView listView;
 	Button bt_rjhlr;
-
+	// 统计界面进入 4 表示今天 5表示昨天
 	int enterType;
 	String status;
 
@@ -53,6 +54,12 @@ public class TaskList extends BaseActivity {
 		case 3:
 			iniActionBar(true, null, "故障紧急抢修现场");
 			break;
+		case 4:
+			iniActionBar(true, null, "dddd");
+			break;
+		case 5:
+			iniActionBar(true, null, "dddd");
+			break;
 		}
 
 		status = getIntent().getStringExtra("statue");
@@ -71,7 +78,27 @@ public class TaskList extends BaseActivity {
 		// 当当前登录用户非管理员，则不能录入计划
 		if (isAdmin() == PERSON_TYPE.XIANCHANG) {
 			bt_rjhlr.setVisibility(View.GONE);
-			data = planTaskDao.getPlanTasks(enterType, 3, getUserId(), status);
+			if (enterType < 4)
+				data = planTaskDao.getPlanTasks(enterType, 3, getUserId(),
+						status);
+			else {
+				Date tmp = new Date(System.currentTimeMillis());
+				Date today = new Date(tmp.getYear(), tmp.getMonth(),
+						tmp.getDate() + 1);
+				Date yesterday = new Date(tmp.getYear(), tmp.getMonth(),
+						tmp.getDate());
+				Date theDayBeforeYesterday = new Date(tmp.getYear(),
+						tmp.getMonth(), tmp.getDate() - 1);
+				// 4 表示今天 5表示昨天
+				if (enterType == 4)
+					data = planTaskDao.getPlanTasks(enterType, 3, getUserId(),
+							status, yesterday.getTime() + "", today.getTime()
+									+ "");
+				else if (enterType == 5)
+					data = planTaskDao.getPlanTasks(enterType, 3, getUserId(),
+							status, theDayBeforeYesterday.getTime() + "",
+							yesterday.getTime() + "");
+			}
 		} else {
 			data = planTaskDao.getPlanTasks(enterType, 3, null, status);
 			bt_rjhlr.setOnClickListener(new OnClickListener() {
@@ -92,9 +119,11 @@ public class TaskList extends BaseActivity {
 		listView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
 				// 改跳转
-				Intent intent = new Intent(TaskList.this, TaskSelectorActivity.class);
+				Intent intent = new Intent(TaskList.this,
+						TaskSelectorActivity.class);
 				intent.putExtra("enterType", 0);
 				intent.putExtra("tid", data.get(position).getId());
 				TaskList.this.startActivity(intent);

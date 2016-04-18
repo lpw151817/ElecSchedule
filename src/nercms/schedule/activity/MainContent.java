@@ -79,8 +79,7 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 
 		HeartBeat.start(getApplicationContext());
 		AttachmentUpload.instance().start(getApplicationContext());
-		
-		
+
 		dao = new PlanTaskDao(this);
 		/*
 		 * userid,如果是管理员就传入null,如果不是就getUserId在BaseActivity中，
@@ -101,21 +100,26 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		zuoYeLayout = (LinearLayout) findViewById(R.id.zuoyeLayout);
 		caoZuoLayout = (LinearLayout) findViewById(R.id.caozuoLayout);
 		qiangXiuLayout = (LinearLayout) findViewById(R.id.qiangxiuLayout);
-		leaderLayout = (LinearLayout) findViewById(R.id.leaderLayout);
-		
-		if (!isAdmin()){
-			leaderLayout.setVisibility(View.GONE);
+
+		if (isAdmin()) {
+			
+			leaderLayout = (LinearLayout) findViewById(R.id.leaderLayout);
+			leaderLayout.setVisibility(View.VISIBLE);
+			leader = (TextView) findViewById(R.id.leader);
+			leader.setVisibility(View.VISIBLE);
+			mFourthFrag = new FourthFragment(MainContent.this);
+//			mLi.add(mFourthFrag);
+			leaderLayout.setOnClickListener(this);
 		}
 
 		zuoye = (TextView) findViewById(R.id.zuoye);
 		caozuo = (TextView) findViewById(R.id.caozuo);
 		qiangxiu = (TextView) findViewById(R.id.qiangxiu);
-		leader = (TextView) findViewById(R.id.leader);
+		
 
 		mFirstFrag = new FirstFragment(MainContent.this, zuoyecount);
 		mSecondFrag = new SecondFragment(MainContent.this, caozuocount);
 		mThirdFrag = new ThirdFragment(MainContent.this, qiangxiucount);
-		mFourthFrag = new FourthFragment(MainContent.this);
 
 		badgeView1 = new com.jauker.widget.BadgeView(this);
 		zuoYeLayout.addView(badgeView1);
@@ -129,9 +133,10 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		zuoYeLayout.setOnClickListener(this);
 		caoZuoLayout.setOnClickListener(this);
 		qiangXiuLayout.setOnClickListener(this);
-		leaderLayout.setOnClickListener(this);
+		
 
-		FragmentPagerAdapter madapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
+		FragmentPagerAdapter madapter = new FragmentPagerAdapter(
+				getSupportFragmentManager()) {
 
 			@Override
 			public int getCount() {
@@ -148,7 +153,10 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		mLi.add(mFirstFrag);
 		mLi.add(mSecondFrag);
 		mLi.add(mThirdFrag);
-		mLi.add(mFourthFrag);
+		if(isAdmin()){
+			mLi.add(mFourthFrag);
+		}
+
 		contentPager.setAdapter(madapter);
 		contentPager.setOffscreenPageLimit(4);
 
@@ -164,8 +172,8 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 					badgeView2.setText("" + caozuocount);
 					badgeView3.setText("" + qiangxiucount);
 
-					System.out.println(
-							"zuoyecount : " + zuoyecount + " caozuocount : " + caozuocount);
+					System.out.println("zuoyecount : " + zuoyecount
+							+ " caozuocount : " + caozuocount);
 					mFirstFrag.getBadgeView1().setText("" + zuoyecount);
 					mSecondFrag.getBadgeView1().setText("" + caozuocount);
 					mThirdFrag.getBadgeView1().setText("" + qiangxiucount);
@@ -194,9 +202,12 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 					caozuocount = dao.getPlanTasks(2, 3, null, "0").size();
 					qiangxiucount = dao.getPlanTasks(3, 3, null, "0").size();
 				} else {
-					zuoyecount = dao.getPlanTasks(1, 3, getUserId(), "0").size();
-					caozuocount = dao.getPlanTasks(2, 3, getUserId(), "0").size();
-					qiangxiucount = dao.getPlanTasks(3, 3, getUserId(), "0").size();
+					zuoyecount = dao.getPlanTasks(1, 3, getUserId(), "0")
+							.size();
+					caozuocount = dao.getPlanTasks(2, 3, getUserId(), "0")
+							.size();
+					qiangxiucount = dao.getPlanTasks(3, 3, getUserId(), "0")
+							.size();
 				}
 
 				Message msg = new Message();
@@ -209,7 +220,8 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		};
 
 		service = Executors.newScheduledThreadPool(1);
-		service.scheduleAtFixedRate(thread, 100, delayedTime, TimeUnit.MILLISECONDS);
+		service.scheduleAtFixedRate(thread, 100, delayedTime,
+				TimeUnit.MILLISECONDS);
 
 		// PlanTaskDao mDao;
 		// mDao = new PlanTaskDao(this);
@@ -249,34 +261,50 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		switch (v.getId()) {
 		case R.id.zuoyeLayout:
 			// Utils.showToast(MainContent.this, "tab1");
-			contentPager.setCurrentItem(0);
+			if (isAdmin()) {
+				contentPager.setCurrentItem(0);
+				leader.setTextColor(getResources().getColor(R.color.deepgray));
+			} else {
+				contentPager.setCurrentItem(0);
+			}
 			zuoye.setTextColor(getResources().getColor(R.color.orange));
 			caozuo.setTextColor(getResources().getColor(R.color.deepgray));
 			qiangxiu.setTextColor(getResources().getColor(R.color.deepgray));
-			leader.setTextColor(getResources().getColor(R.color.deepgray));
+			
 			break;
 
 		case R.id.caozuoLayout:
 			// Utils.showToast(MainContent.this, "tab2");
 
-			contentPager.setCurrentItem(1);
+			if (isAdmin()) {
+				contentPager.setCurrentItem(1);
+				leader.setTextColor(getResources().getColor(R.color.deepgray));
+			} else {
+				contentPager.setCurrentItem(1);
+			}
 			caozuo.setTextColor(getResources().getColor(R.color.orange));
 			zuoye.setTextColor(getResources().getColor(R.color.deepgray));
 			qiangxiu.setTextColor(getResources().getColor(R.color.deepgray));
-			leader.setTextColor(getResources().getColor(R.color.deepgray));
+			
 			break;
 
 		case R.id.qiangxiuLayout:
 			// Utils.showToast(MainContent.this, "tab2");
-			contentPager.setCurrentItem(2);
+			if (isAdmin()) {
+				contentPager.setCurrentItem(2);
+				leader.setTextColor(getResources().getColor(R.color.deepgray));
+			} else {
+				contentPager.setCurrentItem(2);
+			}
 			qiangxiu.setTextColor(getResources().getColor(R.color.orange));
 			zuoye.setTextColor(getResources().getColor(R.color.deepgray));
 			caozuo.setTextColor(getResources().getColor(R.color.deepgray));
-			leader.setTextColor(getResources().getColor(R.color.deepgray));
-			break;
 			
+			break;
+
 		case R.id.leaderLayout:
-			contentPager.setCurrentItem(3);
+			if (isAdmin())
+				contentPager.setCurrentItem(3);
 			qiangxiu.setTextColor(getResources().getColor(R.color.deepgray));
 			zuoye.setTextColor(getResources().getColor(R.color.deepgray));
 			caozuo.setTextColor(getResources().getColor(R.color.deepgray));

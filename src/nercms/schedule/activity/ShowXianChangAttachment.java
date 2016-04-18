@@ -28,6 +28,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -61,6 +62,8 @@ public class ShowXianChangAttachment extends BaseActivity implements OnClickList
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.showxianchangsiattachment);
 
+		long dtime = System.currentTimeMillis();
+		
 		enterType = getIntent().getIntExtra("enterType", -1);
 		tid = getIntent().getStringExtra("tid");
 
@@ -114,18 +117,24 @@ public class ShowXianChangAttachment extends BaseActivity implements OnClickList
 			type = mMap.get("type");
 
 			if (type.equals("selectImage") || type.equals("captureImage")) {
-				filePath = mMap.get("path");
-
-				// 图片太大，imageview显示的时候容易内存溢出，所以需要将原图进行压缩
-				String thumbnailUri = Utils.getThumbnailDir();
-				// 获取缩略图,根据原图创建缩略图, mImagePath是原图的地址
-				Utils.getThumbnail(filePath, thumbnailUri);
-
-				Bitmap bitmap = BitmapFactory.decodeFile(thumbnailUri);
-				// 旋转
-				int degree = Utils.readPictureDegree(filePath);
-				bitmap = Utils.rotateBitmap(bitmap, degree);
-				mImage.setImageBitmap(bitmap);
+//				filePath = mMap.get("path");
+//
+//				// 图片太大，imageview显示的时候容易内存溢出，所以需要将原图进行压缩
+//				String thumbnailUri = Utils.getThumbnailDir();
+//				// 获取缩略图,根据原图创建缩略图, mImagePath是原图的地址
+//				Utils.getThumbnail(filePath, thumbnailUri);
+//
+//				Bitmap bitmap = BitmapFactory.decodeFile(thumbnailUri);
+//				// 旋转
+//				int degree = Utils.readPictureDegree(filePath);
+//				bitmap = Utils.rotateBitmap(bitmap, degree);
+//				mImage.setImageBitmap(bitmap);
+				
+				long time3 = System.currentTimeMillis();
+				File file = new File(getIntent().getStringExtra("bitmapAddress"));
+				mImage.setImageURI(Uri.fromFile(file));
+				long period = System.currentTimeMillis() - time3;
+				Log.d("qq", "mImage.setImageURI(Uri.fromFile(file)); : "+period);
 			} else if (type.equals("audio")) {
 				filePath = mMap.get("path");
 				mImage.setImageResource(R.drawable.record);
@@ -140,6 +149,8 @@ public class ShowXianChangAttachment extends BaseActivity implements OnClickList
 			}
 		}
 
+		long time1 = System.currentTimeMillis();
+		
 		mCurrentTime = Utils.formatDateMs(System.currentTimeMillis());
 
 		mTime.setText(Utils.formatDateMs(System.currentTimeMillis()));
@@ -149,6 +160,10 @@ public class ShowXianChangAttachment extends BaseActivity implements OnClickList
 
 		locate();// 开始定位
 
+		long period = System.currentTimeMillis() - time1;
+		Log.d("qq", "locate();// 开始定位 :" + period);
+		long dperiod = System.currentTimeMillis() - dtime;
+		Log.d("qq", "showxianchangattachment : " + dperiod);
 	}
 
 	@Override
@@ -245,9 +260,9 @@ public class ShowXianChangAttachment extends BaseActivity implements OnClickList
 				}
 			} else if (from.equals("XianChangUpload")) {
 				// 在选择附件的时候，从相册中选择图片，点击取消按钮是不删除原图片的
-				if (type.equals("captureImage") || type.equals("audio") || type.equals("video")) {
-					Utils.deleteMedia(filePath);
-				}
+//				if (type.equals("captureImage") || type.equals("audio") || type.equals("video")) {
+//					Utils.deleteMedia(filePath);
+//				}
 			}
 
 			finish();

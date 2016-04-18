@@ -319,18 +319,39 @@ public class Utils {
 		}
 	}
 
-	public static void getThumbnail(String originalUri, String thumbnailUri) {
+	public static Bitmap getThumbnail(String originalUri, String thumbnailUri) {
 		if (originalUri == null || originalUri.equals("")) {
-			return;
+			return null;
 		}
+		
+		Bitmap bitmap = null;
+		
 		try {
+			Log.d("qq", "time1 : " + System.currentTimeMillis() + "");
+			long time1 = System.currentTimeMillis();
 			BitmapFactory.Options options = new BitmapFactory.Options();
+			
+			long time2 = System.currentTimeMillis();
+			long period = time2 - time1;
+			Log.d("qq", "BitmapFactory.Options options = new BitmapFactory.Options(); : " + period);
 			// 不返回实际的bitmap不给其分配内存空间而只包括一些解码边界信息即图片大小信息
+			
+			
 			options.inJustDecodeBounds = true;
+			long time3 = System.currentTimeMillis();
+			period = time3 - time2;
+			Log.d("qq", "options.inJustDecodeBounds = true; :" + period);
 			// 获取这个图片的宽和高，注意，此时返回bitmap为空
-			Bitmap bitmap = BitmapFactory.decodeFile(originalUri, options);
+			
+			bitmap = BitmapFactory.decodeFile(originalUri, options);
+			long time4 = System.currentTimeMillis();
+			period = time4 - time3;
+			Log.d("qq", "Bitmap bitmap = BitmapFactory.decodeFile(originalUri, options); : " + period + "");
 			// 重新设置为false，下一次返回实际的bitmap
 			options.inJustDecodeBounds = false;
+			long time5 = System.currentTimeMillis();
+			period = time5 - time4;
+			Log.d("qq", "options.inJustDecodeBounds = false; : " + period + "");
 
 			// 计算缩放比
 			int widthRatio = (int) Math.ceil(options.outWidth / (float) 1200);
@@ -344,20 +365,36 @@ public class Utils {
 			} else {
 				options.inSampleSize = 1;
 			}
+			
+			long time6 = System.currentTimeMillis();
+			period = time6 - time5;
+			Log.d("qq", "计算缩放比例 : " + period + "");
 			// 重新读入图片
 			bitmap = BitmapFactory.decodeFile(originalUri, options);
-
+			long time7 = System.currentTimeMillis();
+			period = time7 - time6;
+			Log.d("qq", "bitmap = BitmapFactory.decodeFile(originalUri, options); : " + period + "");
 			// 旋转
 			int degree = readPictureDegree(originalUri);
+			long time8 = System.currentTimeMillis();
+			period = time8 - time7;
+			Log.d("qq", "int degree = readPictureDegree(originalUri); : " + period + "");
 			bitmap = rotateBitmap(bitmap, degree);
+			
+			long time9 = System.currentTimeMillis();
+			period = time9 - time8;
+			Log.d("qq", "bitmap = rotateBitmap(bitmap, degree); : " + period + "");
 			// 保存缩略图
 			saveBitmap(bitmap, thumbnailUri);
-
+			long time10 = System.currentTimeMillis();
+			period = time10 - time9;
+			Log.d("qq", "saveBitmap(bitmap, thumbnailUri); : " + period + "");
 		} catch (OutOfMemoryError e) {
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return bitmap;
 	}
 
 	/**
@@ -419,7 +456,7 @@ public class Utils {
 			filePath.mkdirs();
 		}
 
-		return path + File.separator + getFileDate() + ".jpg";
+		return path  + getFileDate() + ".jpg";
 
 	}
 

@@ -941,13 +941,12 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 		case LocalConstant.CAPTURE_IMAGE_REQUEST_CODE:
 			if (resultCode == RESULT_OK) {
-
-				Log.d("qq", "1 " + new Date(System.currentTimeMillis()));
-
+				
+				long timesb  = System.currentTimeMillis();
+				
 				thumbnailUri = Utils.getThumbnailDir();
 				// 获取缩略图,根据原图创建缩略图, mImagePath是原图的地址
-				Utils.getThumbnail(mImagePath, thumbnailUri);
-				Log.d("qq", "2 " + new Date(System.currentTimeMillis()));
+				Bitmap bitmap = Utils.getThumbnail(mImagePath, thumbnailUri);
 				// // 根据图片生成bitmap对象
 				// Bitmap imageThumbnailBitmap =
 				// BitmapFactory.decodeFile(mImagePath);
@@ -969,8 +968,13 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 				Map<Integer, Map<String, String>> mContent = new HashMap<Integer, Map<String, String>>();
 				mContent.put(0, mMap);
 				intent.putExtra("address", (Serializable) mContent);
+//				intent.putExtra("bitmap", bitmap);
+				intent.putExtra("bitmapAddress", thumbnailUri);
 				startActivityForResult(intent, 321);
 
+				long period = System.currentTimeMillis() - timesb;
+				Log.d("qq", "xiangchangupload : " + period);
+				
 				// mediaList.add(new Media(Utils.MEDIA_TYPE_IMAGE,
 				// captureImageName, mImagePath));
 				// // 存储mediaId与imageOriginPath的映射
