@@ -117,7 +117,7 @@ public class ShowXianChangAttachment extends BaseActivity implements OnClickList
 			type = mMap.get("type");
 
 			if (type.equals("selectImage") || type.equals("captureImage")) {
-//				filePath = mMap.get("path");
+				filePath = mMap.get("path");
 //
 //				// 图片太大，imageview显示的时候容易内存溢出，所以需要将原图进行压缩
 //				String thumbnailUri = Utils.getThumbnailDir();
