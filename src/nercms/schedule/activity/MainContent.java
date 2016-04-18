@@ -264,6 +264,8 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 			// Utils.showToast(MainContent.this, "tab1");
 			if (isAdmin()) {
 				contentPager.setCurrentItem(0);
+				
+				if (leader != null)
 				leader.setTextColor(getResources().getColor(R.color.deepgray));
 			} else {
 				contentPager.setCurrentItem(0);
@@ -279,6 +281,7 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 
 			if (isAdmin()) {
 				contentPager.setCurrentItem(1);
+				if (leader != null)
 				leader.setTextColor(getResources().getColor(R.color.deepgray));
 			} else {
 				contentPager.setCurrentItem(1);
@@ -293,6 +296,7 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 			// Utils.showToast(MainContent.this, "tab2");
 			if (isAdmin()) {
 				contentPager.setCurrentItem(2);
+				if (leader != null)
 				leader.setTextColor(getResources().getColor(R.color.deepgray));
 			} else {
 				contentPager.setCurrentItem(2);
