@@ -55,10 +55,10 @@ public class TaskList extends BaseActivity {
 			iniActionBar(true, null, "故障紧急抢修现场");
 			break;
 		case 4:
-			iniActionBar(true, null, "dddd");
+			iniActionBar(true, null, "统计 - 今天");
 			break;
 		case 5:
-			iniActionBar(true, null, "dddd");
+			iniActionBar(true, null, "统计 - 昨天");
 			break;
 		}
 
@@ -79,28 +79,40 @@ public class TaskList extends BaseActivity {
 		if (isAdmin() == PERSON_TYPE.XIANCHANG) {
 			bt_rjhlr.setVisibility(View.GONE);
 			if (enterType < 4)
-				data = planTaskDao.getPlanTasks(enterType, 3, getUserId(),
-						status);
+				data = planTaskDao.getPlanTasks(enterType, 3, getUserId(), status);
 			else {
 				Date tmp = new Date(System.currentTimeMillis());
-				Date today = new Date(tmp.getYear(), tmp.getMonth(),
-						tmp.getDate() + 1);
-				Date yesterday = new Date(tmp.getYear(), tmp.getMonth(),
-						tmp.getDate());
-				Date theDayBeforeYesterday = new Date(tmp.getYear(),
-						tmp.getMonth(), tmp.getDate() - 1);
+				Date today = new Date(tmp.getYear(), tmp.getMonth(), tmp.getDate() + 1);
+				Date yesterday = new Date(tmp.getYear(), tmp.getMonth(), tmp.getDate());
+				Date theDayBeforeYesterday = new Date(tmp.getYear(), tmp.getMonth(),
+						tmp.getDate() - 1);
 				// 4 表示今天 5表示昨天
 				if (enterType == 4)
-					data = planTaskDao.getPlanTasks(enterType, 3, getUserId(),
-							status, yesterday.getTime() + "", today.getTime()
-									+ "");
+					data = planTaskDao.getPlanTasks(enterType, 3, getUserId(), status,
+							yesterday.getTime() + "", today.getTime() + "");
 				else if (enterType == 5)
-					data = planTaskDao.getPlanTasks(enterType, 3, getUserId(),
-							status, theDayBeforeYesterday.getTime() + "",
-							yesterday.getTime() + "");
+					data = planTaskDao.getPlanTasks(enterType, 3, getUserId(), status,
+							theDayBeforeYesterday.getTime() + "", yesterday.getTime() + "");
 			}
 		} else {
-			data = planTaskDao.getPlanTasks(enterType, 3, null, status);
+
+			if (enterType < 4)
+				data = planTaskDao.getPlanTasks(enterType, 3, null, status);
+			else {
+				Date tmp = new Date(System.currentTimeMillis());
+				Date today = new Date(tmp.getYear(), tmp.getMonth(), tmp.getDate() + 1);
+				Date yesterday = new Date(tmp.getYear(), tmp.getMonth(), tmp.getDate());
+				Date theDayBeforeYesterday = new Date(tmp.getYear(), tmp.getMonth(),
+						tmp.getDate() - 1);
+				// 4 表示今天 5表示昨天
+				if (enterType == 4)
+					data = planTaskDao.getPlanTasks(enterType, 3, null, status,
+							yesterday.getTime() + "", today.getTime() + "");
+				else if (enterType == 5)
+					data = planTaskDao.getPlanTasks(enterType, 3, null, status,
+							theDayBeforeYesterday.getTime() + "", yesterday.getTime() + "");
+			}
+
 			bt_rjhlr.setOnClickListener(new OnClickListener() {
 
 				@Override
@@ -111,7 +123,6 @@ public class TaskList extends BaseActivity {
 					TaskList.this.startActivity(intent);
 				}
 			});
-
 		}
 
 		listView.setAdapter(new XianchangAdapter(this, enterType, data));
@@ -119,11 +130,9 @@ public class TaskList extends BaseActivity {
 		listView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				// 改跳转
-				Intent intent = new Intent(TaskList.this,
-						TaskSelectorActivity.class);
+				Intent intent = new Intent(TaskList.this, TaskSelectorActivity.class);
 				intent.putExtra("enterType", 0);
 				intent.putExtra("tid", data.get(position).getId());
 				TaskList.this.startActivity(intent);

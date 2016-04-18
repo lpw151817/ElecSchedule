@@ -13,6 +13,7 @@ import com.nercms.schedule.ui.MediaInstance;
 
 import nercms.schedule.R;
 import nercms.schedule.fragment.FirstFragment;
+import nercms.schedule.fragment.FourthFragment;
 import nercms.schedule.fragment.SecondFragment;
 import nercms.schedule.fragment.ThirdFragment;
 import nercms.schedule.utils.AttachmentUpload;
