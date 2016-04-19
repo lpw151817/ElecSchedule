@@ -33,6 +33,7 @@ public class TaskList extends BaseActivity {
 	Button bt_rjhlr;
 	// 统计界面进入 4 表示今天 5表示昨天
 	int enterType;
+	// status 0,新的任务；1,执行中；2,延误；3,完成；4,取消任务。 null则不查询此字段
 	String status;
 
 	PlanTaskDao planTaskDao;
@@ -43,6 +44,7 @@ public class TaskList extends BaseActivity {
 		setContentView(R.layout.task_list);
 
 		enterType = getIntent().getIntExtra("enterType", 1);
+		status = getIntent().getStringExtra("statue");
 
 		switch (enterType) {
 		case 1:
@@ -55,14 +57,52 @@ public class TaskList extends BaseActivity {
 			iniActionBar(true, null, "故障紧急抢修现场");
 			break;
 		case 4:
-			iniActionBar(true, null, "统计 - 今天");
+			StringBuilder sb = new StringBuilder();
+			// status 0,新的任务；1,执行中；2,延误；3,完成；4,取消任务。 null则不查询此字段
+			switch (Integer.parseInt(status)) {
+			case 0:
+				sb.append("未执行的任务");
+				break;
+			case 1:
+				sb.append("正在执行的任务");
+				break;
+			case 2:
+				sb.append("延误的任务");
+				break;
+			case 3:
+				sb.append("正常完成的任务");
+				break;
+			case 4:
+				sb.append("取消的任务");
+				break;
+			}
+			sb.append(" - 今天");
+			iniActionBar(true, null, sb.toString());
 			break;
 		case 5:
-			iniActionBar(true, null, "统计 - 昨天");
+			StringBuilder sb1 = new StringBuilder();
+			// status 0,新的任务；1,执行中；2,延误；3,完成；4,取消任务。 null则不查询此字段
+			switch (Integer.parseInt(status)) {
+			case 0:
+				sb1.append("未执行的任务");
+				break;
+			case 1:
+				sb1.append("正在执行的任务");
+				break;
+			case 2:
+				sb1.append("延误的任务");
+				break;
+			case 3:
+				sb1.append("正常完成的任务");
+				break;
+			case 4:
+				sb1.append("取消的任务");
+				break;
+			}
+			sb1.append(" - 昨天");
+			iniActionBar(true, null, sb1.toString());
 			break;
 		}
-
-		status = getIntent().getStringExtra("statue");
 
 		planTaskDao = new PlanTaskDao(this);
 

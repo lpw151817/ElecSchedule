@@ -16,7 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.wxapp.service.AppApplication;
 
-
 public class FirstFragment extends Fragment implements OnClickListener {
 
 	private View view;
@@ -54,9 +53,10 @@ public class FirstFragment extends Fragment implements OnClickListener {
 		bt_completedTask = (Button) view.findViewById(R.id.tab01_bt_finishedtask);
 		bt_cancelledTask = (Button) view.findViewById(R.id.tab01_bt_cancelledtask);
 		LinearLayout layout = (LinearLayout) view.findViewById(R.id.newtasklayout);
-//		badge = new com.jauker.widget.BadgeView(context);
-		badge = new com.jauker.widget.BadgeView(AppApplication.getInstance().getApplicationContext());
-		
+		// badge = new com.jauker.widget.BadgeView(context);
+		badge = new com.jauker.widget.BadgeView(
+				AppApplication.getInstance().getApplicationContext());
+
 		badge.setText(mcount + "");
 		badge.setTargetView(mNewTask);
 
@@ -67,8 +67,14 @@ public class FirstFragment extends Fragment implements OnClickListener {
 		bt_cancelledTask.setOnClickListener(this);
 		return view;
 	}
-	
-	public com.jauker.widget.BadgeView getBadgeView1(){
+
+	public com.jauker.widget.BadgeView getBadgeView1() {
+		if (badge == null) {
+			badge = new com.jauker.widget.BadgeView(
+					AppApplication.getInstance().getApplicationContext());
+			badge.setText(mcount + "");
+			badge.setTargetView(mNewTask);
+		}
 		return badge;
 	}
 

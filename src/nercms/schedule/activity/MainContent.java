@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import com.nercms.schedule.ui.MediaInstance;
 
 import nercms.schedule.R;
+import nercms.schedule.activity.BaseActivity.PERSON_TYPE;
 import nercms.schedule.fragment.FirstFragment;
 import nercms.schedule.fragment.FourthFragment;
 import nercms.schedule.fragment.SecondFragment;
@@ -27,6 +28,7 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -86,7 +88,7 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		 * userid,如果是管理员就传入null,如果不是就getUserId在BaseActivity中，
 		 */
 		// dao.getPlanTasks(1, 3, "", 0).size();
-		if (isAdmin()) {
+		if (isAdmin() != PERSON_TYPE.XIANCHANG) {
 			zuoyecount = dao.getPlanTasks(1, 3, null, "0").size();
 			caozuocount = dao.getPlanTasks(2, 3, null, "0").size();
 			qiangxiucount = dao.getPlanTasks(3, 3, null, "0").size();
@@ -102,21 +104,20 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		caoZuoLayout = (LinearLayout) findViewById(R.id.caozuoLayout);
 		qiangXiuLayout = (LinearLayout) findViewById(R.id.qiangxiuLayout);
 
-		if (isAdmin()) {
-			
+		if (isAdmin() != PERSON_TYPE.XIANCHANG) {
+
 			leaderLayout = (LinearLayout) findViewById(R.id.leaderLayout);
 			leaderLayout.setVisibility(View.VISIBLE);
 			leader = (TextView) findViewById(R.id.leader);
 			leader.setVisibility(View.VISIBLE);
 			mFourthFrag = new FourthFragment(MainContent.this);
-//			mLi.add(mFourthFrag);
+			// mLi.add(mFourthFrag);
 			leaderLayout.setOnClickListener(this);
 		}
 
 		zuoye = (TextView) findViewById(R.id.zuoye);
 		caozuo = (TextView) findViewById(R.id.caozuo);
 		qiangxiu = (TextView) findViewById(R.id.qiangxiu);
-		
 
 		mFirstFrag = new FirstFragment(MainContent.this, zuoyecount);
 		mSecondFrag = new SecondFragment(MainContent.this, caozuocount);
@@ -134,10 +135,8 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		zuoYeLayout.setOnClickListener(this);
 		caoZuoLayout.setOnClickListener(this);
 		qiangXiuLayout.setOnClickListener(this);
-		
 
-		FragmentPagerAdapter madapter = new FragmentPagerAdapter(
-				getSupportFragmentManager()) {
+		FragmentPagerAdapter madapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
 
 			@Override
 			public int getCount() {
@@ -154,7 +153,7 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		mLi.add(mFirstFrag);
 		mLi.add(mSecondFrag);
 		mLi.add(mThirdFrag);
-		if(isAdmin()){
+		if (isAdmin() != PERSON_TYPE.XIANCHANG) {
 			mLi.add(mFourthFrag);
 		}
 
@@ -173,8 +172,9 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 					badgeView2.setText("" + caozuocount);
 					badgeView3.setText("" + qiangxiucount);
 
-					System.out.println("zuoyecount : " + zuoyecount
-							+ " caozuocount : " + caozuocount);
+					System.out.println(
+							"zuoyecount : " + zuoyecount + " caozuocount : " + caozuocount);
+
 					mFirstFrag.getBadgeView1().setText("" + zuoyecount);
 					mSecondFrag.getBadgeView1().setText("" + caozuocount);
 					mThirdFrag.getBadgeView1().setText("" + qiangxiucount);
@@ -198,17 +198,14 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 					dao = new PlanTaskDao(MainContent.this);
 				}
 
-				if (isAdmin()) {
+				if (isAdmin() != PERSON_TYPE.XIANCHANG) {
 					zuoyecount = dao.getPlanTasks(1, 3, null, "0").size();
 					caozuocount = dao.getPlanTasks(2, 3, null, "0").size();
 					qiangxiucount = dao.getPlanTasks(3, 3, null, "0").size();
 				} else {
-					zuoyecount = dao.getPlanTasks(1, 3, getUserId(), "0")
-							.size();
-					caozuocount = dao.getPlanTasks(2, 3, getUserId(), "0")
-							.size();
-					qiangxiucount = dao.getPlanTasks(3, 3, getUserId(), "0")
-							.size();
+					zuoyecount = dao.getPlanTasks(1, 3, getUserId(), "0").size();
+					caozuocount = dao.getPlanTasks(2, 3, getUserId(), "0").size();
+					qiangxiucount = dao.getPlanTasks(3, 3, getUserId(), "0").size();
 				}
 
 				Message msg = new Message();
@@ -221,8 +218,7 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		};
 
 		service = Executors.newScheduledThreadPool(1);
-		service.scheduleAtFixedRate(thread, 100, delayedTime,
-				TimeUnit.MILLISECONDS);
+		service.scheduleAtFixedRate(thread, 100, delayedTime, TimeUnit.MILLISECONDS);
 
 		// PlanTaskDao mDao;
 		// mDao = new PlanTaskDao(this);
@@ -262,53 +258,53 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		switch (v.getId()) {
 		case R.id.zuoyeLayout:
 			// Utils.showToast(MainContent.this, "tab1");
-			if (isAdmin()) {
+			if (isAdmin() != PERSON_TYPE.XIANCHANG) {
 				contentPager.setCurrentItem(0);
-				
+
 				if (leader != null)
-				leader.setTextColor(getResources().getColor(R.color.deepgray));
+					leader.setTextColor(getResources().getColor(R.color.deepgray));
 			} else {
 				contentPager.setCurrentItem(0);
 			}
 			zuoye.setTextColor(getResources().getColor(R.color.orange));
 			caozuo.setTextColor(getResources().getColor(R.color.deepgray));
 			qiangxiu.setTextColor(getResources().getColor(R.color.deepgray));
-			
+
 			break;
 
 		case R.id.caozuoLayout:
 			// Utils.showToast(MainContent.this, "tab2");
 
-			if (isAdmin()) {
+			if (isAdmin() != PERSON_TYPE.XIANCHANG) {
 				contentPager.setCurrentItem(1);
 				if (leader != null)
-				leader.setTextColor(getResources().getColor(R.color.deepgray));
+					leader.setTextColor(getResources().getColor(R.color.deepgray));
 			} else {
 				contentPager.setCurrentItem(1);
 			}
 			caozuo.setTextColor(getResources().getColor(R.color.orange));
 			zuoye.setTextColor(getResources().getColor(R.color.deepgray));
 			qiangxiu.setTextColor(getResources().getColor(R.color.deepgray));
-			
+
 			break;
 
 		case R.id.qiangxiuLayout:
 			// Utils.showToast(MainContent.this, "tab2");
-			if (isAdmin()) {
+			if (isAdmin() != PERSON_TYPE.XIANCHANG) {
 				contentPager.setCurrentItem(2);
 				if (leader != null)
-				leader.setTextColor(getResources().getColor(R.color.deepgray));
+					leader.setTextColor(getResources().getColor(R.color.deepgray));
 			} else {
 				contentPager.setCurrentItem(2);
 			}
 			qiangxiu.setTextColor(getResources().getColor(R.color.orange));
 			zuoye.setTextColor(getResources().getColor(R.color.deepgray));
 			caozuo.setTextColor(getResources().getColor(R.color.deepgray));
-			
+
 			break;
 
 		case R.id.leaderLayout:
-			if (isAdmin())
+			if (isAdmin() != PERSON_TYPE.XIANCHANG)
 				contentPager.setCurrentItem(3);
 			qiangxiu.setTextColor(getResources().getColor(R.color.deepgray));
 			zuoye.setTextColor(getResources().getColor(R.color.deepgray));
@@ -322,7 +318,7 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		if (isAdmin()) {
+		if (isAdmin() != PERSON_TYPE.XIANCHANG) {
 			MenuItem item2 = menu.add(0, 3, 0, "日计划录入");
 			item2.setIcon(R.drawable.icon_shulu);
 			item2.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);// 总是作为Action项显示
@@ -383,19 +379,26 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		return super.onOptionsItemSelected(item);
 	}
 
-	protected boolean isAdmin() {
+	protected PERSON_TYPE isAdmin() {
 		OrgDao dao = new OrgDao(this);
 		try {
 			if (dao.getPerson(getUserId()).getType() != null) {
-				return dao.getPerson(getUserId()).getType().equals("1");
+				String type = dao.getPerson(getUserId()).getType();
+				switch (Integer.parseInt(type)) {
+				case 0:
+					return PERSON_TYPE.XIANCHANG;
+				case 1:
+					return PERSON_TYPE.GUANLI;
+				case 2:
+					return PERSON_TYPE.LINGDAO;
+				}
+				return null;
 			} else {
-				return dao.getPerson(getUserId()).getName().contains("管理员")
-						|| dao.getPerson(getUserId()).getName().contains("领导");
+				return null;
 			}
 		} catch (Exception e) {
-			return false;
+			return null;
 		}
-
 	}
 
 	protected String getUserId() {

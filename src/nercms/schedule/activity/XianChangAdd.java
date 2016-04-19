@@ -317,6 +317,9 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 					}
 					Uri uri = Uri.fromFile(file);
 					intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+					intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+					intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 20*1024*1024);
+					intent.putExtra(MediaStore. EXTRA_DURATION_LIMIT, 15);
 					startActivityForResult(intent, LocalConstant.CAPTURE_VIDEO_REQUEST_CODE);
 				} else {// 存在视频就播放
 					Intent videoIntent = new Intent(XianChangAdd.this, PlayVideo.class);

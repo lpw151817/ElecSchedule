@@ -29,7 +29,9 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -75,6 +77,8 @@ public class Login extends BaseActivity {
 	private WebRequestManager webRequestManager;
 
 	private String TAG = "Login";
+
+	boolean isMiWen = true;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -166,11 +170,11 @@ public class Login extends BaseActivity {
 		}
 		//////////////////////////////////////////////////////
 
-//		 // this is test
-//		 initActionBar();
-//		 // 用户测试使用，直接跳过本Activity
-//		 startActivity(MainContent.class);
-//		 return;
+		// // this is test
+		// initActionBar();
+		// // 用户测试使用，直接跳过本Activity
+		// startActivity(MainContent.class);
+		// return;
 
 		Log.v("Login", "Login onCreate");
 		webRequestManager = new WebRequestManager(AppApplication.getInstance(), Login.this);
@@ -186,8 +190,25 @@ public class Login extends BaseActivity {
 
 		// 默认显示上次登录的用户ID
 		etUserName.setText(MySharedPreference.get(Login.this, MySharedPreference.USER_NAME, ""));
-		// TODO 此处仅供测试使用
-		etPassword.setText(MySharedPreference.get(Login.this, MySharedPreference.USER_NAME, ""));
+		etPassword.setText(MySharedPreference.get(Login.this, MySharedPreference.USER_IC, ""));
+		// 如果更改了密码框，则标记为明文，否则以密文进行处理
+		etPassword.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				isMiWen = false;
+			}
+		});
 
 		// 如果用户名为空，则聚焦用户名，否则聚焦密码
 		if (TextUtils.isEmpty(etUserName.getText().toString())) {
@@ -264,8 +285,7 @@ public class Login extends BaseActivity {
 					MySharedPreference.save(Login.this, MySharedPreference.USER_NAME,
 							inputUserName.toLowerCase());
 					// 保存用户密码
-					MySharedPreference.save(Login.this, MySharedPreference.USER_IC,
-							Generate_md5.generate_md5(inputPassword));
+					MySharedPreference.save(Login.this, MySharedPreference.USER_IC, inputPassword);
 
 					webRequestManager.loginUpdate(Login.this);
 
@@ -454,15 +474,23 @@ public class Login extends BaseActivity {
 		}
 		// 有网络情况
 		if (Utils.isNetworkAvailable(Login.this)) {
-			webRequestManager.login(inputUserName.toLowerCase(),
-					Generate_md5.generate_md5(inputPassword));
+			if (!isMiWen)
+				inputPassword = Generate_md5.generate_md5(inputPassword);
+			webRequestManager.login(inputUserName.toLowerCase(), inputPassword);
 		}
 		// 无网络情况
 		else {
 			if (getUserIc() != null && getUserId() != null) {
-				if (getUserName().toLowerCase().equals(inputUserName.toLowerCase())
-						&& getUserIc().equals(Generate_md5.generate_md5(inputPassword))) {
-					webRequestManager.loginUpdate(Login.this);
+				if (getUserName().toLowerCase().equals(inputUserName.toLowerCase())) {
+					if (!isMiWen)
+						inputPassword = Generate_md5.generate_md5(inputPassword);
+					if (getUserIc().equals(inputPassword))
+						webRequestManager.loginUpdate(Login.this);
+					else {
+						dismissProgressDialog();
+						showAlterDialog("登录错误", "帐号或者密码不能为空，\n请输入后再登录！",
+								R.drawable.login_error_icon, "确定", null);
+					}
 				} else {
 					dismissProgressDialog();
 					showAlterDialog("登录错误", "请检查网络连接状态", R.drawable.login_error_icon, "确定", null);
@@ -561,12 +589,18 @@ public class Login extends BaseActivity {
 	}
 
 	@Override
+	public void onBackPressed() {
+		finish();
+		System.exit(0);
+		super.onBackPressed();
+	}
+
+	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// 点击返回键
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			if (MySharedPreference.get(Login.this, MySharedPreference.USER_NAME, "").isEmpty()) {
-				finish();
-				System.exit(0);
+
 			} else {
 				// 如果正在登录，取消登录
 				dismissProgressDialog();

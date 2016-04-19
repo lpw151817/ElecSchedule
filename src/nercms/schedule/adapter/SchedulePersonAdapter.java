@@ -20,6 +20,7 @@ import android.wxapp.service.elec.dao.OrgDao;
 import android.wxapp.service.jerry.model.person.OrgPersonInfo;
 import android.wxapp.service.util.MySharedPreference;
 import nercms.schedule.R;
+import nercms.schedule.activity.BaseActivity.PERSON_TYPE;
 import nercms.schedule.fragment.Task;
 
 public class SchedulePersonAdapter extends BaseAdapter {
@@ -145,7 +146,8 @@ public class SchedulePersonAdapter extends BaseAdapter {
 		}
 
 		// 如果自己是现场负责人，则屏蔽掉领导的视频源按钮
-		if (!isAdmin(getUserId()) && isAdmin(data.get(position).getId().substring(1)))
+		if (isAdmin(getUserId()) == PERSON_TYPE.XIANCHANG
+				&& isAdmin(data.get(position).getId().substring(1)) != PERSON_TYPE.XIANCHANG)
 			holder.video.setVisibility(View.GONE);
 		else
 			holder.video.setVisibility(View.VISIBLE);
@@ -165,16 +167,25 @@ public class SchedulePersonAdapter extends BaseAdapter {
 		return MySharedPreference.get(c, MySharedPreference.USER_ID, null);
 	}
 
-	protected boolean isAdmin(String pid) {
+	protected PERSON_TYPE isAdmin(String pid) {
+		OrgDao dao = new OrgDao(c);
 		try {
 			if (dao.getPerson(pid).getType() != null) {
-				return dao.getPerson(pid).getType().equals("1");
+				String type = dao.getPerson(pid).getType();
+				switch (Integer.parseInt(type)) {
+				case 0:
+					return PERSON_TYPE.XIANCHANG;
+				case 1:
+					return PERSON_TYPE.GUANLI;
+				case 2:
+					return PERSON_TYPE.LINGDAO;
+				}
+				return null;
 			} else {
-				return dao.getPerson(pid).getName().contains("管理员")
-						|| dao.getPerson(pid).getName().contains("领导");
+				return null;
 			}
 		} catch (Exception e) {
-			return false;
+			return null;
 		}
 	}
 }

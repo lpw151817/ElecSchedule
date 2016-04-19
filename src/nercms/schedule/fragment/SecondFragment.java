@@ -51,8 +51,9 @@ public class SecondFragment extends Fragment implements OnClickListener {
 		bt_cancelledTask = (Button) view.findViewById(R.id.tab02_bt_cancelledtask);
 		LinearLayout layout = (LinearLayout) view.findViewById(R.id.newtasklayout);
 
-//		badge = new com.jauker.widget.BadgeView(context);
-		badge = new com.jauker.widget.BadgeView(AppApplication.getInstance().getApplicationContext());
+		// badge = new com.jauker.widget.BadgeView(context);
+		badge = new com.jauker.widget.BadgeView(
+				AppApplication.getInstance().getApplicationContext());
 		badge.setText(mcount + "");
 		badge.setTargetView(mNewTask2);
 
@@ -64,10 +65,16 @@ public class SecondFragment extends Fragment implements OnClickListener {
 		return view;
 	}
 
-	public com.jauker.widget.BadgeView getBadgeView1(){
+	public com.jauker.widget.BadgeView getBadgeView1() {
+		if (badge == null) {
+			badge = new com.jauker.widget.BadgeView(
+					AppApplication.getInstance().getApplicationContext());
+			badge.setText(mcount + "");
+			badge.setTargetView(mNewTask2);
+		}
 		return badge;
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();

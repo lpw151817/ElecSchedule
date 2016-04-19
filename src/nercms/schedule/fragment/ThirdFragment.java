@@ -45,8 +45,9 @@ public class ThirdFragment extends Fragment implements OnClickListener {
 		bt_cancelledTask = (Button) view.findViewById(R.id.tab03_bt_cancelledtask);
 		LinearLayout layout = (LinearLayout) view.findViewById(R.id.newtasklayout);
 
-//		badge = new com.jauker.widget.BadgeView(context);
-		badge = new com.jauker.widget.BadgeView(AppApplication.getInstance().getApplicationContext());
+		// badge = new com.jauker.widget.BadgeView(context);
+		badge = new com.jauker.widget.BadgeView(
+				AppApplication.getInstance().getApplicationContext());
 		badge.setText(mcount + "");
 		badge.setTargetView(mNewTask);
 
@@ -64,13 +65,22 @@ public class ThirdFragment extends Fragment implements OnClickListener {
 		MainContent activity = (MainContent) getActivity();
 		badge.setText(activity.qiangxiucount + "");
 	}
-	
-	public com.jauker.widget.BadgeView getBadgeView1(){
+
+	public com.jauker.widget.BadgeView getBadgeView1() {
+		if (badge == null) {
+			badge = new com.jauker.widget.BadgeView(
+					AppApplication.getInstance().getApplicationContext());
+			badge.setText(mcount + "");
+			badge.setTargetView(mNewTask);
+
+		}
 		return badge;
 	}
 
 	@Override
 	public void onClick(View v) {
+		if (context == null)
+			context = getActivity();
 		Intent intent = new Intent(context, TaskList.class);
 		// 0,新的任务；1,执行中；2,延误；3,完成；4,取消任务。 null则不查询此字段
 		switch (v.getId()) {

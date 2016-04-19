@@ -63,6 +63,8 @@ public class AttachmentUpload {
 	// 单键处理
 	private volatile static AttachmentUpload _unique_instance = null;
 
+	private volatile static Thread attachment_upload_thread = null;
+
 	// 绝对不可采用同步方法的方式，同步方法仅对类的一个实例起作用
 	public static AttachmentUpload instance() {
 
@@ -73,6 +75,60 @@ public class AttachmentUpload {
 				// 必须双重检查
 				if (null == _unique_instance) {
 					_unique_instance = new AttachmentUpload();
+
+					attachment_upload_thread = new Thread() {
+						@Override
+						public void run() {
+							try {
+								while (true) {
+
+									// _query_result =
+									// AttachmentDatabase.instance(_ctx).query(
+									// "select * from tb_task_attachment order
+									// by id asc;");
+									//
+									// if (null == _query_result)
+									// return;
+									//
+									// int num =
+									// Integer.parseInt(_query_result.get("records_num"));
+									//
+									// for(int i = 0; i < num; ++i)
+									// {
+									// String id = _query_result.get("id_" +
+									// String.valueOf(i));
+									// String task_id =
+									// _query_result.get("task_id_" +
+									// String.valueOf(i));
+									// String url = _query_result.get("url_" +
+									// String.valueOf(i));
+									// String upload_time =
+									// _query_result.get("upload_time_"
+									// + String.valueOf(i));
+									// String status =
+									// _query_result.get("status_" +
+									// String.valueOf(i));
+									//
+									// Log.v("login", "atta: " + id + ", " + ",
+									// " + task_id
+									// + ", " + url + ", " + upload_time + ", "
+									// + status);
+									// }
+									//
+									// if(true) return;
+
+									upload_attachement();
+									Thread.sleep(1000);
+								}
+
+							} catch (Exception e) {
+								Log.v("Baidu", "upload attachment error: " + e.toString());
+							}
+						}
+					};
+					_network_status_service = Executors.newScheduledThreadPool(1);
+					_network_status_service.schedule(attachment_upload_thread, 100,
+							TimeUnit.MILLISECONDS);
 				}
 			}
 		}
@@ -80,59 +136,15 @@ public class AttachmentUpload {
 		return _unique_instance;
 	}
 
-	public void start(Context context) {
+	public synchronized void start(Context context) {
+		// Log.d("before", "time");
 		// public static void start(Context context) {
 		_ctx = context;
 		// _handler = handler;
 
-		Thread attachment_upload_thread = new Thread() {
-			@Override
-			public void run() {
-				try {
-					while (true) {
+		// if (false == attachment_upload_thread.isAlive())
+		// attachment_upload_thread.start();
 
-						// _query_result =
-						// AttachmentDatabase.instance(_ctx).query(
-						// "select * from tb_task_attachment order by id asc;");
-						//
-						// if (null == _query_result)
-						// return;
-						//
-						// int num =
-						// Integer.parseInt(_query_result.get("records_num"));
-						//
-						// for(int i = 0; i < num; ++i)
-						// {
-						// String id = _query_result.get("id_" +
-						// String.valueOf(i));
-						// String task_id = _query_result.get("task_id_" +
-						// String.valueOf(i));
-						// String url = _query_result.get("url_" +
-						// String.valueOf(i));
-						// String upload_time = _query_result.get("upload_time_"
-						// + String.valueOf(i));
-						// String status = _query_result.get("status_" +
-						// String.valueOf(i));
-						//
-						// Log.v("login", "atta: " + id + ", " + ", " + task_id
-						// + ", " + url + ", " + upload_time + ", " + status);
-						// }
-						//
-						// if(true) return;
-
-						upload_attachement();
-						Log.d("JAMES", "线程正在运行");
-						Thread.sleep(1000);
-					}
-
-				} catch (Exception e) {
-					Log.v("Baidu", "upload attachment error: " + e.toString());
-				}
-			}
-		};
-
-		_network_status_service = Executors.newScheduledThreadPool(1);
-		_network_status_service.schedule(attachment_upload_thread, 100, TimeUnit.MILLISECONDS);
 	}
 
 	public void stop(Context context) {
@@ -142,7 +154,7 @@ public class AttachmentUpload {
 	private static HashMap<String, String> _query_result = null;
 
 	private static void upload_attachement() {
-
+		// Log.d("before", "time");
 		if (false == _running)
 			return;
 
@@ -176,6 +188,8 @@ public class AttachmentUpload {
 		String upload_time = _query_result.get("upload_time_0");
 		String md5 = _query_result.get("md5_0");
 		String status = _query_result.get("status_0");
+
+		Log.v("before", "url:" + url);
 
 		// 时戳过长（如7天以上）则不必处理
 		if (7 * 24 * 3600 * 1000 <= Long.parseLong(upload_time) - System.currentTimeMillis())
