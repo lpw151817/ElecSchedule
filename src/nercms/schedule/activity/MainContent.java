@@ -18,6 +18,7 @@ import nercms.schedule.fragment.FourthFragment;
 import nercms.schedule.fragment.SecondFragment;
 import nercms.schedule.fragment.ThirdFragment;
 import nercms.schedule.utils.AttachmentUpload;
+import nercms.schedule.utils.DeleteOldAttachment;
 import nercms.schedule.utils.HeartBeat;
 import nercms.schedule.utils.Utils;
 import nercms.schedule.view.NoScrollViewPager;
@@ -79,6 +80,8 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		Log.e("Demo", "MainContent:Oncreate");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_content);
+
+		DeleteOldAttachment.instance().start(getApplicationContext());
 
 		HeartBeat.start(getApplicationContext());
 		AttachmentUpload.instance().start(getApplicationContext());

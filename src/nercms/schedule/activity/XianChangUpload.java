@@ -558,30 +558,9 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 				return;
 			}
 
-			Map<String, String> _query_result = AttachmentDatabase.instance(XianChangUpload.this)
-					.query("select * from tb_task_attachment;");
-			for (int i = 0; i < Integer.parseInt(_query_result.get("records_num")); i++) {
-				Log.v("Att", "before:" + _query_result.get("id_" + i) + ":"
-						+ _query_result.get("url_" + i) + ":" + _query_result.get("status_" + i)
-						+ ":" + _query_result.get("md5_" + i) + ":"
-						+ _query_result.get("upload_time_" + i));
-			}
 			boolean id = mDao.savePlanTaskAtt(null, tid, historygps, standard.toString(), type,
 					name, time, md5, "0");
 
-			/////// Log所有附件
-			_query_result = AttachmentDatabase.instance(c)
-					.query("select * from tb_task_attachment;");
-			for (int i = 0; i < Integer.parseInt(_query_result.get("records_num")); i++) {
-				Log.v("Att", "after:" + _query_result.get("id_" + i) + ":"
-						+ _query_result.get("url_" + i) + ":" + _query_result.get("status_" + i)
-						+ ":" + _query_result.get("md5_" + i) + ":"
-						+ _query_result.get("upload_time_" + i));
-			}
-
-			// long id = mDao.savePlanTaskAtt(null, tid, historygps,
-			// standard.toString(), type, url, (String) attItem.get("time"),
-			// md5, "0");
 			if (id) {
 				// if (!Utils.isNetworkAvailable(getApplicationContext())) {
 				// Toast.makeText(getApplicationContext(), "无网络，附件将在网络恢复后上传",
@@ -941,9 +920,9 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 		case LocalConstant.CAPTURE_IMAGE_REQUEST_CODE:
 			if (resultCode == RESULT_OK) {
-				
-				long timesb  = System.currentTimeMillis();
-				
+
+				long timesb = System.currentTimeMillis();
+
 				thumbnailUri = Utils.getThumbnailDir();
 				// 获取缩略图,根据原图创建缩略图, mImagePath是原图的地址
 				Bitmap bitmap = Utils.getThumbnail(mImagePath, thumbnailUri);
@@ -968,13 +947,13 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 				Map<Integer, Map<String, String>> mContent = new HashMap<Integer, Map<String, String>>();
 				mContent.put(0, mMap);
 				intent.putExtra("address", (Serializable) mContent);
-//				intent.putExtra("bitmap", bitmap);
+				// intent.putExtra("bitmap", bitmap);
 				intent.putExtra("bitmapAddress", thumbnailUri);
 				startActivityForResult(intent, 321);
 
 				long period = System.currentTimeMillis() - timesb;
 				Log.d("qq", "xiangchangupload : " + period);
-				
+
 				// mediaList.add(new Media(Utils.MEDIA_TYPE_IMAGE,
 				// captureImageName, mImagePath));
 				// // 存储mediaId与imageOriginPath的映射

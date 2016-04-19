@@ -192,7 +192,7 @@ public class AttachmentUpload {
 		Log.v("before", "url:" + url);
 
 		// 时戳过长（如7天以上）则不必处理
-		if (7 * 24 * 3600 * 1000 <= Long.parseLong(upload_time) - System.currentTimeMillis())
+		if (7 * 24 * 3600 * 1000 <= System.currentTimeMillis() - Long.parseLong(upload_time))
 			return;
 
 		if (true == status.equalsIgnoreCase("0")) {
