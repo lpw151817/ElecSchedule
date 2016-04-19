@@ -139,10 +139,9 @@ public class DailyTaskDetail extends BaseActivity {
 
 		String special = planTask2.getSpecial();
 		if (!TextUtils.isEmpty(special)) {
-			if (special.equals("0")) {
-				mSpecialNeed.setText("T");
-				;
-			} else if (special.equals("1")) {
+			if (special.equals("1")) {
+				mSpecialNeed.setText("ÊÇ");
+			} else if (special.equals("0")) {
 				mSpecialNeed.setText("·ñ");
 			}
 		}

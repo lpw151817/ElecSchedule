@@ -287,9 +287,9 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 				String special = info.getSpecial();
 				tsxq_t.setEnabled(false);
 				tsxq_w.setEnabled(false);
-				if (special.equals("0")) {
+				if (special.equals("1")) {
 					tsxq_t.setChecked(true);
-				} else if (special.equals("1")) {
+				} else if (special.equals("0")) {
 					tsxq_w.setChecked(true);
 				}
 
@@ -645,7 +645,7 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 
 				String special = null;
 				if (tsxq_t.isChecked()) {
-					special = "T";
+					special = "сп";
 				} else if (tsxq_w.isChecked()) {
 					special = "нч";
 				}

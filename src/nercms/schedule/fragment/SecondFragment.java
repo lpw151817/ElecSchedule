@@ -84,6 +84,8 @@ public class SecondFragment extends Fragment implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
+		if (context == null)
+			context = getActivity();
 		Intent intent = new Intent(context, TaskList.class);
 		// 0,新的任务；1,执行中；2,延误；3,完成；4,取消任务。 null则不查询此字段
 		switch (v.getId()) {

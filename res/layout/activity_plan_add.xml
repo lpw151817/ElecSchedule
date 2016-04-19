@@ -449,7 +449,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
                     android:checked="true"
-                    android:text="T"
+                    android:text="有"
                     android:textColor="@color/black" />
 
                 <RadioButton
@@ -459,6 +459,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
                     android:text="无"
+                    android:checked="true"
                     android:textColor="@color/black" />
             </RadioGroup>
         </LinearLayout>
@@ -764,8 +765,8 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/edit_text"
                 android:hint="请在此输入..."
-                android:numeric="integer"
                 android:maxLength="3"
+                android:numeric="integer"
                 android:singleLine="true"
                 android:textColor="@color/black" />
         </LinearLayout>
