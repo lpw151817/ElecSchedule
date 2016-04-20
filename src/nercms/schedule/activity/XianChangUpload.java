@@ -234,7 +234,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 			List<String> name = new ArrayList<String>();
 
 			// 操作现场和作业现场的每个条目中的附件按钮的操作是不一样的
-			if (Main.pageType == 0) {
+			if (enterType == 1) {
 
 				isRadio = c.getResources().getIntArray(R.array.zuoyexianchang_si_radio);
 				isPhoto = c.getResources().getIntArray(R.array.zuoyexianchang_si_photo);
@@ -248,7 +248,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 					name.add("录音");
 				}
 
-			} else if (Main.pageType == 1) {
+			} else if (enterType == 2) {
 				isRadio = c.getResources().getIntArray(R.array.caozuoxianchang_si_radio);
 				isPhoto = c.getResources().getIntArray(R.array.caozuoxianchang_si_photo);
 				isVideo = c.getResources().getIntArray(R.array.caozuoxianchang_si_video);
@@ -266,7 +266,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 				}
 			}
 
-			else if (Main.pageType == 2) {
+			else if (enterType == 3) {
 				isRadio = c.getResources().getIntArray(R.array.guzhangjinji_si_radio);
 				isPhoto = c.getResources().getIntArray(R.array.guzhangjinji_si_photo);
 				isVideo = c.getResources().getIntArray(R.array.guzhangjinji_si_video);
