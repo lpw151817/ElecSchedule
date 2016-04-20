@@ -233,7 +233,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 			int position = getIntent().getIntExtra("position", -1);
 			List<String> name = new ArrayList<String>();
 
-			// 操作线程和作业现场的每个条目中的附件按钮的操作是不一样的
+			// 操作现场和作业现场的每个条目中的附件按钮的操作是不一样的
 			if (Main.pageType == 0) {
 
 				isRadio = c.getResources().getIntArray(R.array.zuoyexianchang_si_radio);
