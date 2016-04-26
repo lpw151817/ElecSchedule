@@ -54,7 +54,7 @@ public class RecordActivity extends BaseActivity implements OnClickListener {
 
 		setContentView(R.layout.activity_record);
 
-		iniActionBar(true, null, "附件上传");
+		iniActionBar(true, null, "语音");
 		com.actionbarsherlock.app.ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 
@@ -193,7 +193,7 @@ public class RecordActivity extends BaseActivity implements OnClickListener {
 				if (recodeTime < MIN_RECORD_TIME) {
 					showWarnToast("时间太短  请重录");
 					mAudioRecorder.deleteOldFile();
-					flag  = false;
+					flag = false;
 					cho.stop();
 					mStart.setVisibility(View.VISIBLE);
 					mStop.setVisibility(View.GONE);
@@ -201,15 +201,15 @@ public class RecordActivity extends BaseActivity implements OnClickListener {
 					flag = true;
 				}
 
-				if (flag){
+				if (flag) {
 					mImage.setVisibility(View.VISIBLE);
-	
+
 					isShow = true;
 					invalidateOptionsMenu();
 					showWarnToast("录音结束");
-	
+
 					cho.stop();
-	
+
 					mStop.setVisibility(View.GONE);
 				}
 			}

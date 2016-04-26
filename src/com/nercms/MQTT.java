@@ -241,6 +241,7 @@ public class MQTT {
 	public class MQTTClientCallback implements MqttCallback {
 		@Override
 		public void messageArrived(String topic, MqttMessage message) {
+			long tmpTime=System.currentTimeMillis();
 			Log.i("MQTT", "Recv message: " + message.toString() + " on topic: " + topic.toString());
 
 			// 进行到达消息的处理
@@ -260,7 +261,7 @@ public class MQTT {
 				Log.e("MQTT", "response.getType() 解析错误");
 				e.printStackTrace();
 			}
-
+			Log.i("MQTT", "Recv message end............"+(System.currentTimeMillis()-tmpTime));
 		}
 
 		@Override

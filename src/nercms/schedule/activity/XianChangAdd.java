@@ -163,10 +163,12 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 		title.append(" - " + data.getName());
 		iniActionBar(true, null, title.toString());
 
-		if (isAdmin() != PERSON_TYPE.XIANCHANG) {
-			findViewById(R.id.bottom).setVisibility(View.GONE);
-			findViewById(R.id.jieshurenwu).setVisibility(View.GONE);
-
+		// if (isAdmin() != PERSON_TYPE.XIANCHANG)
+		{
+			if (isAdmin() != PERSON_TYPE.XIANCHANG) {
+				findViewById(R.id.bottom).setVisibility(View.GONE);
+				findViewById(R.id.jieshurenwu).setVisibility(View.GONE);
+			}
 			PlanTaskDao pDao = new PlanTaskDao(XianChangAdd.this);
 			List<tb_task_attachment> planTask = pDao.getPlanTaskAtts(tid);
 
@@ -233,7 +235,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 				} else {
 					if (isfull()) {
 						AlertDialog.Builder builder = new AlertDialog.Builder(XianChangAdd.this)
-								.setMessage("是否结束任务");
+								.setMessage("是否结束任务?");
 						builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
 
 							@Override
@@ -318,8 +320,8 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 					Uri uri = Uri.fromFile(file);
 					intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
 					intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-					intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 20*1024*1024);
-					intent.putExtra(MediaStore. EXTRA_DURATION_LIMIT, 15);
+					intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 20 * 1024 * 1024);
+					intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 15);
 					startActivityForResult(intent, LocalConstant.CAPTURE_VIDEO_REQUEST_CODE);
 				} else {// 存在视频就播放
 					Intent videoIntent = new Intent(XianChangAdd.this, PlayVideo.class);
@@ -514,6 +516,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 					}
 				}
 				Intent intent = new Intent(XianChangAdd.this, XianChangUpload.class);
+				intent.putExtra("enterType", enterType);
 				intent.putExtra("tid", tid);
 				if (from.equals("XianChangUpload")) {
 					intent.putExtra("mediaIndex", mediaIndex);
@@ -564,7 +567,6 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 				intent.putExtra("mUploadUrl", (Serializable) mUploadList.get(position));
 				intent.putExtra("url", (Serializable) mList.get(position));
 				intent.putExtra("position", position);// 把被点击的条目的位置传递进去，这样在接收的时候就知道该该改变哪个list的内容
-				intent.putExtra("enterType", enterType);
 				XianChangAdd.this.startActivityForResult(intent,
 						LocalConstant.START_XIANCHANGUPLOAD);
 			}

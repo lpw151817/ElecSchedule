@@ -172,8 +172,6 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 		requestManager = new WebRequestManager(AppApplication.getInstance(), this);
 
-		iniActionBar(true, null, null);
-
 		tid = getIntent().getStringExtra("tid");
 		enterType = getIntent().getIntExtra("enterType", -1);
 		c = XianChangUpload.this;
@@ -221,6 +219,16 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 		position = getIntent().getIntExtra("position", -1);
 		// initHandler();
+
+		String[] ss = null;
+		if (enterType == 1) {
+			ss = c.getResources().getStringArray(R.array.zuoyexianchang_si_data);
+		} else if (enterType == 2) {
+			ss = c.getResources().getStringArray(R.array.caozuoxianchang_si_data);
+		} else if (enterType == 3) {
+			ss = c.getResources().getStringArray(R.array.guzhangjinji_si_data);
+		}
+		iniActionBar(true, null, ss[position]);
 	}
 
 	@Override
@@ -296,7 +304,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 				AlertDialog.Builder builder = new AlertDialog.Builder(XianChangUpload.this);
 				ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(XianChangUpload.this,
 						R.layout.dialog_item, R.id.tv, array);
-				builder.setTitle("选择附件类型");
+				// builder.setTitle("选择附件类型");
 				builder.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
 
 					@Override
@@ -689,7 +697,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 	private void back() {
 		if (isShowDialog() == true) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage("附件未上传，是否继续上传");
+			builder.setMessage("附件未上传，是否继续上传?");
 			builder.setCancelable(false);
 			builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
 

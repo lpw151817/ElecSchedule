@@ -174,7 +174,7 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_weight="1"
-                android:text="延误的任务" />
+                android:text="延误完成的任务" />
 
             <ImageView
                 android:layout_width="2dp"

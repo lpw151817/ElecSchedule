@@ -41,7 +41,7 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:background="@drawable/btn_style_green"
-            android:text="选择附件"
+            android:text="采  集"
             android:textColor="#ffffff" />
         
                 <Button
@@ -51,7 +51,7 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:background="@drawable/btn_style_green"
-            android:text="上传附件"
+            android:text="上  传"
             android:textColor="#ffffff" />
 
         <!-- <Button

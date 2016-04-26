@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -68,6 +69,7 @@ public class Login extends BaseActivity {
 	// String pwd = "admin";
 
 	private Button btnLogin;// 登录按钮
+	private Button btnUpdate;
 
 	private static String inputUserName = null;
 	private static String inputPassword = null;
@@ -187,6 +189,17 @@ public class Login extends BaseActivity {
 		// etPassword.setText(pwd);
 
 		btnLogin = (Button) findViewById(R.id.login_login_btn);
+		btnUpdate = (Button) findViewById(R.id.update);
+
+		btnUpdate.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(Intent.ACTION_VIEW);
+				i.setData(Uri.parse(Contants.HFS_URL + File.separator + "Schedule.apk"));
+				startActivity(i);
+			}
+		});
 
 		// 默认显示上次登录的用户ID
 		etUserName.setText(MySharedPreference.get(Login.this, MySharedPreference.USER_NAME, ""));

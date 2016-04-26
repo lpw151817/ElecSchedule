@@ -67,7 +67,7 @@ public class TaskList extends BaseActivity {
 				sb.append("正在执行的任务");
 				break;
 			case 2:
-				sb.append("延误的任务");
+				sb.append("延误完成的任务");
 				break;
 			case 3:
 				sb.append("正常完成的任务");
@@ -90,7 +90,7 @@ public class TaskList extends BaseActivity {
 				sb1.append("正在执行的任务");
 				break;
 			case 2:
-				sb1.append("延误的任务");
+				sb1.append("延误完成的任务");
 				break;
 			case 3:
 				sb1.append("正常完成的任务");

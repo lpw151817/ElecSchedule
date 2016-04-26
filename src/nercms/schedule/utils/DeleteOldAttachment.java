@@ -181,9 +181,6 @@ public class DeleteOldAttachment {
 			String upload_time = _query_result.get("upload_time_" + String.valueOf(i));
 			String status = _query_result.get("status_" + String.valueOf(i));
 
-			Log.v("login", "atta: " + id + ", " + "," + task_id + ", " + url + ", " + upload_time
-					+ ", " + status);
-
 			// 时戳过长（如15天以上）则删除文件，并删除记录
 			if (15 * 24 * 3600 * 1000 <= System.currentTimeMillis() - Long.parseLong(upload_time)) {
 				// 删除DB记录
@@ -193,6 +190,8 @@ public class DeleteOldAttachment {
 				File file = new File(fileFolder + url);
 				if (file.exists())
 					file.delete();
+				Log.v("before", "delete atta: " + id + ", " + "," + task_id + ", " + url + ", "
+						+ upload_time + ", " + status);
 			}
 
 		}
