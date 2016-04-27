@@ -657,9 +657,12 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 			Intent recordIntent = new Intent(XianChangUpload.this, RecordActivity.class);
 			startActivityForResult(recordIntent, LocalConstant.CAPTURE_AUDIO_REQUEST_CODE);
 		} else if (name.equals("…„œÒ")) {
-			Intent intent = new Intent();
-			intent.setAction("android.media.action.VIDEO_CAPTURE");
-			intent.addCategory("android.intent.category.DEFAULT");
+//			Intent intent = new Intent();
+//			
+//			intent.setAction("android.media.action.VIDEO_CAPTURE");
+//			intent.addCategory("android.intent.category.DEFAULT")
+			
+			Intent intent = new Intent(XianChangUpload.this, Video.class);
 
 			fileName = getFileDate();
 			videopath = NewTask.fileFolder + "/" + fileName + ".mp4";
@@ -670,7 +673,8 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 				file.delete();
 			}
 			Uri uri = Uri.fromFile(file);
-			intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+			intent.putExtra("videoPath", videopath);
+//			intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
 			startActivityForResult(intent, LocalConstant.CAPTURE_VIDEO_REQUEST_CODE);
 		}
 	}
