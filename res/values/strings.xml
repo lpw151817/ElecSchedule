@@ -15,5 +15,6 @@
     <string name="title_activity_schedule_person">SchedulePersonActivity</string>
     <string name="title_activity_zhiling">ZhilingActivity</string>
     <string name="title_activity_task_selector">TaskSelectorActivity</string>
+    <string name="title_activity_tongji">TongjiActivity</string>
 
 </resources>

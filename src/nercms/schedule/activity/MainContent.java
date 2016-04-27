@@ -331,6 +331,7 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		addMenu.add(0, 1, 1, "视频调度").setIcon(R.drawable.iconfont_video);
 		// addMenu.add(0, 2, 1, "修改密码").setIcon(R.drawable.ofm_meeting_icon);
 		// addMenu.add(0, -1, 1, "通知").setIcon(R.drawable.iconfont_tongzhi);
+		addMenu.add(0, 5, 1, "统计").setIcon(R.drawable.iconfont_video);
 		addMenu.add(0, 4, 1, "退出").setIcon(R.drawable.iconfont_tongzhi);
 
 		MenuItem addItem = addMenu.getItem();
@@ -378,6 +379,12 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 			finish();
 			System.exit(0);
 			break;
+		case 5:
+			// 统计界面
+			Intent intent2 = new Intent(MainContent.this, TongjiActivity.class);
+			MainContent.this.startActivity(intent2);
+			break;
+
 		}
 		return super.onOptionsItemSelected(item);
 	}
