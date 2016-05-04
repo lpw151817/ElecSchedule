@@ -1,28 +1,22 @@
 package nercms.schedule.activity;
 
-import java.io.File;  
-  
-import android.app.Activity;  
-import android.hardware.Camera;  
-import android.hardware.Camera.Parameters;  
-import android.hardware.Camera.Size;  
-import android.media.CamcorderProfile;
-import android.media.MediaRecorder;  
-import android.os.Bundle;  
-import android.os.Environment;  
-import android.os.Handler;  
-import android.util.Log;  
-import android.view.SurfaceHolder;  
-import android.view.SurfaceView;  
-import android.view.View;  
-import android.view.View.OnClickListener;  
-import android.view.WindowManager;
-import android.widget.ImageButton;  
-import android.widget.TextView;  
-  
 import nercms.schedule.R;
-
-import org.w3c.dom.Text;  
+import android.app.Activity;
+import android.hardware.Camera;
+import android.hardware.Camera.Parameters;
+import android.hardware.Camera.Size;
+import android.media.MediaRecorder;
+import android.media.MediaRecorder.OnInfoListener;
+import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.WindowManager;
+import android.widget.ImageButton;
+import android.widget.TextView;
   
 public class Video extends Activity implements OnClickListener {  
     private SurfaceView mCameraPreview;  
@@ -183,6 +177,7 @@ public class Video extends Activity implements OnClickListener {
     }  
   
     private void initMediaRecorder() {  
+    	
         mRecorder = new MediaRecorder();//实例化  
         mCamera.unlock();  
         //给Recorder设置Camera对象，保证录像跟预览的方向保持一致  
@@ -190,7 +185,8 @@ public class Video extends Activity implements OnClickListener {
         mRecorder.setOrientationHint(90);  //改变保存后的视频文件播放时是否横屏(不加这句，视频文件播放的时候角度是反的)  
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC); // 设置从麦克风采集声音  
         mRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA); // 设置从摄像头采集图像  
-        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);  // 设置视频的输出格式 为MP4  
+        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);  // 设置视频的输出格式 为MP4
+        mRecorder.setMaxDuration(5000); //设置最大录像时间为10s  
         mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT); // 设置音频的编码格式  
         mRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264); // 设置视频的编码格式  
 //        mRecorder.setVideoSize(176, 144);  // 设置视频大小
@@ -208,7 +204,7 @@ public class Video extends Activity implements OnClickListener {
 //       mRecorder.setProfile(cProfile);
 //        //设置录制的视频帧率,注意文档的说明:  
 //       mRecorder.setVideoFrameRate(30);
-////        mRecorder.setMaxDuration(10000); //设置最大录像时间为10s  
+//        mRecorder.setMaxDuration(5000); //设置最大录像时间为10s  
         mRecorder.setPreviewDisplay(mSurfaceHolder.getSurface());  
   
 //        //设置视频存储路径  
@@ -241,7 +237,8 @@ public class Video extends Activity implements OnClickListener {
             mCamera.lock();  
         }  
   
-        if (mRecorder != null) {  
+        if (mRecorder != null) { 
+        	
             mRecorder.stop();  
             mRecorder.release();  
             mRecorder = null;  
@@ -267,19 +264,23 @@ public class Video extends Activity implements OnClickListener {
     private Runnable mTimestampRunnable = new Runnable() {  
         @Override  
         public void run() {  
-            updateTimestamp();  
+            updateTimestamp(); 
+            if (timeLimit > MAX_TIME){
+            	stopRecording();
+            }
             mHandler.postDelayed(this, 1000);  
         }  
     };
 	private Size size1;
 	private String videoPath;  
-  
+	private int timeLimit;
+	private int MAX_TIME = 15;//最大录像时长10s
     private void updateTimestamp() {  
         int second = Integer.parseInt(mSecondText.getText().toString());  
         int minute = Integer.parseInt(mMinuteText.getText().toString());  
         second++;  
         Log.d(TAG, "second: " + second);  
-  
+        timeLimit = second;
         if (second < 10) {  
             mSecondText.setText(String.valueOf(second));  
         } else if (second >= 10 && second < 60) {  
