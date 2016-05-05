@@ -37,6 +37,12 @@ public class TaskSelectorActivity extends BaseActivity implements OnClickListene
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_task_selector);
 
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
 		tid = getIntent().getStringExtra("tid");
 		dao = new PlanTaskDao(this);
 		info = dao.getPlanTask(tid);
