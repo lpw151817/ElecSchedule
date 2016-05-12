@@ -56,9 +56,11 @@ import nercms.schedule.R;
 import nercms.schedule.dateSelect.NumericWheelAdapter;
 import nercms.schedule.dateSelect.OnWheelChangedListener;
 import nercms.schedule.dateSelect.WheelView;
+import nercms.schedule.utils.DateTimePickDialog;
+import nercms.schedule.utils.DateTimePickDialogListener;
 import nercms.schedule.utils.Utils;
 
-public class PlanAdd extends BaseActivity implements OnClickListener {
+public class PlanAdd extends BaseActivity implements OnClickListener, DateTimePickDialogListener {
 
 	private Handler handler;
 
@@ -515,7 +517,12 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 				@Override
 				public boolean onTouch(View v, MotionEvent event) {
 					if (event.getAction() == MotionEvent.ACTION_UP) {
-						showDateTimePicker(jhkssj, false);
+						// TODO
+						// showDateTimePicker(jhkssj, false);
+
+						DateTimePickDialog dateTimePicKDialog = new DateTimePickDialog(PlanAdd.this,
+								startTime, PlanAdd.this);
+						dateTimePicKDialog.dateTimePicKDialog(jhkssj);
 					}
 					return true;
 				}
@@ -526,7 +533,16 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 				@Override
 				public boolean onTouch(View v, MotionEvent event) {
 					if (event.getAction() == MotionEvent.ACTION_UP) {
-						showDateTimePicker(jhjssj, true);
+						// TODO
+						// showDateTimePicker(jhjssj, true);
+
+						if (TextUtils.isEmpty(startTime)) {
+							Toast.makeText(PlanAdd.this, "请先选择开始时间", Toast.LENGTH_SHORT).show();
+						} else {
+							DateTimePickDialog dateTimePicKDialog = new DateTimePickDialog(
+									PlanAdd.this, endTime, startTime, PlanAdd.this);
+							dateTimePicKDialog.dateTimePicKDialog(jhjssj);
+						}
 					}
 					return true;
 				}
@@ -971,6 +987,19 @@ public class PlanAdd extends BaseActivity implements OnClickListener {
 			InputMethodManager im = (InputMethodManager) getSystemService(
 					Context.INPUT_METHOD_SERVICE);
 			im.hideSoftInputFromWindow(token, InputMethodManager.HIDE_NOT_ALWAYS);
+		}
+	}
+
+	private String startTime, endTime;
+
+	@Override
+	public void onDateTimeSelected(String time, boolean isBegin) {
+		if (isBegin) {
+			startTime = time;
+			jhkssj.setText(time);
+		} else {
+			endTime = time;
+			jhjssj.setText(time);
 		}
 	}
 }

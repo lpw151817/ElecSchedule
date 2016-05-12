@@ -41,16 +41,16 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class Utils {
-	
+
 	public static Toast mToast;
-	public static void showToast(Context mContext, String msg){
-		if (mToast == null){
+
+	public static void showToast(Context mContext, String msg) {
+		if (mToast == null) {
 			mToast = Toast.makeText(mContext, "", Toast.LENGTH_SHORT);
 		}
 		mToast.setText(msg);
 		mToast.show();
 	}
-	
 
 	public static void setEditTextUnEditable(EditText et) {
 		et.setFocusable(false);
@@ -108,12 +108,17 @@ public class Utils {
 	}
 
 	public static String parseDateInFormat(String fotmatTime) {
+		Date date = parseDateInFormat1(fotmatTime);
+		return date == null ? "" : date.toString();
+	}
+
+	public static Date parseDateInFormat1(String fotmatTime) {
 		try {
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			return format.parse(fotmatTime).getTime() + "";
+			return format.parse(fotmatTime);
 		} catch (ParseException e) {
 			e.printStackTrace();
-			return "";
+			return null;
 		}
 	}
 
@@ -323,30 +328,30 @@ public class Utils {
 		if (originalUri == null || originalUri.equals("")) {
 			return null;
 		}
-		
+
 		Bitmap bitmap = null;
-		
+
 		try {
 			Log.d("qq", "time1 : " + System.currentTimeMillis() + "");
 			long time1 = System.currentTimeMillis();
 			BitmapFactory.Options options = new BitmapFactory.Options();
-			
+
 			long time2 = System.currentTimeMillis();
 			long period = time2 - time1;
 			Log.d("qq", "BitmapFactory.Options options = new BitmapFactory.Options(); : " + period);
 			// 不返回实际的bitmap不给其分配内存空间而只包括一些解码边界信息即图片大小信息
-			
-			
+
 			options.inJustDecodeBounds = true;
 			long time3 = System.currentTimeMillis();
 			period = time3 - time2;
 			Log.d("qq", "options.inJustDecodeBounds = true; :" + period);
 			// 获取这个图片的宽和高，注意，此时返回bitmap为空
-			
+
 			bitmap = BitmapFactory.decodeFile(originalUri, options);
 			long time4 = System.currentTimeMillis();
 			period = time4 - time3;
-			Log.d("qq", "Bitmap bitmap = BitmapFactory.decodeFile(originalUri, options); : " + period + "");
+			Log.d("qq", "Bitmap bitmap = BitmapFactory.decodeFile(originalUri, options); : "
+					+ period + "");
 			// 重新设置为false，下一次返回实际的bitmap
 			options.inJustDecodeBounds = false;
 			long time5 = System.currentTimeMillis();
@@ -365,7 +370,7 @@ public class Utils {
 			} else {
 				options.inSampleSize = 1;
 			}
-			
+
 			long time6 = System.currentTimeMillis();
 			period = time6 - time5;
 			Log.d("qq", "计算缩放比例 : " + period + "");
@@ -373,14 +378,15 @@ public class Utils {
 			bitmap = BitmapFactory.decodeFile(originalUri, options);
 			long time7 = System.currentTimeMillis();
 			period = time7 - time6;
-			Log.d("qq", "bitmap = BitmapFactory.decodeFile(originalUri, options); : " + period + "");
+			Log.d("qq",
+					"bitmap = BitmapFactory.decodeFile(originalUri, options); : " + period + "");
 			// 旋转
 			int degree = readPictureDegree(originalUri);
 			long time8 = System.currentTimeMillis();
 			period = time8 - time7;
 			Log.d("qq", "int degree = readPictureDegree(originalUri); : " + period + "");
 			bitmap = rotateBitmap(bitmap, degree);
-			
+
 			long time9 = System.currentTimeMillis();
 			period = time9 - time8;
 			Log.d("qq", "bitmap = rotateBitmap(bitmap, degree); : " + period + "");
@@ -447,7 +453,8 @@ public class Utils {
 	 */
 	public static String getThumbnailDir() {
 		// 得到一个路径，内容是sdcard的附件缩略图路径
-//		String path = Environment.getExternalStorageDirectory().getPath() + "/TestRecord/Thumbnail";
+		// String path = Environment.getExternalStorageDirectory().getPath() +
+		// "/TestRecord/Thumbnail";
 		String path = NewTask.fileThumbnail;
 		File filePath = new File(path);
 
@@ -456,7 +463,7 @@ public class Utils {
 			filePath.mkdirs();
 		}
 
-		return path  + getFileDate() + ".jpg";
+		return path + getFileDate() + ".jpg";
 
 	}
 
@@ -1045,7 +1052,7 @@ public class Utils {
 		}
 		return false;
 	}
-	
+
 	public static Bitmap getVideoThumbnail(String videoPath, int width, int height, int kind) {
 		Bitmap bitmap = null;
 		// 获取视频的缩略图
