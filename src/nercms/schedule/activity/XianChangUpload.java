@@ -19,9 +19,7 @@ import nercms.schedule.utils.Utils;
 import nercms.schedule.view.FixedGridLayout;
 import nercms.schedule.view.PlayVideo;
 import nercms.schedule.view.RoundAngleImageView;
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -33,23 +31,20 @@ import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -57,17 +52,8 @@ import android.widget.Toast;
 import android.wxapp.service.AppApplication;
 import android.wxapp.service.elec.dao.GpsDao;
 import android.wxapp.service.elec.dao.PlanTaskDao;
-import android.wxapp.service.elec.model.StartTaskResponse;
-import android.wxapp.service.elec.model.UploadTaskAttachmentResponse;
 import android.wxapp.service.elec.model.bean.Attachments;
-import android.wxapp.service.elec.model.bean.GPS;
-import android.wxapp.service.elec.model.bean.TaskAttachment;
-import android.wxapp.service.elec.request.Constants;
 import android.wxapp.service.elec.request.WebRequestManager;
-import android.wxapp.service.handler.MessageHandlerManager;
-import android.wxapp.service.jerry.model.normal.NormalServerResponse;
-import android.wxapp.service.util.Constant;
-import android.wxapp.service.util.HttpUploadTask;
 
 /*
  * 
@@ -331,34 +317,6 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 						}
 					}
 				});
-				// builder.setTitle("选择附件类型").setItems(array, new
-				// DialogInterface.OnClickListener() {
-				//
-				// @Override
-				// public void onClick(DialogInterface arg0, int which) {
-				// switch (which) {
-				//
-				// case 0:
-				//
-				// startAttachment(array[0]);
-				// break;
-				//
-				// case 1:
-				//
-				// startAttachment(array[1]);
-				// break;
-				//
-				// case 2:
-				// startAttachment(array[2]);
-				//
-				// break;
-				//
-				// default:
-				// break;
-				// }
-				//
-				// }
-				// });
 				AlertDialog dialog = builder.create();
 				dialog.show();
 
@@ -373,7 +331,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 				showShortToast("请选择附件");
 			} else {
 				// attachmentUploadRequest();// 上传附件
-				// TODO 将附件写入数据库
+				// 将附件写入数据库
 				attachmentToDatabase();
 			}
 			break;
@@ -387,7 +345,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 			// 避免重复上传
 			mUnUploadUrl.clear();
-			// TODO 将mUrl-mUploadList = mUnploadList
+			//  将mUrl-mUploadList = mUnploadList
 
 			List<String> mUrlPath = new ArrayList<String>();
 			List<String> mUrlUploadPath = new ArrayList<String>();
@@ -590,7 +548,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 	 * android.wxapp.service.elec.request.Contants.HFS_URL; if (getFileCount() <
 	 * 1) { showLongToast("请选择附件上传"); } else {
 	 * 
-	 * // 避免重复上传 mUnUploadUrl.clear(); // TODO 将mUrl-mUploadList = mUnploadList
+	 * // 避免重复上传 mUnUploadUrl.clear(); //将mUrl-mUploadList = mUnploadList
 	 * 
 	 * List<String> mUrlPath = new ArrayList<String>(); List<String>
 	 * mUrlUploadPath = new ArrayList<String>(); List<String> mUrlUnUploadPath =
@@ -640,6 +598,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 			cameraintent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
 			cameraintent.addCategory(Intent.CATEGORY_DEFAULT);
 
+			//TODO 创建的图片文件路径
 			mImagePath = NewTask.fileFolder + File.separator + getFileDate() + ".jpg";
 			// 根据文件地址创建文件
 			File imagefile = new File(mImagePath);
@@ -769,16 +728,6 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 	public boolean isShowDialog() {
 
 		boolean isShow = false;
-		// for (int i = 0; i < mUrl.size(); i++) {
-		//
-		//
-		// isShow = false;
-		//
-		// if (mUploadUrl.size() == 0 ){
-		// if (mUrl.get(i)!=null)
-		// isShow = true;
-		// break;
-		// }
 
 		List<String> mUrlPath = new ArrayList<String>();
 		List<String> mUrlUploadPath = new ArrayList<String>();
@@ -809,7 +758,6 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 			}
 		}
 
-		// }
 
 		return isShow;
 	}
@@ -825,7 +773,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 					Uri thumbUri = data.getData();
 					selectimagepath = uri2filePath(thumbUri);
 
-					selectThumbnailUri = Utils.getThumbnailDir();
+					selectThumbnailUri = Utils.getSelectImageThumbnailDir();
 					// 获取缩略图,根据原图创建缩略图, mImagePath是原图的地址
 					Utils.getThumbnail(selectimagepath, selectThumbnailUri);
 					// Utils.getBitMapFromRes(selectimagepath,
@@ -853,15 +801,6 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 					intent.putExtra("address", (Serializable) mContent);
 					startActivityForResult(intent, 321);
 
-					// mediaList.add(new Media(Utils.MEDIA_TYPE_IMAGE,
-					// selectImageName, selectimagepath));
-					// // 存储mediaId与imageOriginPath的映射
-					// index_originalPath_Map.put(mediaID1, selectimagepath);
-					// loadMedia(imageContainer, mediaID1,
-					// getThumbnailFromUri(uri1), uri1,
-					// NewTask.TYPE_SELECT_IMAGE);
-					// // 存储mediaId与thumbnailUri的映射
-					// index_path_Map.put(mediaID1, selectThumbnailUri);
 
 				}
 			}
@@ -904,6 +843,11 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 								NewTask.TYPE_IMAGE, mImagePath);
 						// 存储mediaId与thumbnailUri的映射
 						index_path_Map.put(mediaID2, thumbnailUri);
+						
+						String touchImage = mImagePath
+								.substring(mImagePath.lastIndexOf(File.separator) + 1);
+						touchShowImage.add(NewTask.fileThumbnail + touchImage);
+						//TODO
 					} else if (fileType.equals("audio")) {
 
 						int mediaID = Integer.valueOf(index);
@@ -935,12 +879,11 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 				long timesb = System.currentTimeMillis();
 
-				thumbnailUri = Utils.getThumbnailDir();
+				String imageName = mImagePath.substring(mImagePath.lastIndexOf(File.separator + "") +1);
+				thumbnailUri = Utils.getThumbnailDir(imageName);
 				// 获取缩略图,根据原图创建缩略图, mImagePath是原图的地址
 				Bitmap bitmap = Utils.getThumbnail(mImagePath, thumbnailUri);
 				// // 根据图片生成bitmap对象
-				// Bitmap imageThumbnailBitmap =
-				// BitmapFactory.decodeFile(mImagePath);
 				File file2 = new File(thumbnailUri);
 
 				captureImageName = mImagePath.substring(mImagePath.lastIndexOf(File.separator) + 1);
@@ -966,16 +909,6 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 				long period = System.currentTimeMillis() - timesb;
 				Log.d("qq", "xiangchangupload : " + period);
 
-				// mediaList.add(new Media(Utils.MEDIA_TYPE_IMAGE,
-				// captureImageName, mImagePath));
-				// // 存储mediaId与imageOriginPath的映射
-				// index_originalPath_Map.put(mediaID2, mImagePath);
-				//
-				// loadMedia(imageContainer, mediaID2,
-				// getThumbnailFromUri(uri2),
-				// uri2, NewTask.TYPE_IMAGE);
-				// // 存储mediaId与thumbnailUri的映射
-				// index_path_Map.put(mediaID2, thumbnailUri);
 			}
 
 			break;
@@ -1010,11 +943,6 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 				uri = Uri.fromFile(file);
 
-				// mediaList.add(new Media(Utils.MEDIA_TYPE_AUDIO,
-				// captureAudioName, audiopath));
-				// index_originalPath_Map.put(mediaID, audiopath);
-				// loadMedia(imageContainer, mediaID, audioThumbnailBitmap, uri,
-				// NewTask.TYPE_AUDIO);
 			}
 			break;
 
@@ -1071,10 +999,12 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		return path;
 	}
 
+	List<String> touchShowImage = new ArrayList<String>();
+	@SuppressWarnings("unchecked")
 	public void loadAttachment() {
-
+		
 		if (getIntent() != null) {
-
+			//TODO first
 			mUrl = (List<Map<String, Object>>) getIntent().getSerializableExtra("url");
 
 			for (Map<String, Object> map : mUrl) {
@@ -1100,9 +1030,18 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 							if (mFileName.contains(".jpg") || mFileName.contains(".png")
 									|| mFileName.contains(".jpeg")) {// 传过来的是图片
 
-								String thumbnailUri = Utils.getThumbnailDir();
-								// 获取缩略图,根据原图创建缩略图, mImagePath是原图的地址
-								Utils.getThumbnail(mFilePath, thumbnailUri);
+								String thumbnailUri = "";
+								String imageThumnailPath = NewTask.fileThumbnail + mFileName;
+								
+								File imageThumbnailFile = new File(imageThumnailPath);
+								if (imageThumbnailFile.exists()){//存在缩略图就使用，不存在就创建
+									thumbnailUri = imageThumnailPath;
+								} else {
+									
+									thumbnailUri = Utils.getThumbnailDir(mFileName);
+									// 获取缩略图,根据原图创建缩略图, mImagePath是原图的地址
+									Utils.getThumbnail(mFilePath, thumbnailUri);
+								}
 								File file2 = new File(thumbnailUri);
 								Uri uri2 = Uri.fromFile(file2);
 
@@ -1116,6 +1055,8 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 								// 存储mediaId与thumbnailUri的映射
 								index_path_Map.put(mediaID2, thumbnailUri);
+								
+								touchShowImage.add(NewTask.fileThumbnail + mFileName);
 							} else if (mFileName.contains(".mp3") || mFileName.contains(".amr")) {// 传递过来的是音频
 
 								// 根据图片生成bitmap对象
@@ -1127,13 +1068,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 								Uri uri = Uri.fromFile(file);
 								int mediaID = Integer.valueOf((String) map.get("index"));
-								;
 
-								// if (isOk2){
-								// mediaID =
-								// } else {
-								// mediaID = mediaIndex++;;//第一次进来
-								// }
 
 								index_originalPath_Map.put(mediaID, mFilePath);
 								loadMedia(imageContainer, mediaID, AudioThumbnailBitmap, uri,
@@ -1147,11 +1082,6 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 								// 显示所录制视频
 								Uri uri = Uri.fromFile(file);
 								int mediaID = Integer.valueOf((String) map.get("index"));
-								// if (isOk2){
-								// mediaID ;
-								// } else {
-								// mediaID = mediaIndex++;;//第一次进来
-								// }
 
 								mediaList.add(
 										new Media(Utils.MEDIA_TYPE_VIDEO, mFileName, mFilePath));
@@ -1318,25 +1248,26 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 	public void setImageviewListener(final Uri uri, final ImageView imageView, final int MediaType,
 			final int MediaId, final String newPath) {
 		// 为图片设置触摸事件
-		imageView.setOnTouchListener(new OnTouchListener() {
-			public boolean onTouch(View v, MotionEvent event) {
-				// 按下时变半透明
-				if (event.getAction() == MotionEvent.ACTION_DOWN)
-					imageView.setAlpha(50);
-				// 抬起时恢复透明度
-				else if (event.getAction() == MotionEvent.ACTION_UP)
-					imageView.setAlpha(255);
-				return false;
-			}
-		});
+//		imageView.setOnTouchListener(new OnTouchListener() {
+//			public boolean onTouch(View v, MotionEvent event) {
+//				// 按下时变半透明
+//				if (event.getAction() == MotionEvent.ACTION_DOWN)
+//					imageView.setAlpha(50);
+//				// 抬起时恢复透明度
+//				else if (event.getAction() == MotionEvent.ACTION_UP)
+//					imageView.setAlpha(255);
+//				return false;
+//			}
+//		});
 		// 为图片设置单击事件
 		imageView.setOnClickListener(new OnClickListener() {
-
+			
 			public void onClick(View v) {
 				// 单击事件触发后，单击事件失效
 				// imageView.setEnabled(false);
-
+				
 				switch (MediaType) {
+				
 				case NewTask.TYPE_IMAGE:
 					// 点击显示大图
 					showImageDialog(imageView, Uri.fromFile(new File(newPath)));
@@ -1369,7 +1300,6 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 				default:
 					break;
 				}
-
 			}
 		});
 
@@ -1377,14 +1307,30 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 	/** 显示大图对话框 */
 	private void showImageDialog(final ImageView imageView, final Uri uri) {
-		String path = uri.toString();
-		String fileName = path.substring(path.lastIndexOf("/") + 1);
-		String filePath = NewTask.fileFolder + fileName;
-		Uri fileUri = Uri.fromFile(new File(filePath));
-		Intent intent = new Intent();
-		intent.setAction(Intent.ACTION_VIEW);
-		intent.setDataAndType(fileUri, "image/*");
-		startActivity(intent);
+		
+		if (touchShowImage.size() != 0){
+			String path = uri.toString();
+			String fileName = path.substring(path.lastIndexOf("/") + 1);
+			String completeName = NewTask.fileThumbnail + fileName;
+			int currentItemIndex = touchShowImage.indexOf(completeName);
+			
+			Intent intent2 = new Intent(XianChangUpload.this, ViewPagerActivity.class);
+			intent2.putExtra("images", (Serializable)touchShowImage);
+			intent2.putExtra("currentItemIndex", currentItemIndex);
+			startActivity(intent2);
+			
+		} else {
+			
+			String path = uri.toString();
+			String fileName = path.substring(path.lastIndexOf("/") + 1);
+			String filePath = NewTask.fileFolder + fileName;
+			Uri fileUri = Uri.fromFile(new File(filePath));
+			Intent intent = new Intent();
+			intent.setAction(Intent.ACTION_VIEW);
+			intent.setDataAndType(fileUri, "image/*");
+			startActivity(intent);
+		}
+		
 	}
 
 	// private void showImageDialog(final ImageView imageView, final Uri uri) {

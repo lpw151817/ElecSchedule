@@ -87,15 +87,29 @@ public class ShowXianChangAttachment extends BaseActivity implements OnClickList
 
 			if (type.equals("image")) {
 				imagePath = mMap.get("image");
-				// 图片太大，imageview显示的时候容易内存溢出，所以需要将原图进行压缩
-				String thumbnailUri = Utils.getThumbnailDir();
-				// 获取缩略图,根据原图创建缩略图, mImagePath是原图的地址
-				Utils.getThumbnail(imagePath, thumbnailUri);
-
-				Bitmap bitmap = BitmapFactory.decodeFile(thumbnailUri);
-				// 旋转
-				int degree = Utils.readPictureDegree(imagePath);
-				bitmap = Utils.rotateBitmap(bitmap, degree);
+				
+				String imageName = imagePath.substring(imagePath.lastIndexOf(File.separator + "") +1);
+				String thumbnailUri = "";
+				String imageThumnailPath = NewTask.fileThumbnail + imageName;
+				
+				Bitmap bitmap = null;
+				File imageThumbnailFile = new File(imageThumnailPath);
+				
+				if (imageThumbnailFile.exists()){//存在缩略图就使用，不存在就创建
+					bitmap = BitmapFactory.decodeFile(imageThumnailPath);
+				} else {
+					
+					// 图片太大，imageview显示的时候容易内存溢出，所以需要将原图进行压缩
+					thumbnailUri = Utils.getThumbnailDir(imageName);
+					// 获取缩略图,根据原图创建缩略图, mImagePath是原图的地址
+					Utils.getThumbnail(imagePath, thumbnailUri);
+					
+					bitmap = BitmapFactory.decodeFile(thumbnailUri);
+					// 旋转
+					int degree = Utils.readPictureDegree(imagePath);
+					bitmap = Utils.rotateBitmap(bitmap, degree);
+				}
+				
 				mImage.setImageBitmap(bitmap);
 			} else if (type.equals("audio")) {
 				// audioPath = bundle.getString("audiopath");

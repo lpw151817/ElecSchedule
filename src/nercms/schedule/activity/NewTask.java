@@ -597,12 +597,19 @@ public class NewTask extends BaseActivity {
 					Uri thumbUri = data.getData();
 					String selectimagepath = uri2filePath(thumbUri);
 
-					// 缩略图地址
-					String selectThumbnailUri = Utils.getThumbnailDir();
-					// 获取缩略图,根据原图创建缩略图, mImagePath是原图的地址
-					Utils.getThumbnail(selectimagepath, selectThumbnailUri);
-					// Utils.getBitMapFromRes(selectimagepath,
-					// selectThumbnailUri);
+					String captureImageName = selectimagepath.substring(selectimagepath.lastIndexOf(File.separator) + 1);
+					String selectThumbnailUri = "";
+					String imageThumnailPath = NewTask.fileThumbnail + captureImageName;
+					
+					File imageThumbnailFile = new File(imageThumnailPath);
+					if (imageThumbnailFile.exists()){//存在缩略图就使用，不存在就创建
+						selectThumbnailUri = imageThumnailPath;
+					} else {
+						// 缩略图地址
+						selectThumbnailUri = Utils.getThumbnailDir(captureImageName);
+						// 获取缩略图,根据原图创建缩略图, mImagePath是原图的地址
+						Utils.getThumbnail(selectimagepath, selectThumbnailUri);
+					}
 
 					File file1 = new File(selectThumbnailUri);
 
@@ -632,18 +639,25 @@ public class NewTask extends BaseActivity {
 
 		case CAPTURE_IMAGE_REQUEST_CODE:
 			if (resultCode == RESULT_OK) {
-				// 缩略图地址
-				String thumbnailUri = Utils.getThumbnailDir();
-				// 获取缩略图,根据原图创建缩略图, mImagePath是原图的地址
-				Utils.getThumbnail(mImagePath, thumbnailUri);
-
-				// // 根据图片生成bitmap对象
-				// Bitmap imageThumbnailBitmap =
-				// BitmapFactory.decodeFile(mImagePath);
+				
+				String captureImageName = mImagePath
+						.substring(mImagePath.lastIndexOf(File.separator) + 1);				
+				String imageThumnailPath = NewTask.fileThumbnail + captureImageName;
+				String thumbnailUri = "";
+				
+				File imageThumbnailFile = new File(imageThumnailPath);
+				if (imageThumbnailFile.exists()){//存在缩略图就使用，不存在就创建
+					thumbnailUri = imageThumnailPath;
+				} else {
+					// 缩略图地址
+					 thumbnailUri = Utils.getThumbnailDir(captureImageName);
+					// 获取缩略图,根据原图创建缩略图, mImagePath是原图的地址
+					Utils.getThumbnail(mImagePath, thumbnailUri);
+				}
+				
 				File file2 = new File(thumbnailUri);
 
-				String captureImageName = mImagePath
-						.substring(mImagePath.lastIndexOf(File.separator) + 1);
+				
 				System.out.println("captureImageName: " + captureImageName);
 				mediaList.add(new Media(Utils.MEDIA_TYPE_IMAGE, captureImageName, mImagePath));
 
@@ -1192,17 +1206,28 @@ public class NewTask extends BaseActivity {
 	}
 
 	public void loadImage(String mImagePath) {
-		// 缩略图地址
-		String thumbnailUri = Utils.getThumbnailDir();
-		// 获取缩略图,根据原图创建缩略图, mImagePath是原图的地址
-		Utils.getThumbnail(mImagePath, thumbnailUri);
+		String captureImageName = mImagePath.substring(mImagePath.lastIndexOf(File.separator) + 1);
+
+		
+		String imageThumnailPath = NewTask.fileThumbnail + captureImageName;
+		String thumbnailUri = "";
+		
+		File imageThumbnailFile = new File(imageThumnailPath);
+		if (imageThumbnailFile.exists()){//存在缩略图就使用，不存在就创建
+			thumbnailUri = imageThumnailPath;
+		} else {
+			// 缩略图地址
+			 thumbnailUri = Utils.getThumbnailDir(captureImageName);
+			// 获取缩略图,根据原图创建缩略图, mImagePath是原图的地址
+			Utils.getThumbnail(mImagePath, thumbnailUri);
+		}
+		
 
 		// // 根据图片生成bitmap对象
 		// Bitmap imageThumbnailBitmap =
 		// BitmapFactory.decodeFile(mImagePath);
 		File file2 = new File(thumbnailUri);
 
-		String captureImageName = mImagePath.substring(mImagePath.lastIndexOf(File.separator) + 1);
 		System.out.println("captureImageName: " + captureImageName);
 		mediaList.add(new Media(Utils.MEDIA_TYPE_IMAGE, captureImageName, mImagePath));
 

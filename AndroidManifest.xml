@@ -357,6 +357,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Schedule" >
         </activity>
+        
+        <activity android:name="nercms.schedule.activity.ViewPagerActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            ></activity>
     </application>
 
 </manifest>

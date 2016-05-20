@@ -194,17 +194,28 @@ public class ShowDownLoad extends Activity {
 	}
 
 	public void loadImage(String mImagePath) {
-		// 缩略图地址
-		String thumbnailUri = Utils.getThumbnailDir();
-		// 获取缩略图,根据原图创建缩略图, mImagePath是原图的地址
-		Utils.getThumbnail(mImagePath, thumbnailUri);
+		String captureImageName = mImagePath.substring(mImagePath.lastIndexOf(File.separator) + 1);
+		
+		String thumbnailUri = "";
+		String imageThumnailPath = NewTask.fileThumbnail + captureImageName;
+		
+		File imageThumbnailFile = new File(imageThumnailPath);
+		if (imageThumbnailFile.exists()){//存在缩略图就使用，不存在就创建
+			thumbnailUri = imageThumnailPath;
+		} else {
+			
+			// 缩略图地址
+			thumbnailUri = Utils.getThumbnailDir(captureImageName);
+			
+			// 获取缩略图,根据原图创建缩略图, mImagePath是原图的地址
+			Utils.getThumbnail(mImagePath, thumbnailUri);
+		}
 
 		// // 根据图片生成bitmap对象
 		// Bitmap imageThumbnailBitmap =
 		// BitmapFactory.decodeFile(mImagePath);
 		File file2 = new File(thumbnailUri);
 
-		String captureImageName = mImagePath.substring(mImagePath.lastIndexOf(File.separator) + 1);
 		System.out.println("captureImageName: " + captureImageName);
 		mediaList.add(new Media(Utils.MEDIA_TYPE_IMAGE, captureImageName, mImagePath));
 

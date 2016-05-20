@@ -451,10 +451,9 @@ public class Utils {
 	/**
 	 * @author chenqiang
 	 */
-	public static String getThumbnailDir() {
+	public static String getThumbnailDir(String name) {
 		// 得到一个路径，内容是sdcard的附件缩略图路径
-		// String path = Environment.getExternalStorageDirectory().getPath() +
-		// "/TestRecord/Thumbnail";
+//		String path = Environment.getExternalStorageDirectory().getPath() + "/TestRecord/Thumbnail";
 		String path = NewTask.fileThumbnail;
 		File filePath = new File(path);
 
@@ -463,7 +462,21 @@ public class Utils {
 			filePath.mkdirs();
 		}
 
-		return path + getFileDate() + ".jpg";
+//		return path  + getFileDate() + ".jpg";
+		return path + name;
+	}
+	
+	public static String getSelectImageThumbnailDir() {
+		// 得到一个路径，内容是sdcard的附件缩略图路径
+		String path = NewTask.fileThumbnail;
+		File filePath = new File(path);
+
+		if (!filePath.exists()) {
+			// 若不存在，创建目录
+			filePath.mkdirs();
+		}
+
+		return path  + getFileDate() + ".jpg";
 
 	}
 
