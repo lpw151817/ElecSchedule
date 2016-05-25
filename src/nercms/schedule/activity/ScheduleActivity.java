@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.widget.Button;
 import android.widget.Toast;
 import android.wxapp.service.elec.dao.Org;
@@ -32,7 +33,7 @@ import com.nercms.schedule.ui.OnMsgCallback;
 
 public class ScheduleActivity extends BaseActivity implements OnClickListener, OnMsgCallback {
 
-//	private boolean isScheduleOpen = false;
+	// private boolean isScheduleOpen = false;
 
 	protected static final int UPLOAD = 0;
 
@@ -52,7 +53,9 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 	// private String remote_id2 = "4294967295";
 	// private String video_source = remote_id2;// 视频源ID
 
-	private Button bt1, bt2, bt3, bt4;
+	private Button bt1, bt2, bt3, bt4, bt5;
+	String bt5Open = "打开免提";
+	String bt5Close = "关闭免提";
 
 	SurfaceView video_render_view;
 	SurfaceView video_capture_view;
@@ -100,31 +103,32 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 				onBackPressed();
 				break;
 			case GID.MSG_PING_DELAY:
-//				// Toast.makeText(ScheduleActivity.this, "ping server delay: " +
-//				// (Integer) (msg.obj),
-//				// Toast.LENGTH_SHORT).show();
-//				Log.e("Demo", "Ping Msg:" + (Integer) (msg.obj));
-//				int ping = (Integer) (msg.obj);
-//				if (ping == 0 || ping > pingMax) {
-//					// TODO 网络中断的时候停止上传
-//					// scheduler.shutdownNow();
-//					AttachmentUpload.stop(ScheduleActivity.this);
-//					isScheduleOpen = false;
-//					Log.d("TAG", "网络中断的时候停止上传");
-//				} else {
-//					// TODO 网络连接的时候开始上传
-//					// 线程不要重复创建
-//
-//					if (!isScheduleOpen) {
-//						Log.d("JAMES", "打开线程");
-//
-//						AttachmentUpload.start(ScheduleActivity.this, handler);
-//						// AttachmentUpload.start(ScheduleActivity.this);
-//
-//						isScheduleOpen = true;
-//					}
-//					Log.d("Demo", "网络连接的时候开始上传");
-//				}
+				// // Toast.makeText(ScheduleActivity.this, "ping server delay:
+				// " +
+				// // (Integer) (msg.obj),
+				// // Toast.LENGTH_SHORT).show();
+				// Log.e("Demo", "Ping Msg:" + (Integer) (msg.obj));
+				// int ping = (Integer) (msg.obj);
+				// if (ping == 0 || ping > pingMax) {
+				// // TODO 网络中断的时候停止上传
+				// // scheduler.shutdownNow();
+				// AttachmentUpload.stop(ScheduleActivity.this);
+				// isScheduleOpen = false;
+				// Log.d("TAG", "网络中断的时候停止上传");
+				// } else {
+				// // TODO 网络连接的时候开始上传
+				// // 线程不要重复创建
+				//
+				// if (!isScheduleOpen) {
+				// Log.d("JAMES", "打开线程");
+				//
+				// AttachmentUpload.start(ScheduleActivity.this, handler);
+				// // AttachmentUpload.start(ScheduleActivity.this);
+				//
+				// isScheduleOpen = true;
+				// }
+				// Log.d("Demo", "网络连接的时候开始上传");
+				// }
 				break;
 
 			case Constant.FILE_UPLOAD_SUCCESS:
@@ -232,11 +236,18 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 
 		// 如果内外网ip不等，则设置参数为true
 		if (!server_ip_lan.equals(server_ip_wan))
-			MediaInstance.instance().api_start(getApplicationContext(), server_ip_wan,
+			// MediaInstance.instance().api_start(getApplicationContext(),
+			// server_ip_wan,
+			// server_ip_lan, true, server_port, self_id, encrypt_info);
+			MediaInstance.instance().api_start(getApplicationContext(), 352, 288, server_ip_wan,
 					server_ip_lan, true, server_port, self_id, encrypt_info);
 		else
-			MediaInstance.instance().api_start(getApplicationContext(), server_ip_wan,
+			// MediaInstance.instance().api_start(getApplicationContext(),
+			// server_ip_wan,
+			// server_ip_lan, false, server_port, self_id, encrypt_info);
+			MediaInstance.instance().api_start(getApplicationContext(), 352, 288, server_ip_wan,
 					server_ip_lan, false, server_port, self_id, encrypt_info);
+
 		Log.e("Push", "MediaInstance.instance().api_start");
 		MediaInstance.instance().api_set_video_render_scale(2.8f);
 		MediaInstance.instance().api_set_msg_callback(this);
@@ -254,6 +265,21 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 		bt4 = (Button) findViewById(R.id.button4);
 		bt4.setOnClickListener(this);
 		bt4.setVisibility(View.GONE);
+		bt5 = (Button) findViewById(R.id.button5);
+		bt5.setOnClickListener(this);
+		bt5.setText(bt5Open);
+		bt5.setVisibility(View.GONE);
+
+		// 添加长按事件，用来切换摄像头
+		video_capture_view.setOnLongClickListener(new OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View v) {
+				if (true == GD._i_am_video_source) {
+					MediaInstance.instance().api_reverse_camera();
+				}
+				return true;
+			}
+		});
 
 		Intent intent = new Intent(getApplicationContext(), MainContent.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -289,7 +315,7 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 				// if (surfaceView.getVisibility() == View.GONE)
 				// surfaceView.setVisibility(View.VISIBLE);
 				changeVisibility(View.GONE, bt1, bt2);
-				changeVisibility(View.VISIBLE, bt4);
+				changeVisibility(View.VISIBLE, bt4, bt5);
 				ArrayList<String> ids = new ArrayList<String>();
 				for (Org org : selectedPeople) {
 					ids.add(org.getId().substring(1));
@@ -297,6 +323,7 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 				}
 				showLog_v(videoId);
 				MediaInstance.instance().api_start_schedule(ids, videoId);
+
 			} else {
 				showLongToast("请设置调度人员");
 			}
@@ -305,18 +332,28 @@ public class ScheduleActivity extends BaseActivity implements OnClickListener, O
 			// 接听
 			// if (surfaceView.getVisibility() == View.GONE)
 			// surfaceView.setVisibility(View.VISIBLE);
-			changeVisibility(View.VISIBLE, bt4);
+			changeVisibility(View.VISIBLE, bt4, bt5);
 			changeVisibility(View.GONE, bt1, bt2, bt3);
 			MediaInstance.instance().api_accept_schedule_invite();
+
 			break;
 		case R.id.button4:
 			// 挂断
 			// if (surfaceView.getVisibility() == View.GONE)
 			// surfaceView.setVisibility(View.VISIBLE);
-			changeVisibility(View.GONE, bt4);
+			changeVisibility(View.GONE, bt4, bt5);
 			changeVisibility(View.VISIBLE, bt1, bt2);
 			MediaInstance.instance().api_shutdown_schedule();
 			onBackPressed();
+			break;
+		case R.id.button5:
+			// 免提
+			if (bt5.getText().toString().equals(bt5Close)) {
+				bt5.setText(bt5Open);
+			} else {
+				bt5.setText(bt5Close);
+			}
+			MediaInstance.instance().api_hand_free_switch();
 			break;
 		}
 		refresh_view();
