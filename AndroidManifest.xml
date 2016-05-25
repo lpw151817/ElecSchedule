@@ -352,7 +352,7 @@
         <activity
             android:name=".activity.Video"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Schedule" >
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
         </activity>
         <activity
             android:name="nercms.schedule.activity.TongjiActivity"

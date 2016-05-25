@@ -187,12 +187,12 @@ public class Video extends Activity implements OnClickListener {
         mRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA); // 设置从摄像头采集图像  
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);  // 设置视频的输出格式 为MP4
         mRecorder.setMaxDuration(15000); //设置最大录像时间为15s  
-        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT); // 设置音频的编码格式  
+        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC); // 设置音频的编码格式  
         mRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264); // 设置视频的编码格式  
 //        mRecorder.setVideoSize(176, 144);  // 设置视频大小
         mRecorder.setVideoSize(size1.width, size1.height);  // 设置视频大小  
 //        mRecorder.setVideoFrameRate(30); // 设置帧率  
-        mRecorder.setVideoEncodingBitRate(5 * 1024 * 1024);
+        mRecorder.setVideoEncodingBitRate(3 * 1024 * 1024);
         
 //      //设置视频源  
 //        mRecorder.setVideoSource(MediaRecorder.VideoSource.DEFAULT);  
