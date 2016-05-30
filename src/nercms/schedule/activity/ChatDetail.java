@@ -91,6 +91,7 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 	private List<tb_task_instructions> newList = new ArrayList<tb_task_instructions>();
 	private List<tb_task_instructions> tempList = new ArrayList<tb_task_instructions>();
 
+	
 	private String msgID;
 	private PersonDao personDao;
 	private TaskInsDao msgDao;
@@ -149,7 +150,6 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 			operationLayout.setVisibility(View.GONE);
 		}
 
-		// TODO
 		Runnable thread = new Runnable() {
 
 			@Override
@@ -250,184 +250,60 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 			}
 			break;
 
-		// case R.id.picture_imageView:
-		// Toast.makeText(ChatDetail.this, "图库", Toast.LENGTH_SHORT).show();
-		// Intent getAlbum = new Intent();
-		// // 开启Pictures画面Type设定为image
-		// getAlbum.setType("image/*");
-		// getAlbum.setAction(Intent.ACTION_GET_CONTENT);
-		//
-		// feedbackID = Utils.produceFeedbackID(String.valueOf(userID));
-		// imagePath = Utils.produceAttachDir(Utils.MEDIA_TYPE_IMAGE,
-		// feedbackID, ChatDetail.this);
-		// startActivityForResult(getAlbum,
-		// LocalConstant.SELECT_IMAGE_REQUEST_CODE);
-		//
-		// break;
-		//
-		// case R.id.camera_imageView:
-		// Toast.makeText(ChatDetail.this, "拍照", Toast.LENGTH_SHORT).show();
-		// // 拍照
-		// Intent imageIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		// feedbackID = Utils.produceFeedbackID(String.valueOf(userID));
-		// imagePath = Utils.produceAttachDir(Utils.MEDIA_TYPE_IMAGE,
-		// feedbackID, ChatDetail.this);
-		//
-		// Uri imageUri = Uri.fromFile(new File(imagePath));
-		// // 指定照片储存路径
-		// imageIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-		// startActivityForResult(imageIntent,
-		// LocalConstant.CAPTURE_IMAGE_REQUEST_CODE);
-		//
-		// break;
-		//
-		// case R.id.video_imageView:
-		//
-		// Toast.makeText(ChatDetail.this, "摄像", Toast.LENGTH_SHORT).show();
-		// // 摄像
-		// Intent videoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-		// feedbackID = Utils.produceFeedbackID(String.valueOf(userID));
-		// videoPath = Utils.produceAttachDir(Utils.MEDIA_TYPE_VIDEO,
-		// feedbackID, ChatDetail.this);
-		//
-		// Uri videoUri = Uri.fromFile(new File(videoPath));
-		// // 指定视频存储路径
-		// videoIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoUri);
-		// // 指定视频的时长限制（30s）
-		// videoIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 30000);
-		// startActivityForResult(videoIntent,
-		// LocalConstant.CAPTURE_VIDEO_REQUEST_CODE);
-		// break;
-		//
+		case R.id.picture_imageView:
+			// TODO 选照片
+			Toast.makeText(ChatDetail.this, "图库", Toast.LENGTH_SHORT).show();
+			Intent getAlbum = new Intent();
+			// 开启Pictures画面Type设定为image
+			getAlbum.setType("image/*");
+			getAlbum.setAction(Intent.ACTION_GET_CONTENT);
+
+			startActivityForResult(getAlbum, LocalConstant.SELECT_IMAGE_REQUEST_CODE);
+
+			break;
+
+		case R.id.camera_imageView:
+			// TODO 拍照
+			Toast.makeText(ChatDetail.this, "拍照", Toast.LENGTH_SHORT).show();
+			// 拍照
+			Intent imageIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+			startActivityForResult(imageIntent, LocalConstant.CAPTURE_IMAGE_REQUEST_CODE);
+
+			break;
+
+		case R.id.video_imageView:
+			// TODO 录像
+			Toast.makeText(ChatDetail.this, "摄像", Toast.LENGTH_SHORT).show();
+			// 摄像
+			Intent videoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+			startActivityForResult(videoIntent, LocalConstant.CAPTURE_VIDEO_REQUEST_CODE);
+			break;
+
 		}
 	}
 
-	// @SuppressLint("SimpleDateFormat")
-	// @Override
-	// protected void onActivityResult(int requestCode, int resultCode, Intent
-	// data) {
-	// super.onActivityResult(requestCode, resultCode, data);
-	// // 缩略图地址
-	// // String thumbnailUri;
-	// // 媒体文件地址
-	// String originalUri;
-	//
-	// String uploadUrl = android.wxapp.service.elec.request.Contants.HFS_URL;
-	//
-	// switch (requestCode) {
-	// case LocalConstant.CAPTURE_IMAGE_REQUEST_CODE:
-	// if (resultCode == RESULT_OK) {
-	// if (data == null) {
-	// File file = new File(imagePath);
-	// if (file.exists())
-	// originalUri = imagePath;
-	// else {
-	// originalUri = "";
-	// }
-	// } else {
-	// originalUri = imagePath;
-	// }
-	//
-	// String feedbackTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-	// .format(new Date(System.currentTimeMillis()));
-	//
-	// fb = new FeedbackModel(feedbackID, taskID, Integer.parseInt(userID),
-	// feedbackTime,
-	// "", Constant.READ);
-	// String imageName = originalUri.substring(originalUri.lastIndexOf("/") +
-	// 1);
-	// fbAttach = new FeedbackAttachModel(feedbackID, LocalConstant.IAMGE_TYPE,
-	// imageName);
-	// fb.setAttachment(fbAttach);
-	//
-	// // 开启上传
-	// new HttpUploadTask(null, this).execute(originalUri, uploadUrl);
-	// }
-	//
-	// break;
-	// case LocalConstant.CAPTURE_VIDEO_REQUEST_CODE:
-	//
-	// if (resultCode == RESULT_OK) {
-	// originalUri = videoPath;
-	// // 判断文件是否存在,不存在直接跳过
-	// File file = new File(originalUri);
-	// if (!file.exists()) {
-	// return;
-	// }
-	// String feedbackTime1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-	// .format(new Date(System.currentTimeMillis()));
-	//
-	// fb = new FeedbackModel(feedbackID, taskID, Integer.parseInt(userID),
-	// feedbackTime1,
-	// null, Constant.READ);
-	// String videoName = originalUri.substring(originalUri.lastIndexOf("/") +
-	// 1);
-	// fbAttach = new FeedbackAttachModel(feedbackID, LocalConstant.VIDEO_TYPE,
-	// videoName);
-	// fb.setAttachment(fbAttach);
-	// // 开启上传
-	// new HttpUploadTask(null, this).execute(originalUri, uploadUrl);
-	// }
-	//
-	// break;
-	// case LocalConstant.SELECT_IMAGE_REQUEST_CODE:
-	// String selectedPath;
-	// // 点击了返回键，对象返回为空,跳过
-	// if (data == null) {
-	// originalUri = "";
-	// } else {
-	// // 获得图片的uri 判断是否需要索引路径
-	// Uri selectedUri = data.getData();
-	// selectedPath = selectedUri.getPath();
-	//
-	// String[] proj = { MediaStore.Images.Media.DATA };
-	// Cursor cursor = getContentResolver().query(selectedUri, proj, null, null,
-	// null);
-	// // 获得用户选择的图片的索引值
-	// int columnIndex =
-	// cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-	// cursor.moveToFirst();
-	// // 最后根据索引值获取图片路径
-	// selectedPath = cursor.getString(columnIndex);
-	// cursor.close();
-	//
-	// if (!(selectedPath.endsWith("jpg") || selectedPath.endsWith("gif")
-	// || selectedPath.endsWith("bmp") || selectedPath.endsWith("png"))) {
-	// originalUri = "";
-	// Toast.makeText(ChatDetail.this, "不是图片", Toast.LENGTH_SHORT).show();
-	// return;
-	// }
-	// imagePath = Utils.produceAttachDir(Utils.MEDIA_TYPE_IMAGE, taskID,
-	// ChatDetail.this);
-	//
-	// // 将图片拷贝到附件目录下
-	// File fromFile = new File(selectedPath);
-	// File toFile = new File(imagePath);
-	// Utils.copyFile(fromFile, toFile, true);
-	//
-	// // 以下对全局变量进行赋值
-	// // 收到附件上传成功message后再在Handler中处理，再发送消息或者反馈内容到服务器，以及保存到本地
-	//
-	// String feedbackTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-	// .format(new Date(System.currentTimeMillis()));
-	//
-	// fb = new FeedbackModel(feedbackID, taskID, Integer.parseInt(userID),
-	// feedbackTime,
-	// "", Constant.UNREAD);
-	// String imageName = imagePath.substring(imagePath.lastIndexOf("/") + 1);
-	// fbAttach = new FeedbackAttachModel(feedbackID, LocalConstant.IAMGE_TYPE,
-	// imageName);
-	// fb.setAttachment(fbAttach);
-	// // 开启上传
-	// new HttpUploadTask(null, this).execute(imagePath, uploadUrl);
-	// }
-	//
-	// break;
-	//
-	// default:
-	// break;
-	// }
-	// }
+	@SuppressLint("SimpleDateFormat")
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (resultCode == RESULT_OK) {
+			switch (requestCode) {
+			case LocalConstant.CAPTURE_IMAGE_REQUEST_CODE:
+				// TODO 拍照回调
+				showShortToast("拍照回调");
+				break;
+			case LocalConstant.CAPTURE_VIDEO_REQUEST_CODE:
+				// TODO 录像回调
+				showShortToast("录像回调");
+				break;
+			case LocalConstant.SELECT_IMAGE_REQUEST_CODE:
+				// TODO 选照片回调
+				showShortToast("选照片回调");
+				break;
+			}
+		}
+	}
 
 	// 发送反馈
 	private void sendFeedback() {

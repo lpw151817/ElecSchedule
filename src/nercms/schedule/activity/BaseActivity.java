@@ -70,6 +70,7 @@ public class BaseActivity extends SherlockActivity {
 		return MySharedPreference.get(this, MySharedPreference.USER_ID, null);
 	}
 
+	// 获取的密码是密文
 	protected String getUserIc() {
 		return MySharedPreference.get(this, MySharedPreference.USER_IC, null);
 	}

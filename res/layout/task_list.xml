@@ -2,14 +2,47 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    
     android:padding="5dp" >
+
+    <LinearLayout
+        android:id="@+id/top"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="#0000ff"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/qianyitian"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="前一天"
+            android:textColor="#ffffff" />
+
+        <TextView
+            android:id="@+id/jintian"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="2016-05-27"
+            android:textColor="#ffffff" />
+
+        <Button
+            android:id="@+id/houyitian"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="后一天"
+            android:textColor="#ffffff" />
+    </LinearLayout>
 
     <ListView
         android:id="@+id/task_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/rijihualuru"
+        android:layout_below="@+id/top"
+        android:layout_marginTop="5dp"
         android:divider="@drawable/mag_line_x" >
     </ListView>
 
@@ -19,10 +52,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:visibility="gone"
         android:layout_margin="5dp"
         android:background="@drawable/btn_style_green"
         android:text="日计划录入"
-        android:textColor="#ffffff" />
+        android:textColor="#ffffff"
+        android:visibility="gone" />
 
 </RelativeLayout>

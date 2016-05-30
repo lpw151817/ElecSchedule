@@ -14,12 +14,13 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
-import android.wxapp.service.elec.dao.OrgDao;
+import android.widget.TextView;
 import android.wxapp.service.elec.dao.PlanTaskDao;
 import android.wxapp.service.elec.model.bean.table.tb_task_info;
 import nercms.schedule.R;
 import nercms.schedule.adapter.XianChangAddAdapter;
 import nercms.schedule.adapter.XianchangAdapter;
+import nercms.schedule.utils.Utils;
 
 /**
  * 6.10 FINAL
@@ -30,6 +31,7 @@ import nercms.schedule.adapter.XianchangAdapter;
 public class TaskList extends BaseActivity {
 
 	ListView listView;
+	XianchangAdapter adapter;
 	Button bt_rjhlr;
 	// 统计界面进入 4 表示今天 5表示昨天
 	int enterType;
@@ -39,9 +41,58 @@ public class TaskList extends BaseActivity {
 	PlanTaskDao planTaskDao;
 	List<tb_task_info> data;
 
+	Button bt_qianyitian, bt_houyitian;
+	TextView tv_jintian;
+
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.task_list);
+
+		bt_houyitian = (Button) findViewById(R.id.houyitian);
+		bt_houyitian.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				String tmp = tv_jintian.getText().toString() + " 00:00:00";
+
+				Date today = Utils.parseDateInFormat1(tmp);
+				Date tomorrow = new Date(today.getYear(), today.getMonth(), today.getDate() + 1);
+				Date theDayAfterTomorrow = new Date(today.getYear(), today.getMonth(),
+						today.getDate() + 2);
+				if (isAdmin() == PERSON_TYPE.XIANCHANG)
+					data = planTaskDao.getPlanTasks(enterType, 3, getUserId(), status,
+							tomorrow.getTime() + "", theDayAfterTomorrow.getTime() + "");
+				else
+					data = planTaskDao.getPlanTasks(enterType, 3, null, status,
+							tomorrow.getTime() + "", theDayAfterTomorrow.getTime() + "");
+				tv_jintian.setText(Utils.formatDateMs(tomorrow.getTime()).split(" ")[0]);
+
+				adapter.updateData(data);
+			}
+		});
+		bt_qianyitian = (Button) findViewById(R.id.qianyitian);
+		bt_qianyitian.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				String tmp = tv_jintian.getText().toString() + " 00:00:00";
+
+				Date today = Utils.parseDateInFormat1(tmp);
+				Date yesterday = new Date(today.getYear(), today.getMonth(), today.getDate() - 1);
+				if (isAdmin() == PERSON_TYPE.XIANCHANG)
+					data = planTaskDao.getPlanTasks(enterType, 3, getUserId(), status,
+							yesterday.getTime() + "", today.getTime() + "");
+				else
+					data = planTaskDao.getPlanTasks(enterType, 3, null, status,
+							yesterday.getTime() + "", today.getTime() + "");
+				tv_jintian.setText(Utils.formatDateMs(yesterday.getTime()).split(" ")[0]);
+
+				adapter.updateData(data);
+			}
+		});
+
+		tv_jintian = (TextView) findViewById(R.id.jintian);
+		tv_jintian.setText(Utils.formatDateMs(System.currentTimeMillis()).split(" ")[0]);
 
 		enterType = getIntent().getIntExtra("enterType", 1);
 		status = getIntent().getStringExtra("statue");
@@ -118,9 +169,23 @@ public class TaskList extends BaseActivity {
 		// 当当前登录用户非管理员，则不能录入计划
 		if (isAdmin() == PERSON_TYPE.XIANCHANG) {
 			bt_rjhlr.setVisibility(View.GONE);
-			if (enterType < 4)
-				data = planTaskDao.getPlanTasks(enterType, 3, getUserId(), status);
-			else {
+			if (enterType < 4) {
+				// data = planTaskDao.getPlanTasks(enterType, 3, getUserId(),
+				// status);
+
+				// 显示今天的地址
+				String tmp = tv_jintian.getText().toString() + " 00:00:00";
+				Date today = Utils.parseDateInFormat1(tmp);
+				Date tomorrow = new Date(today.getYear(), today.getMonth(), today.getDate() + 1);
+
+				data = planTaskDao.getPlanTasks(enterType, 3, getUserId(), status,
+						today.getTime() + "", tomorrow.getTime() + "");
+
+			} else {
+
+				// 时间选择器隐藏
+				findViewById(R.id.top).setVisibility(View.GONE);
+
 				Date tmp = new Date(System.currentTimeMillis());
 				Date today = new Date(tmp.getYear(), tmp.getMonth(), tmp.getDate() + 1);
 				Date yesterday = new Date(tmp.getYear(), tmp.getMonth(), tmp.getDate());
@@ -135,10 +200,20 @@ public class TaskList extends BaseActivity {
 							theDayBeforeYesterday.getTime() + "", yesterday.getTime() + "");
 			}
 		} else {
+			if (enterType < 4) {
+				// data = planTaskDao.getPlanTasks(enterType, 3, null, status);
 
-			if (enterType < 4)
-				data = planTaskDao.getPlanTasks(enterType, 3, null, status);
-			else {
+				// 显示今天的地址
+				String tmp = tv_jintian.getText().toString() + " 00:00:00";
+				Date today = Utils.parseDateInFormat1(tmp);
+				Date tomorrow = new Date(today.getYear(), today.getMonth(), today.getDate() + 1);
+
+				data = planTaskDao.getPlanTasks(enterType, 3, null, status, today.getTime() + "",
+						tomorrow.getTime() + "");
+			} else {
+				// 时间选择器隐藏
+				findViewById(R.id.top).setVisibility(View.GONE);
+
 				Date tmp = new Date(System.currentTimeMillis());
 				Date today = new Date(tmp.getYear(), tmp.getMonth(), tmp.getDate() + 1);
 				Date yesterday = new Date(tmp.getYear(), tmp.getMonth(), tmp.getDate());
@@ -165,7 +240,8 @@ public class TaskList extends BaseActivity {
 			});
 		}
 
-		listView.setAdapter(new XianchangAdapter(this, enterType, data));
+		adapter = new XianchangAdapter(this, enterType, data);
+		listView.setAdapter(adapter);
 
 		listView.setOnItemClickListener(new OnItemClickListener() {
 

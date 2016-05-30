@@ -1,5 +1,8 @@
 package nercms.schedule.activity;
 
+import com.Generate_md5;
+import com.google.gson.Gson;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,6 +14,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.wxapp.service.elec.model.LoginRequest;
 import android.wxapp.service.elec.request.Contants;
 import nercms.schedule.R;
 import nercms.schedule.R.id;
@@ -20,7 +24,8 @@ import nercms.schedule.R.menu;
 public class TongjiActivity extends BaseActivity {
 
 	WebView webView;
-	String url = "";
+	String url = Contants.SERVER_URL + Contants.TONGJI_METHOD + Contants.TONGJI_PARAM;
+
 	// 用于控制webView中显示toast
 	boolean isShowToast = false;
 
@@ -28,6 +33,11 @@ public class TongjiActivity extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_tongji);
+
+		LoginRequest param = new LoginRequest(getUserName(), getUserIc(), null);
+		url += new Gson().toJson(param);
+
+		showAlterDialog("", url);
 
 		iniActionBar(true, null, "统计");
 
@@ -56,7 +66,6 @@ public class TongjiActivity extends BaseActivity {
 	// 改写物理按键——返回的逻辑
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		// TODO Auto-generated method stub
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			if (webView.canGoBack()) {
 				webView.goBack();// 返回上一页面

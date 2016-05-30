@@ -30,6 +30,12 @@ public class XianchangAdapter extends BaseAdapter {
 	int renwuleibie;
 	OrgDao dao;
 
+	public void updateData(List<tb_task_info> data) {
+		this.data.clear();
+		this.data.addAll(data);
+		notifyDataSetChanged();
+	}
+
 	public XianchangAdapter(Context c, int renwuleibie, List<tb_task_info> data) {
 		this.mContext = c;
 		this.renwuleibie = renwuleibie;
@@ -67,7 +73,8 @@ public class XianchangAdapter extends BaseAdapter {
 			holder = (Holder) convertView.getTag();
 		}
 		holder.taskName.setText(data.get(position).getName());
-		holder.time.setText(Utils.formatDateMs(data.get(position).getCreator_time()));
+//		holder.time.setText(Utils.formatDateMs(data.get(position).getCreator_time()));
+		holder.time.setText(Utils.formatDateMs(data.get(position).getPlan_start_time()));
 		try {
 			holder.xcfzr
 					.setText(dao.getPerson(data.get(position).getResponsibility_user()).getName());
