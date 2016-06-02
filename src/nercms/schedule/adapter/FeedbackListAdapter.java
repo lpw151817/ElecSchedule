@@ -20,6 +20,7 @@ import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore.Images.Thumbnails;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -153,7 +154,11 @@ public class FeedbackListAdapter extends BaseAdapter {
 		holder.time.setText(Utils.formatDateMs(fb.getSend_time()));
 
 		holder.text.setVisibility(View.VISIBLE);
-		holder.text.setText(fb.getContent());
+		if (TextUtils.isEmpty(fb.getContent())) {
+			// TODO content为空，则表示其为附件信息，则去附件列表中找附件
+
+		} else
+			holder.text.setText(fb.getContent());
 		holder.media.setVisibility(View.GONE);
 		String headerText = null;
 		if (getItemViewType(position) == RIGHT_ITEM) { // 自己发出的消息

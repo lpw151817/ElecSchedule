@@ -203,41 +203,11 @@ public class AttachmentUpload {
 			tb_task_attachment uploadAtt = new tb_task_attachment(id, task_id, historygps, standard,
 					type, url, upload_time, md5, status);
 			String prefix = NewTask.fileFolder;
-			String fileName = uploadAtt.getUrl();
-			String uploadUrl = android.wxapp.service.elec.request.Contants.HFS_URL;
-
-			int fileItemId = 0;
-			if (standard.equals("standard01")) {
-				fileItemId = 1;
-			} else if (standard.equals("standard02")) {
-				fileItemId = 2;
-			} else if (standard.equals("standard03")) {
-				fileItemId = 3;
-			} else if (standard.equals("standard04")) {
-				fileItemId = 4;
-			} else if (standard.equals("standard05")) {
-				fileItemId = 5;
-			} else if (standard.equals("standard06")) {
-				fileItemId = 6;
-			}
-
-			// 操作现场
-			else if (standard.equals("standard07")) {
-				fileItemId = 1;
-			} else if (standard.equals("standard08")) {
-				fileItemId = 2;
-			} else if (standard.equals("standard09")) {
-				fileItemId = 3;
-			} else if (standard.equals("standard10")) {
-				fileItemId = 4;
-			} else if (standard.equals("standard11")) {
-				fileItemId = 5;
-			} else if (standard.equals("standard")) {
-
-			}
-
-			// TODO 添加Standard的转换
-			uploadUrl = uploadUrl + File.separator + task_id + File.separator + fileItemId;
+			String nameWithStart = uploadAtt.getUrl();
+			String fileName = nameWithStart
+					.substring(nameWithStart.lastIndexOf(File.separator) + 1);
+			String uploadUrl = android.wxapp.service.elec.request.Contants.HFS_URL + File.separator
+					+ nameWithStart.substring(0, nameWithStart.lastIndexOf(File.separator));
 
 			// new HttpUploadTask(null, _ctx, uploadAtt).execute(
 			// prefix + fileName, uploadUrl);

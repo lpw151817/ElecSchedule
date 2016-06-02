@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.baidu.location.b.e;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -25,6 +26,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -73,6 +77,9 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 
 	private static final int UPDATE_LIST = 151;
 	private Button mBtnSend;// 发送按钮
+	private Button mBtnChange;
+	private boolean isVoice = false;
+	private Button mBtnVoice;
 	private EditText mEditTextContent;// 消息编辑域
 	private ListView mListView;
 
@@ -91,7 +98,6 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 	private List<tb_task_instructions> newList = new ArrayList<tb_task_instructions>();
 	private List<tb_task_instructions> tempList = new ArrayList<tb_task_instructions>();
 
-	
 	private String msgID;
 	private PersonDao personDao;
 	private TaskInsDao msgDao;
@@ -121,7 +127,7 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 	// 2041-8-9
 	// 任务状态：2-已完成任务，限制反馈编辑发送，仅供查看
 	private int taskStatus;
-	private RelativeLayout operationLayout;
+	private LinearLayout operationLayout;
 	private int delayedTime = 1000;// 1s
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -204,9 +210,38 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 		mListView = (ListView) findViewById(R.id.listview);
 		mBtnSend = (Button) findViewById(R.id.btn_send);
 		mBtnSend.setOnClickListener(this);
+		mBtnChange = (Button) findViewById(R.id.btn_chat_change);
+		mBtnChange.setOnClickListener(this);
+		mBtnVoice = (Button) findViewById(R.id.btn_chat_voice);
+		/////////// TODO 添加voice按住说话事件
+
 		mEditTextContent = (EditText) findViewById(R.id.et_sendmessage);
 
-		operationLayout = (RelativeLayout) findViewById(R.id.rl_bottom);
+		operationLayout = (LinearLayout) findViewById(R.id.rl_bottom);
+
+		// 添加监听器，用于控制发送按钮和附件按钮
+		mEditTextContent.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				if (TextUtils.isEmpty(s)) {
+					mBtnSend.setVisibility(View.GONE);
+					addAttachBtn.setVisibility(View.VISIBLE);
+				} else {
+					mBtnSend.setVisibility(View.VISIBLE);
+					addAttachBtn.setVisibility(View.GONE);
+				}
+			}
+		});
 	}
 
 	/*
@@ -229,6 +264,25 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
+		case R.id.btn_chat_change:
+			// 将附件框消失掉
+			if (attachmentLayout.getVisibility() == View.VISIBLE)
+				attachmentLayout.setVisibility(View.GONE);
+
+			isVoice = !isVoice;
+			if (isVoice) {
+				mEditTextContent.setVisibility(View.GONE);
+				mBtnVoice.setVisibility(View.VISIBLE);
+				hideInput();
+				mEditTextContent.setText("");
+				mBtnChange.setBackgroundResource(android.R.drawable.ic_input_add);
+			} else {
+				mEditTextContent.setVisibility(View.VISIBLE);
+				mBtnVoice.setVisibility(View.GONE);
+				mEditTextContent.requestFocus();
+				mBtnChange.setBackgroundResource(android.R.drawable.ic_btn_speak_now);
+			}
+			break;
 		case R.id.btn_send:
 			if (System.currentTimeMillis() - time_old > 1000) {
 				if (mEditTextContent.getText().toString().length() > 0) {

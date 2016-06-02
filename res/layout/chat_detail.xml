@@ -5,48 +5,56 @@
 
     <!-- 底部操作栏 -->
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/rl_bottom"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp"
         android:layout_above="@+id/attachment_linearLayout"
         android:layout_alignWithParentIfMissing="true"
-        android:background="#f7f8f9" >
+        android:background="#f7f8f9"
+        android:orientation="horizontal"
+        android:padding="5dp" >
 
         <Button
-            android:id="@+id/btn_chat_add_attach"
+            android:id="@+id/btn_chat_change"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
+            android:background="@android:drawable/ic_btn_speak_now" />
+
+        <EditText
+            android:id="@+id/et_sendmessage"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
             android:layout_marginLeft="5dp"
-            android:background="@drawable/ic_chat_add_attach"
-            android:visibility="visible" />
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/login_editbox"
+            android:singleLine="false"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/btn_chat_voice"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="按住说话"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/btn_send"
             android:layout_width="60dp"
             android:layout_height="40dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
             android:layout_marginRight="5dp"
             android:background="@drawable/send"
-             />
+            android:visibility="gone" />
 
-        <EditText
-            android:id="@+id/et_sendmessage"
-            android:layout_width="fill_parent"
+        <Button
+            android:id="@+id/btn_chat_add_attach"
+            android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_centerVertical="true"
             android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_toLeftOf="@id/btn_send"
-            android:layout_toRightOf="@+id/btn_chat_add_attach"
-            android:background="@drawable/login_editbox"
-            android:singleLine="false"
-            android:textSize="16sp" />
-    </RelativeLayout>
+            android:background="@drawable/ic_chat_add_attach" />
+    </LinearLayout>
 
     <ListView
         android:id="@+id/listview"
@@ -77,8 +85,8 @@
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"
             android:layout_weight="1"
-            android:visibility="gone"
-            android:gravity="center_horizontal" >
+            android:gravity="center_horizontal"
+            android:visibility="gone" >
 
             <ImageView
                 android:id="@+id/picture_imageView"
