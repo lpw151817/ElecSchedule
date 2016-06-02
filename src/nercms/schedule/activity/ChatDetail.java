@@ -26,12 +26,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.provider.ContactsContract.CommonDataKinds.Event;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnAttachStateChangeListener;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -213,7 +217,29 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 		mBtnChange = (Button) findViewById(R.id.btn_chat_change);
 		mBtnChange.setOnClickListener(this);
 		mBtnVoice = (Button) findViewById(R.id.btn_chat_voice);
-		/////////// TODO 添加voice按住说话事件
+
+		/////////// 添加voice按住说话事件
+		mBtnVoice.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+
+				switch (event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					// TODO 按下的时候触发
+					mBtnVoice.setText("松开发送");
+
+					break;
+				case MotionEvent.ACTION_UP:
+					// TODO 松开的时候触发
+					mBtnVoice.setText("按住说话");
+
+					break;
+				}
+
+				return false;
+			}
+		});
 
 		mEditTextContent = (EditText) findViewById(R.id.et_sendmessage);
 
@@ -275,7 +301,7 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 				mBtnVoice.setVisibility(View.VISIBLE);
 				hideInput();
 				mEditTextContent.setText("");
-				mBtnChange.setBackgroundResource(android.R.drawable.ic_input_add);
+				mBtnChange.setBackgroundResource(R.drawable.ic_keyboard);
 			} else {
 				mEditTextContent.setVisibility(View.VISIBLE);
 				mBtnVoice.setVisibility(View.GONE);
@@ -305,7 +331,9 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 			break;
 
 		case R.id.picture_imageView:
-			// TODO 选照片
+			// 选照片
+			//////////////// 暂时不做实现
+			////////////////////////////////////////////////////////////////////
 			Toast.makeText(ChatDetail.this, "图库", Toast.LENGTH_SHORT).show();
 			Intent getAlbum = new Intent();
 			// 开启Pictures画面Type设定为image

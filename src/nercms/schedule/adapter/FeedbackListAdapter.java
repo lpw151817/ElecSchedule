@@ -31,7 +31,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.wxapp.service.AppApplication;
 import android.wxapp.service.elec.dao.OrgDao;
+import android.wxapp.service.elec.dao.TaskInsDao;
 import android.wxapp.service.elec.model.bean.table.tb_task_instructions;
+import android.wxapp.service.elec.model.bean.table.tb_task_instructions_attachment;
 import android.wxapp.service.jerry.model.message.ReceiveMessageResponse;
 import android.wxapp.service.model.FeedbackModel;
 import android.wxapp.service.util.HttpDownloadTask;
@@ -61,6 +63,7 @@ public class FeedbackListAdapter extends BaseAdapter {
 	DisplayImageOptions options;
 
 	OrgDao orgDao;
+	TaskInsDao taskInsDao;
 
 	// 软引用
 	private HashMap<String, SoftReference<Bitmap>> imageCache = new HashMap<String, SoftReference<Bitmap>>();
@@ -155,7 +158,48 @@ public class FeedbackListAdapter extends BaseAdapter {
 
 		holder.text.setVisibility(View.VISIBLE);
 		if (TextUtils.isEmpty(fb.getContent())) {
-			// TODO content为空，则表示其为附件信息，则去附件列表中找附件
+			// content为空，则表示其为附件信息，则去附件列表中找附件
+			holder.text.setVisibility(View.GONE);
+			holder.media.setVisibility(View.VISIBLE);
+
+			if (taskInsDao == null)
+				taskInsDao = new TaskInsDao(context);
+
+			List<tb_task_instructions_attachment> attachments = taskInsDao
+					.getTaskInsAtt(fb.getId());
+
+			if (attachments != null && attachments.size() > 0) {
+				// 进行附件的展示
+
+				/*
+				 * 
+				 * attachments.get(0).getType()
+				 * 
+				 * attachmentType attachmentType01 图片 attachmentType
+				 * attachmentType02 音频 attachmentType attachmentType03 视频
+				 * 
+				 * 
+				 */
+
+				tb_task_instructions_attachment attachment = attachments.get(0);
+				if (attachment.getType().equals("attachmentType01")) {
+					// TODO 图片
+
+					/////////////////////////////////
+					// attachments.get(0).get;
+					//
+					// holder.media.set;
+					/////////////////////////////////
+
+				} else if (attachment.getType().equals("attachmentType02")) {
+					// TODO 音频
+
+				} else if (attachment.getType().equals("attachmentType03")) {
+					// TODO 视频
+
+				}
+
+			}
 
 		} else
 			holder.text.setText(fb.getContent());

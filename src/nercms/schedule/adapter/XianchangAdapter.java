@@ -73,7 +73,7 @@ public class XianchangAdapter extends BaseAdapter {
 			holder = (Holder) convertView.getTag();
 		}
 		holder.taskName.setText(data.get(position).getName());
-//		holder.time.setText(Utils.formatDateMs(data.get(position).getCreator_time()));
+		// holder.time.setText(Utils.formatDateMs(data.get(position).getCreator_time()));
 		holder.time.setText(Utils.formatDateMs(data.get(position).getPlan_start_time()));
 		try {
 			holder.xcfzr
