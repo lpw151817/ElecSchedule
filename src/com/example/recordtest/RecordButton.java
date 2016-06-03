@@ -77,7 +77,7 @@ public class RecordButton extends Button {
 		}
 
 		dialogImg.setImageResource(R.drawable.record_cancel);
-		this.setText("松开手指 取消录音");
+		this.setText("松开 发送");
 
 		mRecordDialog.show();
 	}
@@ -165,8 +165,6 @@ public class RecordButton extends Button {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		// TODO Auto-generated method stub
-		android.util.Log.v("Baidu", "onTouchEvent: " + event.getAction());
 
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN: // 按下按钮
