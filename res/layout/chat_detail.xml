@@ -32,14 +32,22 @@
             android:singleLine="false"
             android:textSize="16sp" />
 
-        <Button
+        <!-- <Button
             android:id="@+id/btn_chat_voice"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
             android:background="@drawable/btn_style_recoder"
             android:text="按住说话"
-            android:visibility="gone" />
+            android:visibility="gone" /> -->
+
+        <com.example.recordtest.RecordButton
+            android:id="@+id/btn_chat_voice"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:background="@drawable/btn_style_recoder" />
 
         <Button
             android:id="@+id/btn_send"

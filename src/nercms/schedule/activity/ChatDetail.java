@@ -15,6 +15,8 @@ import java.util.concurrent.TimeUnit;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.baidu.location.b.e;
+import com.example.recordtest.AudioRecorder;
+import com.example.recordtest.RecordButton;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -83,7 +85,8 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 	private Button mBtnSend;// 发送按钮
 	private Button mBtnChange;
 	private boolean isVoice = false;
-	private Button mBtnVoice;
+	// private Button mBtnVoice;
+	private RecordButton mBtnVoice;
 	private EditText mEditTextContent;// 消息编辑域
 	private ListView mListView;
 
@@ -216,30 +219,32 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 		mBtnSend.setOnClickListener(this);
 		mBtnChange = (Button) findViewById(R.id.btn_chat_change);
 		mBtnChange.setOnClickListener(this);
-		mBtnVoice = (Button) findViewById(R.id.btn_chat_voice);
-
+		// mBtnVoice = (Button) findViewById(R.id.btn_chat_voice);
+		mBtnVoice = (RecordButton) findViewById(R.id.btn_chat_voice);
+		mBtnVoice.setAudioRecord(new AudioRecorder());
+		
 		/////////// 添加voice按住说话事件
-		mBtnVoice.setOnTouchListener(new OnTouchListener() {
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-
-				switch (event.getAction()) {
-				case MotionEvent.ACTION_DOWN:
-					// TODO 按下的时候触发
-					mBtnVoice.setText("松开发送");
-
-					break;
-				case MotionEvent.ACTION_UP:
-					// TODO 松开的时候触发
-					mBtnVoice.setText("按住说话");
-
-					break;
-				}
-
-				return false;
-			}
-		});
+		// mBtnVoice.setOnTouchListener(new OnTouchListener() {
+		//
+		// @Override
+		// public boolean onTouch(View v, MotionEvent event) {
+		//
+		// switch (event.getAction()) {
+		// case MotionEvent.ACTION_DOWN:
+		// // TODO 按下的时候触发
+		// mBtnVoice.setText("松开发送");
+		//
+		// break;
+		// case MotionEvent.ACTION_UP:
+		// // TODO 松开的时候触发
+		// mBtnVoice.setText("按住说话");
+		//
+		// break;
+		// }
+		//
+		// return false;
+		// }
+		// });
 
 		mEditTextContent = (EditText) findViewById(R.id.et_sendmessage);
 
