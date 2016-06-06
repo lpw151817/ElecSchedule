@@ -36,6 +36,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.webkit.URLUtil;
 import android.widget.Toast;
+import android.wxapp.service.elec.dao.DatabaseHelper;
 import android.wxapp.service.elec.dao.GpsDao;
 import android.wxapp.service.elec.dao.PlanTaskDao;
 import android.wxapp.service.elec.model.UploadTaskAttachmentRequest;
@@ -188,6 +189,8 @@ public class AttachmentUpload {
 		String upload_time = _query_result.get("upload_time_0");
 		String md5 = _query_result.get("md5_0");
 		String status = _query_result.get("status_0");
+		Integer dixian = Integer
+				.parseInt(_query_result.get(DatabaseHelper.FIELD_TASK_ATTACHMENT_DIXIAN + "_0"));
 
 		Log.v("before", "url:" + url);
 
@@ -201,7 +204,7 @@ public class AttachmentUpload {
 			// ...
 
 			tb_task_attachment uploadAtt = new tb_task_attachment(id, task_id, historygps, standard,
-					type, url, upload_time, md5, status);
+					type, url, upload_time, md5, status, dixian);
 			String prefix = NewTask.fileFolder;
 			String nameWithStart = uploadAtt.getUrl();
 			String fileName = nameWithStart
