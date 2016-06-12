@@ -13,9 +13,8 @@ public class AudioRecorder// implements RecordImp
 
 	private MediaRecorder recorder;
 	private String fileName;
-	private String downloadFileFolder = "";
 	private String uploadFileFolder = Environment.getExternalStorageDirectory().getAbsolutePath()
-			+ "/nercms-Schedule/Attachments/";
+			+ "/nercms-Schedule/DownloadAttachments/";
 
 	private boolean isRecording = false;
 

@@ -11,17 +11,21 @@ import org.apache.http.conn.BasicEofSensorWatcher;
 import nercms.schedule.R;
 import nercms.schedule.utils.LocalConstant;
 import nercms.schedule.utils.Utils;
+import net.tsz.afinal.FinalActivity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
+import android.media.MediaPlayer.OnErrorListener;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore.Images.Thumbnails;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -68,6 +72,7 @@ public class FeedbackListAdapter extends BaseAdapter {
 	OrgDao orgDao;
 	TaskInsDao taskInsDao;
 
+	MediaPlayer mp = new MediaPlayer();
 	// 软引用
 	private HashMap<String, SoftReference<Bitmap>> imageCache = new HashMap<String, SoftReference<Bitmap>>();
 	// 附件显示图片容器的集合
@@ -133,7 +138,7 @@ public class FeedbackListAdapter extends BaseAdapter {
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(final int position, View convertView, ViewGroup parent) {
 		final ViewHolder holder;
 
 		if (getItemViewType(position) == RIGHT_ITEM) { // 自己发出的消息
@@ -165,6 +170,8 @@ public class FeedbackListAdapter extends BaseAdapter {
 		holder.time.setText(Utils.formatDateMs(fb.getSend_time()));
 
 		holder.text.setVisibility(View.VISIBLE);
+		holder.media.setVisibility(View.GONE);
+
 		if (TextUtils.isEmpty(fb.getContent())) {
 			// content为空，则表示其为附件信息，则去附件列表中找附件
 			holder.text.setVisibility(View.GONE);
@@ -199,24 +206,37 @@ public class FeedbackListAdapter extends BaseAdapter {
 					/////////////////////////////////
 
 				} else if (attachment.getType().equals("attachmentType02")) {
-					// TODO 音频
+					// 音频
 					holder.media.setBackgroundResource(R.drawable.microphone_uncheck);
+					holder.text.setText(attachments.get(0).getUrl());
 					holder.media.setOnClickListener(new OnClickListener() {
 
 						@Override
 						public void onClick(View v) {
-							Toast.makeText(context, attachments.get(0).getUrl(), Toast.LENGTH_SHORT)
-									.show();
-							MediaPlayer mp = new MediaPlayer();
+
+							if (taskInsDao == null)
+								taskInsDao = new TaskInsDao(context);
+
 							String filePath = Environment.getExternalStorageDirectory()
-									.getAbsolutePath() + "/nercms-Schedule/Attachments/"
-									+ attachments.get(0).getUrl();
+									.getAbsolutePath() + "/nercms-Schedule/DownloadAttachments/"
+									+ taskInsDao.getTaskInsAtt(fblist.get(position).getId()).get(0)
+											.getUrl();
+							Toast.makeText(context, filePath, Toast.LENGTH_SHORT).show();
 							try {
+								// 如果正在播放语音则停止播放
+								if (mp.isPlaying()) {
+									mp.stop();
+								}
+
+								mp.reset();
 								mp.setDataSource(filePath);
 								mp.prepare();
 								mp.start();
 							} catch (Exception e) {
 								e.printStackTrace();
+								if (e != null && e.getMessage() != null
+										&& e.getMessage().equals("setDataSource failed."))
+									Toast.makeText(context, "文件未找到", Toast.LENGTH_SHORT).show();
 							}
 						}
 					});
@@ -229,7 +249,7 @@ public class FeedbackListAdapter extends BaseAdapter {
 
 		} else
 			holder.text.setText(fb.getContent());
-		holder.media.setVisibility(View.GONE);
+
 		String headerText = null;
 		if (getItemViewType(position) == RIGHT_ITEM) { // 自己发出的消息
 			headerText = "我";

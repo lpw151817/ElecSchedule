@@ -50,6 +50,19 @@
             android:layout_toLeftOf="@id/iv_userhead"
             android:background="@drawable/chatto_bg" >
 
+            <ImageView
+                android:id="@+id/iv_chat_media"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:adjustViewBounds="true"
+                android:focusable="false"
+                android:maxWidth="200dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/microphone_uncheck"
+                android:visibility="visible" />
+
             <TextView
                 android:id="@+id/tv_chatcontent"
                 style="@style/chat_content_date_style"
@@ -57,19 +70,6 @@
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 android:maxWidth="200dp" />
-
-            <ImageView
-                android:id="@+id/iv_chat_media"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:adjustViewBounds="true"
-                android:focusable="false"
-                android:layout_marginLeft="10dp"
-                android:maxWidth="200dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/microphone_uncheck"
-                android:visibility="visible" />
         </RelativeLayout>
     </RelativeLayout>
 
