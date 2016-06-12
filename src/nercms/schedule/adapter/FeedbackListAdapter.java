@@ -221,7 +221,8 @@ public class FeedbackListAdapter extends BaseAdapter {
 									.getAbsolutePath() + "/nercms-Schedule/DownloadAttachments/"
 									+ taskInsDao.getTaskInsAtt(fblist.get(position).getId()).get(0)
 											.getUrl();
-							Toast.makeText(context, filePath, Toast.LENGTH_SHORT).show();
+							// Toast.makeText(context, filePath,
+							// Toast.LENGTH_SHORT).show();
 							try {
 								// 如果正在播放语音则停止播放
 								if (mp.isPlaying()) {
@@ -296,6 +297,18 @@ public class FeedbackListAdapter extends BaseAdapter {
 		imageCache.clear();
 		imageCache = null;
 		System.gc();
+	}
+
+	@Override
+	public boolean areAllItemsEnabled() {
+		// return super.areAllItemsEnabled();
+		return false;
+	}
+
+	@Override
+	public boolean isEnabled(int position) {
+		// return super.isEnabled(position);
+		return false;
 	}
 
 }

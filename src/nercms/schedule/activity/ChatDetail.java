@@ -292,6 +292,10 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 
 			@Override
 			public void afterTextChanged(Editable s) {
+				// ½«¸½¼þ¿òÏûÊ§µô
+				if (attachmentLayout.getVisibility() == View.VISIBLE)
+					attachmentLayout.setVisibility(View.GONE);
+
 				if (TextUtils.isEmpty(s)) {
 					mBtnSend.setVisibility(View.GONE);
 					addAttachBtn.setVisibility(View.VISIBLE);
