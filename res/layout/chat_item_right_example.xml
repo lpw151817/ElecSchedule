@@ -36,10 +36,10 @@
             android:layout_centerVertical="true"
             android:background="@drawable/name_blue"
             android:focusable="false"
+            android:gravity="center"
             android:maxLines="1"
             android:singleLine="true"
             android:text="我"
-            android:gravity="center"
             android:textColor="@color/white"
             android:textSize="20sp" />
 
@@ -64,9 +64,12 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:adjustViewBounds="true"
+                android:focusable="false"
+                android:layout_marginLeft="10dp"
                 android:maxWidth="200dp"
                 android:scaleType="centerInside"
-                android:visibility="gone" />
+                android:src="@drawable/microphone_uncheck"
+                android:visibility="visible" />
         </RelativeLayout>
     </RelativeLayout>
 

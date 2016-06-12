@@ -17,6 +17,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.baidu.location.b.e;
 import com.example.recordtest.AudioRecorder;
 import com.example.recordtest.RecordButton;
+import com.example.recordtest.RecordButton.RecordListener;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -25,6 +26,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
@@ -222,7 +224,33 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 		// mBtnVoice = (Button) findViewById(R.id.btn_chat_voice);
 		mBtnVoice = (RecordButton) findViewById(R.id.btn_chat_voice);
 		mBtnVoice.setAudioRecord(new AudioRecorder());
-		
+		// 录音完成之后的回调
+		mBtnVoice.setRecordListener(new RecordListener() {
+
+			@Override
+			public void recordEnd(String filename) {
+				/*
+				 * attachmentType01 图片 attachmentType02 音频 attachmentType03 视频
+				 */
+				String filePath = Environment.getExternalStorageDirectory().getAbsolutePath()
+						+ "/nercms-Schedule/Attachments/" + filename;
+				// DB 存储
+				boolean saveSuccess = new TaskInsDao(ChatDetail.this).saveInsAndAtt(taskID, "",
+						getUserId(), System.currentTimeMillis() + "", "1", "attachmentType02",
+						filename, System.currentTimeMillis() + "",
+						Utils.getFileMD5(new File(filePath)));
+
+				if (saveSuccess) {
+					// 界面显示
+					fbList = msgDao.getMsg(taskID);
+					fbAdapter.setFblist(fbList);
+					mListView.setSelection(fbList.size() - 1);
+				} else {
+					showShortToast("录音保存失败");
+				}
+			}
+		});
+
 		/////////// 添加voice按住说话事件
 		// mBtnVoice.setOnTouchListener(new OnTouchListener() {
 		//

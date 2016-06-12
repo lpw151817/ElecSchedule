@@ -39,19 +39,16 @@ public class RecordButton extends Button {
 
 	public RecordButton(Context context) {
 		super(context);
-		// TODO Auto-generated constructor stub
 		init(context);
 	}
 
 	public RecordButton(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		// TODO Auto-generated constructor stub
 		init(context);
 	}
 
 	public RecordButton(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		// TODO Auto-generated constructor stub
 		init(context);
 	}
 
@@ -196,7 +193,7 @@ public class RecordButton extends Button {
 					mAudioRecorder.deleteOldFile();
 				} else {
 					if (listener != null)
-						listener.recordEnd();
+						listener.recordEnd(mAudioRecorder.getFileName());
 				}
 				this.setText("按住 说话");
 			}
@@ -206,6 +203,6 @@ public class RecordButton extends Button {
 	}
 
 	public interface RecordListener {
-		public void recordEnd();
+		public void recordEnd(String fileName);
 	}
 }

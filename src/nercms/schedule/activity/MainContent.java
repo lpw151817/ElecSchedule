@@ -17,6 +17,7 @@ import nercms.schedule.fragment.FirstFragment;
 import nercms.schedule.fragment.FourthFragment;
 import nercms.schedule.fragment.SecondFragment;
 import nercms.schedule.fragment.ThirdFragment;
+import nercms.schedule.utils.AttachmentDatabase;
 import nercms.schedule.utils.AttachmentUpload;
 import nercms.schedule.utils.DeleteOldAttachment;
 import nercms.schedule.utils.HeartBeat;
@@ -80,6 +81,30 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		Log.e("Demo", "MainContent:Oncreate");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_content);
+
+		// ////////////////////////////debug infos
+		try {
+			HashMap<String, String> _query_result = AttachmentDatabase.instance(this)
+					.query("select * from tb_task_attachment;");
+			for (int i = 0; i < Integer.parseInt(_query_result.get("records_num")); i++) {
+				String id = _query_result.get("id_" + i);
+				String task_id = _query_result.get("task_id_" + i);
+				String historygps = _query_result.get("historygps_" + i);
+				String standard = _query_result.get("standard_" + i);
+				String type = _query_result.get("type_" + i);
+				String url = _query_result.get("url_" + i);
+				String upload_time = _query_result.get("upload_time_" + i);
+				String md5 = _query_result.get("md5_" + i);
+				String status = _query_result.get("status_" + i);
+				Integer dixian = null;
+				if (_query_result.get("dixian_" + i) != null)
+					dixian = Integer.parseInt(_query_result.get("dixian_" + i));
+
+				Log.v("login", url + ">>>>>" + status + ">>>>>" + dixian);
+			}
+		} catch (Exception e) {
+		}
+		// //////////////////////////////////////////////////
 
 		DeleteOldAttachment.instance().start(getApplicationContext());
 

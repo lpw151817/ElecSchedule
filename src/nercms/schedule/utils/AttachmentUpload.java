@@ -31,6 +31,7 @@ import org.json.JSONException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import android.R.integer;
 import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
@@ -189,8 +190,11 @@ public class AttachmentUpload {
 		String upload_time = _query_result.get("upload_time_0");
 		String md5 = _query_result.get("md5_0");
 		String status = _query_result.get("status_0");
-		Integer dixian = Integer
-				.parseInt(_query_result.get(DatabaseHelper.FIELD_TASK_ATTACHMENT_DIXIAN + "_0"));
+
+		Integer dixian = null;
+		if (_query_result.get(DatabaseHelper.FIELD_TASK_ATTACHMENT_DIXIAN + "_0") != null)
+			dixian = Integer.parseInt(
+					_query_result.get(DatabaseHelper.FIELD_TASK_ATTACHMENT_DIXIAN + "_0"));
 
 		Log.v("before", "url:" + url);
 

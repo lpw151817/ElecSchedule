@@ -154,11 +154,11 @@ public class BaseActivity extends SherlockActivity {
 	}
 
 	protected void showShortToast(String content) {
-		Toast.makeText(this, content, Toast.LENGTH_SHORT).show();
+		Toast.makeText(BaseActivity.this, content, Toast.LENGTH_SHORT).show();
 	}
 
 	protected void showLongToast(String content) {
-		Toast.makeText(this, content, Toast.LENGTH_LONG).show();
+		Toast.makeText(BaseActivity.this, content, Toast.LENGTH_LONG).show();
 	}
 
 	protected void showLog_e(String t) {

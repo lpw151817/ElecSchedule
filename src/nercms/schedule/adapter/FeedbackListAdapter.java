@@ -16,6 +16,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
+import android.media.MediaPlayer;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Environment;
@@ -29,6 +30,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.wxapp.service.AppApplication;
 import android.wxapp.service.elec.dao.OrgDao;
 import android.wxapp.service.elec.dao.TaskInsDao;
@@ -55,6 +57,7 @@ public class FeedbackListAdapter extends BaseAdapter {
 
 	private Context context;
 	private List<tb_task_instructions> fblist;
+	List<tb_task_instructions_attachment> attachments;
 	private LayoutInflater mInflater;
 
 	// 显示大图对话框
@@ -69,6 +72,11 @@ public class FeedbackListAdapter extends BaseAdapter {
 	private HashMap<String, SoftReference<Bitmap>> imageCache = new HashMap<String, SoftReference<Bitmap>>();
 	// 附件显示图片容器的集合
 	private ArrayList<ImageView> imageViewList = new ArrayList<ImageView>();
+
+	public void setFblist(List<tb_task_instructions> fblist) {
+		this.fblist = fblist;
+		notifyDataSetChanged();
+	}
 
 	public FeedbackListAdapter(Context context, List<tb_task_instructions> fblist) {
 		this.context = context;
@@ -165,8 +173,7 @@ public class FeedbackListAdapter extends BaseAdapter {
 			if (taskInsDao == null)
 				taskInsDao = new TaskInsDao(context);
 
-			List<tb_task_instructions_attachment> attachments = taskInsDao
-					.getTaskInsAtt(fb.getId());
+			attachments = taskInsDao.getTaskInsAtt(fb.getId());
 
 			if (attachments != null && attachments.size() > 0) {
 				// 进行附件的展示
@@ -193,7 +200,26 @@ public class FeedbackListAdapter extends BaseAdapter {
 
 				} else if (attachment.getType().equals("attachmentType02")) {
 					// TODO 音频
+					holder.media.setBackgroundResource(R.drawable.microphone_uncheck);
+					holder.media.setOnClickListener(new OnClickListener() {
 
+						@Override
+						public void onClick(View v) {
+							Toast.makeText(context, attachments.get(0).getUrl(), Toast.LENGTH_SHORT)
+									.show();
+							MediaPlayer mp = new MediaPlayer();
+							String filePath = Environment.getExternalStorageDirectory()
+									.getAbsolutePath() + "/nercms-Schedule/Attachments/"
+									+ attachments.get(0).getUrl();
+							try {
+								mp.setDataSource(filePath);
+								mp.prepare();
+								mp.start();
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					});
 				} else if (attachment.getType().equals("attachmentType03")) {
 					// TODO 视频
 
