@@ -397,57 +397,15 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 						Double.valueOf(gps.getHeight()), Float.valueOf(gps.getSpeed()),
 						gps.getCoordinate());
 
-				String mediaName = attachment.getUrl();
-				String filePath = DownloadfileFolder + File.separator + mediaName;
-				
-				
-				int fileItemId = 0;
-				if (standard.equals("standard01")) {
-					fileItemId = 1;
-				}
-				if (standard.equals("standard02")) {
-					fileItemId = 2;
-				}
-				if (standard.equals("standard03")) {
-					fileItemId = 3;
-				}
-				if (standard.equals("standard04")) {
-					fileItemId = 4;
-				}
-				if (standard.equals("standard05")) {
-					fileItemId = 5;
-				}
-				if (standard.equals("standard06")) {
-					fileItemId = 6;
-				}
+				String name = attachment.getUrl();
+				String mediaName1 = name.replace("\\", File.separator);// 把所有的\替换成/
+				String mediaName = mediaName1.substring(mediaName1
+						.lastIndexOf("/") + 1);
+				String filePath = DownloadfileFolder + mediaName;
 
-				// 操作现场
-				if (standard.equals("standard07")) {
-					fileItemId = 1;
-				}
+				String downUrl = android.wxapp.service.elec.request.Contants.HFS_URL
+						+ File.separator + mediaName1;
 
-				if (standard.equals("standard08")) {
-					fileItemId = 2;
-				}
-
-				if (standard.equals("standard09")) {
-					fileItemId = 3;
-				}
-
-				if (standard.equals("standard10")) {
-					fileItemId = 4;
-				}
-
-				if (standard.equals("standard11")) {
-					fileItemId = 5;
-				}
-				if (standard.equals("standard")) {
-					
-				}
-				
-				
-				String downUrl = android.wxapp.service.elec.request.Contants.HFS_URL+ File.separator+tid
-						+File.separator+fileItemId+ File.separator + mediaName;
 
 				File file = new File(filePath);
 
