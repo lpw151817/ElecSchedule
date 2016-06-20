@@ -56,9 +56,9 @@ public class DiXianActivity extends BaseActivity implements OnClickListener {
 	private boolean isContinueTask = false;
 	private int lastDixianCount;
 	private List<Map<String, Object>> mUrl;
-	
+
 	private HashMap<String, String> data;
-	private int[] counts ;
+	private int[] counts;
 	private PlanTaskDao pDao;
 	private int[] mContentCount;
 
@@ -67,31 +67,27 @@ public class DiXianActivity extends BaseActivity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_dixian);
 
-		iniActionBar(true, null, "Hello");
+		iniActionBar(true, null, "地线照片");
 
 		mListView = (ListView) findViewById(R.id.listview);
 		mNewItem = (Button) findViewById(R.id.newitem);
-		if (isAdmin()!=PERSON_TYPE.XIANCHANG){
+		if (isAdmin() != PERSON_TYPE.XIANCHANG) {
 			mNewItem.setVisibility(View.GONE);
-		}		
+		}
 		mNewItem.setOnClickListener(this);
-		
-		adapter = new MyAdapter(DiXianActivity.this, list, isAdmin(),
-				mContentCount);
+
+		adapter = new MyAdapter(DiXianActivity.this, list, isAdmin(), mContentCount);
 		mListView.setAdapter(adapter);
 		mListView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 
-				Intent intent = new Intent(DiXianActivity.this,
-						XianChangUpload.class);
+				Intent intent = new Intent(DiXianActivity.this, XianChangUpload.class);
 
 				intent.putExtra("enterType", enterType);
 				intent.putExtra("tid", tid);
-				intent.putExtra("mUploadUrl",
-						(Serializable) mUploadList.get(arg2));
+				intent.putExtra("mUploadUrl", (Serializable) mUploadList.get(arg2));
 				intent.putExtra("url", (Serializable) mList.get(arg2));
 				intent.putExtra("position", position);
 				intent.putExtra("thirdIndex", arg2);
@@ -101,7 +97,7 @@ public class DiXianActivity extends BaseActivity implements OnClickListener {
 
 			}
 		});
-		
+
 		getData();
 	}
 
@@ -110,13 +106,12 @@ public class DiXianActivity extends BaseActivity implements OnClickListener {
 		enterType = getIntent().getIntExtra("enterType", -1);
 		tid = getIntent().getStringExtra("tid");
 		position = getIntent().getIntExtra("position", -1);
-		
+
 		getDataFromDB();
 	}
 
 	private void getDataFromDB() {
-		
-		
+
 		pDao = new PlanTaskDao(DiXianActivity.this);
 		if (pDao != null) {
 			lastDixianCount = pDao.getLastDixian(tid);
@@ -130,8 +125,6 @@ public class DiXianActivity extends BaseActivity implements OnClickListener {
 				list.add("第" + (i + 1) + "条");
 			}
 
-			
-			
 			for (int i = 0; i < lastDixianCount; i++) {
 				List<Map<String, Object>> mItem = new ArrayList<Map<String, Object>>();
 				mList.add(mItem);
@@ -143,44 +136,37 @@ public class DiXianActivity extends BaseActivity implements OnClickListener {
 			}
 
 		}
-		
+
 		adapter.notifyDataSetChanged();
-		
+
 		data = AttachmentDatabase.instance(this)
-		// 数据库中的url为文件名
-				.query("SELECT * from tb_task_attachment where task_id = "
-						+ tid + " AND (url LIKE '" + tid + "/" + (4) +"/"+3
-						+ "%' or url LIKE '" + tid + "\\" + (4) +"/"+3
-						+ "%' or url LIKE '" + tid + "//" + (4) +"/"+3
-						+ "%' or url LIKE '" + tid + "\\\\" + (4) +"/"+3
-						+ "%')");	
-		
+				// 数据库中的url为文件名
+				.query("SELECT * from tb_task_attachment where task_id = " + tid
+						+ " AND (url LIKE '" + tid + "/" + (4) + "/" + 3 + "%' or url LIKE '" + tid
+						+ "\\" + (4) + "/" + 3 + "%' or url LIKE '" + tid + "//" + (4) + "/" + 3
+						+ "%' or url LIKE '" + tid + "\\\\" + (4) + "/" + 3 + "%')");
+
 		if (data != null) {
 			// String fileCount = data.get("records_num");
 
 			for (int i = 0; i < Integer.parseInt(data.get("records_num")); i++) {
-				Log.v("login",
-						data.get("id_" + i) + ":" + data.get("url_" + i) + ":"
-								+ data.get("status_" + i) + ":"
+				Log.v("login", data.get("id_" + i) + ":" + data.get("url_" + i) + ":"
+						+ data.get("status_" + i) + ":"
 
-								+ data.get("task_id_" + i) + ":"
-								+ data.get("dixian_" + i));
+				+ data.get("task_id_" + i) + ":" + data.get("dixian_" + i));
 
 				String standard = data.get("standard_" + i);
 
 				GpsDao gpsDao = new GpsDao(this);
 				GPS gps = gpsDao.getHistory(data.get("historygps_" + i));// 从数据库中获取gps信息
-				MyGPS mGPS = new MyGPS(gps.getOllectionTime(),
-						Double.valueOf(gps.getLongitude()), Double.valueOf(gps
-								.getLatitude()), Float.valueOf(gps
-								.getAccuracy()),
-						Double.valueOf(gps.getHeight()), Float.valueOf(gps
-								.getSpeed()), gps.getCoordinate());
+				MyGPS mGPS = new MyGPS(gps.getOllectionTime(), Double.valueOf(gps.getLongitude()),
+						Double.valueOf(gps.getLatitude()), Float.valueOf(gps.getAccuracy()),
+						Double.valueOf(gps.getHeight()), Float.valueOf(gps.getSpeed()),
+						gps.getCoordinate());
 
 				String name = data.get("url_" + i);
 				String mediaName1 = name.replace("\\", File.separator);// 把所有的\替换成/
-				String mediaName = mediaName1.substring(mediaName1
-						.lastIndexOf("/") + 1);
+				String mediaName = mediaName1.substring(mediaName1.lastIndexOf("/") + 1);
 				String filePath = XianChangAdd.DownloadfileFolder + mediaName;
 
 				// 附件信息
@@ -188,8 +174,7 @@ public class DiXianActivity extends BaseActivity implements OnClickListener {
 				mMap1.put("gps", mGPS);
 				mMap1.put("path", filePath);
 				mMap1.put("time", gps.getOllectionTime());// 传递附件的时间
-				mMap1.put("pathContainsTid", XianChangAdd.DownloadfileFolder
-						+ mediaName1);
+				mMap1.put("pathContainsTid", XianChangAdd.DownloadfileFolder + mediaName1);
 
 				String path1 = (String) mMap1.get("pathContainsTid");// storage/emulated/0/nercms-Schedule/DownloadAttachments/356/4/aq2016_06_03_143336.jpg
 				String path = path1.replace("//", File.separator);
@@ -198,8 +183,8 @@ public class DiXianActivity extends BaseActivity implements OnClickListener {
 				String tmp[] = name1.split("-");
 				String attId = tmp[0].substring(1);
 				int attId1 = Integer.parseInt(attId);
-				
-				mMap1.put("index", counts[attId1-1] + "");
+
+				mMap1.put("index", counts[attId1 - 1] + "");
 				counts[attId1 - 1]++;
 				mList.get(attId1 - 1).add(mMap1);
 				mUploadList.get(attId1 - 1).add(mMap1);
@@ -273,8 +258,7 @@ public class DiXianActivity extends BaseActivity implements OnClickListener {
 			if ((mList.get(count - 1).size()) != 0) {// 只需要判断最后一个条目里面有没有内容即可
 				list.add("第" + (count + 1) + "条");
 			} else {
-				Toast.makeText(DiXianActivity.this, "请先添加照片",
-						Toast.LENGTH_SHORT).show();
+				Toast.makeText(DiXianActivity.this, "请先添加照片", Toast.LENGTH_SHORT).show();
 			}
 		}
 		adapter.notifyDataSetChanged();
@@ -286,7 +270,7 @@ public class DiXianActivity extends BaseActivity implements OnClickListener {
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			back();
-			
+
 			break;
 
 		default:
@@ -295,7 +279,7 @@ public class DiXianActivity extends BaseActivity implements OnClickListener {
 
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
@@ -303,20 +287,20 @@ public class DiXianActivity extends BaseActivity implements OnClickListener {
 	}
 
 	private void back() {
-		
+
 		Intent intent = new Intent();
 		List<Map<String, Object>> url = new ArrayList<Map<String, Object>>();
-		for (List<Map<String, Object>> furl : mList){
+		for (List<Map<String, Object>> furl : mList) {
 			for (Map<String, Object> map : furl) {
 				url.add(map);
 			}
 		}
-		intent.putExtra("url", (Serializable)url);
+		intent.putExtra("url", (Serializable) url);
 		intent.putExtra("DiXianData", "DiXianData");
 		intent.putExtra("secondIndex", getIntent().getIntExtra("secondIndex", -1));
-		
+
 		setResult(LocalConstant.SELECT_ATTACHMENT, intent);
-		
+
 		this.finish();
 	}
 
@@ -324,9 +308,8 @@ public class DiXianActivity extends BaseActivity implements OnClickListener {
 	protected void onResume() {
 		super.onResume();
 		getDataFromDB();
-		changeTextColor() ;
+		changeTextColor();
 	}
-	
 
 	// 改变list的颜色
 	private void changeTextColor() {
@@ -370,17 +353,15 @@ public class DiXianActivity extends BaseActivity implements OnClickListener {
 	}
 }
 
-
-
 class MyAdapter extends BaseAdapter {
 
 	List<String> list;
 	Context context;
-	
+
 	int[] hasContent = new int[30];
 	int[] contentCount;
 	PERSON_TYPE isAdmin;
-	
+
 	/**
 	 * 需要修改是否有内容的标志位
 	 * 
@@ -395,15 +376,15 @@ class MyAdapter extends BaseAdapter {
 			this.notifyDataSetChanged();
 		}
 	}
-	
-	public void setContentCount(int[] count){
+
+	public void setContentCount(int[] count) {
 		contentCount = count;
 	}
 
 	public MyAdapter(Context context, List<String> list, PERSON_TYPE isAdmin, int[] num) {
 		this.list = list;
 		this.context = context;
-		
+
 		this.isAdmin = isAdmin;
 		this.contentCount = num;
 	}
@@ -430,13 +411,10 @@ class MyAdapter extends BaseAdapter {
 
 		if (convertView == null) {
 
-			convertView = LayoutInflater.from(context).inflate(
-					R.layout.dixian_adapter, null);
+			convertView = LayoutInflater.from(context).inflate(R.layout.dixian_adapter, null);
 			holder = new Holder();
-			holder.textview = (TextView) convertView
-					.findViewById(R.id.textview_dixian);
-			holder.imgview = (ImageView) convertView
-					.findViewById(R.id.imageView1_dixian);
+			holder.textview = (TextView) convertView.findViewById(R.id.textview_dixian);
+			holder.imgview = (ImageView) convertView.findViewById(R.id.imageView1_dixian);
 
 			convertView.setTag(holder);
 		} else {
@@ -444,21 +422,21 @@ class MyAdapter extends BaseAdapter {
 		}
 
 		holder.textview.setText(list.get(position));
-		
-		if (contentCount != null && contentCount.length > position) { 
+
+		if (contentCount != null && contentCount.length > position) {
 			if (contentCount[position] == 0) {
 				holder.textview.setText(list.get(position));
 			} else {
-				holder.textview.setText(list.get(position) + "    " + "( "
-						+ contentCount[position] + " )");
+				holder.textview.setText(
+						list.get(position) + "    " + "( " + contentCount[position] + " )");
 			}
 
 		} else {
 			holder.textview.setText(list.get(position));
 		}
 
-		if (hasContent != null && hasContent.length != 0){
-			
+		if (hasContent != null && hasContent.length != 0) {
+
 			if (hasContent[position] == 1) {
 				holder.textview.setTextColor(Color.RED);
 			} else {

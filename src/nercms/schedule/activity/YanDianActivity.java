@@ -58,7 +58,7 @@ public class YanDianActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_yandian);
-		iniActionBar(true, null, "yandian");
+		iniActionBar(true, null, "正确验电");
 		initData();
 
 		listview = (ListView) findViewById(R.id.listview_yandian);

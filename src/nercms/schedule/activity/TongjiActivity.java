@@ -37,7 +37,7 @@ public class TongjiActivity extends BaseActivity {
 		LoginRequest param = new LoginRequest(getUserName(), getUserIc(), null);
 		url += new Gson().toJson(param);
 
-		showAlterDialog("", url);
+//		showAlterDialog("", url);
 
 		iniActionBar(true, null, "Í³¼Æ");
 
