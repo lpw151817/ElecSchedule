@@ -156,7 +156,8 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_xian_chang_upload);
 
-		requestManager = new WebRequestManager(AppApplication.getInstance(), this);
+		requestManager = new WebRequestManager(AppApplication.getInstance(),
+				this);
 
 		tid = getIntent().getStringExtra("tid");
 		enterType = getIntent().getIntExtra("enterType", -1);
@@ -165,12 +166,14 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		bt_select = (Button) findViewById(R.id.select);
 		bt_shangchuangAttach = (Button) findViewById(R.id.shangchuanfujian);
 		if (isAdmin() != PERSON_TYPE.XIANCHANG
-				|| !TextUtils.isEmpty(new PlanTaskDao(this).getPlanTask(tid).getEnd_time())) {
+				|| !TextUtils.isEmpty(new PlanTaskDao(this).getPlanTask(tid)
+						.getEnd_time())) {
 			bt_select.setVisibility(View.GONE);
 			bt_shangchuangAttach.setVisibility(View.GONE);
 		}
 
-		WindowManager wm = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
+		WindowManager wm = (WindowManager) this
+				.getSystemService(Context.WINDOW_SERVICE);
 
 		int width = wm.getDefaultDisplay().getWidth();
 		int height = wm.getDefaultDisplay().getHeight();
@@ -191,7 +194,8 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		int mIndex = getIntent().getIntExtra("myMediaIndex", -1);
 		System.out.println("mIndex: " + mIndex);
 
-		mUploadUrl = (List<Map<String, Object>>) getIntent().getSerializableExtra("mUploadUrl");
+		mUploadUrl = (List<Map<String, Object>>) getIntent()
+				.getSerializableExtra("mUploadUrl");
 
 		// 进入upload有两种顺序：1.从showxianchangattachment=>xianchangAdd=>upload,这种设置为0
 		// 2.xianchanadd=>upload(点击actionbar的home)=>xianchangadd=>upload,这种mediaIndex保存上次的值
@@ -208,9 +212,11 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 		String[] ss = null;
 		if (enterType == 1) {
-			ss = c.getResources().getStringArray(R.array.zuoyexianchang_si_data);
+			ss = c.getResources()
+					.getStringArray(R.array.zuoyexianchang_si_data);
 		} else if (enterType == 2) {
-			ss = c.getResources().getStringArray(R.array.caozuoxianchang_si_data);
+			ss = c.getResources().getStringArray(
+					R.array.caozuoxianchang_si_data);
 		} else if (enterType == 3) {
 			ss = c.getResources().getStringArray(R.array.guzhangjinji_si_data);
 		}
@@ -230,9 +236,12 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 			// 操作现场和作业现场的每个条目中的附件按钮的操作是不一样的
 			if (enterType == 1) {
 
-				isRadio = c.getResources().getIntArray(R.array.zuoyexianchang_si_radio);
-				isPhoto = c.getResources().getIntArray(R.array.zuoyexianchang_si_photo);
-				isVideo = c.getResources().getIntArray(R.array.zuoyexianchang_si_video);
+				isRadio = c.getResources().getIntArray(
+						R.array.zuoyexianchang_si_radio);
+				isPhoto = c.getResources().getIntArray(
+						R.array.zuoyexianchang_si_photo);
+				isVideo = c.getResources().getIntArray(
+						R.array.zuoyexianchang_si_video);
 
 				if (isPhoto[position] == 1) {
 					name.add("拍照");
@@ -243,9 +252,12 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 				}
 
 			} else if (enterType == 2) {
-				isRadio = c.getResources().getIntArray(R.array.caozuoxianchang_si_radio);
-				isPhoto = c.getResources().getIntArray(R.array.caozuoxianchang_si_photo);
-				isVideo = c.getResources().getIntArray(R.array.caozuoxianchang_si_video);
+				isRadio = c.getResources().getIntArray(
+						R.array.caozuoxianchang_si_radio);
+				isPhoto = c.getResources().getIntArray(
+						R.array.caozuoxianchang_si_photo);
+				isVideo = c.getResources().getIntArray(
+						R.array.caozuoxianchang_si_video);
 
 				if (isPhoto[position] == 1) {
 					name.add("拍照");
@@ -261,9 +273,12 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 			}
 
 			else if (enterType == 3) {
-				isRadio = c.getResources().getIntArray(R.array.guzhangjinji_si_radio);
-				isPhoto = c.getResources().getIntArray(R.array.guzhangjinji_si_photo);
-				isVideo = c.getResources().getIntArray(R.array.guzhangjinji_si_video);
+				isRadio = c.getResources().getIntArray(
+						R.array.guzhangjinji_si_radio);
+				isPhoto = c.getResources().getIntArray(
+						R.array.guzhangjinji_si_photo);
+				isVideo = c.getResources().getIntArray(
+						R.array.guzhangjinji_si_video);
 
 				if (isPhoto[position] == 1) {
 					name.add("拍照");
@@ -287,36 +302,40 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 				startAttachment(array[0]);
 			} else {
 
-				AlertDialog.Builder builder = new AlertDialog.Builder(XianChangUpload.this);
-				ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(XianChangUpload.this,
-						R.layout.dialog_item, R.id.tv, array);
+				AlertDialog.Builder builder = new AlertDialog.Builder(
+						XianChangUpload.this);
+				ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+						XianChangUpload.this, R.layout.dialog_item, R.id.tv,
+						array);
 				// builder.setTitle("选择附件类型");
-				builder.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+				builder.setAdapter(arrayAdapter,
+						new DialogInterface.OnClickListener() {
 
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						switch (which) {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								switch (which) {
 
-						case 0:
+								case 0:
 
-							startAttachment(array[0]);
-							break;
+									startAttachment(array[0]);
+									break;
 
-						case 1:
+								case 1:
 
-							startAttachment(array[1]);
-							break;
+									startAttachment(array[1]);
+									break;
 
-						case 2:
-							startAttachment(array[2]);
+								case 2:
+									startAttachment(array[2]);
 
-							break;
+									break;
 
-						default:
-							break;
-						}
-					}
-				});
+								default:
+									break;
+								}
+							}
+						});
 				AlertDialog dialog = builder.create();
 				dialog.show();
 
@@ -382,8 +401,8 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 			mUnUploadFileCount = mUnUploadUrl.size();
 
 			if (mUnUploadFileCount == 0) {
-				Toast.makeText(XianChangUpload.this, "附件已经上传了，请选择新的附件上传", Toast.LENGTH_SHORT)
-						.show();
+				Toast.makeText(XianChangUpload.this, "附件已经上传了，请选择新的附件上传",
+						Toast.LENGTH_SHORT).show();
 			}
 
 			// 将附件写入数据库
@@ -498,8 +517,9 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 			// myGPS.getCoorType(), "");
 
 			GpsDao mGpsDao = new GpsDao(XianChangUpload.this);
-			long gpsId = mGpsDao.saveHistory(null, getUserId(), System.currentTimeMillis() + "",
-					myGPS.getLongitude() + "", myGPS.getLatitude() + "", "", myGPS.getRadius() + "",
+			long gpsId = mGpsDao.saveHistory(null, getUserId(),
+					System.currentTimeMillis() + "", myGPS.getLongitude() + "",
+					myGPS.getLatitude() + "", "", myGPS.getRadius() + "",
 					myGPS.getAltitude() + "", myGPS.getSpeed() + "",
 					System.currentTimeMillis() + "", myGPS.getCoorType(), "");
 
@@ -511,30 +531,59 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 			String md5 = Utils.getFileMD5(new File(filePath));
 			String url = ((String) map.get("path"));
 
-			/////////////////// 存数据库中的文件名加上前缀
+			// ///////////////// 存数据库中的文件名加上前缀
 			String name = url.substring(url.lastIndexOf("/") + 1);
+			StringBuilder sb = new StringBuilder();
 			int fileItemId = 0;
 			if (!standard.toString().equals("standard")) {
 				fileItemId = Integer.parseInt(standard.toString().substring(8));
 			}
-			name = tid + File.separator + fileItemId + File.separator + name;
-			/////////////////////////////
+			sb.append(tid + File.separator + fileItemId + File.separator);
+
+			// TODO 判断是否是从验电进入
+			int yandianId = getIntent().getIntExtra("secondIndex", -1);
+			if (yandianId != -1) {
+				sb.append((yandianId + 1) + File.separator);
+			} else {
+				int thirdIndex = getIntent().getIntExtra("thirdIndex", -1);
+				if (thirdIndex != -1) {
+					sb.append(3 + File.separator);
+				}
+			}
+
+			sb.append(name);
+			// ///////////////////////////
 
 			// String time =
 			// Utils.parseDateInFormat((String)attItem.get("time"));
 			String time = System.currentTimeMillis() + "";
-			System.out.println("name: " + name + " time: " + time);
+			System.out.println("name: " + sb.toString() + " time: " + time);
 
 			HashMap<String, String> res = AttachmentDatabase.instance(c)
-					// 数据库中的url为文件名
-					.query("select * from tb_task_attachment where url = '" + name + "';");
+			// 数据库中的url为文件名
+					.query("select * from tb_task_attachment where url = '"
+							+ sb.toString() + "';");
 			if (null != res && 0 < Integer.parseInt(res.get("records_num"))) {
 				Log.v("login", "records_num " + res.get("records_num"));
 				return;
 			}
 
-			boolean id = mDao.savePlanTaskAtt(null, tid, historygps, standard.toString(), type,
-					name, time, md5, "0");
+			boolean id = mDao.savePlanTaskAtt(null, tid, historygps,
+					standard.toString(), type, sb.toString(), time, md5, "0");
+
+			HashMap<String, String> data = AttachmentDatabase.instance(c)
+			// 数据库中的url为文件名
+					.query("select * from tb_task_attachment where url = '"
+							+ sb.toString() + "';");
+			for (int i = 0; i < Integer.parseInt(data.get("records_num")); i++) {
+				Log.v("login",
+						">>>>>" + data.get("id_" + i) + ":"
+								+ data.get("url_" + i) + ":"
+								+ data.get("status_" + i) + ":"
+
+								+ data.get("task_id_" + i) + ":"
+								+ data.get("dixian_" + i));
+			}
 
 			if (id) {
 				// if (!Utils.isNetworkAvailable(getApplicationContext())) {
@@ -543,7 +592,8 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 				// .show();
 				// } else
 				// 这个实际上是数据存储到数据库里面了,实际的上传工作是在ScheduleActvity里面通过线程池在后台进行上传的
-				Toast.makeText(XianChangUpload.this, "数据已存储，正在上传", Toast.LENGTH_SHORT).show();
+				Toast.makeText(XianChangUpload.this, "数据已存储，正在上传",
+						Toast.LENGTH_SHORT).show();
 			}
 		}
 
@@ -608,7 +658,45 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 			cameraintent.addCategory(Intent.CATEGORY_DEFAULT);
 
 			// TODO 创建的图片文件路径
-			mImagePath = NewTask.fileFolder + File.separator + getFileDate() + ".jpg";
+			mImagePath = NewTask.fileFolder + File.separator + getFileDate()
+					+ ".jpg";
+
+			String yandian = getIntent().getStringExtra("yandian");
+			if (yandian != null) {
+				if (yandian.equals("yandian")) {
+					int secondIndex = getIntent()
+							.getIntExtra("secondIndex", -1);
+					switch (secondIndex) {
+					case 0:
+						mImagePath = NewTask.fileFolder + File.separator
+								+ getFileDate() + ".jpg";
+						break;
+
+					case 1:
+						mImagePath = NewTask.fileFolder + File.separator
+								+ getFileDate() + ".jpg";
+						break;
+
+					case 3:
+						mImagePath = NewTask.fileFolder + File.separator
+								+ getFileDate() + ".jpg";
+						break;
+
+					default:
+						break;
+					}
+				}
+			}
+
+			String dixian = getIntent().getStringExtra("dixian");
+			if (dixian != null) {
+				if (dixian.equals("dixian")) {
+					int thirdIndex = getIntent().getIntExtra("thirdIndex", -1);
+					mImagePath = NewTask.fileFolder + File.separator + "D"
+							+ (thirdIndex + 1) + "-" + getFileDate() + ".jpg";
+				}
+			}
+
 			// 根据文件地址创建文件
 			File imagefile = new File(mImagePath);
 			if (!imagefile.getParentFile().exists())
@@ -620,10 +708,13 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 			Uri imageUri = Uri.fromFile(imagefile);
 			// 设置系统相机拍摄照片完成后图片文件的存放地址
 			cameraintent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-			startActivityForResult(cameraintent, LocalConstant.CAPTURE_IMAGE_REQUEST_CODE);
+			startActivityForResult(cameraintent,
+					LocalConstant.CAPTURE_IMAGE_REQUEST_CODE);
 		} else if (name.equals("录音")) {
-			Intent recordIntent = new Intent(XianChangUpload.this, RecordActivity.class);
-			startActivityForResult(recordIntent, LocalConstant.CAPTURE_AUDIO_REQUEST_CODE);
+			Intent recordIntent = new Intent(XianChangUpload.this,
+					RecordActivity.class);
+			startActivityForResult(recordIntent,
+					LocalConstant.CAPTURE_AUDIO_REQUEST_CODE);
 		} else if (name.equals("摄像")) {
 			// Intent intent = new Intent();
 			//
@@ -643,12 +734,14 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 			Uri uri = Uri.fromFile(file);
 			intent.putExtra("videoPath", videopath);
 			// intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-			startActivityForResult(intent, LocalConstant.CAPTURE_VIDEO_REQUEST_CODE);
+			startActivityForResult(intent,
+					LocalConstant.CAPTURE_VIDEO_REQUEST_CODE);
 		}
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item) {
+	public boolean onOptionsItemSelected(
+			com.actionbarsherlock.view.MenuItem item) {
 
 		switch (item.getItemId()) {
 		case android.R.id.home:
@@ -671,54 +764,61 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage("附件未上传，是否继续上传?");
 			builder.setCancelable(false);
-			builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
+			builder.setPositiveButton("是",
+					new DialogInterface.OnClickListener() {
 
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
 
-				}
-			});
-			builder.setNegativeButton("否", new DialogInterface.OnClickListener() {
-
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-
-					for (int i = 0; i < mUrl.size(); i++) {
-
-						if (mUploadUrl.size() == 0) {
-							mUrl.set(i, null);
 						}
+					});
+			builder.setNegativeButton("否",
+					new DialogInterface.OnClickListener() {
 
-						boolean flag = false;
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
 
-						for (int j = 0; j < mUploadUrl.size(); j++) {
+							for (int i = 0; i < mUrl.size(); i++) {
 
-							if (mUrl.get(i) != null) {
-								boolean isContain = mUrl.get(i).get("path")
-										.equals(mUploadUrl.get(j).get("path"));
-								if (isContain) {
-									flag = true;
+								if (mUploadUrl.size() == 0) {
+									mUrl.set(i, null);
+								}
+
+								boolean flag = false;
+
+								for (int j = 0; j < mUploadUrl.size(); j++) {
+
+									if (mUrl.get(i) != null) {
+										boolean isContain = mUrl
+												.get(i)
+												.get("path")
+												.equals(mUploadUrl.get(j).get(
+														"path"));
+										if (isContain) {
+											flag = true;
+										}
+									}
+
+								}
+
+								if (flag == false) {
+									mUrl.set(i, null);
 								}
 							}
 
+							Intent data = new Intent();
+							data.putExtra("url", (Serializable) mUrl);
+							System.out.println("home : mUrl " + mUrl.toString());
+							data.putExtra("mediaIndex", mediaIndex);// 把附件的下标值传回去，下次进来的时候，mediaIndex从上次的位置开始自增
+							data.putExtra("position",
+									getIntent().getIntExtra("position", -1));
+							data.putExtra("from", "XianChangUpload");
+							data.putExtra("mUploadUrl",
+									(Serializable) mUploadUrl);
+							setResult(LocalConstant.SELECT_ATTACHMENT, data);
+							finish();
 						}
-
-						if (flag == false) {
-							mUrl.set(i, null);
-						}
-					}
-
-					Intent data = new Intent();
-					data.putExtra("url", (Serializable) mUrl);
-					System.out.println("home : mUrl " + mUrl.toString());
-					data.putExtra("mediaIndex", mediaIndex);// 把附件的下标值传回去，下次进来的时候，mediaIndex从上次的位置开始自增
-					data.putExtra("position", getIntent().getIntExtra("position", -1));
-					data.putExtra("from", "XianChangUpload");
-					data.putExtra("mUploadUrl", (Serializable) mUploadUrl);
-					setResult(LocalConstant.SELECT_ATTACHMENT, data);
-					finish();
-				}
-			});
+					});
 			AlertDialog alert = builder.create();
 			alert.show();
 		} else {
@@ -729,6 +829,10 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 			data.putExtra("position", getIntent().getIntExtra("position", -1));
 			data.putExtra("from", "XianChangUpload");
 			data.putExtra("mUploadUrl", (Serializable) mUploadUrl);
+			data.putExtra("secondIndex",
+					getIntent().getIntExtra("secondIndex", -1));
+			data.putExtra("thirdIndex",
+					getIntent().getIntExtra("thirdIndex", -1));
 			setResult(LocalConstant.SELECT_ATTACHMENT, data);
 			finish();
 		}
@@ -789,15 +893,16 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 					File file1 = new File(selectThumbnailUri);
 
-					selectImageName = selectimagepath
-							.substring(selectimagepath.lastIndexOf(File.separator) + 1);
+					selectImageName = selectimagepath.substring(selectimagepath
+							.lastIndexOf(File.separator) + 1);
 					System.out.println("selectImageName: " + selectImageName);
 
 					uri1 = Uri.fromFile(file1);
 
 					mediaID1 = mediaIndex++;
 
-					Intent intent = new Intent(XianChangUpload.this, ShowXianChangAttachment.class);
+					Intent intent = new Intent(XianChangUpload.this,
+							ShowXianChangAttachment.class);
 					Map<String, String> mMap = new HashMap<String, String>();
 					mMap.put("type", "selectImage");
 					mMap.put("path", selectimagepath);
@@ -829,30 +934,32 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 					// 选择图片和照相获取到的图片的显示和删除方法是不一样的
 					if (fileType.equals("selectImage")) {
 						int mediaID1 = Integer.valueOf(index);
-						mediaList.add(new Media(Utils.MEDIA_TYPE_IMAGE, selectImageName,
-								selectimagepath));
+						mediaList.add(new Media(Utils.MEDIA_TYPE_IMAGE,
+								selectImageName, selectimagepath));
 						index_originalPath_Map.put(mediaID1, selectimagepath);
 						System.out.println("mediaID1 : " + mediaID1);
 
-						loadMedia(imageContainer, mediaID1, getThumbnailFromUri(uri1), uri1,
+						loadMedia(imageContainer, mediaID1,
+								getThumbnailFromUri(uri1), uri1,
 								NewTask.TYPE_SELECT_IMAGE, selectimagepath);
 						// 存储mediaId与thumbnailUri的映射
 						index_path_Map.put(mediaID1, selectThumbnailUri);
 					} else if (fileType.equals("captureImage")) {
 						int mediaID2 = Integer.valueOf(index);
 
-						mediaList.add(
-								new Media(Utils.MEDIA_TYPE_IMAGE, captureImageName, mImagePath));
+						mediaList.add(new Media(Utils.MEDIA_TYPE_IMAGE,
+								captureImageName, mImagePath));
 						// 存储mediaId与imageOriginPath的映射
 						index_originalPath_Map.put(mediaID2, mImagePath);
 						System.out.println("mediaID2 : " + mediaID2);
-						loadMedia(imageContainer, mediaID2, getThumbnailFromUri(uri2), uri2,
+						loadMedia(imageContainer, mediaID2,
+								getThumbnailFromUri(uri2), uri2,
 								NewTask.TYPE_IMAGE, mImagePath);
 						// 存储mediaId与thumbnailUri的映射
 						index_path_Map.put(mediaID2, thumbnailUri);
 
-						String touchImage = mImagePath
-								.substring(mImagePath.lastIndexOf(File.separator) + 1);
+						String touchImage = mImagePath.substring(mImagePath
+								.lastIndexOf(File.separator) + 1);
 						touchShowImage.add(NewTask.fileThumbnail + touchImage);
 						// TODO
 					} else if (fileType.equals("audio")) {
@@ -860,21 +967,24 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 						int mediaID = Integer.valueOf(index);
 						System.out.println("mediaID : " + mediaID);
 
-						mediaList.add(
-								new Media(Utils.MEDIA_TYPE_AUDIO, captureAudioName, audiopath));
+						mediaList.add(new Media(Utils.MEDIA_TYPE_AUDIO,
+								captureAudioName, audiopath));
 						index_originalPath_Map.put(mediaID, audiopath);
-						loadMedia(imageContainer, mediaID, audioThumbnailBitmap, uri,
-								NewTask.TYPE_AUDIO, audiopath);
+						loadMedia(imageContainer, mediaID,
+								audioThumbnailBitmap, uri, NewTask.TYPE_AUDIO,
+								audiopath);
 					} else if (fileType.equals("video")) {
 						int mediaID4 = Integer.valueOf(index);
 
 						System.out.println("mediaID4 : " + mediaID4);
 
-						mediaList.add(new Media(Utils.MEDIA_TYPE_VIDEO, videoName, videopath));
+						mediaList.add(new Media(Utils.MEDIA_TYPE_VIDEO,
+								videoName, videopath));
 						// 存储文件的路径
 						index_originalPath_Map.put(mediaID4, videopath);
-						loadMedia(imageContainer, mediaID4, videoThumbnailBitmap, uri4,
-								NewTask.TYPE_VIDEO, videopath);
+						loadMedia(imageContainer, mediaID4,
+								videoThumbnailBitmap, uri4, NewTask.TYPE_VIDEO,
+								videopath);
 					}
 
 				}
@@ -886,21 +996,23 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 				long timesb = System.currentTimeMillis();
 
-				String imageName = mImagePath
-						.substring(mImagePath.lastIndexOf(File.separator + "") + 1);
+				String imageName = mImagePath.substring(mImagePath
+						.lastIndexOf(File.separator + "") + 1);
 				thumbnailUri = Utils.getThumbnailDir(imageName);
 				// 获取缩略图,根据原图创建缩略图, mImagePath是原图的地址
 				Bitmap bitmap = Utils.getThumbnail(mImagePath, thumbnailUri);
 				// // 根据图片生成bitmap对象
 				File file2 = new File(thumbnailUri);
 
-				captureImageName = mImagePath.substring(mImagePath.lastIndexOf(File.separator) + 1);
+				captureImageName = mImagePath.substring(mImagePath
+						.lastIndexOf(File.separator) + 1);
 				System.out.println("captureImageName: " + captureImageName);
 
 				uri2 = Uri.fromFile(file2);
 				mediaID2 = mediaIndex++;
 
-				Intent intent = new Intent(XianChangUpload.this, ShowXianChangAttachment.class);
+				Intent intent = new Intent(XianChangUpload.this,
+						ShowXianChangAttachment.class);
 				Map<String, String> mMap = new HashMap<String, String>();
 				mMap.put("type", "captureImage");
 				mMap.put("path", mImagePath);
@@ -924,20 +1036,22 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		case LocalConstant.CAPTURE_AUDIO_REQUEST_CODE:
 			if (resultCode == RESULT_OK) {
 				System.out.println("声音返回成功");
-				audioThumbnailBitmap = BitmapFactory.decodeResource(getResources(),
-						R.drawable.record);
+				audioThumbnailBitmap = BitmapFactory.decodeResource(
+						getResources(), R.drawable.record);
 				audioFileName = getFileDate();
 				audiopath = data.getStringExtra("path");
 
 				System.out.println("audiopath: " + audiopath);
 				File file = new File(audiopath);
 
-				captureAudioName = audiopath.substring(audiopath.lastIndexOf(File.separator) + 1);
+				captureAudioName = audiopath.substring(audiopath
+						.lastIndexOf(File.separator) + 1);
 				System.out.println("captureAudioName: " + captureAudioName);
 
 				mediaID = mediaIndex++;
 
-				Intent intent = new Intent(XianChangUpload.this, ShowXianChangAttachment.class);
+				Intent intent = new Intent(XianChangUpload.this,
+						ShowXianChangAttachment.class);
 				Map<String, String> mMap = new HashMap<String, String>();
 				mMap.put("type", "audio");
 				mMap.put("path", audiopath);
@@ -967,10 +1081,12 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 				uri4 = Uri.fromFile(file);
 				mediaID4 = mediaIndex++;
 
-				videoName = videopath.substring(videopath.lastIndexOf(File.separator) + 1);
+				videoName = videopath.substring(videopath
+						.lastIndexOf(File.separator) + 1);
 				System.out.println("videoName: " + videoName);
 
-				Intent intent = new Intent(XianChangUpload.this, ShowXianChangAttachment.class);
+				Intent intent = new Intent(XianChangUpload.this,
+						ShowXianChangAttachment.class);
 				Map<String, String> mMap = new HashMap<String, String>();
 				mMap.put("type", "video");
 				mMap.put("path", videopath);
@@ -1014,7 +1130,8 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 		if (getIntent() != null) {
 			// TODO first
-			mUrl = (List<Map<String, Object>>) getIntent().getSerializableExtra("url");
+			mUrl = (List<Map<String, Object>>) getIntent()
+					.getSerializableExtra("url");
 
 			for (Map<String, Object> map : mUrl) {
 
@@ -1023,7 +1140,8 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 					if (map.get("path") != null) {
 
-						System.out.println("XianChangUpload url : " + map.get("path"));
+						System.out.println("XianChangUpload url : "
+								+ map.get("path"));
 
 						mFilePath = (String) map.get("path");// 文件的路径
 
@@ -1033,21 +1151,25 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 						if (mfile.exists()) {// 针对的是从网络上下载附件的时候，没有下载完成，就点击进入，会显示不了附件
 							// mFilePath = (String)
 							// getIntent().getCharSequenceExtra("path");
-							mFileName = mFilePath
-									.substring(mFilePath.lastIndexOf(File.separator) + 1);
+							mFileName = mFilePath.substring(mFilePath
+									.lastIndexOf(File.separator) + 1);
 
-							if (mFileName.contains(".jpg") || mFileName.contains(".png")
+							if (mFileName.contains(".jpg")
+									|| mFileName.contains(".png")
 									|| mFileName.contains(".jpeg")) {// 传过来的是图片
 
 								String thumbnailUri = "";
-								String imageThumnailPath = NewTask.fileThumbnail + mFileName;
+								String imageThumnailPath = NewTask.fileThumbnail
+										+ mFileName;
 
-								File imageThumbnailFile = new File(imageThumnailPath);
+								File imageThumbnailFile = new File(
+										imageThumnailPath);
 								if (imageThumbnailFile.exists()) {// 存在缩略图就使用，不存在就创建
 									thumbnailUri = imageThumnailPath;
 								} else {
 
-									thumbnailUri = Utils.getThumbnailDir(mFileName);
+									thumbnailUri = Utils
+											.getThumbnailDir(mFileName);
 									// 获取缩略图,根据原图创建缩略图, mImagePath是原图的地址
 									Utils.getThumbnail(mFilePath, thumbnailUri);
 								}
@@ -1055,52 +1177,63 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 								Uri uri2 = Uri.fromFile(file2);
 
 								// 从附件中获取它的下标
-								int mediaID2 = Integer.valueOf((String) map.get("index"));// 第一次进来
+								int mediaID2 = Integer.valueOf((String) map
+										.get("index"));// 第一次进来
 
 								// 存储mediaId与imageOriginPath的映射
 								index_originalPath_Map.put(mediaID2, mFilePath);
-								loadMedia(imageContainer, mediaID2, getThumbnailFromUri(uri2), uri2,
+								loadMedia(imageContainer, mediaID2,
+										getThumbnailFromUri(uri2), uri2,
 										NewTask.TYPE_IMAGE, mFilePath);
 
 								// 存储mediaId与thumbnailUri的映射
 								index_path_Map.put(mediaID2, thumbnailUri);
 
-								touchShowImage.add(NewTask.fileThumbnail + mFileName);
-							} else if (mFileName.contains(".mp3") || mFileName.contains(".amr")) {// 传递过来的是音频
+								touchShowImage.add(NewTask.fileThumbnail
+										+ mFileName);
+							} else if (mFileName.contains(".mp3")
+									|| mFileName.contains(".amr")) {// 传递过来的是音频
 
 								// 根据图片生成bitmap对象
 								Bitmap AudioThumbnailBitmap = BitmapFactory
-										.decodeResource(getResources(), R.drawable.record);
+										.decodeResource(getResources(),
+												R.drawable.record);
 
 								System.out.println("audiopath: " + mFilePath);
 								File file = new File(mFilePath);
 
 								Uri uri = Uri.fromFile(file);
-								int mediaID = Integer.valueOf((String) map.get("index"));
+								int mediaID = Integer.valueOf((String) map
+										.get("index"));
 
 								index_originalPath_Map.put(mediaID, mFilePath);
-								loadMedia(imageContainer, mediaID, AudioThumbnailBitmap, uri,
+								loadMedia(imageContainer, mediaID,
+										AudioThumbnailBitmap, uri,
 										NewTask.TYPE_AUDIO, mFilePath);
 							} else if (mFileName.contains(".mp4")) {
 								File file = new File(mFilePath);
 
-								Bitmap videoThumbnailBitmap = getVideoThumbnail(mFilePath, 400, 400,
+								Bitmap videoThumbnailBitmap = getVideoThumbnail(
+										mFilePath, 400, 400,
 										MediaStore.Images.Thumbnails.MINI_KIND);
 
 								// 显示所录制视频
 								Uri uri = Uri.fromFile(file);
-								int mediaID = Integer.valueOf((String) map.get("index"));
+								int mediaID = Integer.valueOf((String) map
+										.get("index"));
 
-								mediaList.add(
-										new Media(Utils.MEDIA_TYPE_VIDEO, mFileName, mFilePath));
+								mediaList.add(new Media(Utils.MEDIA_TYPE_VIDEO,
+										mFileName, mFilePath));
 								// 存储文件的路径
 								index_originalPath_Map.put(mediaID, mFilePath);
-								loadMedia(imageContainer, mediaID, videoThumbnailBitmap, uri,
+								loadMedia(imageContainer, mediaID,
+										videoThumbnailBitmap, uri,
 										NewTask.TYPE_VIDEO, mFilePath);
 							}
 
 						} else {
-							Toast.makeText(this, "附件正在下载", Toast.LENGTH_SHORT).show();
+							Toast.makeText(this, "附件正在下载", Toast.LENGTH_SHORT)
+									.show();
 						}
 
 					}
@@ -1111,8 +1244,8 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 	}
 
-	public void loadMedia(FixedGridLayout viewContainer, int mediaId, Bitmap thumbnail,
-			final Uri uri, final int MediaType, String newPath) {
+	public void loadMedia(FixedGridLayout viewContainer, int mediaId,
+			Bitmap thumbnail, final Uri uri, final int MediaType, String newPath) {
 
 		// WeiHao 如果附件展示布局不可见，置未可见
 		if (showAttachLayout.getVisibility() == View.GONE) {
@@ -1120,7 +1253,8 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		}
 		// 将图片缩略图添加到缩略图列表，便于新建完成后回收
 		// bitmapList.add(thumbnail);
-		final ImageView imageView = CreateImgView(this, thumbnail, IMG_WIDTH, IMG_HEIGHT);
+		final ImageView imageView = CreateImgView(this, thumbnail, IMG_WIDTH,
+				IMG_HEIGHT);
 		setImageviewListener(uri, imageView, MediaType, mediaId, newPath);
 
 		/*
@@ -1158,12 +1292,15 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 	 * @since 2014-5-17
 	 * @return
 	 */
-	public RelativeLayout WrapImgView(int mediaType, ImageView imgview, ImageButton btn) {
+	public RelativeLayout WrapImgView(int mediaType, ImageView imgview,
+			ImageButton btn) {
 		RelativeLayout rl = new RelativeLayout(this);
-		rl.setLayoutParams(new FixedGridLayout.LayoutParams(IMG_WIDTH, IMG_HEIGHT));
+		rl.setLayoutParams(new FixedGridLayout.LayoutParams(IMG_WIDTH,
+				IMG_HEIGHT));
 		rl.setPadding(2, 2, 2, 2);
 		RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(
-				ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+				ViewGroup.LayoutParams.WRAP_CONTENT,
+				ViewGroup.LayoutParams.WRAP_CONTENT);
 		lp1.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		lp1.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
 		// imgview 位于父 View 的顶部，在父 View 中居左
@@ -1171,7 +1308,8 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		lp1.rightMargin = 15;
 		rl.addView(imgview, lp1);
 
-		RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(30, 30);
+		RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(30,
+				30);
 		lp2.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		lp2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 		// btn1 位于父 View 的顶部，在父 View 中水平居右
@@ -1186,7 +1324,8 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		waterMark.setBackgroundColor(getResources().getColor(R.color.darkgrey));
 		waterMark.setTextColor(getResources().getColor(R.color.white));
 		RelativeLayout.LayoutParams lp3 = new RelativeLayout.LayoutParams(
-				ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+				ViewGroup.LayoutParams.WRAP_CONTENT,
+				ViewGroup.LayoutParams.WRAP_CONTENT);
 		// waterMark位于父View的左下
 		lp3.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		lp3.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
@@ -1232,7 +1371,8 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 	 * @param height
 	 * @return
 	 */
-	public ImageView CreateImgView(Context context, Bitmap pic, int width, int height) {
+	public ImageView CreateImgView(Context context, Bitmap pic, int width,
+			int height) {
 		// 加载图片的ImageView
 		ImageView imageView = new RoundAngleImageView(context);
 		// 将图片缩略图加载到ImageView
@@ -1240,7 +1380,8 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		// // 为图片设置编号
 		// imageView.setId(mediaId);
 		// 设置图片显示格式
-		FixedGridLayout.LayoutParams params = new FixedGridLayout.LayoutParams(width, height);
+		FixedGridLayout.LayoutParams params = new FixedGridLayout.LayoutParams(
+				width, height);
 		imageView.setLayoutParams(params);
 		imageView.setScaleType(ScaleType.CENTER_CROP);
 		return imageView;
@@ -1253,8 +1394,8 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 	 * @param imageView
 	 * @param newPath是源文件的路径
 	 */
-	public void setImageviewListener(final Uri uri, final ImageView imageView, final int MediaType,
-			final int MediaId, final String newPath) {
+	public void setImageviewListener(final Uri uri, final ImageView imageView,
+			final int MediaType, final int MediaId, final String newPath) {
 		// 为图片设置触摸事件
 		// imageView.setOnTouchListener(new OnTouchListener() {
 		// public boolean onTouch(View v, MotionEvent event) {
@@ -1287,7 +1428,8 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 					break;
 				case NewTask.TYPE_VIDEO:
 					// 点击播放视频
-					Intent intent = new Intent(XianChangUpload.this, PlayVideo.class);
+					Intent intent = new Intent(XianChangUpload.this,
+							PlayVideo.class);
 					intent.putExtra("path", index_originalPath_Map.get(MediaId));
 					startActivity(intent);
 					break;
@@ -1322,7 +1464,8 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 			String completeName = NewTask.fileThumbnail + fileName;
 			int currentItemIndex = touchShowImage.indexOf(completeName);
 
-			Intent intent2 = new Intent(XianChangUpload.this, ViewPagerActivity.class);
+			Intent intent2 = new Intent(XianChangUpload.this,
+					ViewPagerActivity.class);
 			intent2.putExtra("images", (Serializable) touchShowImage);
 			intent2.putExtra("currentItemIndex", currentItemIndex);
 			startActivity(intent2);
@@ -1535,7 +1678,8 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		return file;
 	}
 
-	private Bitmap getVideoThumbnail(String videoPath, int width, int height, int kind) {
+	private Bitmap getVideoThumbnail(String videoPath, int width, int height,
+			int kind) {
 		Bitmap bitmap = null;
 		// 获取视频的缩略图
 		bitmap = ThumbnailUtils.createVideoThumbnail(videoPath, kind);

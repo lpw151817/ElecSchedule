@@ -100,7 +100,7 @@ public class NewTask extends BaseActivity {
 
 	public static String fileFolder = Environment.getExternalStorageDirectory().getPath()
 			+ "/nercms-Schedule/DownloadAttachments/";
-	private String DownloadfileFolder = Environment.getExternalStorageDirectory().getPath()
+	private static String DownloadfileFolder = Environment.getExternalStorageDirectory().getPath()
 			+ "/nercms-Schedule/DownloadAttachments/";
 	public static String fileThumbnail = Environment.getExternalStorageDirectory().getPath()
 			+ "/nercms-Schedule/Thumbnail/";
