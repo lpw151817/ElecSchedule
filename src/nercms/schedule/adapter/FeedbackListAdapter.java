@@ -12,6 +12,9 @@ import nercms.schedule.R;
 import nercms.schedule.utils.LocalConstant;
 import nercms.schedule.utils.Utils;
 import net.tsz.afinal.FinalActivity;
+import net.tsz.afinal.FinalBitmap;
+import net.tsz.afinal.bitmap.core.BitmapDisplayConfig;
+import net.tsz.afinal.bitmap.display.Displayer;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -40,6 +43,7 @@ import android.wxapp.service.elec.dao.OrgDao;
 import android.wxapp.service.elec.dao.TaskInsDao;
 import android.wxapp.service.elec.model.bean.table.tb_task_instructions;
 import android.wxapp.service.elec.model.bean.table.tb_task_instructions_attachment;
+import android.wxapp.service.elec.request.Contants;
 import android.wxapp.service.jerry.model.message.ReceiveMessageResponse;
 import android.wxapp.service.model.FeedbackModel;
 import android.wxapp.service.util.HttpDownloadTask;
@@ -197,14 +201,8 @@ public class FeedbackListAdapter extends BaseAdapter {
 
 				tb_task_instructions_attachment attachment = attachments.get(0);
 				if (attachment.getType().equals("attachmentType01")) {
-					// TODO 图片
-
-					/////////////////////////////////
-					// attachments.get(0).get;
-					//
-					// holder.media.set;
-					/////////////////////////////////
-
+					// 图片
+					showFinalBitmap(holder.media, attachment.getUrl());
 				} else if (attachment.getType().equals("attachmentType02")) {
 					// 音频
 					holder.media.setBackgroundResource(R.drawable.microphone_uncheck);
@@ -254,6 +252,11 @@ public class FeedbackListAdapter extends BaseAdapter {
 					});
 				} else if (attachment.getType().equals("attachmentType03")) {
 					// TODO 视频
+					/////////////////////////////////
+					// attachment.get;
+					//
+					// holder.media.set;
+					/////////////////////////////////
 
 				}
 
@@ -322,4 +325,32 @@ public class FeedbackListAdapter extends BaseAdapter {
 		return false;
 	}
 
+	private void showFinalBitmap(ImageView im, String filename) {
+		FinalBitmap finalBitmap = FinalBitmap.create(context);
+		finalBitmap.configLoadingImage(R.drawable.loading);// 设置加载图片
+		// 图片大小
+		finalBitmap.configBitmapMaxHeight(800);
+		finalBitmap.configBitmapMaxWidth(480);
+		// 磁盘缓存路径
+		finalBitmap.configDiskCachePath(Environment.getExternalStorageDirectory().getAbsoluteFile()
+				+ "/nercms-Schedule/Attachments");
+		finalBitmap.configDiskCacheSize(10 * 1024);
+		// 第一个参数为iamgeview组件，第二个为加载的url地址
+		finalBitmap.display(im, Contants.HFS_URL + File.separator + filename);
+		// 配置显示
+		finalBitmap.configDisplayer(new Displayer() {
+
+			@Override
+			public void loadFailDisplay(View imageView, Bitmap bitmap) {
+				// 设置失败 显示图片 404 等等
+				imageView.setBackgroundResource(R.drawable.download_fail);
+			}
+
+			@Override
+			public void loadCompletedisplay(View imageView, Bitmap bitmap,
+					BitmapDisplayConfig config) {
+				// 加载成功 开启动画等等imageView.startAnimation();
+			}
+		});
+	}
 }
