@@ -96,12 +96,8 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 	private WebRequestManager webRequestManager;
 
 	private String taskID;
-	private String userID;// 本人ID
-	private String personID; // 对方的ID
-	private String personName;// 对方姓名
 
 	private Handler handler;
-	private DAOFactory daoFactory = DAOFactory.getInstance();
 	private FeedbackListAdapter fbAdapter = null;
 	private List<tb_task_instructions> fbList = new ArrayList<tb_task_instructions>();
 	private List<tb_task_instructions> newList = new ArrayList<tb_task_instructions>();
@@ -154,8 +150,6 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 		// 2014-5-27 WeiHao
 
 		webRequestManager = new WebRequestManager(AppApplication.getInstance(), ChatDetail.this);
-
-		userID = getUserId();
 
 		taskID = getIntent().getExtras().getString("task_id");
 		taskStatus = getIntent().getExtras().getInt("task_status", -1);

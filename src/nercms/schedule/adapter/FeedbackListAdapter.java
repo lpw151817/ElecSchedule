@@ -217,10 +217,21 @@ public class FeedbackListAdapter extends BaseAdapter {
 							if (taskInsDao == null)
 								taskInsDao = new TaskInsDao(context);
 
-							String filePath = Environment.getExternalStorageDirectory()
-									.getAbsolutePath() + "/nercms-Schedule/DownloadAttachments/"
+							// 本地文件地址
+							// String filePath =
+							// Environment.getExternalStorageDirectory()
+							// .getAbsolutePath() +
+							// "/nercms-Schedule/DownloadAttachments/"
+							// +
+							// taskInsDao.getTaskInsAtt(fblist.get(position).getId()).get(0)
+							// .getUrl();
+
+							// 用在线语音地址
+							String filePath = android.wxapp.service.elec.request.Contants.HFS_URL
+									+ File.separator
 									+ taskInsDao.getTaskInsAtt(fblist.get(position).getId()).get(0)
 											.getUrl();
+
 							// Toast.makeText(context, filePath,
 							// Toast.LENGTH_SHORT).show();
 							try {
