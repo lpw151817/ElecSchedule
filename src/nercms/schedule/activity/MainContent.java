@@ -21,6 +21,7 @@ import nercms.schedule.utils.AttachmentDatabase;
 import nercms.schedule.utils.AttachmentUpload;
 import nercms.schedule.utils.DeleteOldAttachment;
 import nercms.schedule.utils.HeartBeat;
+import nercms.schedule.utils.InsAttachmentUpload;
 import nercms.schedule.utils.Utils;
 import nercms.schedule.view.NoScrollViewPager;
 import android.content.Intent;
@@ -108,8 +109,13 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 
 		DeleteOldAttachment.instance().start(getApplicationContext());
 
+		/// 开启后台线程
+		// 心跳包线程
 		HeartBeat.start(getApplicationContext());
+		// 任务附件上传线程
 		AttachmentUpload.instance().start(getApplicationContext());
+		// 聊天附件上传线程
+		InsAttachmentUpload.instance().start(getApplicationContext());
 
 		dao = new PlanTaskDao(this);
 		/*
@@ -398,8 +404,11 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		case 4:
 			// 退出
 			Log.e("Demo", "api shutdown");
+			// 停止所有线程
 			HeartBeat.stop(getApplicationContext());
 			AttachmentUpload.instance().stop(getApplicationContext());
+			InsAttachmentUpload.instance().stop(getApplicationContext());
+
 			MediaInstance.instance().api_shutdown();
 			finish();
 			System.exit(0);

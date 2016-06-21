@@ -233,7 +233,7 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 				 * attachmentType01 图片 attachmentType02 音频 attachmentType03 视频
 				 */
 				String filePath = Environment.getExternalStorageDirectory().getAbsolutePath()
-						+ "/nercms-Schedule/Attachments/" + filename;
+						+ "/nercms-Schedule/DownloadAttachments/" + filename;
 				// DB 存储
 				boolean saveSuccess = new TaskInsDao(ChatDetail.this).saveInsAndAtt(taskID, "",
 						getUserId(), System.currentTimeMillis() + "", "1", "attachmentType02",
@@ -444,7 +444,6 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 		// uid 为接收人员id
 		webRequestManager.createInsRequest(this, msgDao.getMsgReceivers(taskID), data.getTask_id(),
 				data.getContent(), null, "1");
-
 	}
 
 	tb_task_instructions tempMsg;
