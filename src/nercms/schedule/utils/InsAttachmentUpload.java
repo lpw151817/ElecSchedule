@@ -171,7 +171,12 @@ public class InsAttachmentUpload {
 			// File.separator
 			// + nameWithStart.substring(0,
 			// nameWithStart.lastIndexOf(File.separator));
-			String uploadUrl = android.wxapp.service.elec.request.Contants.HFS_URL + File.separator;
+
+			TaskInsDao insDao = new TaskInsDao(_ctx);
+			tb_task_instructions instruction = insDao.getTaskIns(instructions_id, "1");
+
+			String uploadUrl = android.wxapp.service.elec.request.Contants.HFS_URL + File.separator
+					+ instruction.getTask_id() + File.separator + "C" + File.separator;
 
 			// new HttpUploadTask(null, _ctx, uploadAtt).execute(
 			// prefix + fileName, uploadUrl);

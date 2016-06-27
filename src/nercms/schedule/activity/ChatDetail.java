@@ -503,9 +503,7 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 								}
 							}
 						}
-
 					}
-
 					break;
 				}
 

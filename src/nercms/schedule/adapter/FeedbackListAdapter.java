@@ -226,9 +226,11 @@ public class FeedbackListAdapter extends BaseAdapter {
 
 							// 用在线语音地址
 							String filePath = android.wxapp.service.elec.request.Contants.HFS_URL
-									+ File.separator
+									+ File.separator + fblist.get(position).getTask_id()
+									+ File.separator + "C" + File.separator
 									+ taskInsDao.getTaskInsAtt(fblist.get(position).getId()).get(0)
 											.getUrl();
+							Log.v("login", filePath);
 
 							// Toast.makeText(context, filePath,
 							// Toast.LENGTH_SHORT).show();
