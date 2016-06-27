@@ -654,7 +654,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 			String md5 = Utils.getFileMD5(new File(filePath));
 			String url = ((String) map.get("path"));
 			String name = url.substring(url.lastIndexOf("/") + 1);
-			name = tid + File.separator + "0" + File.separator + name;
+			name = tid + File.separator + "R" + File.separator + name;
 			// String time = Utils.parseDateInFormat((String)
 			// attItem.get("time"));
 			String time = System.currentTimeMillis() + "";

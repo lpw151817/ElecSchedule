@@ -535,10 +535,16 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 			String name = url.substring(url.lastIndexOf("/") + 1);
 			StringBuilder sb = new StringBuilder();
 			int fileItemId = 0;
-			if (!standard.toString().equals("standard")) {
+			if (!standard.toString().equals("standard")) {//不是录像的情况
 				fileItemId = Integer.parseInt(standard.toString().substring(8));
+				
+				if (enterType == 3){//故障抢修现场从的fileItemId从12开始
+					fileItemId = 11 + Integer.parseInt(standard.toString().substring(8));
+				}
+				sb.append(tid + File.separator + fileItemId + File.separator);
+			} else {
+				sb.append(tid + File.separator + "R" + File.separator);
 			}
-			sb.append(tid + File.separator + fileItemId + File.separator);
 
 			// TODO 判断是否是从验电进入
 			int yandianId = getIntent().getIntExtra("secondIndex", -1);
