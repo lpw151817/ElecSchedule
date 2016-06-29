@@ -63,6 +63,19 @@
                 android:src="@drawable/microphone_uncheck"
                 android:visibility="visible" />
 
+            <ImageView
+                android:id="@+id/play"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:adjustViewBounds="true"
+                android:focusable="false"
+                android:maxWidth="200dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/attachment1"
+                android:visibility="gone" />
+
             <TextView
                 android:id="@+id/tv_chatcontent"
                 style="@style/chat_content_date_style"

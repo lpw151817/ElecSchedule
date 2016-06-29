@@ -9,8 +9,10 @@ import java.util.List;
 import org.apache.http.conn.BasicEofSensorWatcher;
 
 import nercms.schedule.R;
+import nercms.schedule.activity.XianChangAdd;
 import nercms.schedule.utils.LocalConstant;
 import nercms.schedule.utils.Utils;
+import nercms.schedule.view.PlayVideo;
 import net.tsz.afinal.FinalActivity;
 import net.tsz.afinal.FinalBitmap;
 import net.tsz.afinal.bitmap.core.BitmapDisplayConfig;
@@ -26,6 +28,7 @@ import android.media.MediaPlayer.OnErrorListener;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.provider.MediaStore.Images.Thumbnails;
 import android.text.TextUtils;
 import android.util.Log;
@@ -58,6 +61,13 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 
 public class FeedbackListAdapter extends BaseAdapter {
+
+	final String DOWNLOAD_ATTACHMENT_FOLDER = Environment.getExternalStorageDirectory()
+			.getAbsolutePath() + "/nercms-Schedule/DownloadAttachments/";
+	final String THUMBNAIL_FOLDER = Environment.getExternalStorageDirectory().getAbsolutePath()
+			+ "/nercms-Schedule/Thumbnail/";
+	final String ATTACHMENT_FOLDER = Environment.getExternalStorageDirectory().getAbsoluteFile()
+			+ "/nercms-Schedule/Attachments/";
 
 	/* 定义不同的消息视图item */
 	public static final int RIGHT_ITEM = 0;
@@ -166,6 +176,7 @@ public class FeedbackListAdapter extends BaseAdapter {
 		holder.contentLayout = (RelativeLayout) convertView.findViewById(R.id.rl_contentLayout);
 		holder.text = (TextView) convertView.findViewById(R.id.tv_chatcontent);
 		holder.media = (ImageView) convertView.findViewById(R.id.iv_chat_media);
+		holder.play = (ImageView) convertView.findViewById(R.id.play);
 		holder.header = (TextView) convertView.findViewById(R.id.iv_userhead);
 		convertView.setTag(holder);
 
@@ -202,7 +213,18 @@ public class FeedbackListAdapter extends BaseAdapter {
 				tb_task_instructions_attachment attachment = attachments.get(0);
 				if (attachment.getType().equals("attachmentType01")) {
 					// 图片
-					showFinalBitmap(holder.media, attachment.getUrl());
+					String filepath;
+					if (getItemViewType(position) == RIGHT_ITEM) { // 自己发出的消息
+						// 本地文件地址
+						filepath = DOWNLOAD_ATTACHMENT_FOLDER + taskInsDao
+								.getTaskInsAtt(fblist.get(position).getId()).get(0).getUrl();
+					} else {
+						filepath = Contants.HFS_URL + File.separator
+								+ fblist.get(position).getTask_id() + File.separator + "C"
+								+ File.separator + attachment.getUrl();
+					}
+					showBitmap(holder.media, filepath);
+
 				} else if (attachment.getType().equals("attachmentType02")) {
 					// 音频
 					holder.media.setBackgroundResource(R.drawable.microphone_uncheck);
@@ -214,22 +236,21 @@ public class FeedbackListAdapter extends BaseAdapter {
 
 							if (taskInsDao == null)
 								taskInsDao = new TaskInsDao(context);
+							String filePath;
+							if (getItemViewType(position) == RIGHT_ITEM) { // 自己发出的消息
+								// 本地文件地址
+								filePath = DOWNLOAD_ATTACHMENT_FOLDER
+										+ taskInsDao.getTaskInsAtt(fblist.get(position).getId())
+												.get(0).getUrl();
+							} else {
+								// 用在线语音地址
+								filePath = android.wxapp.service.elec.request.Contants.HFS_URL
+										+ File.separator + fblist.get(position).getTask_id()
+										+ File.separator + "C" + File.separator
+										+ taskInsDao.getTaskInsAtt(fblist.get(position).getId())
+												.get(0).getUrl();
+							}
 
-							// 本地文件地址
-							// String filePath =
-							// Environment.getExternalStorageDirectory()
-							// .getAbsolutePath() +
-							// "/nercms-Schedule/DownloadAttachments/"
-							// +
-							// taskInsDao.getTaskInsAtt(fblist.get(position).getId()).get(0)
-							// .getUrl();
-
-							// 用在线语音地址
-							String filePath = android.wxapp.service.elec.request.Contants.HFS_URL
-									+ File.separator + fblist.get(position).getTask_id()
-									+ File.separator + "C" + File.separator
-									+ taskInsDao.getTaskInsAtt(fblist.get(position).getId()).get(0)
-											.getUrl();
 							Log.v("login", filePath);
 
 							// Toast.makeText(context, filePath,
@@ -254,11 +275,58 @@ public class FeedbackListAdapter extends BaseAdapter {
 					});
 				} else if (attachment.getType().equals("attachmentType03")) {
 					// TODO 视频
-					/////////////////////////////////
-					// attachment.get;
-					//
-					// holder.media.set;
-					/////////////////////////////////
+					String videoName = taskInsDao.getTaskInsAtt(fblist.get(position).getId()).get(0)
+							.getUrl();
+					// 视频路径
+					final String filepath = DOWNLOAD_ATTACHMENT_FOLDER + videoName;
+					String thumbPath = THUMBNAIL_FOLDER + videoName;
+					// 如果视频存在
+					if (new File(filepath).exists()) {
+						// 播放按钮可见
+						holder.play.setVisibility(View.VISIBLE);
+
+						// 缩略图不存在
+						if (!new File(thumbPath).exists()) {
+							// 生成并保存缩略图
+							getVideoThumbnail(filepath, videoName, 400, 400,
+									MediaStore.Images.Thumbnails.MINI_KIND);
+						}
+
+						showBitmap(holder.media, thumbPath);
+
+						holder.media.setOnClickListener(new OnClickListener() {
+
+							@Override
+							public void onClick(View v) {
+								playVideo(filepath);
+							}
+						});
+						holder.play.setOnClickListener(new OnClickListener() {
+
+							@Override
+							public void onClick(View v) {
+								playVideo(filepath);
+							}
+						});
+
+					} else {
+						// 录像文件不存在
+						holder.media.setBackgroundResource(R.drawable.download_fail);
+						holder.media.setOnClickListener(new OnClickListener() {
+
+							@Override
+							public void onClick(View v) {
+								Toast.makeText(context, "录像文件不存在！", Toast.LENGTH_SHORT).show();
+							}
+						});
+						holder.play.setOnClickListener(new OnClickListener() {
+
+							@Override
+							public void onClick(View v) {
+								Toast.makeText(context, "录像文件不存在！", Toast.LENGTH_SHORT).show();
+							}
+						});
+					}
 
 				}
 
@@ -288,7 +356,7 @@ public class FeedbackListAdapter extends BaseAdapter {
 		// 消息文字
 		TextView text;
 		// 消息媒体文件
-		ImageView media;
+		ImageView media, play;
 		// 时长（只针对视频和音频）
 		TextView duration;
 		TextView header;
@@ -327,18 +395,18 @@ public class FeedbackListAdapter extends BaseAdapter {
 		return false;
 	}
 
-	private void showFinalBitmap(ImageView im, String filename) {
+	// 显示网络图片
+	private void showBitmap(ImageView im, String filename) {
 		FinalBitmap finalBitmap = FinalBitmap.create(context);
 		finalBitmap.configLoadingImage(R.drawable.loading);// 设置加载图片
 		// 图片大小
 		finalBitmap.configBitmapMaxHeight(800);
 		finalBitmap.configBitmapMaxWidth(480);
 		// 磁盘缓存路径
-		finalBitmap.configDiskCachePath(Environment.getExternalStorageDirectory().getAbsoluteFile()
-				+ "/nercms-Schedule/Attachments");
+		finalBitmap.configDiskCachePath(ATTACHMENT_FOLDER);
 		finalBitmap.configDiskCacheSize(10 * 1024);
 		// 第一个参数为iamgeview组件，第二个为加载的url地址
-		finalBitmap.display(im, Contants.HFS_URL + File.separator + filename);
+		finalBitmap.display(im, filename);
 		// 配置显示
 		finalBitmap.configDisplayer(new Displayer() {
 
@@ -354,5 +422,35 @@ public class FeedbackListAdapter extends BaseAdapter {
 				// 加载成功 开启动画等等imageView.startAnimation();
 			}
 		});
+	}
+
+	/**
+	 * 生成并保存缩略图
+	 * 
+	 * @param videoPath
+	 *            video的绝对路径
+	 * @param videoName
+	 *            video的文件名
+	 * @param width
+	 * @param height
+	 * @param kind
+	 * @return
+	 */
+	private Bitmap getVideoThumbnail(String videoPath, String videoName, int width, int height,
+			int kind) {
+		Bitmap bitmap = null;
+		// 获取视频的缩略图
+		bitmap = ThumbnailUtils.createVideoThumbnail(videoPath, kind);
+		bitmap = ThumbnailUtils.extractThumbnail(bitmap, width, height,
+				ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+		// 保存视频缩略图
+		Utils.saveBitmap(bitmap, THUMBNAIL_FOLDER + videoName);
+		return bitmap;
+	}
+
+	private void playVideo(String videoPath) {
+		Intent videoIntent = new Intent(context, PlayVideo.class);
+		videoIntent.putExtra("path", videoPath);
+		context.startActivity(videoIntent);
 	}
 }
