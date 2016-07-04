@@ -155,7 +155,7 @@ public class DiXianActivity extends BaseActivity implements OnClickListener {
 
 				+ data.get("task_id_" + i) + ":" + data.get("dixian_" + i));
 
-				String standard = data.get("standard_" + i);
+//				String standard = data.get("standard_" + i);
 
 				GpsDao gpsDao = new GpsDao(this);
 				GPS gps = gpsDao.getHistory(data.get("historygps_" + i));// 从数据库中获取gps信息

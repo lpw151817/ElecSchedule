@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
@@ -62,12 +63,13 @@ import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 
 public class FeedbackListAdapter extends BaseAdapter {
 
-	final String DOWNLOAD_ATTACHMENT_FOLDER = Environment.getExternalStorageDirectory()
-			.getAbsolutePath() + "/nercms-Schedule/DownloadAttachments/";
-	final String THUMBNAIL_FOLDER = Environment.getExternalStorageDirectory().getAbsolutePath()
-			+ "/nercms-Schedule/Thumbnail/";
-	final String ATTACHMENT_FOLDER = Environment.getExternalStorageDirectory().getAbsoluteFile()
-			+ "/nercms-Schedule/Attachments/";
+	final String DOWNLOAD_ATTACHMENT_FOLDER = Environment
+			.getExternalStorageDirectory().getAbsolutePath()
+			+ "/nercms-Schedule/DownloadAttachments/";
+	final String THUMBNAIL_FOLDER = Environment.getExternalStorageDirectory()
+			.getAbsolutePath() + "/nercms-Schedule/Thumbnail/";
+	final String ATTACHMENT_FOLDER = Environment.getExternalStorageDirectory()
+			.getAbsoluteFile() + "/nercms-Schedule/Attachments/";
 
 	/* 定义不同的消息视图item */
 	public static final int RIGHT_ITEM = 0;
@@ -97,12 +99,14 @@ public class FeedbackListAdapter extends BaseAdapter {
 		notifyDataSetChanged();
 	}
 
-	public FeedbackListAdapter(Context context, List<tb_task_instructions> fblist) {
+	public FeedbackListAdapter(Context context,
+			List<tb_task_instructions> fblist) {
 		this.context = context;
 		this.fblist = fblist;
 		this.mInflater = LayoutInflater.from(context);
 
-		options = new DisplayImageOptions.Builder().showImageOnLoading(R.drawable.no_picture) // 设置图片在下载期间显示的图片
+		options = new DisplayImageOptions.Builder()
+				.showImageOnLoading(R.drawable.no_picture) // 设置图片在下载期间显示的图片
 				.showImageForEmptyUri(R.drawable.no_picture)// 设置图片Uri为空或是错误的时候显示的图片
 				.showImageOnFail(R.drawable.no_picture) // 设置图片加载/解码过程中错误时候显示的图片
 				.cacheInMemory(true)// 设置下载的图片是否缓存在内存中
@@ -144,7 +148,8 @@ public class FeedbackListAdapter extends BaseAdapter {
 	public int getItemViewType(int position) {
 		// 根据发送人ID设置消息的位置在左端还是右端
 		String senderID = fblist.get(position).getSend_id();
-		String userID = MySharedPreference.get(context, MySharedPreference.USER_ID, "");
+		String userID = MySharedPreference.get(context,
+				MySharedPreference.USER_ID, "");
 		if (senderID.equals(userID))
 			return RIGHT_ITEM;
 		else
@@ -155,30 +160,33 @@ public class FeedbackListAdapter extends BaseAdapter {
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		final ViewHolder holder;
 
-		if (getItemViewType(position) == RIGHT_ITEM) { // 自己发出的消息
-			if (convertView == null) {
+		if (convertView == null) {
+			if (getItemViewType(position) == RIGHT_ITEM) { // 自己发出的消息
 				holder = new ViewHolder();
-				convertView = mInflater.inflate(R.layout.chat_item_right_example, null);
+				convertView = mInflater.inflate(
+						R.layout.chat_item_right_example, null);
 			} else {
-				holder = (ViewHolder) convertView.getTag();
-			}
-		} else {
-			if (convertView == null) {
 				holder = new ViewHolder();
-				convertView = mInflater.inflate(R.layout.chat_item_left_example, null);
-			} else {
-				holder = (ViewHolder) convertView.getTag();
+				convertView = mInflater.inflate(
+						R.layout.chat_item_left_example, null);
 			}
-		}
 
-		// 获取控件对象
-		holder.time = (TextView) convertView.findViewById(R.id.tv_sendtime);
-		holder.contentLayout = (RelativeLayout) convertView.findViewById(R.id.rl_contentLayout);
-		holder.text = (TextView) convertView.findViewById(R.id.tv_chatcontent);
-		holder.media = (ImageView) convertView.findViewById(R.id.iv_chat_media);
-		holder.play = (ImageView) convertView.findViewById(R.id.play);
-		holder.header = (TextView) convertView.findViewById(R.id.iv_userhead);
-		convertView.setTag(holder);
+			// 获取控件对象
+			holder.time = (TextView) convertView.findViewById(R.id.tv_sendtime);
+			holder.contentLayout = (RelativeLayout) convertView
+					.findViewById(R.id.rl_contentLayout);
+			holder.text = (TextView) convertView
+					.findViewById(R.id.tv_chatcontent);
+			holder.media = (ImageView) convertView
+					.findViewById(R.id.iv_chat_media);
+			holder.play = (ImageView) convertView.findViewById(R.id.play);
+			holder.header = (TextView) convertView
+					.findViewById(R.id.iv_userhead);
+			convertView.setTag(holder);
+
+		} else {
+			holder = (ViewHolder) convertView.getTag();
+		}
 
 		// 设置值
 		final tb_task_instructions fb = fblist.get(position);
@@ -206,8 +214,6 @@ public class FeedbackListAdapter extends BaseAdapter {
 				 * 
 				 * attachmentType attachmentType01 图片 attachmentType
 				 * attachmentType02 音频 attachmentType attachmentType03 视频
-				 * 
-				 * 
 				 */
 
 				tb_task_instructions_attachment attachment = attachments.get(0);
@@ -216,18 +222,39 @@ public class FeedbackListAdapter extends BaseAdapter {
 					String filepath;
 					if (getItemViewType(position) == RIGHT_ITEM) { // 自己发出的消息
 						// 本地文件地址
-						filepath = DOWNLOAD_ATTACHMENT_FOLDER + taskInsDao
-								.getTaskInsAtt(fblist.get(position).getId()).get(0).getUrl();
+						// 原图显示
+						// filepath = DOWNLOAD_ATTACHMENT_FOLDER
+						// + taskInsDao
+						// .getTaskInsAtt(
+						// fblist.get(position).getId())
+						// .get(0).getUrl();
+
+						// 缩略图显示
+						filepath = THUMBNAIL_FOLDER
+								+ taskInsDao
+										.getTaskInsAtt(
+												fblist.get(position).getId())
+										.get(0).getUrl();
+						// 如果图片文件不存在
+						if (!new File(filepath).exists()) {
+							holder.media
+									.setBackgroundResource(R.drawable.download_fail);
+						} else {
+							Bitmap bm = BitmapFactory.decodeFile(filepath);
+							holder.media.setImageBitmap(bm);// 不会变形
+						}
 					} else {
 						filepath = Contants.HFS_URL + File.separator
-								+ fblist.get(position).getTask_id() + File.separator + "C"
-								+ File.separator + attachment.getUrl();
+								+ fblist.get(position).getTask_id()
+								+ File.separator + "C" + File.separator
+								+ attachment.getUrl();
+						showBitmap(holder.media, filepath);
 					}
-					showBitmap(holder.media, filepath);
 
 				} else if (attachment.getType().equals("attachmentType02")) {
 					// 音频
-					holder.media.setBackgroundResource(R.drawable.microphone_uncheck);
+					holder.media
+							.setBackgroundResource(R.drawable.microphone_uncheck);
 					holder.text.setText(attachments.get(0).getUrl());
 					holder.media.setOnClickListener(new OnClickListener() {
 
@@ -240,14 +267,23 @@ public class FeedbackListAdapter extends BaseAdapter {
 							if (getItemViewType(position) == RIGHT_ITEM) { // 自己发出的消息
 								// 本地文件地址
 								filePath = DOWNLOAD_ATTACHMENT_FOLDER
-										+ taskInsDao.getTaskInsAtt(fblist.get(position).getId())
+										+ taskInsDao
+												.getTaskInsAtt(
+														fblist.get(position)
+																.getId())
 												.get(0).getUrl();
 							} else {
 								// 用在线语音地址
 								filePath = android.wxapp.service.elec.request.Contants.HFS_URL
-										+ File.separator + fblist.get(position).getTask_id()
-										+ File.separator + "C" + File.separator
-										+ taskInsDao.getTaskInsAtt(fblist.get(position).getId())
+										+ File.separator
+										+ fblist.get(position).getTask_id()
+										+ File.separator
+										+ "C"
+										+ File.separator
+										+ taskInsDao
+												.getTaskInsAtt(
+														fblist.get(position)
+																.getId())
 												.get(0).getUrl();
 							}
 
@@ -267,18 +303,23 @@ public class FeedbackListAdapter extends BaseAdapter {
 								mp.start();
 							} catch (Exception e) {
 								e.printStackTrace();
-								if (e != null && e.getMessage() != null
-										&& e.getMessage().equals("setDataSource failed."))
-									Toast.makeText(context, "文件未找到", Toast.LENGTH_SHORT).show();
+								if (e != null
+										&& e.getMessage() != null
+										&& e.getMessage().equals(
+												"setDataSource failed."))
+									Toast.makeText(context, "文件未找到",
+											Toast.LENGTH_SHORT).show();
 							}
 						}
 					});
 				} else if (attachment.getType().equals("attachmentType03")) {
 					// TODO 视频
-					String videoName = taskInsDao.getTaskInsAtt(fblist.get(position).getId()).get(0)
+					String videoName = taskInsDao
+							.getTaskInsAtt(fblist.get(position).getId()).get(0)
 							.getUrl();
 					// 视频路径
-					final String filepath = DOWNLOAD_ATTACHMENT_FOLDER + videoName;
+					final String filepath = DOWNLOAD_ATTACHMENT_FOLDER
+							+ videoName;
 					String thumbPath = THUMBNAIL_FOLDER + videoName;
 					// 如果视频存在
 					if (new File(filepath).exists()) {
@@ -311,19 +352,22 @@ public class FeedbackListAdapter extends BaseAdapter {
 
 					} else {
 						// 录像文件不存在
-						holder.media.setBackgroundResource(R.drawable.download_fail);
+						holder.media
+								.setBackgroundResource(R.drawable.download_fail);
 						holder.media.setOnClickListener(new OnClickListener() {
 
 							@Override
 							public void onClick(View v) {
-								Toast.makeText(context, "录像文件不存在！", Toast.LENGTH_SHORT).show();
+								Toast.makeText(context, "录像文件不存在！",
+										Toast.LENGTH_SHORT).show();
 							}
 						});
 						holder.play.setOnClickListener(new OnClickListener() {
 
 							@Override
 							public void onClick(View v) {
-								Toast.makeText(context, "录像文件不存在！", Toast.LENGTH_SHORT).show();
+								Toast.makeText(context, "录像文件不存在！",
+										Toast.LENGTH_SHORT).show();
 							}
 						});
 					}
@@ -436,8 +480,8 @@ public class FeedbackListAdapter extends BaseAdapter {
 	 * @param kind
 	 * @return
 	 */
-	private Bitmap getVideoThumbnail(String videoPath, String videoName, int width, int height,
-			int kind) {
+	private Bitmap getVideoThumbnail(String videoPath, String videoName,
+			int width, int height, int kind) {
 		Bitmap bitmap = null;
 		// 获取视频的缩略图
 		bitmap = ThumbnailUtils.createVideoThumbnail(videoPath, kind);

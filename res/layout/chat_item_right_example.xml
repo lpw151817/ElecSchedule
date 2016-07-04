@@ -60,7 +60,7 @@
                 android:focusable="false"
                 android:maxWidth="200dp"
                 android:scaleType="centerInside"
-                android:src="@drawable/microphone_uncheck"
+                android:background="@drawable/microphone_uncheck"
                 android:visibility="visible" />
 
             <ImageView

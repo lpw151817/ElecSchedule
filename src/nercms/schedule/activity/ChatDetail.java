@@ -24,6 +24,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -379,8 +381,26 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 			// TODO 拍照
 			Toast.makeText(ChatDetail.this, "拍照", Toast.LENGTH_SHORT).show();
 			// 拍照
-			Intent imageIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
+//			Intent imageIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//			startActivityForResult(imageIntent, LocalConstant.CAPTURE_IMAGE_REQUEST_CODE);
+			
+			Intent imageIntent = new Intent();
+			imageIntent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+			imageIntent.addCategory(Intent.CATEGORY_DEFAULT);
+			
+			mImagePath = NewTask.fileFolder + File.separator + Utils.getFileDate()
+					+ ".jpg";
+			
+			// 根据文件地址创建文件
+			File imagefile = new File(mImagePath);
+			if (!imagefile.getParentFile().exists())
+				imagefile.mkdirs();
+			if (imagefile.exists()) {
+				imagefile.delete();
+			}
+			// 把文件地址转换成Uri格式
+			Uri imageUri = Uri.fromFile(imagefile);
+			imageIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
 			startActivityForResult(imageIntent, LocalConstant.CAPTURE_IMAGE_REQUEST_CODE);
 
 			break;
@@ -389,8 +409,20 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 			// TODO 录像
 			Toast.makeText(ChatDetail.this, "摄像", Toast.LENGTH_SHORT).show();
 			// 摄像
-			Intent videoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-			startActivityForResult(videoIntent, LocalConstant.CAPTURE_VIDEO_REQUEST_CODE);
+//			Intent videoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+//			startActivityForResult(videoIntent, LocalConstant.CAPTURE_VIDEO_REQUEST_CODE);
+			
+			Intent intent = new Intent(ChatDetail.this, Video.class);
+
+			String fileName = Utils.getFileDate();
+			videopath2 = NewTask.fileFolder + "/" + fileName + ".mp4";
+			File file = new File(videopath2);
+			if (file.exists()) {
+				file.delete();
+			}
+			intent.putExtra("videoPath", videopath2);
+			startActivityForResult(intent,
+					LocalConstant.CAPTURE_VIDEO_REQUEST_CODE);
 			break;
 
 		}
@@ -400,15 +432,66 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+		/*
+		 * attachmentType01 图片 attachmentType02 音频 attachmentType03 视频
+		 */
 		if (resultCode == RESULT_OK) {
 			switch (requestCode) {
 			case LocalConstant.CAPTURE_IMAGE_REQUEST_CODE:
 				// TODO 拍照回调
-				showShortToast("拍照回调");
+//				showShortToast("拍照回调");
+				String filename = mImagePath.substring(mImagePath
+						.lastIndexOf(File.separator + "") + 1);
+				String thumbnailUri = Utils.getThumbnailDir(filename);
+				// 获取缩略图,根据原图创建缩略图, mImagePath是原图的地址
+				Utils.getThumbnail(mImagePath, thumbnailUri);
+				
+				String filePath = Environment.getExternalStorageDirectory().getAbsolutePath()
+						+ "/nercms-Schedule/DownloadAttachments/" + filename;
+				// DB 存储
+				boolean saveSuccess = new TaskInsDao(ChatDetail.this).saveInsAndAtt(taskID, "",
+						getUserId(), System.currentTimeMillis() + "", "1", "attachmentType01",
+						filename, System.currentTimeMillis() + "",
+						Utils.getFileMD5(new File(filePath)));
+
+				if (saveSuccess) {
+					// 界面显示
+					fbList = msgDao.getMsg(taskID);
+					fbAdapter.setFblist(fbList);
+					mListView.setSelection(fbList.size() - 1);
+				} else {
+					showShortToast("图片保存失败");
+				}
+				
 				break;
 			case LocalConstant.CAPTURE_VIDEO_REQUEST_CODE:
 				// TODO 录像回调
 				showShortToast("录像回调");
+				Bitmap videoThumbnailBitmap = getVideoThumbnail(videopath2, 400, 400,
+						MediaStore.Images.Thumbnails.MINI_KIND);
+				String videoNameContainsSuffix = videopath2.substring(videopath2
+						.lastIndexOf(File.separator + "") + 1);//2015.mp4
+				String videoName = videoNameContainsSuffix.replace("mp4", "jpg");
+				String uri = NewTask.fileThumbnail + videoName;
+				Utils.saveBitmap(videoThumbnailBitmap, uri);
+				
+//				String filePath = Environment.getExternalStorageDirectory().getAbsolutePath()
+//						+ "/nercms-Schedule/DownloadAttachments/" + filename;
+				// DB 存储
+				boolean saveSuccess1 = new TaskInsDao(ChatDetail.this).saveInsAndAtt(taskID, "",
+						getUserId(), System.currentTimeMillis() + "", "1", "attachmentType03",
+						videoNameContainsSuffix, System.currentTimeMillis() + "",
+						Utils.getFileMD5(new File(videopath2)));
+
+				if (saveSuccess1) {
+					// 界面显示
+					fbList = msgDao.getMsg(taskID);
+					fbAdapter.setFblist(fbList);
+					mListView.setSelection(fbList.size() - 1);
+				} else {
+					showShortToast("录像保存失败");
+				}
+				
 				break;
 			case LocalConstant.SELECT_IMAGE_REQUEST_CODE:
 				// TODO 选照片回调
@@ -442,6 +525,8 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 
 	tb_task_instructions tempMsg;
 	private ScheduledExecutorService scheduler;
+	private String mImagePath;
+	private String videopath2;
 
 	@SuppressLint("HandlerLeak")
 	private void initHandler() {
@@ -592,6 +677,16 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 		InputMethodManager mInputMethodManager = (InputMethodManager) getSystemService(
 				Context.INPUT_METHOD_SERVICE);
 		mInputMethodManager.hideSoftInputFromWindow(mEditTextContent.getWindowToken(), 0);
+	}
+	
+	private Bitmap getVideoThumbnail(String videoPath, int width, int height, int kind) {
+		Bitmap bitmap = null;
+		// 获取视频的缩略图
+		bitmap = ThumbnailUtils.createVideoThumbnail(videoPath, kind);
+
+		bitmap = ThumbnailUtils.extractThumbnail(bitmap, width, height,
+				ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+		return bitmap;
 	}
 
 }
