@@ -35,9 +35,11 @@ public class Video extends Activity implements OnClickListener {
     private boolean mIsRecording = false;  
     private boolean mIsSufaceCreated = false;  
   
-    private static final String TAG = "Jackie";  
+    private static final String TAG = "Video";  
   
-    private Handler mHandler = new Handler();  
+    private Handler mHandler = new Handler();
+    
+    private int maxTime = 10;//最大录像时长，单位秒，默认10秒
   
     @Override  
     protected void onCreate(Bundle savedInstanceState) {  
@@ -57,7 +59,12 @@ public class Video extends Activity implements OnClickListener {
         mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);  
   
         mShutter = (ImageButton) findViewById(R.id.record_shutter);  
-        mShutter.setOnClickListener(this);  
+        mShutter.setOnClickListener(this);
+        
+        if (getIntent() != null)
+        {
+        	maxTime = getIntent().getIntExtra("maxTime", 10);//最大录像时长
+        }
     }  
   
     @Override  
@@ -265,7 +272,10 @@ public class Video extends Activity implements OnClickListener {
         @Override  
         public void run() {  
             updateTimestamp(); 
-            if (timeLimit > MAX_TIME){
+            
+            //if(timeLimit > MAX_TIME)
+            if(timeLimit > maxTime)
+            {
             	stopRecording();
             }
             mHandler.postDelayed(this, 1000);  
@@ -274,12 +284,12 @@ public class Video extends Activity implements OnClickListener {
 	private Size size1;
 	private String videoPath;  
 	private int timeLimit;
-	private int MAX_TIME = 15;//最大录像时长10s
+	//private int MAX_TIME = 15;//最大录像时长10s
     private void updateTimestamp() {  
         int second = Integer.parseInt(mSecondText.getText().toString());  
         int minute = Integer.parseInt(mMinuteText.getText().toString());  
         second++;  
-        Log.d(TAG, "second: " + second);  
+        //Log.d(TAG, "second: " + second);  
         timeLimit = second;
         if (second < 10) {  
             mSecondText.setText(String.valueOf(second));  

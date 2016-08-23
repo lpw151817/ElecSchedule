@@ -69,10 +69,11 @@ import android.wxapp.service.model.FeedbackModel;
 import android.wxapp.service.model.MessageModel;
 import android.wxapp.service.request.Contants;
 import android.wxapp.service.util.Constant;
+import android.wxapp.service.util.DownloadMutex;
 import android.wxapp.service.util.HttpUploadTask;
 import nercms.schedule.R;
 import nercms.schedule.adapter.FeedbackListAdapter;
-import nercms.schedule.adapter.MessageListAdapter;
+//fym import nercms.schedule.adapter.MessageListAdapter;
 import nercms.schedule.utils.LocalConstant;
 import nercms.schedule.utils.Utils;
 
@@ -87,7 +88,7 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 
 	private static final int UPDATE_LIST = 151;
 	private Button mBtnSend;// 发送按钮
-	private Button mBtnChange;
+	private Button mBtnChange;//语音文字切换键
 	private boolean isVoice = false;
 	// private Button mBtnVoice;
 	private RecordButton mBtnVoice;
@@ -103,7 +104,7 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 	private FeedbackListAdapter fbAdapter = null;
 	private List<tb_task_instructions> fbList = new ArrayList<tb_task_instructions>();
 	private List<tb_task_instructions> newList = new ArrayList<tb_task_instructions>();
-	private List<tb_task_instructions> tempList = new ArrayList<tb_task_instructions>();
+	//fym private List<tb_task_instructions> tempList = new ArrayList<tb_task_instructions>();
 
 	private String msgID;
 	private PersonDao personDao;
@@ -113,7 +114,7 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 	// private int entranceType;
 
 	// 2014-6-4 WeiHao
-	private Button addAttachBtn;
+	private Button addAttachBtn;//增加附件按钮
 	private LinearLayout attachmentLayout;
 	private ImageView pictruePickIv;
 	private ImageView cameraIv;
@@ -137,7 +138,9 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 	private LinearLayout operationLayout;
 	private int delayedTime = 1000;// 1s
 
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState)
+	{
+		Log.v("Schedule", "ChatDetail onCreate");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.chat_detail);
 		this.personDao = new PersonDao(this);
@@ -157,20 +160,27 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 		taskStatus = getIntent().getExtras().getInt("task_status", -1);
 		initData();
 
-		if (taskStatus == 2) {
-			operationLayout.setVisibility(View.GONE);
+		if (taskStatus == 2)
+		{
+			//任务结束仍显示交互信息 operationLayout.setVisibility(View.GONE);
 		}
 
+		//更新列表，周期delayedTime
 		Runnable thread = new Runnable() {
 
 			@Override
-			public void run() {
+			public void run()
+			{
+				//if(true) return;//fym
+				
 				if (msgDao == null)
 					msgDao = new TaskInsDao(ChatDetail.this);
 
-				tempList = msgDao.getMsg(taskID);
+				//刷新显示已有消息
+				//fym tempList = msgDao.getMsg(taskID);
+				//Log.v("Schedule", "chat msg " + tempList.size());
 				Message msg = new Message();
-				msg.obj = tempList;
+				msg.obj = msgDao.getMsg(taskID);//fym tempList;
 				msg.what = UPDATE_LIST;
 				handler.sendMessage(msg);
 			}
@@ -182,7 +192,8 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -217,6 +228,7 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 		mBtnSend.setOnClickListener(this);
 		mBtnChange = (Button) findViewById(R.id.btn_chat_change);
 		mBtnChange.setOnClickListener(this);
+		mBtnChange.setBackgroundResource(android.R.drawable.ic_btn_speak_now);
 		// mBtnVoice = (Button) findViewById(R.id.btn_chat_voice);
 		mBtnVoice = (RecordButton) findViewById(R.id.btn_chat_voice);
 		mBtnVoice.setAudioRecord(new AudioRecorder());
@@ -231,44 +243,26 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 				String filePath = Environment.getExternalStorageDirectory().getAbsolutePath()
 						+ "/nercms-Schedule/DownloadAttachments/" + filename;
 				// DB 存储
+				//saveInsAndAtt(String planTaskId, String content, String send_id, String sendtime, String type, String attType, String url, String update_time, String md5)
 				boolean saveSuccess = new TaskInsDao(ChatDetail.this).saveInsAndAtt(taskID, "",
 						getUserId(), System.currentTimeMillis() + "", "1", "attachmentType02",
 						filename, System.currentTimeMillis() + "",
 						Utils.getFileMD5(new File(filePath)));
 
-				if (saveSuccess) {
+				if (saveSuccess)
+				{
+					Log.v("Schedule", "save audio record");
 					// 界面显示
 					fbList = msgDao.getMsg(taskID);
 					fbAdapter.setFblist(fbList);
 					mListView.setSelection(fbList.size() - 1);
-				} else {
+				}
+				else
+				{
 					showShortToast("录音保存失败");
 				}
 			}
 		});
-
-		/////////// 添加voice按住说话事件
-		// mBtnVoice.setOnTouchListener(new OnTouchListener() {
-		//
-		// @Override
-		// public boolean onTouch(View v, MotionEvent event) {
-		//
-		// switch (event.getAction()) {
-		// case MotionEvent.ACTION_DOWN:
-		// // TODO 按下的时候触发
-		// mBtnVoice.setText("松开发送");
-		//
-		// break;
-		// case MotionEvent.ACTION_UP:
-		// // TODO 松开的时候触发
-		// mBtnVoice.setText("按住说话");
-		//
-		// break;
-		// }
-		//
-		// return false;
-		// }
-		// });
 
 		mEditTextContent = (EditText) findViewById(R.id.et_sendmessage);
 
@@ -322,27 +316,37 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		switch (v.getId()) {
-		case R.id.btn_chat_change:
+		Log.v("Schedule", "chat button: " + v.getId());//fym
+		
+		switch (v.getId())
+		{
+		case R.id.btn_chat_change://左侧文字语音切换键
+			Log.v("Schedule", "R.id.btn_chat_change");//fym
 			// 将附件框消失掉
 			if (attachmentLayout.getVisibility() == View.VISIBLE)
 				attachmentLayout.setVisibility(View.GONE);
 
 			isVoice = !isVoice;
-			if (isVoice) {
-				mEditTextContent.setVisibility(View.GONE);
+			if(isVoice)//发语音
+			{
+				mEditTextContent.setVisibility(View.GONE);//隐藏文本输入框
 				mBtnVoice.setVisibility(View.VISIBLE);
 				hideInput();
 				mEditTextContent.setText("");
+				//修改button图标为话筒
 				mBtnChange.setBackgroundResource(R.drawable.ic_keyboard);
-			} else {
+			}
+			else
+			{
 				mEditTextContent.setVisibility(View.VISIBLE);
 				mBtnVoice.setVisibility(View.GONE);
 				mEditTextContent.requestFocus();
 				mBtnChange.setBackgroundResource(android.R.drawable.ic_btn_speak_now);
 			}
 			break;
+			
 		case R.id.btn_send:
+			Log.v("Schedule", "R.id.btn_send");//fym
 			if (System.currentTimeMillis() - time_old > 1000) {
 				if (mEditTextContent.getText().toString().length() > 0) {
 					sendFeedback();
@@ -355,6 +359,7 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 			break;
 
 		case R.id.btn_chat_add_attach:
+			Log.v("Schedule", "R.id.btn_chat_add_attach");//fym
 			if (attachmentLayout.getVisibility() == View.VISIBLE) {
 				attachmentLayout.setVisibility(View.GONE);
 			} else {
@@ -364,6 +369,7 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 			break;
 
 		case R.id.picture_imageView:
+			Log.v("Schedule", "R.id.picture_imageView");//fym
 			// 选照片
 			//////////////// 暂时不做实现
 			////////////////////////////////////////////////////////////////////
@@ -378,6 +384,7 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 			break;
 
 		case R.id.camera_imageView:
+			Log.v("Schedule", "R.id.camera_imageView");//fym
 			// TODO 拍照
 			Toast.makeText(ChatDetail.this, "拍照", Toast.LENGTH_SHORT).show();
 			// 拍照
@@ -406,6 +413,7 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 			break;
 
 		case R.id.video_imageView:
+			Log.v("Schedule", "R.id.video_imageView");//fym
 			// TODO 录像
 			Toast.makeText(ChatDetail.this, "摄像", Toast.LENGTH_SHORT).show();
 			// 摄像
@@ -421,8 +429,8 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 				file.delete();
 			}
 			intent.putExtra("videoPath", videopath2);
-			startActivityForResult(intent,
-					LocalConstant.CAPTURE_VIDEO_REQUEST_CODE);
+			intent.putExtra("maxTime", 8);//交互信息录像最长15秒
+			startActivityForResult(intent, LocalConstant.CAPTURE_VIDEO_REQUEST_CODE);
 			break;
 
 		}
@@ -430,7 +438,9 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 
 	@SuppressLint("SimpleDateFormat")
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		Log.v("Schedule", "ChatDetail::onActivityResult");//fym
 		super.onActivityResult(requestCode, resultCode, data);
 		/*
 		 * attachmentType01 图片 attachmentType02 音频 attachmentType03 视频
@@ -439,9 +449,8 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 			switch (requestCode) {
 			case LocalConstant.CAPTURE_IMAGE_REQUEST_CODE:
 				// TODO 拍照回调
-//				showShortToast("拍照回调");
-				String filename = mImagePath.substring(mImagePath
-						.lastIndexOf(File.separator + "") + 1);
+				showShortToast("拍照回调");
+				String filename = mImagePath.substring(mImagePath.lastIndexOf(File.separator + "") + 1);
 				String thumbnailUri = Utils.getThumbnailDir(filename);
 				// 获取缩略图,根据原图创建缩略图, mImagePath是原图的地址
 				Utils.getThumbnail(mImagePath, thumbnailUri);
@@ -509,18 +518,13 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 					System.currentTimeMillis() + "", "1");
 
 			// 发送到服务器
-			sendFb(tempMsg);
+			// uid 为接收人员id
+			webRequestManager.createInsRequest(this, msgDao.getMsgReceivers(taskID), tempMsg.getTask_id(), tempMsg.getContent(), null, "1");
 
 		} else { // 空消息发送提示
 			new AlertDialog.Builder(ChatDetail.this).setTitle("不能发送空白反馈")
 					.setPositiveButton("确定", null).create().show();
 		}
-	}
-
-	private void sendFb(tb_task_instructions data) {
-		// uid 为接收人员id
-		webRequestManager.createInsRequest(this, msgDao.getMsgReceivers(taskID), data.getTask_id(),
-				data.getContent(), null, "1");
 	}
 
 	tb_task_instructions tempMsg;
@@ -533,9 +537,11 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 		handler = new Handler() {
 
 			@Override
-			public void handleMessage(Message handlerMsg) {
+			public void handleMessage(Message msg) {
+				
+				//Log.v("Schedule", "ChatDetail msg: " + msg.what);//fym
 
-				switch (handlerMsg.what) {
+				switch (msg.what) {
 
 				case Constants.CREATE_INS_SUCCESS:
 					time_old = System.currentTimeMillis();
@@ -550,8 +556,8 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 					break;
 				case Constants.CREATE_INS_SAVE_FAIL:
 				case Constants.CREATE_INS_FAIL:
-					if (handlerMsg.obj != null) {
-						showShortToast("发布失败:" + ((NormalServerResponse) handlerMsg.obj).getEc());
+					if (msg.obj != null) {
+						showShortToast("发布失败:" + ((NormalServerResponse) msg.obj).getEc());
 					} else {
 						showShortToast("发布失败,请检查是否与服务器连接正常");
 					}
@@ -559,34 +565,51 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 
 				case UPDATE_LIST:
 					// List<tb_task_instructions> fbList
+					newList = (List<tb_task_instructions>) msg.obj;
+					
+					if(0 == newList.size())
+						break;
+					
+					if (fbList.size() == 0)
+					{// 显示列表里面没有消息
+						for (tb_task_instructions ins : newList)
+						{
+							fbList.add(ins);
+						}
 
-					newList = (List<tb_task_instructions>) handlerMsg.obj;
+						Log.v("Baidu", "new list 3");
+						fbAdapter.notifyDataSetChanged();
+					}
+					else
+					{
+						tb_task_instructions task = fbList.get(fbList.size() - 1);
+						String time = task.getSend_time();
+						//System.out.println("time : " + time);
+						for (tb_task_instructions ins : newList)
+						{
+							String insTime = ins.getSend_time();
 
-					if (newList.size() != 0) {
-
-						if (fbList.size() == 0) {// 显示列表里面没有消息
-							for (tb_task_instructions ins : newList) {
-								fbList.add(ins);
-							}
-
-							fbAdapter.notifyDataSetChanged();
-						} else {
-							tb_task_instructions task = fbList.get(fbList.size() - 1);
-							String time = task.getSend_time();
-							System.out.println("time : " + time);
-							for (tb_task_instructions ins : newList) {
-								String insTime = ins.getSend_time();
-
-								boolean isUp = isUpdate(time, insTime);
-								// 如果time < insTime就更新数据
-								if (isUp) {
-									if ((!getUserId().equals(ins.getSend_id()))) {
-										fbList.add(ins);
-										fbAdapter.notifyDataSetChanged();
-										mListView.setSelection(fbList.size() - 1);
-									}
+							boolean isUp = isUpdate(time, insTime);
+							// 如果time < insTime就更新数据
+							if (isUp) {
+								if ((!getUserId().equals(ins.getSend_id())))
+								{
+									fbList.add(ins);
+									Log.v("Baidu", "new list 5");
+									fbAdapter.notifyDataSetChanged();
+									mListView.setSelection(fbList.size() - 1);
 								}
 							}
+						}
+					}
+					
+					//fym
+					if(null != fbAdapter)
+					{
+						if(false == DownloadMutex._download_feedback_tasks.isEmpty())
+						{
+							Log.v("Temp", "fbAdapter.notifyDataSetChanged()");
+							fbAdapter.notifyDataSetChanged();
 						}
 					}
 					break;
@@ -679,7 +702,8 @@ public class ChatDetail extends BaseActivity implements OnClickListener {
 		mInputMethodManager.hideSoftInputFromWindow(mEditTextContent.getWindowToken(), 0);
 	}
 	
-	private Bitmap getVideoThumbnail(String videoPath, int width, int height, int kind) {
+	private Bitmap getVideoThumbnail(String videoPath, int width, int height, int kind)
+	{
 		Bitmap bitmap = null;
 		// 获取视频的缩略图
 		bitmap = ThumbnailUtils.createVideoThumbnail(videoPath, kind);

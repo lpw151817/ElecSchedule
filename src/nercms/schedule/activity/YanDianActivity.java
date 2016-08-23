@@ -53,6 +53,8 @@ public class YanDianActivity extends BaseActivity {
 	private int[] mContentCount = new int[itemCount];
 	private HashMap<String, String> data;
 
+	private int secondId = 0;// 第二级目录id chenqiang
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -129,11 +131,29 @@ public class YanDianActivity extends BaseActivity {
 			mUploadList.add(mItem);
 		}
 
+		// 修正第二级目录id chenqiang
+		switch (enterType) {
+		case 1://作业现场
+			secondId  = 4;
+			break;
+
+		case 2://操作现场
+			secondId = 9;
+			break;
+
+		case 3://故障抢修现场
+			secondId = 15;
+			break;
+
+		default:
+			break;
+		}
+
 		getDataFromDB();
 	}
 
 	private void getDataFromDB() {
-		
+
 		for (int i = 0; i < mList.size(); i++) {
 			mList.get(i).clear();
 		}
@@ -141,14 +161,16 @@ public class YanDianActivity extends BaseActivity {
 		for (int i = 0; i < mUploadList.size(); i++) {
 			mUploadList.get(i).clear();
 		}
-		
+		Log.v("Demo", "position: " + position);
+
+		// 修正第二级目录id chenqiang
 		data = AttachmentDatabase.instance(this)
 		// 数据库中的url为文件名
 				.query("SELECT * from tb_task_attachment where task_id = "
-						+ tid + " AND (url LIKE '" + tid + "/" + (position + 1)
-						+ "%' or url LIKE '" + tid + "\\" + (position + 1)
-						+ "%' or url LIKE '" + tid + "//" + (position + 1)
-						+ "%' or url LIKE '" + tid + "\\\\" + (position + 1)
+						+ tid + " AND (url LIKE '" + tid + "/" + (secondId)
+						+ "%' or url LIKE '" + tid + "\\" + (secondId)
+						+ "%' or url LIKE '" + tid + "//" + (secondId)
+						+ "%' or url LIKE '" + tid + "\\\\" + (secondId)
 						+ "%')");
 
 		if (data != null) {
@@ -162,7 +184,7 @@ public class YanDianActivity extends BaseActivity {
 								+ data.get("task_id_" + i) + ":"
 								+ data.get("dixian_" + i));
 
-//				String standard = data.get("standard_" + i);
+				// String standard = data.get("standard_" + i);
 
 				GpsDao gpsDao = new GpsDao(this);
 				GPS gps = gpsDao.getHistory(data.get("historygps_" + i));// 从数据库中获取gps信息

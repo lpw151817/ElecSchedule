@@ -44,6 +44,7 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 
+//fym 废弃
 public class MessageListAdapter extends BaseAdapter {
 
 	/* 定义不同的消息视图item */

@@ -61,6 +61,8 @@ public class DiXianActivity extends BaseActivity implements OnClickListener {
 	private int[] counts;
 	private PlanTaskDao pDao;
 	private int[] mContentCount;
+	
+	private int secondId = 0;// 第二级目录id chenqiang
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +109,23 @@ public class DiXianActivity extends BaseActivity implements OnClickListener {
 		tid = getIntent().getStringExtra("tid");
 		position = getIntent().getIntExtra("position", -1);
 
+		// 修正第二级目录id chenqiang
+		switch (enterType) {
+		case 1://作业现场
+			secondId  = 4;
+			break;
+
+		case 2://操作现场
+			secondId = 9;
+			break;
+
+		case 3://故障抢修现场
+			secondId = 15;
+			break;
+
+		default:
+			break;
+		}
 		getDataFromDB();
 	}
 
@@ -122,7 +141,7 @@ public class DiXianActivity extends BaseActivity implements OnClickListener {
 			mList.clear();
 			mUploadList.clear();
 			for (int i = 0; i < lastDixianCount; i++) {// 判断每个条目里面是否有内容
-				list.add("第" + (i + 1) + "条");
+				list.add("第" + (i + 1) + "组");
 			}
 
 			for (int i = 0; i < lastDixianCount; i++) {
@@ -139,12 +158,13 @@ public class DiXianActivity extends BaseActivity implements OnClickListener {
 
 		adapter.notifyDataSetChanged();
 
+		// 修正第二级目录id chenqiang
 		data = AttachmentDatabase.instance(this)
 				// 数据库中的url为文件名
 				.query("SELECT * from tb_task_attachment where task_id = " + tid
-						+ " AND (url LIKE '" + tid + "/" + (4) + "/" + 3 + "%' or url LIKE '" + tid
-						+ "\\" + (4) + "/" + 3 + "%' or url LIKE '" + tid + "//" + (4) + "/" + 3
-						+ "%' or url LIKE '" + tid + "\\\\" + (4) + "/" + 3 + "%')");
+						+ " AND (url LIKE '" + tid + "/" + (secondId) + "/" + 3 + "%' or url LIKE '" + tid
+						+ "\\" + (secondId) + "/" + 3 + "%' or url LIKE '" + tid + "//" + (secondId) + "/" + 3
+						+ "%' or url LIKE '" + tid + "\\\\" + (secondId) + "/" + 3 + "%')");
 
 		if (data != null) {
 			// String fileCount = data.get("records_num");
@@ -253,10 +273,10 @@ public class DiXianActivity extends BaseActivity implements OnClickListener {
 		int count = list.size();
 
 		if (count == 0) {
-			list.add("第" + (count + 1) + "条");
+			list.add("第" + (count + 1) + "组");
 		} else {// count != 0;
 			if ((mList.get(count - 1).size()) != 0) {// 只需要判断最后一个条目里面有没有内容即可
-				list.add("第" + (count + 1) + "条");
+				list.add("第" + (count + 1) + "组");
 			} else {
 				Toast.makeText(DiXianActivity.this, "请先添加照片", Toast.LENGTH_SHORT).show();
 			}

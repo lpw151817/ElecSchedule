@@ -247,8 +247,7 @@ public class MQTT {
 			// 进行到达消息的处理
 			try {
 
-				WebRequestManager manager = new WebRequestManager(AppApplication.getInstance(),
-						AppApplication.getInstance().getContext());
+				WebRequestManager manager = new WebRequestManager(AppApplication.getInstance(), AppApplication.getInstance().getContext());
 				Gson gson = new Gson();
 				MqttResponse response = gson.fromJson(message.toString(), MqttResponse.class);
 
@@ -261,7 +260,7 @@ public class MQTT {
 				Log.e("MQTT", "response.getType() 解析错误");
 				e.printStackTrace();
 			}
-			Log.i("MQTT", "Recv message end............"+(System.currentTimeMillis()-tmpTime));
+			Log.i("MQTT", "Recv message end............"+(System.currentTimeMillis() - tmpTime) + "ms");
 		}
 
 		@Override

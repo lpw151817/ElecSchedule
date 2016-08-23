@@ -134,8 +134,7 @@ public class ShowDownLoad extends Activity {
 					+ mediaName;
 
 			Log.e("TAG", "fileFolder : " + fileFolder);
-			new HttpDownloadTask(ShowDownLoad.this).execute(downUrl,
-					"/nercms-Schedule/DownloadAttachments/", mediaName);
+			new HttpDownloadTask(ShowDownLoad.this).execute(downUrl, "/nercms-Schedule/DownloadAttachments/", mediaName);
 
 		}
 	}

@@ -109,7 +109,7 @@ public class Utils {
 
 	public static String parseDateInFormat(String fotmatTime) {
 		Date date = parseDateInFormat1(fotmatTime);
-		return date == null ? "" : date.toString();
+		return date == null ? "" : String.valueOf(date.getTime());//fym date.toString();
 	}
 
 	public static Date parseDateInFormat1(String fotmatTime) {

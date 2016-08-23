@@ -58,6 +58,7 @@ import android.wxapp.service.elec.request.WebRequestManager;
 import android.wxapp.service.handler.MessageHandlerManager;
 import android.wxapp.service.jerry.model.normal.NormalServerResponse;
 import android.wxapp.service.util.Constant;
+import android.wxapp.service.util.DownloadMutex;
 import android.wxapp.service.util.HttpDownloadTask;
 import android.wxapp.service.util.HttpUploadTask;
 
@@ -134,11 +135,11 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		Log.v("Http", "XianChangAdd onCreate");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_xian_chang_add);
 
-		requestManager = new WebRequestManager(AppApplication.getInstance(),
-				this);
+		requestManager = new WebRequestManager(AppApplication.getInstance(), this);
 
 		enterType = getIntent().getIntExtra("enterType", -1);
 		tid = getIntent().getStringExtra("tid");
@@ -191,8 +192,8 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 							Intent videoIntent = new Intent(XianChangAdd.this,
 									PlayVideo.class);
 
-							String path = NewTask.fileFolder
-									+ tb_task_attachment.getUrl();
+							//String path = NewTask.fileFolder + tb_task_attachment.getUrl();
+							String path = NewTask.fileFolder + tb_task_attachment.getUrl().substring(tb_task_attachment.getUrl().lastIndexOf("/") + 1);
 
 							File file = new File(path);
 							if (!file.getParentFile().exists())
@@ -334,6 +335,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 					}
 					Uri uri = Uri.fromFile(file);
 					intent.putExtra("videoPath", videopath);
+					intent.putExtra("maxTime", 15);//任务录像最长15秒
 					// intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
 					// intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
 					// intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 20 * 1024 *
@@ -1085,6 +1087,7 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 	// 从数据库里面查询数据显示
 	private void getDataFromDB() {
+		Log.i("Http", "getDataFromDB 1");
 
 		// 如果是从继续任务界面过来则初始化附件列表并显示出来
 		// if (isContinueTask) {
@@ -1104,6 +1107,8 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 		counts = new int[xianChangAddAdapter.getCount()];
 
+		Log.i("Http", "getDataFromDB 2");
+		
 		// TODO 还要将附件下载下来
 		for (tb_task_attachment attachment : atts) {
 			String standard = attachment.getStandard();
@@ -1129,15 +1134,20 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 			if (!file.getParentFile().exists())
 				file.getParentFile().mkdirs();
 
+			Log.i("Http", "getDataFromDB 3");
+			//下载任务附件
 			// 如果文件未存在，或者文件已存在但无法执行或者读取，则重新下载
-			if (!file.exists()
-					|| (file.exists() && (/*
-										 * !file.canExecute() ||
-										 */!file.canRead() || !file.canWrite()))) {
-				if (file.exists())
-					file.delete();
-				new HttpDownloadTask(XianChangAdd.this).execute(downUrl,
-						"/nercms-Schedule/DownloadAttachments/", mediaName);// 将附件下载下来
+			if (!file.exists() || (file.exists() && (/*!file.canExecute() ||*/!file.canRead() || !file.canWrite())))
+			{
+				if(false == DownloadMutex._download_task_tasks.containsKey(downUrl))
+				{
+					if (file.exists())
+						file.delete();
+
+					Log.i("Http", "downloadMutex._download_task_tasks.put");
+					DownloadMutex._download_task_tasks.put(downUrl,
+							(HttpDownloadTask)new HttpDownloadTask(XianChangAdd.this).execute(downUrl, "/nercms-Schedule/DownloadAttachments/", mediaName));
+				}
 			}
 
 			// 附件信息
@@ -1147,6 +1157,8 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 			mMap1.put("time", gps.getOllectionTime());// 传递附件的时间
 			mMap1.put("pathContainsTid", DownloadfileFolder + mediaName1);// storage/emulated/0/nercms-Schedule/DownloadAttachments/356/4/aq2016_06_03_143336.jpg
 
+			Log.v("Demo", "standard: " + standard);
+			
 			if (standard.equals("standard01")) {
 				mMap1.put("index", counts[0] + "");
 				counts[0]++;

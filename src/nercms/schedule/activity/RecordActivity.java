@@ -4,7 +4,7 @@ import java.io.File;
 
 import nercms.schedule.R;
 import nercms.schedule.view.AudioRecorder;
-import nercms.schedule.view.RecordButton.RecordListener;
+//fym import nercms.schedule.view.RecordButton.RecordListener;
 import nercms.schedule.view.RecordStrategy;
 import android.content.Intent;
 import android.net.Uri;
@@ -40,13 +40,13 @@ public class RecordActivity extends BaseActivity implements OnClickListener {
 
 	private RecordStrategy mAudioRecorder;
 	private Thread mRecordThread;
-	private RecordListener listener;
+	//fym private RecordListener listener;
 
 	private int recordState = 0; // 录音状态
 	private float recodeTime = 0.0f; // 录音时长，如果录音时间太短则录音失败
 	private boolean isCanceled = false; // 是否取消录音
 
-	private final float MAX_TIME = 60.0f;
+	private final float MAX_TIME = 300.0f;//fym 60.0f;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -103,17 +103,21 @@ public class RecordActivity extends BaseActivity implements OnClickListener {
 				// Toast.LENGTH_SHORT).show();
 				cho.stop();
 
-				mStop.setVisibility(View.GONE);
+				//录音到MAX_TIME直接跳转  chenqiang
+//				mStop.setVisibility(View.GONE);
+				
+				//录音到MAX_TIME直接跳转  chenqiang
+				showRecord();
 			}
 		};
 	}
 
-	@Override
+	/*@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getSupportMenuInflater();
 		inflater.inflate(R.menu.record_menu, menu);
 		return super.onCreateOptionsMenu(menu);
-	}
+	}*/
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -123,12 +127,7 @@ public class RecordActivity extends BaseActivity implements OnClickListener {
 			break;
 
 		case R.id.action_sure:
-			audiopath = AudioRecorder.path;
-			Intent intent = new Intent();
-			intent.putExtra("path", audiopath);
-			System.out.println("RecordActivity audiopath: " + audiopath);
-			setResult(RESULT_OK, intent);
-			finish();
+			showRecord();
 			break;
 
 		}
@@ -144,7 +143,7 @@ public class RecordActivity extends BaseActivity implements OnClickListener {
 	 * onPrepareOptionsMenu是每次在display
 	 * Menu之前，都会去调用，只要按一次Menu按鍵，就会调用一次。所以可以在这里动态的改变menu。
 	 */
-	@Override
+	/*@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		if (isShow) {
 			menu.findItem(R.id.action_sure).setVisible(true);
@@ -153,7 +152,7 @@ public class RecordActivity extends BaseActivity implements OnClickListener {
 		}
 
 		return super.onPrepareOptionsMenu(menu);
-	}
+	}*/
 
 	@Override
 	public void onClick(View v) {
@@ -169,7 +168,8 @@ public class RecordActivity extends BaseActivity implements OnClickListener {
 					showWarnToast("开始录音");
 
 					isShow = false;
-					mImage.setVisibility(View.INVISIBLE);
+					//表示正在录音  chenqiang
+					mImage.setVisibility(View.VISIBLE);
 
 					// 更新操作栏菜单
 					invalidateOptionsMenu();
@@ -210,7 +210,40 @@ public class RecordActivity extends BaseActivity implements OnClickListener {
 
 					cho.stop();
 
-					mStop.setVisibility(View.GONE);
+					//录音到MAX_TIME直接跳转  chenqiang					
+//					mStop.setVisibility(View.GONE);
+					
+					//录音结束直接跳转  chenqiang
+					showRecord();
+
+//					//增加底部保存和取消按钮
+//					findViewById(R.id.save).setVisibility(View.VISIBLE);
+//					
+//					//增加底部保存和取消按钮
+//					findViewById(R.id.bt_ok).setOnClickListener(new OnClickListener()
+//							{
+//
+//								@Override
+//								public void onClick(View v)
+//								{
+//									audiopath = AudioRecorder.path;
+//									Intent intent = new Intent();
+//									intent.putExtra("path", audiopath);
+//									System.out.println("RecordActivity audiopath: " + audiopath);
+//									setResult(RESULT_OK, intent);
+//									finish();
+//								}
+//							});
+//
+//					//增加底部保存和取消按钮
+//					findViewById(R.id.bt_cancel).setOnClickListener(new OnClickListener()
+//							{
+//						@Override
+//								public void onClick(View v) {
+//									finish();
+//								}
+//							});
+
 				}
 			}
 			break;
@@ -218,6 +251,15 @@ public class RecordActivity extends BaseActivity implements OnClickListener {
 		default:
 			break;
 		}
+	}
+
+	private void showRecord() {
+		audiopath = AudioRecorder.path;
+		Intent intent = new Intent();
+		intent.putExtra("path", audiopath);
+		System.out.println("RecordActivity audiopath: " + audiopath);
+		setResult(RESULT_OK, intent);
+		finish();
 	}
 
 	// 录音时间太短时Toast显示

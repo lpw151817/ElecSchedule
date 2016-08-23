@@ -20,7 +20,7 @@ import nercms.schedule.utils.LocalConstant;
 import nercms.schedule.utils.Utils;
 import nercms.schedule.view.FixedGridLayout;
 import nercms.schedule.view.PlayVideo;
-import nercms.schedule.view.RecordButton;
+//fym import nercms.schedule.view.RecordButton;
 import nercms.schedule.view.RoundAngleImageView;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -90,7 +90,7 @@ public class NewTask extends BaseActivity {
 	public static final int TYPE_AUDIO = 3;
 	public static final int TYPE_SELECT_IMAGE = 4;
 	public static final int TYPE_PEOPLE_SELECT = 5;
-	RecordButton mRecord;
+	
 	ImageButton mVideo;
 
 	// video
@@ -192,7 +192,6 @@ public class NewTask extends BaseActivity {
 		IMG_WIDTH = (width - 65) / 3;
 		IMG_HEIGHT = IMG_WIDTH;
 
-		// mRecord = (RecordButton) findViewById(R.id.btn_record);
 		mVideo = (ImageButton) findViewById(R.id.fujian_bt);
 		// mReceiver = (ImageButton) findViewById(R.id.jieshouren_bt);
 		mContentInput = (EditText) findViewById(R.id.zhuyaogongzuoneirong);
@@ -222,8 +221,7 @@ public class NewTask extends BaseActivity {
 						+ File.separator + mediaName;
 
 				Log.e("TAG", "fileFolder : " + fileFolder);
-				new HttpDownloadTask(NewTask.this).execute(downUrl,
-						"/nercms-Schedule/DownloadAttachments/", mediaName);
+				new HttpDownloadTask(NewTask.this).execute(downUrl, "/nercms-Schedule/DownloadAttachments/", mediaName);
 
 			}
 		}

@@ -11,7 +11,7 @@ import android.os.Environment;
 public class AudioRecorder// implements RecordImp
 {
 
-	private MediaRecorder recorder;
+	private MediaRecorder recorder = null;
 	private String fileName;
 	private String uploadFileFolder = Environment.getExternalStorageDirectory().getAbsolutePath()
 			+ "/nercms-Schedule/DownloadAttachments/";
@@ -61,13 +61,20 @@ public class AudioRecorder// implements RecordImp
 
 	}
 
-	public void stop() {
-		if (isRecording) {
+	public void stop()
+	{
+		if (isRecording)
+		{
+			synchronized(AudioRecorder.class)//fym
+			{
+				isRecording = false;//fym 必须首先执行
+			}
+			
 			recorder.stop();
 			recorder.release();
-			isRecording = false;
+			
+			recorder = null;
 		}
-
 	}
 
 	public void deleteOldFile() {
@@ -76,11 +83,14 @@ public class AudioRecorder// implements RecordImp
 	}
 
 	// 获取录音音量的大小
-	public double getAmplitude() {
-		if (!isRecording)
-			return 0;
-
-		return recorder.getMaxAmplitude();
+	public double getAmplitude()
+	{
+		synchronized(AudioRecorder.class)//fym
+		{
+			if (false == isRecording) return 0;
+			
+			return recorder.getMaxAmplitude();
+		}
 	}
 
 }

@@ -153,6 +153,7 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		Log.v("Http", "XianChangUpload onCreate");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_xian_chang_upload);
 
@@ -422,7 +423,8 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		}
 	}
 
-	private void writeToDatabase(Map<String, Object> map) {
+	private void writeToDatabase(Map<String, Object> map)
+	{
 		PlanTaskDao mDao = new PlanTaskDao(XianChangUpload.this);
 
 		StringBuilder standard = new StringBuilder("standard");

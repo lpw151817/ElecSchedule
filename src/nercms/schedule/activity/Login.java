@@ -373,6 +373,7 @@ public class Login extends BaseActivity {
 					break;
 
 				case Constants.MQTT_UPDATE_SUCCESS:
+					Log.v("MQTT", "Login : MQTT_UPDATE_SUCCESS");
 					Map<Integer, Object> result = (Map<Integer, Object>) msg.obj;
 					MqttResponse response = (MqttResponse) result.get(1);
 					Class target = null;

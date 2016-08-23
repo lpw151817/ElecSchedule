@@ -60,8 +60,21 @@
                 android:focusable="false"
                 android:maxWidth="200dp"
                 android:scaleType="centerInside"
-                android:background="@drawable/microphone_uncheck"
+                android:src="@drawable/microphone_uncheck"
                 android:visibility="visible" />
+            
+            <ImageView
+                android:id="@+id/iv_chat_voice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:adjustViewBounds="true"
+                android:focusable="false"
+                android:maxWidth="200dp"
+                android:scaleType="centerInside"
+                android:background="@anim/video_frame"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/play"
@@ -72,6 +85,7 @@
                 android:adjustViewBounds="true"
                 android:focusable="false"
                 android:maxWidth="200dp"
+                android:layout_centerInParent="true"
                 android:scaleType="centerInside"
                 android:src="@drawable/attachment1"
                 android:visibility="gone" />

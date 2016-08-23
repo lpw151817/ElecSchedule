@@ -140,10 +140,10 @@ public class PlanAdd extends BaseActivity implements OnClickListener, DateTimePi
 					dismissProgressDialog();
 					try {
 						if (msg.obj != null) {
-							showAlterDialog("发布失败", ((NormalServerResponse) msg.obj).getEc(),
+							showAlterDialog("发布任务失败", ((NormalServerResponse) msg.obj).getEc(),
 									R.drawable.login_error_icon, "确定", null);
 						} else {
-							showAlterDialog("发布失败", "请检查是否与服务器连接正常", R.drawable.login_error_icon,
+							showAlterDialog("发布任务失败", "请检查手机是否与服务器连接正常", R.drawable.login_error_icon,
 									"确定", null);
 						}
 					} catch (Exception e) {
