@@ -67,7 +67,8 @@ public class PlanAdd extends BaseActivity implements OnClickListener, DateTimePi
 	RadioGroup tq_rg, lb_rg, tsxq_rg, ssdd_rg, tdlx_rg;
 	RadioButton tx_q, tq_yin, tq_yu, lb_zyxc, lb_czxc, lb_gzqxxc, tsxq_t, tsxq_w, ssdd_s, ssdd_d,
 			ssdd_p, ssdd_x, ssdd_qt, tdlx_lstd, tdlx_jhtd, tdlx_qt;
-	EditText xmmc, tdfw, tdyxqy, zygznr, gzfzr, jhkssj, jhjssj, ysgdwld, sc, ssdw, rs, bz;
+	EditText xmmc, tdfw, tdyxqy, zygznr, gzfzr, jhkssj, jhjssj, ysgdwld, sc, ssdw, /* rs, */ bz;
+	EditText gcbm, xlsbh, sstq, gds;
 	ImageButton jhkssj_bt, jhjssj_bt, gzfzr_bt, ysgdwld_bt, ssdw_bt;
 	Button qrtj, renwu;
 	CheckBox sfxydb, sftd;
@@ -79,6 +80,7 @@ public class PlanAdd extends BaseActivity implements OnClickListener, DateTimePi
 	List<Node> gzfzrList;
 	List<Node> ysgdwldList;
 	Node orgs;
+	Node gongdiansuoOrg;
 
 	String tid;
 	tb_task_info info;
@@ -143,8 +145,8 @@ public class PlanAdd extends BaseActivity implements OnClickListener, DateTimePi
 							showAlterDialog("发布任务失败", ((NormalServerResponse) msg.obj).getEc(),
 									R.drawable.login_error_icon, "确定", null);
 						} else {
-							showAlterDialog("发布任务失败", "请检查手机是否与服务器连接正常", R.drawable.login_error_icon,
-									"确定", null);
+							showAlterDialog("发布任务失败", "请检查手机是否与服务器连接正常",
+									R.drawable.login_error_icon, "确定", null);
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -252,8 +254,13 @@ public class PlanAdd extends BaseActivity implements OnClickListener, DateTimePi
 		renwu = (Button) findViewById(R.id.renwu);
 		sfxydb = (CheckBox) findViewById(R.id.dengbao);
 		sftd = (CheckBox) findViewById(R.id.tingdian);
-		rs = (EditText) findViewById(R.id.renshu);
+		// rs = (EditText) findViewById(R.id.renshu);
 		bz = (EditText) findViewById(R.id.beizhu);
+
+		gcbm = (EditText) findViewById(R.id.gongchengbianma);
+		xlsbh = (EditText) findViewById(R.id.xianlushuangbianhao);
+		sstq = (EditText) findViewById(R.id.suoshutaiqu);
+		gds = (EditText) findViewById(R.id.gongdiansuo);
 
 		// 查看任务
 		if (enterType == 0) {
@@ -262,6 +269,26 @@ public class PlanAdd extends BaseActivity implements OnClickListener, DateTimePi
 			tid = getIntent().getStringExtra("tid");
 			if (tid != null) {
 				info = dao.getPlanTask(tid);
+
+				if (!TextUtils.isEmpty(info.getTask_code()))
+					gcbm.setText(info.getTask_code());
+				else
+					gcbm.setHint("");
+
+				if (!TextUtils.isEmpty(info.getLine_num()))
+					xlsbh.setText(info.getLine_num());
+				else
+					xlsbh.setHint("");
+
+				if (!TextUtils.isEmpty(info.getUnder_district()))
+					sstq.setText(info.getUnder_district());
+				else
+					sstq.setHint("");
+
+				if (!TextUtils.isEmpty(info.getTask_location()))
+					gds.setText(info.getTask_location());
+				else
+					gds.setHint("");
 
 				String weather = info.getWeather().substring(info.getWeather().length() - 2);
 				tx_q.setEnabled(false);
@@ -391,11 +418,11 @@ public class PlanAdd extends BaseActivity implements OnClickListener, DateTimePi
 				} else
 					ssdw.setHint("");
 
-				Utils.setEditTextUnEditable(rs);
-				if (!TextUtils.isEmpty(info.getNumber()))
-					rs.setText(info.getNumber());
-				else
-					rs.setHint("");
+				// Utils.setEditTextUnEditable(rs);
+				// if (!TextUtils.isEmpty(info.getNumber()))
+				// rs.setText(info.getNumber());
+				// else
+				// rs.setHint("");
 
 				Utils.setEditTextUnEditable(bz);
 				if (!TextUtils.isEmpty(info.getRemark()))
@@ -502,6 +529,7 @@ public class PlanAdd extends BaseActivity implements OnClickListener, DateTimePi
 		}
 		// 添加任务
 		else {
+
 			gzfzr.setOnTouchListener(new OnTouchListener() {
 
 				@Override
@@ -567,6 +595,24 @@ public class PlanAdd extends BaseActivity implements OnClickListener, DateTimePi
 						Intent intent = new Intent(PlanAdd.this, OrgSelect.class);
 						Bundle bundle = new Bundle();
 						bundle.putSerializable("pod", (Serializable) orgs);
+						bundle.putInt("from", 1);
+						intent.putExtras(bundle);
+						startActivityForResult(intent, 200);
+					}
+					return true;
+				}
+			});
+
+			gds.setOnTouchListener(new OnTouchListener() {
+
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					// 供电所点击事件
+					if (event.getAction() == MotionEvent.ACTION_UP) {
+						Intent intent = new Intent(PlanAdd.this, OrgSelect.class);
+						Bundle bundle = new Bundle();
+						bundle.putInt("from", 2);
+						bundle.putSerializable("pod", (Serializable) gongdiansuoOrg);
 						intent.putExtras(bundle);
 						startActivityForResult(intent, 200);
 					}
@@ -620,8 +666,12 @@ public class PlanAdd extends BaseActivity implements OnClickListener, DateTimePi
 				&& !TextUtils.isEmpty(gzfzr.getText().toString())
 				&& !TextUtils.isEmpty(jhkssj.getText().toString())
 				&& !TextUtils.isEmpty(jhjssj.getText().toString())
+				&& !TextUtils.isEmpty(gcbm.getText().toString())
+				&& !TextUtils.isEmpty(xlsbh.getText().toString())
+				&& !TextUtils.isEmpty(sstq.getText().toString())
+				&& !TextUtils.isEmpty(gds.getText().toString())
 				&& !TextUtils.isEmpty(ssdw.getText().toString())
-				&& !TextUtils.isEmpty(rs.getText().toString())
+				// && !TextUtils.isEmpty(rs.getText().toString())
 				&& (lb_zyxc.isChecked() || lb_czxc.isChecked() || lb_gzqxxc.isChecked());
 	}
 
@@ -689,14 +739,29 @@ public class PlanAdd extends BaseActivity implements OnClickListener, DateTimePi
 				}
 
 				// 发送网络请求
+				// webRequest.createPlanTask(PlanAdd.this, weather.toString(),
+				// xmmc.getText().toString(), tdfw.getText().toString(),
+				// tdyxqy.getText().toString(), zygznr.getText().toString(),
+				// gzfzrList,
+				// Utils.parseDateInFormat(jhkssj.getText().toString()),
+				// Utils.parseDateInFormat(jhjssj.getText().toString()),
+				// category.toString(),
+				// sfxydb.isChecked(), special, ysgdwldList,
+				// sc.getText().toString(),
+				// domain.toString(), sftd.isChecked(), cut_type.toString(),
+				// orgs,
+				// bz.getText().toString());
+
 				webRequest.createPlanTask(PlanAdd.this, weather.toString(),
-						xmmc.getText().toString(), tdfw.getText().toString(),
-						tdyxqy.getText().toString(), zygznr.getText().toString(), gzfzrList,
+						xmmc.getText().toString(), gcbm.getText().toString(),
+						xlsbh.getText().toString(), sstq.getText().toString(), gongdiansuoOrg,
+						tdfw.getText().toString(), tdyxqy.getText().toString(),
+						zygznr.getText().toString(), gzfzrList,
 						Utils.parseDateInFormat(jhkssj.getText().toString()),
 						Utils.parseDateInFormat(jhjssj.getText().toString()), category.toString(),
 						sfxydb.isChecked(), special, ysgdwldList, sc.getText().toString(),
 						domain.toString(), sftd.isChecked(), cut_type.toString(), orgs,
-						rs.getText().toString(), bz.getText().toString());
+						bz.getText().toString());
 
 				// flag = true;
 				qrtj.setClickable(false);
@@ -752,8 +817,14 @@ public class PlanAdd extends BaseActivity implements OnClickListener, DateTimePi
 				}
 				break;
 			case 200:
-				orgs = (Node) data.getSerializableExtra("data");
-				ssdw.setText(orgs.getName());
+				int tmp = data.getExtras().getInt("from");
+				if (tmp == 1) {
+					orgs = (Node) data.getSerializableExtra("data");
+					ssdw.setText(orgs.getName());
+				} else if (tmp == 2) {
+					gongdiansuoOrg = (Node) data.getSerializableExtra("data");
+					gds.setText(gongdiansuoOrg.getName());
+				}
 				break;
 			}
 		}

@@ -48,6 +48,8 @@ public class DailyTaskDetail extends BaseActivity {
 	private TextView mMemo;
 	private tb_task_info planTask2;
 
+	private TextView gcbm, xlsbh, sstq, gds;
+
 	OrgDao orgDao;
 
 	@Override
@@ -65,6 +67,11 @@ public class DailyTaskDetail extends BaseActivity {
 	}
 
 	private void initView() {
+
+		gcbm = (TextView) findViewById(R.id.tv_gongchengbianma);
+		xlsbh = (TextView) findViewById(R.id.tv_10k);
+		sstq = (TextView) findViewById(R.id.tv_suoshutaiqu);
+		gds = (TextView) findViewById(R.id.tv_gongdiansuo);
 		mName = (TextView) findViewById(R.id.tv_project_name);
 		mStopRange = (TextView) findViewById(R.id.tv_stop_range);
 		mStopPlace = (TextView) findViewById(R.id.tv_stop_place);
@@ -89,6 +96,18 @@ public class DailyTaskDetail extends BaseActivity {
 			return;
 
 		mName.setText(TextUtils.isEmpty(planTask2.getName()) ? "空" : planTask2.getName());
+
+		if (!TextUtils.isEmpty(planTask2.getTask_code()))
+			gcbm.setText(planTask2.getTask_code());
+		if (!TextUtils.isEmpty(planTask2.getLine_num()))
+			xlsbh.setText(planTask2.getLine_num());
+		if (!TextUtils.isEmpty(planTask2.getUnder_district()))
+			sstq.setText(planTask2.getUnder_district());
+		if (!TextUtils.isEmpty(planTask2.getTask_location())) {
+			Org org = orgDao.getOrg(planTask2.getTask_location());
+			if (org != null)
+				mCompany.setText("江陵供电公司" + org.getTitle());
+		}
 
 		if (!TextUtils.isEmpty(planTask2.getPower_cut_range()))
 			mStopRange.setText(planTask2.getPower_cut_range());
@@ -203,8 +222,8 @@ public class DailyTaskDetail extends BaseActivity {
 		} else
 			mCompany.setHint("");
 
-		if (!TextUtils.isEmpty(planTask2.getNumber()))
-			mPeople.setText(planTask2.getNumber());
+		// if (!TextUtils.isEmpty(planTask2.getNumber()))
+		// mPeople.setText(planTask2.getNumber());
 
 		if (!TextUtils.isEmpty(planTask2.getRemark()))
 			mMemo.setText(planTask2.getRemark());

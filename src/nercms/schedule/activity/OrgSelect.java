@@ -51,6 +51,9 @@ public class OrgSelect extends BaseActivity implements DataChanged {
 
 	private static final String TAG = "ContactSelect";
 
+	// 1-施工单位 2-供电所
+	int from;
+
 	ListView listView;
 	OrgSelectAdapter<Org> adapter;
 
@@ -68,6 +71,8 @@ public class OrgSelect extends BaseActivity implements DataChanged {
 		setContentView(R.layout.contact_select);
 		Log.d(TAG, "进入选择页面");
 
+		from = getIntent().getIntExtra("from", -1);
+
 		iniActionBar(true, null, "选择实施单位");
 
 		listView = (ListView) findViewById(R.id.id_tree);
@@ -81,7 +86,13 @@ public class OrgSelect extends BaseActivity implements DataChanged {
 
 		try {
 			List<Org> data = new ArrayList<Org>();
-			data = dao.getAllOrgs();
+			// 施工单位
+			if (from == 1)
+				data = dao.getShigongdanwei();
+			// 供电所
+			else if (from == 2) {
+				data = dao.getGongdiansuo();
+			}
 			adapter = new OrgSelectAdapter<Org>(listView, this, data, 1, lsSelectedPod);
 			listView.setAdapter(adapter);
 			adapter.setDataChangedListener(this);
@@ -140,6 +151,7 @@ public class OrgSelect extends BaseActivity implements DataChanged {
 
 				intent = new Intent();
 				intent.putExtra("data", (Serializable) adapter.getSelectedDate().get(0));
+				intent.putExtra("from", from);
 				setResult(RESULT_OK, intent);
 				this.finish();
 				break;

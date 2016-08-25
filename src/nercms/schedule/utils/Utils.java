@@ -109,7 +109,8 @@ public class Utils {
 
 	public static String parseDateInFormat(String fotmatTime) {
 		Date date = parseDateInFormat1(fotmatTime);
-		return date == null ? "" : String.valueOf(date.getTime());//fym date.toString();
+		return date == null ? "" : String.valueOf(date.getTime());// fym
+																	// date.toString();
 	}
 
 	public static Date parseDateInFormat1(String fotmatTime) {
@@ -422,7 +423,8 @@ public class Utils {
 	 */
 	public static String getThumbnailDir(String name) {
 		// 得到一个路径，内容是sdcard的附件缩略图路径
-//		String path = Environment.getExternalStorageDirectory().getPath() + "/TestRecord/Thumbnail";
+		// String path = Environment.getExternalStorageDirectory().getPath() +
+		// "/TestRecord/Thumbnail";
 		String path = NewTask.fileThumbnail;
 		File filePath = new File(path);
 
@@ -431,10 +433,10 @@ public class Utils {
 			filePath.mkdirs();
 		}
 
-//		return path  + getFileDate() + ".jpg";
+		// return path + getFileDate() + ".jpg";
 		return path + name;
 	}
-	
+
 	public static String getSelectImageThumbnailDir() {
 		// 得到一个路径，内容是sdcard的附件缩略图路径
 		String path = NewTask.fileThumbnail;
@@ -445,7 +447,7 @@ public class Utils {
 			filePath.mkdirs();
 		}
 
-		return path  + getFileDate() + ".jpg";
+		return path + getFileDate() + ".jpg";
 
 	}
 
@@ -662,10 +664,14 @@ public class Utils {
 	// -------------------2014-6-17---WeiHao------ServerPing----------------
 
 	public static boolean serverPing() {
+		return serverPing(LocalConstant.APP_SERVER_IP);
+	}
+
+	public static boolean serverPing(String server) {
 		try {
 			Process p;
 			try {
-				p = Runtime.getRuntime().exec("ping -c 3 -w 100 " + LocalConstant.APP_SERVER_IP);
+				p = Runtime.getRuntime().exec("ping -c 3 -w 100 " + server);
 			} catch (IOException e) {
 				e.printStackTrace();
 				return false;

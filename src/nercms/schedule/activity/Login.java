@@ -42,6 +42,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.wxapp.service.AppApplication;
+import android.wxapp.service.elec.dao.DatabaseHelper;
 import android.wxapp.service.elec.dao.TaskInsDao;
 import android.wxapp.service.elec.model.ConfigBean;
 import android.wxapp.service.elec.model.LoginResponse;
@@ -86,6 +87,10 @@ public class Login extends BaseActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);
+
+		// 强制db创建表
+		DatabaseHelper dbHelper = DatabaseHelper.getInstance(this);
+		dbHelper.onCreate(dbHelper.getWritableDatabase());
 
 		///////////////////////////////////////////////////
 		File configFile = new File(Environment.getExternalStorageDirectory().getPath()
@@ -162,7 +167,6 @@ public class Login extends BaseActivity {
 		// startActivity(MainContent.class);
 		// return;
 
-		Log.v("Login", "Login onCreate");
 		webRequestManager = new WebRequestManager(AppApplication.getInstance(), Login.this);
 
 		initActionBar();
@@ -225,7 +229,6 @@ public class Login extends BaseActivity {
 
 		// 注册或者重新注册Handler
 		initHandler();
-		Log.v("Login", "OnResume,注册或者重新注册Handler");
 	}
 
 	private void initActionBar() {
@@ -470,14 +473,9 @@ public class Login extends BaseActivity {
 					null);
 			return;
 		}
-		// 有网络情况
-		if (Utils.isNetworkAvailable(Login.this)) {
-			if (!isMiWen)
-				inputPassword = Generate_md5.generate_md5(inputPassword);
-			webRequestManager.login(inputUserName.toLowerCase(), inputPassword);
-		}
+
 		// 无网络情况
-		else {
+		if (!Utils.isNetworkAvailable(Login.this)) {
 			if (getUserIc() != null && getUserId() != null) {
 				if (getUserName().toLowerCase().equals(inputUserName.toLowerCase())) {
 					if (!isMiWen)
@@ -497,6 +495,18 @@ public class Login extends BaseActivity {
 				dismissProgressDialog();
 				showAlterDialog("登录错误", "请检查网络连接状态", R.drawable.login_error_icon, "确定", null);
 			}
+
+		}
+		// 有网络情况
+		else {
+			// // 服务器ping不通
+			// if (!Utils.serverPing(Contants.SERVER)) {
+			// showShortToast("服务器错误");
+			// } else {
+			if (!isMiWen)
+				inputPassword = Generate_md5.generate_md5(inputPassword);
+			webRequestManager.login(inputUserName.toLowerCase(), inputPassword);
+			// }
 		}
 
 		// //如果是第一次登录
@@ -677,5 +687,4 @@ public class Login extends BaseActivity {
 		n.setLatestEventInfo(c, title, content, contentIntent);
 		nm.notify(R.string.app_name, n);
 	}
-
 }

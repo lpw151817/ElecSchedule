@@ -11,6 +11,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.wxapp.service.AppApplication;
+import android.wxapp.service.elec.dao.Org;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -46,6 +47,7 @@ public class PersonSelectAdapter<T> extends TreeListViewAdapter<T> {
 	private List<Node> lsSelectedPod;
 	private List<Node> lsSelectedReceiver;
 	int entranceFlag, type;
+	List<T> datas;
 
 	public PersonSelectAdapter(ListView tree, Context context, List<T> datas,
 			int defaultExpandLevel, List<Node> lsPod, List<Node> lsReceiver, int entranceFlag,
@@ -55,6 +57,7 @@ public class PersonSelectAdapter<T> extends TreeListViewAdapter<T> {
 		this.lsSelectedReceiver = lsReceiver;
 		this.entranceFlag = entranceFlag;
 		this.type = type;
+		this.datas = datas;
 	}
 
 	@Override
@@ -125,12 +128,19 @@ public class PersonSelectAdapter<T> extends TreeListViewAdapter<T> {
 				}
 			});
 		} else {
+
 			convertView = mInflater.inflate(R.layout.list_item, parent, false);
 			holder = new ViewHolder();
 			holder.mIcon = (ImageView) convertView.findViewById(R.id.id_treenode_icon);
 			holder.mText = (TextView) convertView.findViewById(R.id.id_treenode_label);
 			holder.mPic = (ImageView) convertView.findViewById(R.id.id_treednode_pic);
 			holder.mPic.setImageResource(R.drawable.org);
+
+			// // 如果组织结点下没有人员，则隐藏
+			// if (node.isLeaf()) {
+			// datas.remove(new Org(node.getId(), "", ""));
+			// notifyDataSetChanged();
+			// }
 		}
 		convertView.setTag(holder);
 		// } else {

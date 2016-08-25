@@ -99,6 +99,134 @@
                 android:textColor="@color/black" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:text="*"
+                android:textColor="#FF0000" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="工程编码："
+                android:textColor="@color/black"
+                android:textSize="17dip" />
+
+            <EditText
+                android:id="@+id/gongchengbianma"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edit_text"
+                android:hint="请在此输入..."
+                android:singleLine="true"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:text="*"
+                android:textColor="#FF0000" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="10kv线路双编号："
+                android:textColor="@color/black"
+                android:textSize="17dip" />
+
+            <EditText
+                android:id="@+id/xianlushuangbianhao"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edit_text"
+                android:hint="请在此输入..."
+                android:singleLine="true"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:text="*"
+                android:textColor="#FF0000" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="所属台区："
+                android:textColor="@color/black"
+                android:textSize="17dip" />
+
+            <EditText
+                android:id="@+id/suoshutaiqu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edit_text"
+                android:hint="请在此输入..."
+                android:singleLine="true"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:text="*"
+                android:textColor="#FF0000" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="供电所："
+                android:textColor="@color/black"
+                android:textSize="17dip" />
+
+            <EditText
+                android:id="@+id/gongdiansuo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edit_text"
+                android:hint="请在此输入..."
+                android:singleLine="true"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -458,8 +586,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:text="无"
                     android:checked="true"
+                    android:text="无"
                     android:textColor="@color/black" />
             </RadioGroup>
         </LinearLayout>
@@ -488,7 +616,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="应上岗到位领导："
+                android:text="管理人员："
                 android:textColor="@color/black"
                 android:textSize="17dip" />
 
@@ -738,6 +866,7 @@
             android:scaleType="fitXY"
             android:src="@drawable/mag_line_x" />
 
+        <!--
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -770,6 +899,7 @@
                 android:singleLine="true"
                 android:textColor="@color/black" />
         </LinearLayout>
+        -->
 
         <ImageView
             android:layout_width="match_parent"

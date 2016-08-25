@@ -48,6 +48,118 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
+                android:text="工程编码:"
+                android:textColor="@color/black"
+                android:textSize="17dip" />
+
+            <TextView
+                android:id="@+id/tv_gongchengbianma"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="17dip" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:src="@drawable/mag_line_x" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:text="10kv线路双编号:"
+                android:textColor="@color/black"
+                android:textSize="17dip" />
+
+            <TextView
+                android:id="@+id/tv_10k"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="17dip" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:src="@drawable/mag_line_x" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:text="所属台区:"
+                android:textColor="@color/black"
+                android:textSize="17dip" />
+
+            <TextView
+                android:id="@+id/tv_suoshutaiqu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="17dip" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:src="@drawable/mag_line_x" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:text="供电所:"
+                android:textColor="@color/black"
+                android:textSize="17dip" />
+
+            <TextView
+                android:id="@+id/tv_gongdiansuo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="17dip" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:src="@drawable/mag_line_x" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
                 android:text="停电范围："
                 android:textColor="@color/black"
                 android:textSize="17dip" />
