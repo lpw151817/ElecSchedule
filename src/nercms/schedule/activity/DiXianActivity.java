@@ -94,6 +94,8 @@ public class DiXianActivity extends BaseActivity implements OnClickListener {
 				intent.putExtra("url", (Serializable) mList.get(arg2));
 				intent.putExtra("position", position);
 				intent.putExtra("thirdIndex", arg2);
+				//chenqiang1, 后面地线照片文件名要用到
+				intent.putExtra("secondIndex", getIntent().getIntExtra("secondIndex", -1));
 				intent.putExtra("dixian", "dixian");
 				intent.putExtra("title", "地线照片分组");//fym2
 				setIndex(intent, arg2);

@@ -1038,37 +1038,39 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 
 			Log.v("Demo", "standard: " + standard);
 			
-			if (standard.equals("standard01")) {
+			
+//			修改  改变standard      chenqiang1,
+			if (standard.contains("standard1-1")) {
 				mMap1.put("index", counts[0] + "");
 				counts[0]++;
 				mList.get(0).add(mMap1);
 				mUploadList.get(0).add(mMap1);
 			}
-			if (standard.equals("standard02")) {
+			if (standard.contains("standard1-2")) {
 				mMap1.put("index", counts[1] + "");
 				counts[1]++;
 				mList.get(1).add(mMap1);
 				mUploadList.get(1).add(mMap1);
 			}
-			if (standard.equals("standard03")) {
+			if (standard.contains("standard1-3")) {
 				mMap1.put("index", counts[2] + "");
 				counts[2]++;
 				mList.get(2).add(mMap1);
 				mUploadList.get(2).add(mMap1);
 			}
-			if (standard.equals("standard04")) {
+			if (standard.contains("standard1-4")) {
 				mMap1.put("index", counts[3] + "");
 				counts[3]++;
 				mList.get(3).add(mMap1);
 				mUploadList.get(3).add(mMap1);
 			}
-			if (standard.equals("standard05")) {
+			if (standard.contains("standard1-5")) {
 				mMap1.put("index", counts[4] + "");
 				counts[4]++;
 				mList.get(4).add(mMap1);
 				mUploadList.get(4).add(mMap1);
 			}
-			if (standard.equals("standard06")) {
+			if (standard.contains("standard1-6")) {
 				mMap1.put("index", counts[5] + "");
 				counts[5]++;
 				mList.get(5).add(mMap1);
@@ -1076,40 +1078,40 @@ public class XianChangAdd extends BaseActivity implements ReceiveGPS {
 			}
 
 			// 操作现场
-			if (standard.equals("standard07")) {
-				mMap1.put("index", counts[0] + "");
-				counts[0]++;
-				mList.get(0).add(mMap1);
-				mUploadList.get(0).add(mMap1);
+			if (standard.contains("standard1-7")) {
+				mMap1.put("index", counts[6] + "");
+				counts[6]++;
+				mList.get(6).add(mMap1);
+				mUploadList.get(6).add(mMap1);
 			}
 
-			if (standard.equals("standard08")) {
-				mMap1.put("index", counts[1] + "");
-				counts[1]++;
-				mList.get(1).add(mMap1);
-				mUploadList.get(1).add(mMap1);
+			if (standard.contains("standard1-8")) {
+				mMap1.put("index", counts[7] + "");
+				counts[7]++;
+				mList.get(7).add(mMap1);
+				mUploadList.get(7).add(mMap1);
 			}
 
-			if (standard.equals("standard09")) {
-				mMap1.put("index", counts[2] + "");
-				counts[2]++;
-				mList.get(2).add(mMap1);
-				mUploadList.get(2).add(mMap1);
+			if (standard.contains("standard1-9")) {
+				mMap1.put("index", counts[8] + "");
+				counts[8]++;
+				mList.get(8).add(mMap1);
+				mUploadList.get(8).add(mMap1);
 			}
 
-			if (standard.equals("standard10")) {
-				mMap1.put("index", counts[3] + "");
-				counts[3]++;
-				mList.get(3).add(mMap1);
-				mUploadList.get(3).add(mMap1);
-			}
-
-			if (standard.equals("standard11")) {
-				mMap1.put("index", counts[4] + "");
-				counts[4]++;
-				mList.get(4).add(mMap1);
-				mUploadList.get(4).add(mMap1);
-			}
+//			if (standard.equals("standard10")) {
+//				mMap1.put("index", counts[3] + "");
+//				counts[3]++;
+//				mList.get(3).add(mMap1);
+//				mUploadList.get(3).add(mMap1);
+//			}
+//
+//			if (standard.equals("standard11")) {
+//				mMap1.put("index", counts[4] + "");
+//				counts[4]++;
+//				mList.get(4).add(mMap1);
+//				mUploadList.get(4).add(mMap1);
+//			}
 
 			if (standard.equals("standard")) {
 				mVideo = mMap1;

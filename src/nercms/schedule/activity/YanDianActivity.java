@@ -44,7 +44,7 @@ public class YanDianActivity extends BaseActivity {
 	List<Map<String, Object>> mUrl = new ArrayList<Map<String, Object>>();// 正确验电下面的所有附件
 	boolean isContinueTask;
 
-	private final int itemCount = 4;
+	private final int itemCount = 5;
 	private int[] counts = new int[itemCount];
 	private int[] myMediaIndexs = new int[itemCount];
 
@@ -151,23 +151,23 @@ public class YanDianActivity extends BaseActivity {
 			mUploadList.add(mItem);
 		}
 
-		// 修正第二级目录id chenqiang
-		switch (enterType) {
-		case 1://作业现场
-			secondId  = 4;
-			break;
-
-		case 2://操作现场
-			secondId = 9;
-			break;
-
-		case 3://故障抢修现场
-			secondId = 15;
-			break;
-
-		default:
-			break;
-		}
+//		// 修正第二级目录id chenqiang1
+//		switch (enterType) {
+//		case 1://作业现场
+//			secondId  = 4;
+//			break;
+//
+//		case 2://操作现场
+//			secondId = 9;
+//			break;
+//
+//		case 3://故障抢修现场
+//			secondId = 15;
+//			break;
+//
+//		default:
+//			break;
+//		}
 
 		getDataFromDB();
 	}
@@ -183,14 +183,14 @@ public class YanDianActivity extends BaseActivity {
 		}
 		Log.v("Demo", "position: " + position);
 
-		// 修正第二级目录id chenqiang
+		// 修正第二级目录id chenqiang1
 		data = AttachmentDatabase.instance(this)
 		// 数据库中的url为文件名
 				.query("SELECT * from tb_task_attachment where task_id = "
-						+ tid + " AND (url LIKE '" + tid + "/" + (secondId)
-						+ "%' or url LIKE '" + tid + "\\" + (secondId)
-						+ "%' or url LIKE '" + tid + "//" + (secondId)
-						+ "%' or url LIKE '" + tid + "\\\\" + (secondId)
+						+ tid + " AND (url LIKE '" + tid + "/" + (position+ 1)
+						+ "%' or url LIKE '" + tid + "\\" + (position+ 1)
+						+ "%' or url  LIKE '" + tid + "//" + (position+ 1)
+						+ "%' or url LIKE '" + tid + "\\\\" + (position+ 1)
 						+ "%')");
 
 		if (data != null) {
@@ -235,6 +235,7 @@ public class YanDianActivity extends BaseActivity {
 				String name1 = path.substring(itemId + 1);
 				String attId = path.substring(itemId - 1, itemId);
 
+				//修改 chenqiang1
 				if (!name1.contains("D")) {
 
 					if (attId.equals("1")) {// 地线的没有添加
@@ -247,8 +248,13 @@ public class YanDianActivity extends BaseActivity {
 						counts[1]++;
 						mList.get(1).add(mMap1);
 						mUploadList.get(1).add(mMap1);
-					} else if (attId.equals("4")) {
+					} else if (attId.equals("3")) {
 						mMap1.put("index", counts[3] + "");
+						counts[2]++;
+						mList.get(2).add(mMap1);
+						mUploadList.get(2).add(mMap1);
+					} else if (attId.equals("4")) {
+						mMap1.put("index", counts[4] + "");
 						counts[3]++;
 						mList.get(3).add(mMap1);
 						mUploadList.get(3).add(mMap1);

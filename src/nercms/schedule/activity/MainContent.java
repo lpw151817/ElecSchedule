@@ -84,27 +84,41 @@ public class MainContent extends FragmentActivity implements OnClickListener {
 		setContentView(R.layout.main_content);
 
 		// ////////////////////////////debug infos
+		// try {
+		// HashMap<String, String> _query_result =
+		// AttachmentDatabase.instance(this)
+		// .query("select * from tb_task_attachment;");
+		// for (int i = 0; i <
+		// Integer.parseInt(_query_result.get("records_num")); i++) {
+		// String id = _query_result.get("id_" + i);
+		// String task_id = _query_result.get("task_id_" + i);
+		// String historygps = _query_result.get("historygps_" + i);
+		// String standard = _query_result.get("standard_" + i);
+		// String type = _query_result.get("type_" + i);
+		// String url = _query_result.get("url_" + i);
+		// String upload_time = _query_result.get("upload_time_" + i);
+		// String md5 = _query_result.get("md5_" + i);
+		// String status = _query_result.get("status_" + i);
+		// Integer dixian = null;
+		// if (_query_result.get("dixian_" + i) != null)
+		// dixian = Integer.parseInt(_query_result.get("dixian_" + i));
+		//
+		// Log.v("login", url + ">>>>>" + status + ">>>>>" + dixian);
+		// }
+		// } catch (Exception e) {
+		// }
 		try {
 			HashMap<String, String> _query_result = AttachmentDatabase.instance(this)
-					.query("select * from tb_task_attachment;");
+					.query("select * from tb_task_info");
 			for (int i = 0; i < Integer.parseInt(_query_result.get("records_num")); i++) {
 				String id = _query_result.get("id_" + i);
-				String task_id = _query_result.get("task_id_" + i);
-				String historygps = _query_result.get("historygps_" + i);
-				String standard = _query_result.get("standard_" + i);
-				String type = _query_result.get("type_" + i);
-				String url = _query_result.get("url_" + i);
-				String upload_time = _query_result.get("upload_time_" + i);
-				String md5 = _query_result.get("md5_" + i);
-				String status = _query_result.get("status_" + i);
-				Integer dixian = null;
-				if (_query_result.get("dixian_" + i) != null)
-					dixian = Integer.parseInt(_query_result.get("dixian_" + i));
+				String name = _query_result.get("name_" + i);
 
-				Log.v("login", url + ">>>>>" + status + ">>>>>" + dixian);
+				Log.v("login", id + ">>>>>" + name);
 			}
 		} catch (Exception e) {
 		}
+
 		// //////////////////////////////////////////////////
 
 		DeleteOldAttachment.instance().start(getApplicationContext());

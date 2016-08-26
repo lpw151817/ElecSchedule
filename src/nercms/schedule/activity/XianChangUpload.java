@@ -433,79 +433,57 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 		}
 	}
+	
+	//设置standard chenqiang1
+	/**
+	 * @param standard
+	 * @param enterType2 现场类型
+	 * @param position2 点击列表的位置 从1开始
+	 * @param yandianId yandian中点击的位置， 如果没有yandian传递进来的值为-1，下标从1开始
+	 */
+	private void setStandard(StringBuilder standard, int enterType2,
+			int position2, int yandianId) {
+		standard.append("standard");
+		standard.append(enterType2 +"-");
+		standard.append((position2+1)+"-");
+		
+		if (yandianId == -1){
+			standard.append("0");
+		} else {
+			standard.append(yandianId+1);
+		}
+		
+		
+	}
+	
+	
+	/**设置存储到数据库中的文件的文件名
+	 * @param sb
+	 * @param name 文件名2016_08_20.jpg
+	 * @param yandianId 从1开始
+	 * @param position2 点击列表的位置 从1开始
+	 */
+	private void setFileName(StringBuilder sb, String name, int position2, int yandianId) {
+		sb.append(tid+File.separator);
+		sb.append((position2+1)+File.separator);
+		
+		if (yandianId == -1){
+			sb.append(name);
+		} else {
+			sb.append((yandianId+1)+File.separator);
+			sb.append(name);
+		}
+		
+		
+		
+	}
 
 	private void writeToDatabase(Map<String, Object> map)
 	{
 		PlanTaskDao mDao = new PlanTaskDao(XianChangUpload.this);
 
-		StringBuilder standard = new StringBuilder("standard");
-		// 作业现场
-		if (enterType == 1) {
-			switch (position) {
-			// 工作票
-			case 0:
-				standard.append("01");
-				break;
-			case 1:
-				standard.append("02");
-				break;
-			case 2:
-				standard.append("03");
-				break;
-			case 3:
-				standard.append("04");
-				break;
-			case 4:
-				standard.append("05");
-				break;
-			case 5:
-				standard.append("06");
-				break;
-			}
-		}
-		// 操作现场
-		else if (enterType == 2) {
-			switch (position) {
-			case 0:
-				standard.append("07");
-				break;
-			case 1:
-				standard.append("08");
-				break;
-			case 2:
-				standard.append("09");
-				break;
-			case 3:
-				standard.append("10");
-				break;
-			case 4:
-				standard.append("11");
-				break;
-			}
-		}
-		// 故障抢修
-		else if (enterType == 3) {
-			switch (position) {
-			case 0:
-				standard.append("01");
-				break;
-			case 1:
-				standard.append("02");
-				break;
-			case 2:
-				standard.append("03");
-				break;
-			case 3:
-				standard.append("04");
-				break;
-			case 4:
-				standard.append("05");
-				break;
-			case 5:
-				standard.append("06");
-				break;
-			}
-		}
+		
+		
 
 		List<Attachments> sublist = new ArrayList<Attachments>();
 		String server = android.wxapp.service.elec.request.Contants.HFS_URL;
@@ -520,14 +498,6 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		if (type != null) {
 
 			MyGPS myGPS = (MyGPS) attItem.get("gps");
-			// // 参数修改
-			// GPS gps = new GPS(getUserId(),
-			// Utils.formatDateMs(System.currentTimeMillis()),
-			// myGPS.getLongitude() + "", myGPS.getLatitude() + "", "",
-			// myGPS.getRadius() + "", myGPS.getAltitude() + "",
-			// myGPS.getSpeed() + "",
-			// Utils.formatDateMs(System.currentTimeMillis()),
-			// myGPS.getCoorType(), "");
 
 			GpsDao mGpsDao = new GpsDao(XianChangUpload.this);
 			long gpsId = mGpsDao.saveHistory(null, getUserId(),
@@ -538,43 +508,19 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 			String historygps = Long.valueOf(gpsId).toString();
 
-			// String md5 = DigestUtils
-			// .md5Hex(new FileInputStream(new
-			// File(filePath)));
 			String md5 = Utils.getFileMD5(new File(filePath));
 			String url = ((String) map.get("path"));
+			
+			//////////////chenqiang
+			int yandianId = getIntent().getIntExtra("secondIndex", -1);
+			StringBuilder standard = new StringBuilder();
+			setStandard(standard ,enterType, position, yandianId);
 
 			// ///////////////// 存数据库中的文件名加上前缀
 			String name = url.substring(url.lastIndexOf("/") + 1);
 			StringBuilder sb = new StringBuilder();
-			int fileItemId = 0;
-			if (!standard.toString().equals("standard")) {//不是录像的情况
-				fileItemId = Integer.parseInt(standard.toString().substring(8));
-				
-				if (enterType == 3){//故障抢修现场从的fileItemId从12开始
-					fileItemId = 11 + Integer.parseInt(standard.toString().substring(8));
-				}
-				sb.append(tid + File.separator + fileItemId + File.separator);
-			} else {
-				sb.append(tid + File.separator + "R" + File.separator);
-			}
-
-			// TODO 判断是否是从验电进入
-			int yandianId = getIntent().getIntExtra("secondIndex", -1);
-			if (yandianId != -1) {
-				sb.append((yandianId + 1) + File.separator);
-			} else {
-				int thirdIndex = getIntent().getIntExtra("thirdIndex", -1);
-				if (thirdIndex != -1) {
-					sb.append(3 + File.separator);
-				}
-			}
-
-			sb.append(name);
-			// ///////////////////////////
-
-			// String time =
-			// Utils.parseDateInFormat((String)attItem.get("time"));
+			setFileName(sb, name,position, yandianId);
+			
 			String time = System.currentTimeMillis() + "";
 			System.out.println("name: " + sb.toString() + " time: " + time);
 
@@ -618,44 +564,11 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 	}
 
-	/*
-	 * private void attachmentUploadRequest() { if
-	 * (!Utils.isNetworkAvailable(XianChangUpload.this)) {
-	 * Toast.makeText(XianChangUpload.this, "网络不可用", Toast.LENGTH_SHORT).show();
-	 * return; } String uploadUrl =
-	 * android.wxapp.service.elec.request.Contants.HFS_URL; if (getFileCount() <
-	 * 1) { showLongToast("请选择附件上传"); } else {
-	 * 
-	 * // 避免重复上传 mUnUploadUrl.clear(); //将mUrl-mUploadList = mUnploadList
-	 * 
-	 * List<String> mUrlPath = new ArrayList<String>(); List<String>
-	 * mUrlUploadPath = new ArrayList<String>(); List<String> mUrlUnUploadPath =
-	 * new ArrayList<String>();
-	 * 
-	 * // 打印出多余的数据 for (Map<String, Object> ma : mUrl) { if (ma != null) {
-	 * mUrlPath.add((String) ma.get("path")); } }
-	 * 
-	 * for (Map<String, Object> md : mUploadUrl) { mUrlUploadPath.add((String)
-	 * md.get("path")); }
-	 * 
-	 * for (String path : mUrlPath) { if (!mUrlUploadPath.contains(path)) {
-	 * mUrlUnUploadPath.add(path); Log.e("TAG", "-------------------");
-	 * Log.e("TAG", path);
-	 * 
-	 * for (Map<String, Object> ma : mUrl) { if (ma != null) { String maPath =
-	 * (String) ma.get("path"); if (maPath.equals(path)) { mUnUploadUrl.add(ma);
-	 * } } } } }
-	 * 
-	 * mUnUploadFileCount = mUnUploadUrl.size(); // 上传 for (Map<String, Object>
-	 * map : mUnUploadUrl) { if (map != null) { if (map.get("path") != null) {
-	 * Log.e("TAG", "上传的路径 : " + map.get("path")); mUploadUrl.add(map); new
-	 * HttpUploadTask(new TextView(this), this,null) .execute((String)
-	 * map.get("path"), uploadUrl); } } }
-	 * 
-	 * }
-	 * 
-	 * }
-	 */
+
+
+
+	
+
 	private int getFileCount() {
 		int fileCount = 0;
 		for (int i = 0; i < mUrl.size(); i++) {
