@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import nercms.schedule.R;
+import nercms.schedule.activity.BaseActivity;
 import nercms.schedule.activity.BaseActivity.PERSON_TYPE;
 import nercms.schedule.utils.AttachmentDatabase;
 import nercms.schedule.utils.LocalConstant;
@@ -94,11 +95,14 @@ public class DiXianActivity extends BaseActivity implements OnClickListener {
 				intent.putExtra("position", position);
 				intent.putExtra("thirdIndex", arg2);
 				intent.putExtra("dixian", "dixian");
+				intent.putExtra("title", "地线照片分组");//fym2
 				setIndex(intent, arg2);
 				startActivityForResult(intent, RequestCode);
 
 			}
 		});
+		
+		iniActionBar(true, null, getIntent().getCharSequenceExtra("title").toString());//fym2
 
 		getData();
 	}

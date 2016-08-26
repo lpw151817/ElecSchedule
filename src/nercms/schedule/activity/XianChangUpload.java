@@ -211,17 +211,21 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 		position = getIntent().getIntExtra("position", -1);
 		// initHandler();
 
-		String[] ss = null;
-		if (enterType == 1) {
-			ss = c.getResources()
-					.getStringArray(R.array.zuoyexianchang_si_data);
-		} else if (enterType == 2) {
-			ss = c.getResources().getStringArray(
-					R.array.caozuoxianchang_si_data);
-		} else if (enterType == 3) {
+		/*fym2 String[] ss = null;
+		if (enterType == 1)
+		{
+			ss = c.getResources().getStringArray(R.array.zyxc_list);//fym2 ss = c.getResources().getStringArray(R.array.zuoyexianchang_si_data);
+		}
+		else if (enterType == 2)
+		{
+			ss = c.getResources().getStringArray(R.array.caozuoxianchang_si_data);
+		}
+		else if (enterType == 3)
+		{
 			ss = c.getResources().getStringArray(R.array.guzhangjinji_si_data);
 		}
-		iniActionBar(true, null, ss[position]);
+		iniActionBar(true, null, ss[position]);*/
+		iniActionBar(true, null, getIntent().getCharSequenceExtra("title").toString());//fym2
 	}
 
 	@Override
@@ -235,14 +239,12 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 			List<String> name = new ArrayList<String>();
 
 			// 操作现场和作业现场的每个条目中的附件按钮的操作是不一样的
-			if (enterType == 1) {
+			/*fym2 if (enterType == 1)
+			{
 
-				isRadio = c.getResources().getIntArray(
-						R.array.zuoyexianchang_si_radio);
-				isPhoto = c.getResources().getIntArray(
-						R.array.zuoyexianchang_si_photo);
-				isVideo = c.getResources().getIntArray(
-						R.array.zuoyexianchang_si_video);
+				isRadio = c.getResources().getIntArray(R.array.zyxc_list_radio);//fym2 isRadio = c.getResources().getIntArray(R.array.zuoyexianchang_si_radio);
+				isPhoto = c.getResources().getIntArray(R.array.zyxc_list_photo);//fym2 isPhoto = c.getResources().getIntArray(R.array.zuoyexianchang_si_photo);
+				isVideo = c.getResources().getIntArray(R.array.zyxc_list_video);//fym2 isVideo = c.getResources().getIntArray(R.array.zuoyexianchang_si_video);
 
 				if (isPhoto[position] == 1) {
 					name.add("拍照");
@@ -252,7 +254,9 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 					name.add("录音");
 				}
 
-			} else if (enterType == 2) {
+			}
+			else if (enterType == 2)
+			{
 				isRadio = c.getResources().getIntArray(
 						R.array.caozuoxianchang_si_radio);
 				isPhoto = c.getResources().getIntArray(
@@ -272,7 +276,6 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 					name.add("摄像");
 				}
 			}
-
 			else if (enterType == 3) {
 				isRadio = c.getResources().getIntArray(
 						R.array.guzhangjinji_si_radio);
@@ -301,13 +304,11 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 
 			if (size == 1) {// 如果只需要拍照就直接拍，不用弹出dialog
 				startAttachment(array[0]);
-			} else {
-
-				AlertDialog.Builder builder = new AlertDialog.Builder(
-						XianChangUpload.this);
-				ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-						XianChangUpload.this, R.layout.dialog_item, R.id.tv,
-						array);
+			}
+			else
+			{
+				AlertDialog.Builder builder = new AlertDialog.Builder(XianChangUpload.this);
+				ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(XianChangUpload.this, R.layout.dialog_item, R.id.tv, array);
 				// builder.setTitle("选择附件类型");
 				builder.setAdapter(arrayAdapter,
 						new DialogInterface.OnClickListener() {
@@ -340,6 +341,16 @@ public class XianChangUpload extends BaseActivity implements OnClickListener {
 				AlertDialog dialog = builder.create();
 				dialog.show();
 
+			}*/
+			
+			//fym2
+			if(getSupportActionBar().getTitle().toString().contains("录音"))
+			{
+				startAttachment("录音");
+			}
+			else
+			{
+				startAttachment("拍照");
 			}
 
 			break;

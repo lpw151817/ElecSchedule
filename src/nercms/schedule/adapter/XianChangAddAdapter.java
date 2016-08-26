@@ -46,12 +46,17 @@ public class XianChangAddAdapter extends BaseAdapter {
 	 */
 	public XianChangAddAdapter(Context c, int type, int[] num, PERSON_TYPE isAdmin) {
 		this.mContext = c;
-		if (type == 1) {
-			ss = c.getResources().getStringArray(R.array.zuoyexianchang_si_data);
-		} else if (type == 2) {
-			ss = c.getResources().getStringArray(R.array.caozuoxianchang_si_data);
-		} else if (type == 3) {
-			ss = c.getResources().getStringArray(R.array.guzhangjinji_si_data);
+		if (type == 1)
+		{
+			ss = c.getResources().getStringArray(R.array.zyxc_list);//fym2 ss = c.getResources().getStringArray(R.array.zuoyexianchang_si_data);
+		}
+		else if (type == 2)
+		{
+			//fym2 ss = c.getResources().getStringArray(R.array.caozuoxianchang_si_data);
+		}
+		else if (type == 3)
+		{
+			//fym2 ss = c.getResources().getStringArray(R.array.guzhangjinji_si_data);
 		}
 		this.hasContent = new int[ss.length];
 		// ≥ı ºªØ

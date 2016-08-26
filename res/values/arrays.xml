@@ -1,5 +1,173 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
+	<string-array name="zyxc_list">
+        <item>工作票</item>
+        <item>班前会及记录</item>
+        <item>文明施工</item>
+        <item>安全措施</item>
+        <item>关键工艺</item>
+        <item>当日完工量</item>
+        <item>验收送电</item>
+        <item>重要现场资料</item>
+        <item>班后会记录</item>
+    </string-array>
+    <integer-array name="zyxc_list_radio">
+        <item>0</item>
+        <item>1</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>1</item>
+    </integer-array>
+    <integer-array name="zyxc_list_photo">
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+    </integer-array>
+    <integer-array name="zyxc_list_video">
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+    </integer-array>
+    
+    <string-array name="zyxc_2_list">
+        <item>录音</item>
+        <item>班前会图片</item>
+        <item>班前会记录图片</item>
+    </string-array>
+    <integer-array name="zyxc_2_list_radio">
+        <item>1</item>
+        <item>0</item>
+        <item>0</item>
+    </integer-array>
+    <integer-array name="zyxc_2_list_photo">
+        <item>0</item>
+        <item>1</item>
+        <item>1</item>
+    </integer-array>
+    <integer-array name="zyxc_2_list_video">
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+    </integer-array>
+    
+    <string-array name="zyxc_3_list">
+        <item>材料摆放图片</item>
+        <item>工具摆放图片</item>
+        <item>现场围栏和标识牌设置</item>
+    </string-array>
+    <integer-array name="zyxc_3_list_radio">
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+    </integer-array>
+    <integer-array name="zyxc_3_list_photo">
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+    </integer-array>
+    <integer-array name="zyxc_3_list_video">
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+    </integer-array>
+    
+    <string-array name="zyxc_4_list">
+        <item>现场勘察图</item>
+        <item>验电照片</item>
+        <item>地线照片</item>
+        <item>其他重要安全措施</item>
+    </string-array>
+    <integer-array name="zyxc_4_list_radio">
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+    </integer-array>
+    <integer-array name="zyxc_4_list_photo">
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+    </integer-array>
+    <integer-array name="zyxc_4_list_video">
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+    </integer-array>
+    
+    <string-array name="zyxc_8_list">
+        <item>检验报告</item>
+        <item>试验报告</item>
+        <item>隐蔽工程施工记录</item>
+    </string-array>
+    <integer-array name="zyxc_8_list_radio">
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+    </integer-array>
+    <integer-array name="zyxc_8_list_photo">
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+    </integer-array>
+    <integer-array name="zyxc_8_list_video">
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+    </integer-array>
+    
+    <string-array name="zyxc_9_list">
+        <item>录音</item>
+        <item>班后会图片</item>
+        <item>班后会记录图片</item>
+    </string-array>
+    <integer-array name="zyxc_3_list_radio">
+        <item>1</item>
+        <item>0</item>
+        <item>0</item>
+    </integer-array>
+    <integer-array name="zyxc_3_list_photo">
+        <item>0</item>
+        <item>1</item>
+        <item>1</item>
+    </integer-array>
+    <integer-array name="zyxc_3_list_video">
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+    </integer-array>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     <string-array name="zuoyexianchang_si_data">
         <item>工作票</item>

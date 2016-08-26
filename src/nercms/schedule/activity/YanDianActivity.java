@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 import nercms.schedule.R;
+import nercms.schedule.activity.BaseActivity;
 import nercms.schedule.activity.BaseActivity.PERSON_TYPE;
+import nercms.schedule.activity.XianChangUpload;
 import nercms.schedule.utils.AttachmentDatabase;
 import nercms.schedule.utils.LocalConstant;
 import nercms.schedule.utils.MyGPS;
@@ -58,35 +60,53 @@ public class YanDianActivity extends BaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		
 		setContentView(R.layout.activity_yandian);
-		iniActionBar(true, null, "正确验电");
+		
+		//fym2
+		final int index = getIntent().getIntExtra("index", 0);
+		
+		//fym2
+		String[] ss = getResources().getStringArray(R.array.zyxc_list);//fym2 ss = c.getResources().getStringArray(R.array.zuoyexianchang_si_data);
+		iniActionBar(true, null, ss[index]);
+		
 		initData();
 
 		listview = (ListView) findViewById(R.id.listview_yandian);
-		yanDianAdapter = new YanDianAdapter(YanDianActivity.this, isAdmin(),
-				mContentCount);
+		yanDianAdapter = new YanDianAdapter(YanDianActivity.this, isAdmin(), mContentCount, index);//fym2 yanDianAdapter = new YanDianAdapter(YanDianActivity.this, isAdmin(), mContentCount);
 		listview.setAdapter(yanDianAdapter);
 		listview.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				Intent intent = new Intent(YanDianActivity.this,
-						XianChangUpload.class);
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3)
+			{
+				Intent intent = new Intent(YanDianActivity.this, XianChangUpload.class);
 
-				if (arg2 == 2) {
-					intent = new Intent(YanDianActivity.this,
-							DiXianActivity.class);
+				if(arg2 == 2 && 3 == index)//fym2 if(arg2 == 2)
+				{
+					intent = new Intent(YanDianActivity.this, DiXianActivity.class);
 				}
+				
+				//fym2
+				String[] ss = null;
+				if(1 == index)
+					ss = getResources().getStringArray(R.array.zyxc_2_list);
+				else if(2 == index)
+					ss = getResources().getStringArray(R.array.zyxc_3_list);
+				else if(3 == index)
+					ss = getResources().getStringArray(R.array.zyxc_4_list);
+				else if(7 == index)
+					ss = getResources().getStringArray(R.array.zyxc_8_list);
+				else if(8 == index)
+					ss = getResources().getStringArray(R.array.zyxc_9_list);
+				intent.putExtra("title", ss[arg2]);//fym2
 
 				intent.putExtra("enterType", enterType);
 				intent.putExtra("tid", tid);
 				intent.putExtra("url", (Serializable) mList.get(arg2));
 				intent.putExtra("position", position);
 				intent.putExtra("secondIndex", arg2);
-				intent.putExtra("mUploadUrl",
-						(Serializable) mUploadList.get(arg2));
+				intent.putExtra("mUploadUrl", (Serializable) mUploadList.get(arg2));
 				intent.putExtra("yandian", "yandian");
 				setIndex(intent, arg2);
 				intent.putExtra("from", "YanDianActivity");
@@ -352,10 +372,10 @@ public class YanDianActivity extends BaseActivity {
 
 class YanDianAdapter extends BaseAdapter {
 
-	String[] str = new String[] { "现场勘察单和现场布置图", "验电照片", "地线照片", "其他重要安全技术措施照片" };
+	String[] str = null;//fym2 new String[] { "现场勘察图", "验电照片", "地线照片", "其他重要安全措施" };
 	Context context;
 
-	int[] hasContent = new int[str.length];
+	int[] hasContent = null;//fym 2new int[str.length];
 	int[] contentCount;
 	PERSON_TYPE isAdmin;
 
@@ -379,10 +399,27 @@ class YanDianAdapter extends BaseAdapter {
 		return str.length;
 	}
 
-	public YanDianAdapter(Context context, PERSON_TYPE isAdmin, int[] num) {
+	public YanDianAdapter(Context context, PERSON_TYPE isAdmin, int[] num, int index)//fym2 public YanDianAdapter(Context context, PERSON_TYPE isAdmin, int[] num)
+	{
 		this.context = context;
 		this.isAdmin = isAdmin;
 		this.contentCount = num;
+		
+		Log.v("Baidu", "index: " + index);//fym2
+		
+		//fym2
+		if(1 == index)//index从1开始计数
+			str = context.getResources().getStringArray(R.array.zyxc_2_list);
+		else if(2 == index)
+			str = context.getResources().getStringArray(R.array.zyxc_3_list);
+		else if(3 == index)
+			str = context.getResources().getStringArray(R.array.zyxc_4_list);
+		else if(7 == index)
+			str = context.getResources().getStringArray(R.array.zyxc_8_list);
+		else if(8 == index)
+			str = context.getResources().getStringArray(R.array.zyxc_9_list);
+		
+		hasContent = new int[str.length];//fym2
 	}
 
 	@Override
